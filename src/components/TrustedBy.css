@@ -1,0 +1,109 @@
+.trusted-by-section {
+  padding: 3rem 0;
+  background: #121212;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+.trusted-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.trusted-title {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.marquee-wrapper {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  /* Masks to fade out edges */
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0)
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0),
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0)
+  );
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 30s linear infinite;
+}
+
+/* Pause animation on hover */
+.marquee-wrapper:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+.trusted-logo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 3rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.3s ease;
+  filter: grayscale(100%);
+}
+
+.trusted-logo-item:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.trusted-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trusted-logo-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Translate by exactly half the width since we duplicated the items */
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .trusted-logo-item {
+    padding: 0 1.5rem;
+  }
+  
+  .trusted-logo-name {
+    font-size: 0.9rem;
+  }
+  
+  .trusted-title {
+    font-size: 0.65rem;
+    margin-bottom: 1.5rem;
+  }
+}

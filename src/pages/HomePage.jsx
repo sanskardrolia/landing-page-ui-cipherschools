@@ -9,10 +9,13 @@ import BentoFeatures from '../components/BentoFeatures';
 import PremiumExperience from '../components/PremiumExperience';
 import Testimonials from '../components/Testimonials';
 
+import TrustedBy from '../components/TrustedBy';
+
 const HomePage = () => {
   return (
     <>
       <StoryHero />
+      <TrustedBy />
       <ImpactBar />
       <ImageGallery />
       <Ecosystem />

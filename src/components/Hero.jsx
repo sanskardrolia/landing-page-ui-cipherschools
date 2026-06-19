@@ -32,6 +32,7 @@ const Hero = ({ onReplay }) => {
   return (
     <section className="hero">
       <InteractiveParticles />
+      <div className="hero-bg-isometric-grid"></div>
       <div className="hero-bg-grain"></div>
 
       <div className="hero-grid">

@@ -75,16 +75,7 @@ const ImpactBar = () => {
     <section className="impact-section">
       <div className="container">
 
-        {/* Trust strip */}
-        <div className="trust-strip">
-          <GraduationCap size={20} className="trust-strip-icon" />
-          <span className="trust-strip-label">Trusted by</span>
-          <span className="trust-strip-name">Lovely Professional University</span>
-          <span className="trust-strip-dot"></span>
-          <span className="trust-strip-name">Galgotias University</span>
-          <span className="trust-strip-dot"></span>
-          <span className="trust-strip-more">and 50+ more</span>
-        </div>
+
 
         {/* Stats grid */}
         <div className="impact-stats-grid">
