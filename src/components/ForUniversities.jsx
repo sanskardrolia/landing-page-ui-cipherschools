@@ -257,38 +257,6 @@ const ForUniversities = () => {
         </div>
       </section>
 
-      {/* 2. The Gap Section */}
-      <section className="b2b-gap-section section bg-white">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Why Traditional Curriculum Isn't Enough</h2>
-            <p className="text-muted max-w-2xl mx-auto">Bridging the massive disconnect between academic theory and day-one employability.</p>
-          </div>
-          <div className="gap-visual-container">
-            <div className="gap-box traditional">
-              <h4>Academic Theory</h4>
-              <ul>
-                <li><CheckCircle2 size={16}/> Outdated Syllabuses</li>
-                <li><CheckCircle2 size={16}/> Rote Memorization</li>
-                <li><CheckCircle2 size={16}/> Limited Hands-on Infra</li>
-              </ul>
-            </div>
-            <div className="gap-bridge">
-              <div className="bridge-line"></div>
-              <div className="bridge-badge">CipherSchools Ecosystem</div>
-            </div>
-            <div className="gap-box industry">
-              <h4>Industry Demand</h4>
-              <ul>
-                <li><CheckCircle2 size={16}/> Modern Tech Stacks</li>
-                <li><CheckCircle2 size={16}/> Project-based Portfolios</li>
-                <li><CheckCircle2 size={16}/> Day-one Deployment Ready</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* 2.5 What We Bring On Table (Image Bento) */}
       <section className="b2b-bring-table-section section bg-gray-50">
         <div className="container">
@@ -338,6 +306,38 @@ const ForUniversities = () => {
               <div className="bento-img-overlay">
                 <h4>Mock Interview & Resume Preparation</h4>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. The Gap Section */}
+      <section className="b2b-gap-section section bg-white">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="section-title">Why Traditional Curriculum Isn't Enough</h2>
+            <p className="text-muted max-w-2xl mx-auto">Bridging the massive disconnect between academic theory and day-one employability.</p>
+          </div>
+          <div className="gap-visual-container">
+            <div className="gap-box traditional">
+              <h4>Academic Theory</h4>
+              <ul>
+                <li><CheckCircle2 size={16}/> Outdated Syllabuses</li>
+                <li><CheckCircle2 size={16}/> Rote Memorization</li>
+                <li><CheckCircle2 size={16}/> Limited Hands-on Infra</li>
+              </ul>
+            </div>
+            <div className="gap-bridge">
+              <div className="bridge-line"></div>
+              <div className="bridge-badge">CipherSchools Ecosystem</div>
+            </div>
+            <div className="gap-box industry">
+              <h4>Industry Demand</h4>
+              <ul>
+                <li><CheckCircle2 size={16}/> Modern Tech Stacks</li>
+                <li><CheckCircle2 size={16}/> Project-based Portfolios</li>
+                <li><CheckCircle2 size={16}/> Day-one Deployment Ready</li>
+              </ul>
             </div>
           </div>
         </div>
