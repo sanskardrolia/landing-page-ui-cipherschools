@@ -1,0 +1,135 @@
+/* ===========================
+   IMPACT SECTION
+   =========================== */
+
+.impact-section {
+  background: #fff;
+  padding: 5rem 2rem;
+}
+
+/* ---- Trust strip ---- */
+.trust-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+  padding: 1rem 2rem;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 4px;
+}
+
+.trust-strip-icon {
+  color: var(--primary);
+}
+
+.trust-strip-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9CA3AF;
+}
+
+.trust-strip-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.trust-strip-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #D1D5DB;
+  flex-shrink: 0;
+}
+
+.trust-strip-more {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* ---- Stats grid ---- */
+.impact-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.impact-stat-card {
+  background: #FAFAFA;
+  border: 1px solid #F3F4F6;
+  border-radius: 4px;
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.impact-stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  border-color: #E5E7EB;
+}
+
+.impact-stat-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.impact-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.impact-stat-num {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.impact-stat-bottom {
+  border-top: 1px solid #F3F4F6;
+  padding-top: 1.25rem;
+}
+
+.impact-stat-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.5rem;
+}
+
+.impact-stat-story {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #6B7280;
+  margin: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .impact-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .trust-strip {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.4rem;
+  }
+  .trust-strip-dot {
+    display: none;
+  }
+}
