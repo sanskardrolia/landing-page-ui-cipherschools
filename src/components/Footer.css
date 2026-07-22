@@ -100,6 +100,17 @@
   font-size: 0.95rem;
 }
 
+.main-footer .logo-text {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.02em;
+}
+
+.main-footer .logo-text .text-primary {
+  color: #ffa103;
+}
+
 .footer-links-group h4 {
   font-size: 1.1rem;
   margin-bottom: 1.5rem;

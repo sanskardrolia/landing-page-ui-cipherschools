@@ -1,304 +1,146 @@
 /* ===========================
-   BENTO FEATURES SECTION
+   BENTO FEATURES – Modern Dark Glassmorphism
    =========================== */
 
-.bento-section {
-  background-color: #F8F9FA; /* Light gray from screenshot */
-  padding-top: 5rem;
-  padding-bottom: 8rem;
+.bento-section { padding: 8rem 2rem; background: #080808; position: relative; overflow: hidden; }
+
+/* Background Glows */
+.bento-section::before {
+  content: ''; position: absolute; top: 10%; left: 20%; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,161,3,0.15) 0%, transparent 70%);
+  filter: blur(80px); z-index: 1; pointer-events: none;
+}
+.bento-section::after {
+  content: ''; position: absolute; bottom: 10%; right: 10%; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+  filter: blur(80px); z-index: 1; pointer-events: none;
 }
 
-.screenshot-tag {
+.container { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+
+.section-header { text-align: center; margin-bottom: 4rem; }
+.bf-tag {
   display: inline-block;
-  border: 1px solid #EAEAEA;
-  border-radius: 4px;
-  padding: 0.3rem 1rem;
+  background: rgba(255,161,3,0.1);
+  color: #ffa103;
+  padding: 6px 16px;
+  border-radius: 20px;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: #666;
-  background: #FFF;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  border: 1px solid rgba(255,161,3,0.2);
 }
 
-.bento-grid {
+.section-title { font-size: 3rem; font-weight: 800; color: #fff; margin: 0; letter-spacing: -1px; }
+
+/* ── Asymmetric Grid ── */
+.bf-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 380px;
   gap: 1.5rem;
-  max-width: 1000px; /* Constrain width for a neat 2x2 grid */
-  margin: 0 auto;
 }
 
-.bento-card {
-  background: #FFFFFF;
-  border: 1px solid #EAEAEA;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* ── Glassmorphism Card ── */
+.bf-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
-}
-
-.bento-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
-}
-
-/* Mockup Wrapper (Top half with grid background) */
-.bento-mockup-wrap {
-  height: 240px;
-  background-color: #FAFAFA;
-  /* Faint grid lines to match screenshot */
-  background-image: 
-    linear-gradient(#F0F0F0 1px, transparent 1px), 
-    linear-gradient(90deg, #F0F0F0 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: center;
-  border-bottom: 1px solid #F0F0F0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
   position: relative;
-  overflow: hidden;
-  padding: 1rem;
+  height: 100%;
 }
 
-.bento-mockup {
-  background: #FFF;
-  border-radius: 4px;
-  border: 1px solid #EAEAEA;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+.bf-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 24px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-/* Content Area (Bottom half) */
-.bento-content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+.bf-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
+.bf-card:hover::before { opacity: 1; }
 
-.bento-content h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #111;
-  margin-bottom: 0.5rem;
-}
+.bf-wrap.span-2 { grid-column: span 2; }
+.bf-wrap.span-3 { grid-column: span 3; }
 
-.bento-content p {
-  font-size: 0.9rem;
-  color: #6B7280;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-}
+/* ── Text ── */
+.bf-text { padding: 2.5rem 2.5rem 0; z-index: 2; position: relative; }
+.bf-text h3 { font-size: 1.6rem; font-weight: 700; color: #fff; margin: 0 0 0.75rem; letter-spacing: -0.5px; }
+.bf-text p { font-size: 1rem; color: #aaa; line-height: 1.6; margin: 0 0 1.2rem; }
+.bf-text mark { background: linear-gradient(90deg, rgba(255,161,3,0.2), transparent); color: #ffa103; padding: 2px 6px; border-radius: 4px; }
+.bf-link { display: inline-flex; align-items: center; gap: 6px; color: #ffa103; font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+.bf-link svg { transition: transform 0.2s ease; }
+.bf-link:hover svg { transform: translateX(4px); }
 
-/* CTA Button */
-.bento-cta-btn {
-  background: #F4F4F5;
-  color: #111;
-  border: 1px solid #EAEAEA;
-  padding: 0.6rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  width: max-content;
-}
+/* ── Mock Area ── */
+.bf-mock { flex: 1; display: flex; align-items: flex-end; justify-content: center; padding: 1.5rem 2rem 0; overflow: hidden; position: relative; }
 
-.bento-cta-btn:hover {
-  background: #EAEAEA;
-  color: #000;
-}
+/* 1. Heatmap */
+.mock-heatmap { padding-bottom: 2rem; width: 100%; display: flex; justify-content: center; }
+.mh-grid { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 5px; }
+.mh-cell { width: 14px; height: 14px; border-radius: 3px; background: rgba(255,255,255,0.05); transition: all 0.3s ease; }
+.mh-cell:hover { transform: scale(1.5); z-index: 2; box-shadow: 0 0 10px rgba(255,161,3,0.5); }
+.mh-cell.l1 { background: rgba(255,161,3,0.2); }
+.mh-cell.l2 { background: rgba(255,161,3,0.5); }
+.mh-cell.l3 { background: rgba(255,161,3,0.8); }
+.mh-cell.l4 { background: #ffa103; box-shadow: 0 0 10px rgba(255,161,3,0.4); }
 
-/* --------------------------
-   SPECIFIC MOCKUPS
-   -------------------------- */
+/* 2. AI Mentor */
+.mock-ai { width: 90%; background: #121212; border-radius: 12px 12px 0 0; border: 1px solid rgba(255,255,255,0.1); border-bottom: none; display: flex; flex-direction: column; padding: 1.5rem; gap: 1rem; position: relative; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
+.mai-msg { padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.85rem; max-width: 85%; }
+.mai-msg.user { background: #222; color: #ddd; align-self: flex-end; border-bottom-right-radius: 4px; }
+.mai-msg.ai { background: rgba(108,99,255,0.15); color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(108,99,255,0.3); }
+.mai-glow { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 80%; height: 2px; background: #6c63ff; box-shadow: 0 -10px 40px rgba(108,99,255,0.8); }
+.bf-wrap:hover .mock-ai { transform: translateY(-8px); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
 
-/* Heatmap */
-.heatmap-mockup {
-  padding: 1rem;
-}
-.heatmap-header {
-  margin-bottom: 0.5rem;
-}
-.heatmap-stats {
-  font-size: 0.75rem;
-  color: #666;
-}
-.stat-bold {
-  font-weight: 700;
-  color: #111;
-}
-.heatmap-grid {
-  display: grid;
-  grid-template-rows: repeat(7, 1fr);
-  grid-auto-flow: column;
-  gap: 3px;
-}
-.heatmap-cell {
-  width: 10px;
-  height: 10px;
-  border-radius: 4px;
-  background: #EBEDF0;
-}
-.heatmap-cell.level-1 { background: #9BE9A8; }
-.heatmap-cell.level-2 { background: #40C463; }
-.heatmap-cell.level-3 { background: #30A14E; }
-.heatmap-cell.level-4 { background: #216E39; }
+/* 3. Rewards */
+.mock-rewards { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding-bottom: 3rem; }
+.mrew-badge { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #FFD700, #FDB931); box-shadow: 0 15px 35px rgba(255,215,0,0.2), inset 0 2px 10px rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; position: relative; transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.mrew-badge::after { content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px; border-radius: 50%; border: 2px dashed rgba(255,215,0,0.5); animation: spin 10s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.bf-wrap:hover .mrew-badge { transform: rotateY(180deg) scale(1.1); }
+.mrew-stats { text-align: center; }
+.mrew-pts { font-size: 2.5rem; font-weight: 800; color: #fff; line-height: 1; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.mrew-label { font-size: 0.85rem; color: #ffa103; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; }
 
-/* Portfolio */
-.portfolio-card {
-  padding: 1.5rem;
-  width: 260px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-.port-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), #FFD166);
-  margin-bottom: 1rem;
-}
-.port-name {
-  font-weight: 700;
-  font-size: 1rem;
-  color: #111;
-}
-.port-title {
-  font-size: 0.8rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-.port-stats {
-  display: flex;
-  gap: 1.5rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #F0F0F0;
-  width: 100%;
-  justify-content: center;
-}
-.p-stat strong { display: block; font-size: 1.1rem; }
-.p-stat span { font-size: 0.7rem; color: #666; }
-
-/* WhatsApp */
-.whatsapp-mockup {
-  width: 280px;
-}
-.wa-header {
-  background: #075E54;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: #FFF;
-}
-.wa-avatar-group { display: flex; }
-.wa-avatar {
-  width: 24px; height: 24px;
-  border-radius: 50%;
-  border: 1px solid #075E54;
-  background: #CCC;
-  margin-left: -8px;
-}
-.wa-avatar.a1 { margin-left: 0; background: #FFD166; }
-.wa-avatar.a2 { background: #EF476F; }
-.wa-avatar.a3 { background: #118AB2; }
-.wa-title { font-weight: 600; font-size: 0.85rem; }
-.wa-sub { font-size: 0.7rem; opacity: 0.8; }
-.wa-chat {
-  padding: 1rem;
-  background: #E5DDD5;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.wa-bubble {
-  max-width: 85%;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  position: relative;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-}
-.wa-bubble.received {
-  background: #FFF;
-  align-self: flex-start;
-  border-top-left-radius: 0;
-}
-.wa-bubble.sent {
-  background: #DCF8C6;
-  align-self: flex-end;
-  border-top-right-radius: 0;
-}
-.wa-sender {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #34B7F1;
-  margin-bottom: 0.2rem;
-}
-
-/* Notion Notes */
-.notion-mockup {
-  display: flex;
-  flex-direction: row;
-  width: 300px;
-  height: 180px;
-}
-.notion-sidebar {
-  width: 90px;
-  background: #F7F7F5;
-  border-right: 1px solid #EAEAEA;
-  padding: 0.5rem;
-  font-size: 0.7rem;
-}
-.n-item {
-  padding: 0.4rem;
-  color: #555;
-  border-radius: 4px;
-  margin-bottom: 0.2rem;
-}
-.n-item.active {
-  background: #E8E8E6;
-  color: #111;
-  font-weight: 500;
-}
-.notion-content-area {
-  padding: 1rem;
-  flex-grow: 1;
-}
-.n-title {
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-.n-block.heading {
-  font-weight: 600;
-  font-size: 0.8rem;
-  margin-bottom: 0.3rem;
-}
-.n-block.text, .n-block.list {
-  font-size: 0.75rem;
-  color: #555;
-  margin-bottom: 0.3rem;
-}
-.n-block.list ul {
-  padding-left: 1.2rem;
-  margin: 0;
-}
+/* 4. WhatsApp */
+.mock-chat { width: 70%; background: #111; border-radius: 16px 16px 0 0; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; border: 1px solid rgba(255,255,255,0.08); border-bottom: none; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
+.mc-bubble { padding: 0.8rem 1rem; border-radius: 12px; font-size: 0.85rem; max-width: 80%; position: relative; opacity: 0.8; transition: all 0.3s ease; }
+.mc-received { background: #1e1e1e; color: #ddd; align-self: flex-start; border-bottom-left-radius: 4px; }
+.mc-sent { background: #005c4b; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.mc-sender { display: block; font-size: 0.7rem; color: #25D366; font-weight: 600; margin-bottom: 4px; }
+.bf-wrap:hover .mc-bubble { opacity: 1; transform: translateY(-4px); }
+.bf-wrap:hover .mc-bubble:nth-child(1) { transition-delay: 0.05s; }
+.bf-wrap:hover .mc-bubble:nth-child(2) { transition-delay: 0.1s; }
+.bf-wrap:hover .mc-bubble:nth-child(3) { transition-delay: 0.15s; }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .bf-grid { grid-template-columns: repeat(2, 1fr); }
+  .bf-wrap.span-3 { grid-column: span 2; }
+}
 @media (max-width: 768px) {
-  .bento-grid {
-    grid-template-columns: 1fr;
-  }
+  .bento-section { padding: 4rem 1.5rem; }
+  .bf-grid { grid-template-columns: 1fr; }
+  .bf-wrap.span-2, .bf-wrap.span-3 { grid-column: span 1; }
+  .mock-chat { width: 100%; }
+  .mock-ai { width: 100%; }
 }

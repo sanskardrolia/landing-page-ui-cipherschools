@@ -1,0 +1,389 @@
+/* ForUniversitiesV2.css */
+
+.fu-v2-page {
+  background-color: #FAFAFA;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.fu-v2-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.fu-v2-section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: #111827;
+  text-align: center;
+}
+
+.fu-v2-section-subtitle {
+  font-size: 1.15rem;
+  color: #6B7280;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem auto;
+}
+
+.fu-text-gradient {
+  background: linear-gradient(135deg, #F3912E 0%, #FF6B00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 1. Hero: The World Changed */
+.fu-v2-hero {
+  padding: 8rem 0 6rem;
+  background: radial-gradient(circle at top right, rgba(243,145,46,0.05), transparent 40%),
+              radial-gradient(circle at bottom left, rgba(17,24,39,0.03), transparent 40%);
+}
+
+.fu-v2-hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 4rem;
+  line-height: 1.2;
+}
+
+.fu-v2-hero-split {
+  display: flex;
+  gap: 2rem;
+  align-items: stretch;
+}
+
+.fu-v2-hero-side {
+  flex: 1;
+  padding: 3rem;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fu-v2-hero-old {
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  opacity: 0.8;
+}
+
+.fu-v2-hero-new {
+  background: #111827;
+  color: #FFF;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.fu-v2-hero-new::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #F3912E, #FF6B00);
+}
+
+.fu-v2-hero-side h3 {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.fu-v2-hero-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fu-v2-hero-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.fu-v2-hero-old .fu-v2-hero-list li {
+  color: #6B7280;
+}
+
+.fu-v2-hero-new .fu-v2-hero-list li {
+  color: #E5E7EB;
+}
+
+/* 2. DSA Isn't Dead (Equation) */
+.fu-v2-equation-section {
+  padding: 6rem 0;
+  background: #FFF;
+}
+
+.fu-v2-eq-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.fu-v2-eq-block {
+  padding: 1rem 1.5rem;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #4B5563;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+.fu-v2-eq-op {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #9CA3AF;
+}
+
+.fu-v2-eq-result {
+  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+  color: #FFF;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  box-shadow: 0 10px 25px rgba(17,24,39,0.2);
+  border-bottom: 3px solid #F3912E;
+}
+
+/* 3. The Modern Engineering Stack */
+.fu-v2-stack-section {
+  padding: 8rem 0;
+  background: #F9FAFB;
+}
+
+.fu-v2-stack-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.fu-v2-stack-tier {
+  background: #FFF;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.fu-v2-stack-tier::after {
+  content: '';
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 2rem;
+  background: #E5E7EB;
+}
+
+.fu-v2-stack-tier:last-child::after {
+  display: none;
+}
+
+.fu-v2-stack-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fu-v2-stack-header h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.fu-v2-stack-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.fu-v2-stack-tag {
+  background: #F3F4F6;
+  color: #4B5563;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* 4. What Companies Actually Hire */
+.fu-v2-hire-section {
+  padding: 8rem 0;
+  background: #111827;
+  color: #FFF;
+}
+
+.fu-v2-hire-section .fu-v2-section-title {
+  color: #FFF;
+}
+
+.fu-v2-hire-section .fu-v2-section-subtitle {
+  color: #9CA3AF;
+}
+
+.fu-v2-hire-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+}
+
+.fu-v2-hire-card {
+  background: #1F2937;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid #374151;
+  transition: transform 0.3s ease;
+}
+
+.fu-v2-hire-card:hover {
+  transform: translateY(-5px);
+}
+
+.fu-v2-hire-card.exceptional {
+  background: linear-gradient(180deg, #1F2937 0%, #111827 100%);
+  border-color: #F3912E;
+  box-shadow: 0 15px 30px rgba(243,145,46,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.fu-v2-hire-card.exceptional::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #F3912E, #FF6B00);
+}
+
+.fu-v2-hire-card h4 {
+  font-size: 1.15rem;
+  color: #9CA3AF;
+  font-weight: 600;
+  margin: 0;
+}
+
+.fu-v2-hire-card.exceptional h4 {
+  color: #F3912E;
+}
+
+.fu-v2-hire-card p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 5. The CipherSchools Difference (Pipeline) */
+.fu-v2-diff-section {
+  padding: 8rem 0;
+  background: #FFF;
+}
+
+.fu-v2-pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 4rem;
+}
+
+.fu-v2-pipe-node {
+  padding: 1rem 1.5rem;
+  background: #FFF;
+  border: 2px solid #E5E7EB;
+  border-radius: 30px;
+  font-weight: 700;
+  color: #4B5563;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.fu-v2-pipe-arrow {
+  color: #D1D5DB;
+}
+
+.fu-v2-pipe-node.highlight {
+  border-color: #F3912E;
+  color: #F3912E;
+  background: rgba(243,145,46,0.05);
+}
+
+.fu-v2-pipe-node.final {
+  background: #F3912E;
+  border-color: #F3912E;
+  color: #FFF;
+}
+
+/* 6. Final Section */
+.fu-v2-final {
+  padding: 10rem 0;
+  background: radial-gradient(circle at 50% 50%, rgba(243,145,46,0.1), transparent 70%), #111827;
+  color: #FFF;
+  text-align: center;
+}
+
+.fu-v2-final-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+
+.fu-v2-final-subtitle {
+  font-size: 1.25rem;
+  color: #D1D5DB;
+  max-width: 800px;
+  margin: 0 auto 3rem auto;
+  line-height: 1.6;
+}
+
+@media (max-width: 992px) {
+  .fu-v2-hero-split {
+    flex-direction: column;
+  }
+  .fu-v2-hire-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fu-v2-final-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .fu-v2-hire-grid {
+    grid-template-columns: 1fr;
+  }
+  .fu-v2-hero-title {
+    font-size: 2.5rem;
+  }
+  .fu-v2-final-title {
+    font-size: 2.25rem;
+  }
+}

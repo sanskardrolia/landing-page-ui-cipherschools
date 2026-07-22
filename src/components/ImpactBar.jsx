@@ -1,100 +1,119 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Users, BookOpen, Award, GraduationCap, Rocket, Target } from 'lucide-react';
+import { Users, Target, Rocket } from 'lucide-react';
 import './ImpactBar.css';
 
+/* ── CountUp ── */
 const CountUp = ({ end, suffix = "", duration = 2500 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1 }
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setStarted(true); },
+      { threshold: 0.2 }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
   }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
-    let startTime = null;
-    let animationFrame;
-    const animate = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 4);
-      setCount(Math.floor(easeProgress * end));
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
+    if (!started) return;
+    let start = null, raf;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 4);
+      setCount(Math.floor(ease * end));
+      if (p < 1) raf = requestAnimationFrame(step);
     };
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [end, duration, isVisible]);
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [end, duration, started]);
 
   return <span ref={ref}>{count}{suffix}</span>;
 };
 
 const ImpactBar = () => {
-  const stats = [
-    {
-      num: 50,
-      suffix: "k+",
-      label: "Learners",
-      story: "From first-year students to working professionals — all building real skills every day.",
-      icon: <Users size={22} />,
-      color: "var(--primary)",
-      bg: "rgba(243,145,46,0.08)"
-    },
-    {
-      num: 15,
-      suffix: "+",
-      label: "In-demand Domains",
-      story: "AI, Web3, Cloud, DevOps, Full-Stack — we cover what companies actually hire for.",
-      icon: <Target size={22} />,
-      color: "#10B981",
-      bg: "#ECFDF5"
-    },
-    {
-      num: 50,
-      suffix: "+",
-      label: "Free Programs",
-      story: "Complete courses with certificates and achievements — no paywall, no catch.",
-      icon: <Rocket size={22} />,
-      color: "#2563EB",
-      bg: "#EFF6FF"
-    }
-  ];
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) setInView(true); },
+      { threshold: 0.12 }
+    );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <section className="impact-section">
+    <section className="impact-section" ref={sectionRef}>
       <div className="container">
+        <div className={`impact-layout ${inView ? 'impact-in-view' : ''}`}>
 
-
-
-        {/* Stats grid */}
-        <div className="impact-stats-grid">
-          {stats.map((stat, i) => (
-            <div className="impact-stat-card" key={i}>
-              <div className="impact-stat-top">
-                <div className="impact-stat-icon" style={{ color: stat.color, background: stat.bg }}>
-                  {stat.icon}
-                </div>
-                <h3 className="impact-stat-num" style={{ color: stat.color }}>
-                  <CountUp end={stat.num} suffix={stat.suffix} />
-                </h3>
-              </div>
-              <div className="impact-stat-bottom">
-                <h4 className="impact-stat-label">{stat.label}</h4>
-                <p className="impact-stat-story">{stat.story}</p>
+          {/* ── Left: Hero Stat ── */}
+          <div className="il-hero-stat">
+            <div className="il-hero-ring">
+              <svg viewBox="0 0 120 120" className="il-ring-svg">
+                <circle cx="60" cy="60" r="54" fill="none" stroke="#F0F0F0" strokeWidth="4" />
+                <circle
+                  cx="60" cy="60" r="54"
+                  fill="none" stroke="#ffa103" strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeDasharray="339.3"
+                  strokeDashoffset="339.3"
+                  className="il-ring-progress"
+                />
+              </svg>
+              <div className="il-hero-icon">
+                <Users size={28} />
               </div>
             </div>
-          ))}
+            <div className="il-hero-text">
+              <h3 className="il-big-num"><CountUp end={50} suffix="k+" /></h3>
+              <span className="il-big-label">Learners</span>
+            </div>
+            <div className="il-hero-pulse" />
+          </div>
+
+          {/* ── Center: Divider ── */}
+          <div className="il-divider" />
+
+          {/* ── Right: Stacked Stats ── */}
+          <div className="il-stacked">
+            <div className="il-stat-row">
+              <div className="il-stat-icon-wrap">
+                <Target size={20} />
+              </div>
+              <div className="il-stat-info">
+                <h3 className="il-stat-num"><CountUp end={15} suffix="+" /></h3>
+                <span className="il-stat-label">In-demand Domains</span>
+              </div>
+              <div className="il-stat-tags">
+                {['AI', 'Cloud', 'DevOps', 'Web3'].map((t, i) => (
+                  <span key={i} className="il-tag" style={{ '--tag-i': i }}>{t}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className="il-row-sep" />
+
+            <div className="il-stat-row">
+              <div className="il-stat-icon-wrap">
+                <Rocket size={20} />
+              </div>
+              <div className="il-stat-info">
+                <h3 className="il-stat-num"><CountUp end={50} suffix="+" /></h3>
+                <span className="il-stat-label">Free Programs</span>
+              </div>
+              <div className="il-stat-tags">
+                <span className="il-tag il-tag-accent" style={{ '--tag-i': 0 }}>No paywall*</span>
+                <span className="il-tag" style={{ '--tag-i': 1 }}>Certified</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>

@@ -5,6 +5,8 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import StudentPage from './pages/StudentPage';
 import UniversityPage from './pages/UniversityPage';
+import UniversityPageV2 from './pages/UniversityPageV2';
+import WelcomePage from './pages/WelcomePage';
 import './App.css';
 
 function App() {
@@ -45,9 +47,10 @@ function App() {
         <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/students" element={<StudentPage />} />
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/students" element={<HomePage />} />
             <Route path="/universities" element={<UniversityPage />} />
+            <Route path="/universities-v2" element={<UniversityPageV2 />} />
           </Routes>
         </main>
         <Footer />

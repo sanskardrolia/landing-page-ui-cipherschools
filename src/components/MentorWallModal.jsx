@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import './MentorWallModal.css';
 
@@ -60,25 +60,36 @@ const MOCK_MENTORS = [
 ];
 
 const MentorWallModal = ({ isOpen, onClose }) => {
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', handleKeyDown);
     } else {
       document.body.style.overflow = 'unset';
     }
     return () => {
       document.body.style.overflow = 'unset';
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, handleKeyDown]);
 
   if (!isOpen) return null;
 
   return (
     <div className="mw-overlay" onClick={onClose}>
       <div className="mw-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="mw-close-btn" onClick={onClose}>
-          <X size={24} />
-        </button>
+
+        {/* Sticky close bar */}
+        <div className="mw-close-bar">
+          <button className="mw-close-btn" onClick={onClose}>
+            <X size={18} />
+            <span>Close</span>
+          </button>
+        </div>
         
         <div className="mw-header">
           <div className="mw-badge">Exclusive Network</div>
@@ -87,8 +98,8 @@ const MentorWallModal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="mw-grid">
-          {MOCK_MENTORS.map((mentor) => (
-            <div key={mentor.id} className="mw-card">
+          {MOCK_MENTORS.map((mentor, idx) => (
+            <div key={mentor.id} className="mw-card" style={{ '--card-i': idx }}>
               <div className="mw-avatar-wrap">
                 <img src={mentor.avatar} alt={mentor.name} className="mw-avatar" />
               </div>

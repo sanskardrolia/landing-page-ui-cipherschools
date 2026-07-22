@@ -1,514 +1,708 @@
-import React, { useState } from 'react';
-import { 
-  BookOpen, CheckCircle2, TrendingUp, Code2, TerminalSquare, 
-  Video, ShieldCheck, ChevronRight, Users, Award, Cpu, 
-  LayoutDashboard, Server, FileText, ArrowRight, Building, Play, BarChart3, Briefcase
-} from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ArrowRight, Sparkles, Bot, Code2, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText } from 'lucide-react';
 import './ForUniversities.css';
 
-// Modern Interactive Growth Chart (SVG Line)
-const InteractiveGrowthChart = () => {
-  const [hoveredPoint, setHoveredPoint] = useState(null);
-  
-  const data = [
-    { year: '2021', val: 35, label: '35%' },
-    { year: '2022', val: 55, label: '55%' },
-    { year: '2023', val: 78, label: '78%' },
-    { year: '2024', val: 95, label: '95%' }
-  ];
+/* ─── Typing animation component ─── */
+const TypingText = ({ text, delay = 0 }) => {
+  const [displayed, setDisplayed] = useState('');
+  const [started, setStarted] = useState(false);
 
-  // Map values to SVG coordinates (0-100 grid)
-  const getCoords = (index, val) => {
-    const x = (index / (data.length - 1)) * 100;
-    const y = 100 - val; 
-    return { x, y };
-  };
+  useEffect(() => {
+    const timeout = setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(timeout);
+  }, [delay]);
 
-  // Generate SVG path string
-  let pathD = `M ${getCoords(0, data[0].val).x} ${getCoords(0, data[0].val).y}`;
-  for (let i = 1; i < data.length; i++) {
-    const prev = getCoords(i - 1, data[i - 1].val);
-    const curr = getCoords(i, data[i].val);
-    // Simple bezier curve
-    const cp1x = prev.x + (curr.x - prev.x) / 2;
-    const cp1y = prev.y;
-    const cp2x = prev.x + (curr.x - prev.x) / 2;
-    const cp2y = curr.y;
-    pathD += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
-  }
-  
-  const fillPathD = `${pathD} L 100 100 L 0 100 Z`;
+  useEffect(() => {
+    if (!started) return;
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayed(text.slice(0, i + 1));
+      i++;
+      if (i >= text.length) clearInterval(interval);
+    }, 40);
+    return () => clearInterval(interval);
+  }, [started, text]);
 
-  return (
-    <div className="modern-chart-wrapper">
-      <div className="chart-header">
-        <TrendingUp className="text-primary mr-2" size={20}/>
-        <h4>Placement Growth (YoY)</h4>
-      </div>
-      <div className="svg-chart-container" onMouseLeave={() => setHoveredPoint(null)}>
-        <svg viewBox="0 0 100 100" className="interactive-svg" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="growthGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.4"/>
-              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.0"/>
-            </linearGradient>
-          </defs>
-          
-          {/* Grid lines */}
-          {[25, 50, 75].map(line => (
-             <line key={line} x1="0" y1={line} x2="100" y2={line} stroke="#E5E7EB" strokeWidth="0.5" strokeDasharray="2" />
-          ))}
-
-          {/* Area Fill */}
-          <path d={fillPathD} fill="url(#growthGradient)" className="chart-area-anim" />
-          
-          {/* Line */}
-          <path d={pathD} fill="none" stroke="var(--primary)" strokeWidth="2" className="chart-line-anim" />
-          
-          {/* Interactive Points */}
-          {data.map((pt, i) => {
-            const { x, y } = getCoords(i, pt.val);
-            const isHovered = hoveredPoint === i;
-            return (
-              <g key={i} className="chart-point-group" onMouseEnter={() => setHoveredPoint(i)}>
-                {isHovered && <line x1={x} y1="0" x2={x} y2="100" stroke="#E5E7EB" strokeWidth="0.5" />}
-                <circle cx={x} cy={y} r={isHovered ? "4" : "2"} fill={isHovered ? "#fff" : "var(--primary)"} stroke="var(--primary)" strokeWidth={isHovered ? "1.5" : "0"} style={{transition: 'all 0.3s ease', cursor: 'pointer'}}/>
-              </g>
-            );
-          })}
-        </svg>
-        
-        {/* Tooltip Overlay */}
-        {hoveredPoint !== null && (
-          <div className="chart-tooltip" style={{ left: `${getCoords(hoveredPoint, data[hoveredPoint].val).x}%`, top: `${getCoords(hoveredPoint, data[hoveredPoint].val).y}%` }}>
-            <div className="tt-val">{data[hoveredPoint].label}</div>
-            <div className="tt-lbl">in {data[hoveredPoint].year}</div>
-          </div>
-        )}
-        
-        <div className="chart-x-axis">
-          {data.map(d => <span key={d.year}>{d.year}</span>)}
-        </div>
-      </div>
-    </div>
-  );
+  return <span>{displayed}<span className="fu-cursor">|</span></span>;
 };
 
-// Modern Interactive CTC Chart (Sleek Segmented Bars)
-const InteractiveCTCChart = () => {
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  
-  const segments = [
-    { label: "Top 10%", val: 24, max: 30, color: "#10B981", desc: "Product & FAANG Roles" },
-    { label: "Top 25%", val: 14, max: 30, color: "#3B82F6", desc: "Core Tech & Unicorns" },
-    { label: "Average", val: 8.5, max: 30, color: "var(--primary)", desc: "Standard IT & Consulting" }
-  ];
+/* ─── Scroll-reveal hook (callback ref) ─── */
+const useReveal = (threshold = 0.15) => {
+  const [visible, setVisible] = useState(false);
+  const obsRef = useRef(null);
 
-  return (
-    <div className="modern-chart-wrapper">
-      <div className="chart-header">
-        <Briefcase className="text-primary mr-2" size={20}/>
-        <h4>CTC Breakdown (LPA)</h4>
-      </div>
-      <div className="ctc-bars-container">
-        {segments.map((seg, i) => {
-          const isHovered = hoveredIndex === i;
-          const widthPct = (seg.val / seg.max) * 100;
-          return (
-            <div 
-              key={i} 
-              className={`ctc-bar-row ${isHovered ? 'active' : ''}`}
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <div className="ctc-lbl-col">
-                <span className="ctc-lbl">{seg.label}</span>
-              </div>
-              <div className="ctc-track-col">
-                <div className="ctc-track-bg">
-                  <div className="ctc-track-fill" style={{ width: `${widthPct}%`, backgroundColor: seg.color }}>
-                    {isHovered && <div className="ctc-glow" style={{ boxShadow: `0 0 15px ${seg.color}` }}></div>}
-                  </div>
-                </div>
-                {/* Floating Info on Hover */}
-                <div className={`ctc-hover-info ${isHovered ? 'visible' : ''}`}>
-                  {seg.desc}
-                </div>
-              </div>
-              <div className="ctc-val-col" style={{ color: isHovered ? seg.color : '#4B5563' }}>
-                {seg.val} <span className="text-xs">LPA</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+  const ref = useCallback((node) => {
+    if (obsRef.current) obsRef.current.disconnect();
+    if (!node) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.unobserve(node); } },
+      { threshold }
+    );
+    obs.observe(node);
+    obsRef.current = obs;
+  }, [threshold]);
+
+  return [ref, visible];
 };
+
+
+/* ─── Tech Pairing Combos ─── */
+const techCombos = [
+  { tags: ['MERN Stack', 'DevOps', 'Cloud Deployment'], color: '#6c63ff' },
+  { tags: ['DSA', 'Backend', 'GenAI for Dev'], color: '#ff6b6b' },
+  { tags: ['Python', 'Full Stack', 'Cloud Computing'], color: '#36d399' },
+  { tags: ['ML / Generative AI', 'DSA'], color: '#ffa103' },
+  { tags: ['Core Java', 'SQL', 'DSA'], color: '#4facfe' },
+];
+
 
 const ForUniversities = () => {
-  const domains = [
-    { name: "Generative AI", icon: <Cpu size={18}/> },
-    { name: "Data Structures & Algorithms", icon: <Code2 size={18}/> },
-    { name: "Full Stack Development", icon: <LayoutDashboard size={18}/> },
-    { name: "Data Science", icon: <TrendingUp size={18}/> },
-    { name: "Machine Learning", icon: <Server size={18}/> },
-    { name: "Cloud Computing", icon: <TerminalSquare size={18}/> },
-    { name: "Cyber Security", icon: <ShieldCheck size={18}/> },
-    { name: "Interview Preparation", icon: <Users size={18}/> }
+  const [step, setStep] = useState('question'); // 'question' | 'result'
+  const [selected, setSelected] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [ripple, setRipple] = useState(null);
+  const [activeComboIndex, setActiveComboIndex] = useState(0);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  /* scroll-reveal refs */
+  const [refShift, visShift] = useReveal();
+  const [refTyping, visTyping] = useReveal();
+  const [refStack, visStack] = useReveal();
+  const [refQuote, visQuote] = useReveal();
+  const [refPair, visPair] = useReveal();
+  const [refImages, visImages] = useReveal();
+  const [refCta, visCta] = useReveal();
+  const [refIndustry, visIndustry] = useReveal();
+  const [refDoers, visDoers] = useReveal();
+  const [refBeyond, visBeyond] = useReveal();
+  const [refBreather1, visBreather1] = useReveal();
+  const [refBreather2, visBreather2] = useReveal();
+  const [refHelp, visHelp] = useReveal();
+  const [refLms, visLms] = useReveal();
+  const [refAssessment, visAssessment] = useReveal();
+  const [autoHighlightIndex, setAutoHighlightIndex] = useState(null);
+  const [activeAssessmentTab, setActiveAssessmentTab] = useState('online_exam');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setTimeout(() => setIsVisible(true), 100);
+
+    // Auto-highlight sequence
+    const timers = [];
+    timers.push(setTimeout(() => setAutoHighlightIndex(0), 800));
+    timers.push(setTimeout(() => setAutoHighlightIndex(1), 1600));
+    timers.push(setTimeout(() => setAutoHighlightIndex(2), 2400));
+    timers.push(setTimeout(() => setAutoHighlightIndex(null), 3200));
+
+    return () => timers.forEach(t => clearTimeout(t));
+  }, []);
+
+  useEffect(() => {
+    if (step === 'result') {
+      const timer = setTimeout(() => setShowStickyCta(true), 5000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowStickyCta(false);
+    }
+  }, [step]);
+
+  const handleSelect = (id) => {
+    setRipple(id);
+    setTimeout(() => setRipple(null), 500);
+    setSelected(id);
+  };
+
+  const handleSubmit = () => {
+    if (!selected) return;
+    setIsVisible(false);
+    setTimeout(() => {
+      setStep('result');
+      setTimeout(() => {
+        setIsVisible(true);
+        let targetId = 'shift-section';
+        if (selected === 'lms') targetId = 'lms-section';
+        if (selected === 'assessment') targetId = 'assessment-section';
+        
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.scrollTo(0, 0);
+        }
+      }, 150);
+    }, 400);
+  };
+
+  const handleBack = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      setStep('question');
+      setSelected(null);
+      window.scrollTo(0, 0);
+      setTimeout(() => setIsVisible(true), 50);
+    }, 400);
+  };
+
+  const options = [
+    { 
+      id: 'training', 
+      label: <>Training <span className="fu-pitch-accent">Support</span></>, 
+      icon: <Users size={28} />,
+      desc: "Expert-led curriculum designed for campus placement success.",
+      stats: [
+        { value: '50+', label: 'Courses' },
+        { value: '200+', label: 'Hours' },
+      ],
+      features: ['Live Mentorship', 'Project Based', 'Industry Ready'],
+    },
+    { 
+      id: 'lms', 
+      label: <>Campus <span className="fu-pitch-accent">LMS</span></>, 
+      icon: <Laptop size={28} />,
+      desc: "White-labeled platform for effortless learning management.",
+      stats: [
+        { value: '100%', label: 'Custom' },
+        { value: '24/7', label: 'Access' },
+      ],
+      features: ['Video Modules', 'Analytics', 'Stage Locking'],
+    },
+    { 
+      id: 'assessment', 
+      label: <>Assessment <span className="fu-pitch-accent">Platform</span></>, 
+      icon: <CheckCircle2 size={28} />,
+      desc: "AI-powered evaluation with proctoring & detailed analytics.",
+      stats: [
+        { value: 'AI', label: 'Proctored' },
+        { value: '∞', label: 'Tests' },
+      ],
+      features: ['Practice Tests', 'AI Hints', 'Result Dashboard'],
+    },
   ];
 
   return (
-    <div className="b2b-page-wrapper">
-      
-      {/* 1. Hero Section */}
-      <section className="b2b-hero section relative overflow-hidden">
-        <div className="b2b-mesh-bg"></div>
-        <div className="container relative z-10 text-center">
-          <div className="tag cred-tag mx-auto mb-6" style={{background: 'rgba(243,145,46,0.1)', color: 'var(--primary)'}}>
-            <Building size={14} className="inline mr-2"/> For Academic Institutions
-          </div>
-          <h1 className="b2b-hero-title">
-            Your Ultimate Arm for <br/>
-            <span className="text-primary">Academic & Placement Training</span>
-          </h1>
-          <p className="b2b-hero-subtitle">
-            Integrate industry-relevant learning, assessments, coding practice, and placement preparation directly into your academic ecosystem.
-          </p>
-          <div className="b2b-hero-ctas">
-            <button className="btn btn-primary btn-lg">Book a Demo</button>
-            <button className="btn btn-outline btn-lg">Partner with Us</button>
-          </div>
-        </div>
-      </section>
+    <div className="fu-pitch-page">
 
-      {/* 1.5 FAANG Mentorship Strip */}
-      <section className="faang-strip">
-        <div className="container">
-          <div className="faang-strip-content">
-             <div className="fs-text">
-                Offer students <strong>10+ Modern Domains</strong> with direct mentorship from leaders at
-             </div>
-             <div className="fs-logos">
-                <img src="https://api.iconify.design/simple-icons/google.svg?color=%239CA3AF" alt="Google" className="fs-logo-img" />
-                <img src="https://api.iconify.design/simple-icons/apple.svg?color=%239CA3AF" alt="Apple" className="fs-logo-img" />
-                <img src="https://api.iconify.design/simple-icons/microsoft.svg?color=%239CA3AF" alt="Microsoft" className="fs-logo-img" />
-                <img src="https://api.iconify.design/simple-icons/adobe.svg?color=%239CA3AF" alt="Adobe" className="fs-logo-img" />
-             </div>
+      {/* ─── QUESTION SCREEN ─── */}
+      {step === 'question' && (
+        <div className={`fu-pitch-container ${isVisible ? 'fu-visible' : ''}`}>
+          <div className="fu-pitch-header">
+            <p className="fu-pitch-eyebrow">For Universities & Colleges</p>
+            <h1 className="fu-pitch-title">
+              How <span className="fu-pitch-accent">CipherSchools</span> can help your university?
+            </h1>
           </div>
-        </div>
-      </section>
 
-      {/* 7 & 8. Impact & Recognition */}
-      <section className="b2b-impact-section section bg-white">
-        <div className="container">
-          <div className="uni-card uni-bento-wide impact-block text-center">
-            <div className="impact-header">
-              <h3 className="impact-title">Proven Academic Impact</h3>
-              <p className="impact-subtitle">We train talent. Industry hires talent.</p>
-            </div>
-            
-            <div className="claims-panel-wide mb-12">
-              <div className="claim-stat-box">
-                <div className="claim-number">15,000<span className="percent">+</span></div>
-                <div className="claim-label">Students Trained</div>
-              </div>
-              <div className="claim-divider-vertical"></div>
-              <div className="claim-stat-box">
-                <div className="claim-number">70-75<span className="percent">%</span></div>
-                <div className="claim-label">Placement Rate</div>
-              </div>
-              <div className="claim-divider-vertical"></div>
-              <div className="claim-stat-box">
-                <div className="claim-number">50<span className="percent">+</span></div>
-                <div className="claim-label">University Partners</div>
-              </div>
-            </div>
-            
-            <div className="impact-charts-container mb-12">
-              <InteractiveGrowthChart />
-              <InteractiveCTCChart />
-            </div>
+          <div className="fu-pitch-grid">
+            {options.map((opt, idx) => (
+              <div
+                key={opt.id}
+                className={`fu-pitch-option ${selected === opt.id ? 'fu-selected' : ''} ${ripple === opt.id ? 'fu-ripple' : ''} ${autoHighlightIndex === idx ? 'fu-auto-highlight' : ''}`}
+                onClick={() => handleSelect(opt.id)}
+                style={{ animationDelay: `${0.15 + idx * 0.1}s` }}
+              >
+                {/* Top visual area */}
+                <div className="fu-pitch-option-visual">
+                  <div className="fu-pitch-option-icon-wrapper">
+                    {opt.icon}
+                  </div>
+                  <div className="fu-pitch-option-stats">
+                    {opt.stats.map((stat, si) => (
+                      <div key={si} className="fu-stat-chip">
+                        <span className="fu-stat-value">{stat.value}</span>
+                        <span className="fu-stat-label">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            <h4 className="logos-heading" style={{ marginTop: '5rem' }}>Where Our Students Get Placed</h4>
-            <div className="placement-logos justify-center">
-              <div className="p-logo">
-                <img src="https://api.iconify.design/simple-icons/apple.svg?color=%239CA3AF" alt="Apple" className="p-logo-img" />
-                <span>Apple</span>
-              </div>
-              <div className="p-logo">
-                <img src="https://api.iconify.design/simple-icons/google.svg?color=%239CA3AF" alt="Google" className="p-logo-img" />
-                <span>Google</span>
-              </div>
-              <div className="p-logo">
-                <img src="https://api.iconify.design/simple-icons/adobe.svg?color=%239CA3AF" alt="Adobe" className="p-logo-img" />
-                <span>Adobe</span>
-              </div>
-              <div className="p-logo">
-                <img src="https://api.iconify.design/simple-icons/microsoft.svg?color=%239CA3AF" alt="Microsoft" className="p-logo-img" />
-                <span>Microsoft</span>
-              </div>
-              <div className="p-logo">
-                <img src="https://api.iconify.design/simple-icons/paypal.svg?color=%239CA3AF" alt="PayPal" className="p-logo-img" />
-                <span>PayPal</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                {/* Content area */}
+                <div className="fu-pitch-option-body">
+                  <h3 className="fu-pitch-option-text">{opt.label}</h3>
+                  <p className="fu-pitch-option-desc">{opt.desc}</p>
+                  <div className="fu-pitch-option-tags">
+                    {opt.features.map((f, fi) => (
+                      <span key={fi} className="fu-feature-tag">{f}</span>
+                    ))}
+                  </div>
+                </div>
 
-      {/* 2.5 What We Bring On Table (Image Bento) */}
-      <section className="b2b-bring-table-section section bg-gray-50">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="section-title">What We Bring On The Table</h2>
-            <p className="text-muted max-w-2xl mx-auto">Immersive experiences that go far beyond standard coursework.</p>
-          </div>
-          
-          <div className="bento-image-grid">
-            <div className="bento-img-card span-2">
-              <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop" alt="Live Classes" />
-              <div className="bento-img-overlay">
-                <h4>Live Classes</h4>
-              </div>
-            </div>
-            
-            <div className="bento-img-card">
-              <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop" alt="Career Building Session" />
-              <div className="bento-img-overlay">
-                <h4>Career Building Session</h4>
-              </div>
-            </div>
-            
-            <div className="bento-img-card">
-              <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop" alt="Coding Contest" />
-              <div className="bento-img-overlay">
-                <h4>Coding Contest</h4>
-              </div>
-            </div>
-            
-            <div className="bento-img-card span-2">
-              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" alt="Hackathon" />
-              <div className="bento-img-overlay">
-                <h4>Hackathon</h4>
-              </div>
-            </div>
-            
-            <div className="bento-img-card">
-              <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&auto=format&fit=crop" alt="Industry Session" />
-              <div className="bento-img-overlay">
-                <h4>Industry Session</h4>
-              </div>
-            </div>
-            
-            <div className="bento-img-card span-3">
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop" alt="Mock Interview & Resume Preparation" />
-              <div className="bento-img-overlay">
-                <h4>Mock Interview & Resume Preparation</h4>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. The Gap Section */}
-      <section className="b2b-gap-section section bg-white">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Why Traditional Curriculum Isn't Enough</h2>
-            <p className="text-muted max-w-2xl mx-auto">Bridging the massive disconnect between academic theory and day-one employability.</p>
-          </div>
-          <div className="gap-visual-container">
-            <div className="gap-box traditional">
-              <h4>Academic Theory</h4>
-              <ul>
-                <li><CheckCircle2 size={16}/> Outdated Syllabuses</li>
-                <li><CheckCircle2 size={16}/> Rote Memorization</li>
-                <li><CheckCircle2 size={16}/> Limited Hands-on Infra</li>
-              </ul>
-            </div>
-            <div className="gap-bridge">
-              <div className="bridge-line"></div>
-              <div className="bridge-badge">CipherSchools Ecosystem</div>
-            </div>
-            <div className="gap-box industry">
-              <h4>Industry Demand</h4>
-              <ul>
-                <li><CheckCircle2 size={16}/> Modern Tech Stacks</li>
-                <li><CheckCircle2 size={16}/> Project-based Portfolios</li>
-                <li><CheckCircle2 size={16}/> Day-one Deployment Ready</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Complete Training Ecosystem */}
-      <section className="b2b-domains-section section bg-gray-50">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="section-title">Complete Training Ecosystem</h2>
-            <p className="text-muted max-w-2xl mx-auto">Continuously updated, industry-aligned content covering every modern tech stack.</p>
-          </div>
-          <div className="domains-grid">
-            {domains.map((domain, i) => (
-              <div key={i} className="domain-bento-card">
-                <div className="db-icon text-primary">{domain.icon}</div>
-                <div className="db-name">{domain.name}</div>
+                {selected === opt.id && <div className="fu-check-badge"><Sparkles size={16} /></div>}
               </div>
             ))}
           </div>
+
+          <div className={`fu-pitch-cta-row ${selected ? 'fu-cta-visible' : ''}`}>
+            <button className="fu-pitch-cta-btn" onClick={handleSubmit}>
+              Continue <ArrowRight size={20} />
+            </button>
+          </div>
         </div>
-      </section>
+      )}
 
-      {/* 4. How We Train */}
-      <section className="b2b-how-we-train section bg-white">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="section-title">How We Train</h2>
-            <p className="text-muted max-w-2xl mx-auto">A structured, hands-on path ensuring students are prepared for their desired companies.</p>
-          </div>
-          
-          <div className="hwt-grid-path">
-             <div className="hwt-card">
-                <div className="hwt-step-num">01</div>
-                <div className="hwt-icon-wrapper"><BookOpen size={28}/></div>
-                <h4>Domain Foundation</h4>
-                <p>Mastering core concepts and modern tech stacks.</p>
-             </div>
-             <div className="hwt-card">
-                <div className="hwt-step-num">02</div>
-                <div className="hwt-icon-wrapper"><TerminalSquare size={28}/></div>
-                <h4>Online Assessments</h4>
-                <p>Proctored coding rounds matching industry standards.</p>
-             </div>
-             <div className="hwt-card">
-                <div className="hwt-step-num">03</div>
-                <div className="hwt-icon-wrapper"><FileText size={28}/></div>
-                <h4>Mock Tests</h4>
-                <p>Rigorous test series to build speed and accuracy.</p>
-             </div>
-             <div className="hwt-card">
-                <div className="hwt-step-num">04</div>
-                <div className="hwt-icon-wrapper"><Users size={28}/></div>
-                <h4>Mock Interviews</h4>
-                <p>1-on-1 technical and HR interview simulations.</p>
-             </div>
+
+      {/* ─── RESULT SCREEN ─── */}
+      {step === 'result' && (
+        <div className={`fu-result-page ${isVisible ? 'fu-visible' : ''}`}>
+
+          <div className="fu-result-back">
+            <button onClick={handleBack} className="fu-back-link">&larr; Change Selection</button>
           </div>
 
-          <div className="hwt-disclaimer" style={{ marginTop: '5rem' }}>
-             <h4 className="text-center section-title mb-8">Our Transparent Commitment</h4>
-             <div className="commitment-visual-split">
-                
-                {/* What We Do */}
-                <div className="commitment-box we-do">
-                   <div className="c-tag">The CipherSchools Ecosystem</div>
-                   <ul className="c-list">
-                     <li><CheckCircle2 size={20}/> We Train</li>
-                     <li><CheckCircle2 size={20}/> We Support</li>
-                     <li><CheckCircle2 size={20}/> We Give Credible Results</li>
-                   </ul>
+
+          {/* ── 1. The Shift ── */}
+          <section id="shift-section" ref={refShift} className={`fu-sec fu-sec-industry fu-reveal ${visShift ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <p className="fu-sec-eyebrow">The Shift</p>
+              <h2 className="fu-sec-heading">
+                Industry is <span className="fu-pitch-accent">not looking</span> for what we saw 2–3 years back.
+              </h2>
+              <div className="fu-old-bento">
+                <div className="fu-old-card">
+                  <div className="fu-card-status"><X size={14} /></div>
+                  <div className="fu-old-icon-container"><Network size={28} /></div>
+                  <h4>DSA</h4>
+                  <p>Not enough anymore.</p>
+                </div>
+                <div className="fu-old-card">
+                  <div className="fu-card-status"><X size={14} /></div>
+                  <div className="fu-old-icon-container"><Coffee size={28} /></div>
+                  <h4>Java</h4>
+                  <p>Too narrow a skill.</p>
+                </div>
+                <div className="fu-old-card">
+                  <div className="fu-card-status"><X size={14} /></div>
+                  <div className="fu-old-icon-container"><Laptop size={28} /></div>
+                  <h4>Development</h4>
+                  <p>Missing the bigger picture.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── 5. Tech Pairing (Interactive Presenter) ── */}
+          <section id="hire-section" ref={refPair} className={`fu-sec fu-sec-pair fu-reveal ${visPair ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <p className="fu-sec-eyebrow">What Companies Actually Hire</p>
+              <h2 className="fu-sec-heading">
+                We help to pick the <span className="fu-pitch-accent">right technologies.</span>
+              </h2>
+              <p className="fu-sec-sub">These are real combinations companies are hiring for right now.</p>
+
+              <div className="fu-combo-presenter">
+                <div className="fu-combo-stage">
+                  <div key={activeComboIndex} className="fu-combo-active">
+                    {techCombos[activeComboIndex].tags.map((tag, j) => (
+                      <React.Fragment key={j}>
+                        {j > 0 && <span className="fu-combo-plus-large"><Plus size={24} /></span>}
+                        <div 
+                          className="fu-combo-pill-large" 
+                          style={{ borderColor: techCombos[activeComboIndex].color, color: techCombos[activeComboIndex].color }}
+                        >
+                          {tag}
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </div>
                 </div>
                 
-                {/* The Connective Tissue */}
-                <div className="commitment-vs">
-                   <div className="vs-circle">+</div>
+                <button 
+                  className="fu-combo-shuffle-btn"
+                  onClick={() => setActiveComboIndex((prev) => (prev + 1) % techCombos.length)}
+                >
+                  <RefreshCw size={18} className="fu-shuffle-icon" /> Show Another Combination
+                </button>
+              </div>
+
+              {/* NEW: Journey Bento */}
+              <div className="fu-journey-bento">
+                <div className="fu-journey-card fu-journey-wide">
+                  <div className="fu-journey-icon-wrap"><Compass size={32} /></div>
+                  <div className="fu-journey-text">
+                    <h3>Training is a Journey, Not Just Teaching</h3>
+                    <p>It's an immersive experience designed to build real-world intuition, going far beyond traditional lectures. We help students discover their passion and master the exact stack they need.</p>
+                  </div>
                 </div>
-                
-                {/* What the Student Does */}
-                <div className="commitment-box they-do">
-                   <div className="c-tag student-tag">The Student's Muscle</div>
-                   <div className="c-student-visual">
-                      <Users size={32} className="text-primary mx-auto mb-3"/>
-                      <p>Ultimately, cracking the company interview requires the individual muscle, dedication, and effort of the student.</p>
+                <div className="fu-journey-card">
+                  <div className="fu-journey-icon-wrap"><Target size={28} /></div>
+                  <div className="fu-journey-text">
+                    <h3>Pick the Right Stack</h3>
+                    <p>We guide students to discover and master the perfect technology combinations for their careers.</p>
+                  </div>
+                </div>
+                <div className="fu-journey-card">
+                  <div className="fu-journey-icon-wrap"><Briefcase size={28} /></div>
+                  <div className="fu-journey-text">
+                    <h3>Industry Ready</h3>
+                    <p>Equipping them with the exact tools and workflows used by top product companies.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          {/* ── BREATHER 1 ── */}
+          <section ref={refBreather1} className={`fu-sec fu-sec-breather fu-reveal ${visBreather1 ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <div className="fu-breather-img-container">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2000&auto=format&fit=crop" alt="Collaborative learning" className="fu-breather-img" />
+              </div>
+            </div>
+          </section>
+
+
+
+
+          {/* ── BREATHER 2 ── */}
+          <section ref={refBreather2} className={`fu-sec fu-sec-breather fu-reveal ${visBreather2 ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <div className="fu-breather-img-container fu-breather-tall">
+                <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2000&auto=format&fit=crop" alt="Modern workspace" className="fu-breather-img" />
+              </div>
+            </div>
+          </section>
+
+
+
+          {/* ── NEW 5.5 LMS Bento Grid ── */}
+          <section id="lms-section" ref={refLms} className={`fu-sec fu-sec-lms fu-reveal ${visLms ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <p className="fu-sec-eyebrow">LMS - CipherSchools</p>
+              <h2 className="fu-sec-heading-split">
+                <span className="fu-heading-light">A platform built for</span>
+                <br/>effortless learning management.
+              </h2>
+              
+              <div className="fu-lms-bento fu-lms-bento-4">
+                {/* 1. Learning Analytics (Dashboard) */}
+                <div className="fu-lms-card fu-lms-dashboard">
+                   <div className="fu-mock-header">
+                     <div className="fu-mock-nav">
+                        <div className="fm-nav-item active"></div>
+                        <div className="fm-nav-item"></div>
+                        <div className="fm-nav-item"></div>
+                     </div>
+                     <div className="fu-mock-welcome">Hey University,</div>
+                   </div>
+                   <div className="fu-mock-stats">
+                     <div className="fu-mock-stat-box">Total Videos<br/><span>0/35</span></div>
+                     <div className="fu-mock-stat-box">Questions Solved<br/><span>0/67</span></div>
+                     <div className="fu-mock-stat-box">Tests Attempted<br/><span>0/18</span></div>
+                   </div>
+                   <div className="fu-mock-course">
+                     <h4>Learning Analytics</h4>
+                     <p>Detailed breakdown of cohort performance and progress tracking.</p>
+                     <div className="fu-mock-bar"></div>
                    </div>
                 </div>
 
-             </div>
-          </div>
-        </div>
-      </section>
+                {/* 2. Module Based Learning (Video/Article) */}
+                <div className="fu-lms-card fu-lms-video">
+                  <h4>Module Based Learning (Video/Article)</h4>
+                  <div className="fu-mock-video-player" style={{marginTop: '1rem'}}>
+                    <div className="fm-play-btn"><Play size={20} fill="white"/></div>
+                    <div className="fm-progress"></div>
+                  </div>
+                  <div className="fu-mock-playlist">
+                    <div className="fm-play-item active">Lecture 1 Setting Up Python</div>
+                    <div className="fm-play-item">Lecture 2 Running Our First Program</div>
+                  </div>
+                </div>
 
-      {/* 5. LMS Infra */}
-      <section className="b2b-infra-section section bg-gray-50">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="section-title">Integrated Learning Infrastructure</h2>
-            <p className="text-muted max-w-2xl mx-auto">Zero infrastructure setup. Deploy an enterprise-grade learning platform overnight.</p>
-          </div>
-          
-          <div className="infra-bento-grid">
-            
-            {/* LMS Block */}
-            <div className="infra-card lms-block bg-white w-full">
-              <div className="infra-card-header">
-                <h3>Integrated LMS</h3>
-                <p>Semester-wise curriculum mapping with faculty analytics.</p>
-              </div>
-              <div className="lms-ui-stack mt-6">
-                <div className="lms-ui-card">
-                  <div className="lms-ui-icon-box"><Video className="text-primary" size={16}/></div>
-                  <div className="lms-ui-details">
-                    <div className="lms-ui-title">Video Based Learning</div>
-                    <div className="lms-ui-sub">Structured curriculums & tracking</div>
+                {/* 3. Practice & Testing */}
+                <div className="fu-lms-card fu-lms-practice">
+                   <h4>Practice & Testing (Module Based)</h4>
+                   <div className="fu-mock-filters">
+                     <span className="fu-mf-active">All</span>
+                     <span>Solved</span>
+                     <span>Unsolved</span>
+                   </div>
+                   <div className="fu-mock-table">
+                     <div className="fu-mock-row"><div className="fm-circle"></div><div className="fm-line w-long"></div><div className="fm-tag easy">Easy</div></div>
+                     <div className="fu-mock-row"><div className="fm-circle"></div><div className="fm-line w-med"></div><div className="fm-tag hard">Hard</div></div>
+                     <div className="fu-mock-row"><div className="fm-circle"></div><div className="fm-line w-long"></div><div className="fm-tag med">Medium</div></div>
+                   </div>
+                </div>
+
+                {/* 4. Resources Access */}
+                <div className="fu-lms-card fu-lms-resources">
+                  <h4>Resources Access</h4>
+                  <div className="fu-mock-resources" style={{marginTop: '1rem'}}>
+                     <div className="fm-resource-item">
+                        <div className="fm-res-icon pdf"><FileText size={16}/></div>
+                        <div className="fm-res-info">
+                           <div className="fm-line w-long" style={{marginBottom: '4px'}}></div>
+                           <span>PDF Document</span>
+                        </div>
+                     </div>
+                     <div className="fm-resource-item">
+                        <div className="fm-res-icon article"><FileText size={16}/></div>
+                        <div className="fm-res-info">
+                           <div className="fm-line w-long" style={{marginBottom: '4px'}}></div>
+                           <span>Article Link</span>
+                        </div>
+                     </div>
                   </div>
                 </div>
-                <div className="lms-ui-card">
-                  <div className="lms-ui-icon-box"><ShieldCheck className="text-primary" size={16}/></div>
-                  <div className="lms-ui-details">
-                    <div className="lms-ui-title">Proctored Assessments</div>
-                    <div className="lms-ui-sub">Automated grading & insights</div>
-                  </div>
-                </div>
-                <div className="lms-ui-card">
-                  <div className="lms-ui-icon-box"><BarChart3 className="text-primary" size={16}/></div>
-                  <div className="lms-ui-details">
-                    <div className="lms-ui-title">Faculty Dashboard</div>
-                    <div className="lms-ui-sub">Real-time student progress reports</div>
+
+                {/* 5. Stage Based Locking */}
+                <div className="fu-lms-card fu-lms-stages-wide">
+                  <h4>Stage Based Locking</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#888', marginBottom: '1.5rem' }}>* Highly customizable structured paths.</p>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0.5rem' }}>
+                    <div className="fm-stage unlocked" style={{ flex: '1', minWidth: '200px' }}>
+                       <div className="fm-stage-icon"><Play size={12} fill="currentColor"/></div>
+                       <div className="fm-stage-info">Module 1: Basics<br/><span>Completed</span></div>
+                    </div>
+                    <div className="fm-stage unlocked" style={{ flex: '1', minWidth: '200px' }}>
+                       <div className="fm-stage-icon"><Play size={12} fill="currentColor"/></div>
+                       <div className="fm-stage-info">Module 2: DSA<br/><span>In Progress</span></div>
+                    </div>
+                    <div className="fm-stage locked" style={{ flex: '1', minWidth: '200px', opacity: 0.5 }}>
+                       <div className="fm-stage-icon"><Lock size={12}/></div>
+                       <div className="fm-stage-info">Module 3: Advanced<br/><span>Locked</span></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </section>
 
-          </div>
-        </div>
-      </section>
-
-
-      {/* 9 & 10. Why Partner & Models */}
-      <section className="b2b-models-section section bg-gray-50">
-        <div className="container">
-          <div className="why-partner-models-split">
-            <div className="why-partner-container">
-              <h3 className="section-subtitle">Why Partner With Us?</h3>
-              <div className="why-partner-list">
-                <div className="why-partner-item">
-                  <CheckCircle2 className="text-primary wp-icon"/> 
-                  <p><strong>Outcome-Focused Approach:</strong> Designed entirely around placement success.</p>
+          {/* ── NEW 5.6 Assessment Platform ── */}
+          <section id="assessment-section" ref={refAssessment} className={`fu-sec fu-sec-assessment fu-reveal ${visAssessment ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <div className="fu-assessment-split">
+                <div className="fu-assessment-content">
+                  <p className="fu-sec-eyebrow">Assessment Platform</p>
+                  <h2 className="fu-sec-heading-split">
+                    <span className="fu-heading-light">Measure what matters,</span>
+                    <br/>automatically.
+                  </h2>
+                  <div className="fu-assessment-tabs">
+                    {[
+                      { id: 'online_exam', label: 'Online examinations', desc: 'Secure, scalable exams for any domain.', icon: <FileText size={20} /> },
+                      { id: 'auto_eval', label: 'Automated evaluation', desc: 'Instant grading and precise scoring.', icon: <Zap size={20} /> },
+                      { id: 'coding', label: 'Coding assessments', desc: 'Full IDE with multiple languages.', icon: <Code2 size={20} /> },
+                      { id: 'aptitude', label: 'Aptitude tests', desc: 'Logical reasoning and quantitative analysis.', icon: <Compass size={20} /> },
+                      { id: 'comm_skill', label: 'Communication skill assessments', desc: 'AI-driven spoken and written evaluation.', icon: <MessageSquare size={20} /> },
+                      { id: 'analytics', label: 'Performance analytics', desc: 'Deep dive into student capabilities.', icon: <TrendingUp size={20} /> },
+                      { id: 'qbank', label: 'Question bank management', desc: 'Organize and curate your test library.', icon: <FileText size={20} /> },
+                      { id: 'reports', label: 'Candidate reports', desc: 'Comprehensive hiring readiness profiles.', icon: <User size={20} /> },
+                    ].map(tab => (
+                      <div key={tab.id} className={`fu-as-tab ${activeAssessmentTab === tab.id ? 'active' : ''}`} onClick={() => setActiveAssessmentTab(tab.id)}>
+                        <div className="fu-as-icon">{tab.icon}</div>
+                        <div className="fu-as-text"><h4>{tab.label}</h4><p>{tab.desc}</p></div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="why-partner-item">
-                  <CheckCircle2 className="text-primary wp-icon"/> 
-                  <p><strong>Faculty Enablement:</strong> Powerful dashboards to monitor and guide student cohorts.</p>
-                </div>
-                <div className="why-partner-item">
-                  <CheckCircle2 className="text-primary wp-icon"/> 
-                  <p><strong>Scalable Implementation:</strong> Plug-and-play architecture for any semester structure.</p>
+                
+                <div className="fu-assessment-mockup-wrapper">
+                  <div className="fu-assessment-mockup">
+                    {activeAssessmentTab === 'online_exam' && (
+                      <div className="fu-mock-as-exam">
+                        <div className="fme-header">
+                          <span className="fme-time">45:00</span>
+                          <span className="fme-qnum">Question 4 of 20</span>
+                        </div>
+                        <div className="fme-body">
+                          <div className="fme-q">Which data structure uses LIFO?</div>
+                          <div className="fme-options">
+                            <div className="fme-opt"><div className="fme-radio"></div>Queue</div>
+                            <div className="fme-opt active"><div className="fme-radio checked"></div>Stack</div>
+                            <div className="fme-opt"><div className="fme-radio"></div>Tree</div>
+                            <div className="fme-opt"><div className="fme-radio"></div>Graph</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'auto_eval' && (
+                      <div className="fu-mock-as-eval">
+                        <div className="fmeval-console">
+                          <div className="fmeval-line success"><CheckCircle2 size={14}/> Test Case 1 Passed (12ms)</div>
+                          <div className="fmeval-line success"><CheckCircle2 size={14}/> Test Case 2 Passed (15ms)</div>
+                          <div className="fmeval-line success"><CheckCircle2 size={14}/> Test Case 3 Passed (14ms)</div>
+                          <div className="fmeval-line success"><CheckCircle2 size={14}/> Hidden Case 1 Passed (11ms)</div>
+                          <div className="fmeval-line success"><CheckCircle2 size={14}/> Hidden Case 2 Passed (13ms)</div>
+                          <div className="fmeval-summary">Score: 100/100</div>
+                        </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'coding' && (
+                      <div className="fu-mock-as-practice">
+                         <div className="fmp-sidebar">
+                           <div className="fm-line w-med"></div>
+                           <div className="fm-line w-long"></div>
+                           <div className="fm-line w-long"></div>
+                         </div>
+                         <div className="fmp-editor">
+                           <div className="fm-editor-tab">solution.py</div>
+                           <div className="fm-editor-code">
+                             <span className="fm-kwd">def</span> <span className="fm-func">solve</span>(arr):<br/>
+                             &nbsp;&nbsp;<span className="fm-kwd">return</span> sorted(arr)
+                           </div>
+                           <div className="fm-editor-btn">Run Code</div>
+                         </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'aptitude' && (
+                      <div className="fu-mock-as-exam">
+                        <div className="fme-header">
+                          <span className="fme-time">12:30</span>
+                          <span className="fme-qnum">Logical Reasoning</span>
+                        </div>
+                        <div className="fme-body">
+                          <div className="fme-q">If all A are B, and some B are C, which is true?</div>
+                          <div className="fme-options">
+                            <div className="fme-opt"><div className="fme-radio"></div>All A are C</div>
+                            <div className="fme-opt"><div className="fme-radio"></div>Some A are C</div>
+                            <div className="fme-opt active"><div className="fme-radio checked"></div>None of the above</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'comm_skill' && (
+                      <div className="fu-mock-as-comm">
+                        <div className="fmc-mic"><div className="fmc-pulse"></div><MessageSquare size={32} color="#fff" /></div>
+                        <div className="fmc-waves">
+                          <div className="fmc-wave" style={{height: '20%'}}></div>
+                          <div className="fmc-wave" style={{height: '60%'}}></div>
+                          <div className="fmc-wave" style={{height: '100%'}}></div>
+                          <div className="fmc-wave" style={{height: '40%'}}></div>
+                          <div className="fmc-wave" style={{height: '80%'}}></div>
+                        </div>
+                        <div className="fmc-status">Analyzing Pronunciation...</div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'analytics' && (
+                      <div className="fu-mock-as-result">
+                        <div className="fmr-score-circle">
+                          <span>85</span>
+                          <small>Score</small>
+                        </div>
+                        <div className="fmr-bars">
+                          <div className="fmr-bar-item"><span>DSA</span> <div className="fmr-bar"><div style={{width: '90%'}}></div></div></div>
+                          <div className="fmr-bar-item"><span>Speed</span> <div className="fmr-bar"><div style={{width: '70%'}}></div></div></div>
+                          <div className="fmr-bar-item"><span>Accuracy</span> <div className="fmr-bar"><div style={{width: '85%'}}></div></div></div>
+                        </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'qbank' && (
+                      <div className="fu-mock-as-qbank">
+                        <div className="fmq-header">Question Library <div className="fmq-btn">+ Add</div></div>
+                        <div className="fmq-list">
+                          <div className="fmq-item"><div className="fmq-title">Two Sum</div><div className="fm-tag easy">Easy</div></div>
+                          <div className="fmq-item"><div className="fmq-title">LRU Cache</div><div className="fm-tag med">Medium</div></div>
+                          <div className="fmq-item"><div className="fmq-title">N-Queens</div><div className="fm-tag hard">Hard</div></div>
+                        </div>
+                      </div>
+                    )}
+                    {activeAssessmentTab === 'reports' && (
+                      <div className="fu-mock-as-reports">
+                        <div className="fmr-rep-card">
+                          <div className="fmr-rep-user"><User size={24} color="#888"/> <div><h4>Jane Doe</h4><p>Full Stack Dev</p></div></div>
+                          <div className="fm-tag easy">Hire</div>
+                        </div>
+                        <div className="fmr-rep-card">
+                          <div className="fmr-rep-user"><User size={24} color="#888"/> <div><h4>John Smith</h4><p>Backend Dev</p></div></div>
+                          <div className="fm-tag med">Review</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-            <div>
-              <h3 className="section-subtitle">Partnership Models</h3>
-              <div className="b2b-model-cards">
-                <div className="model-card">Center of Excellence Collaborations</div>
-                <div className="model-card">Placement Preparation Programs</div>
-                <div className="model-card">Academic Training Integration</div>
-                <div className="model-card">Technology Upskilling Initiatives</div>
+          </section>
+
+          {/* ── NEW 6. Beyond Domain ── */}
+          <section ref={refBeyond} className={`fu-sec fu-sec-beyond fu-reveal ${visBeyond ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <p className="fu-sec-eyebrow">Beyond Subjects & Domains</p>
+              <h2 className="fu-sec-heading-split">
+                <span className="fu-heading-light">We are not limited</span>
+                <br/>to what you see.
+              </h2>
+              <p className="fu-sec-sub">We integrate immersive experiences that help students think beyond the classroom.</p>
+
+              <div className="fu-beyond-bento">
+                <div className="fu-beyond-card fu-beyond-tall">
+                  <div className="fu-beyond-icon"><Flame size={36} /></div>
+                  <h3>Bootcamps</h3>
+                  <p>Intensive, hands-on sprints to build and deploy full-scale projects in weeks, not years.</p>
+                </div>
+                <div className="fu-beyond-card">
+                  <div className="fu-beyond-icon"><Presentation size={28} /></div>
+                  <h3>Workshops</h3>
+                  <p>Focused sessions mastering the latest industry tools and frameworks.</p>
+                </div>
+                <div className="fu-beyond-card">
+                  <div className="fu-beyond-icon"><Globe size={28} /></div>
+                  <h3>Industry Sessions</h3>
+                  <p>Direct interactions with tech leaders from top product companies.</p>
+                </div>
+                <div className="fu-beyond-card fu-beyond-wide">
+                  <div className="fu-beyond-icon"><Compass size={28} /></div>
+                  <div>
+                    <h3>Career Sessions & More...</h3>
+                    <p>Mock interviews, resume reviews, 1:1 mentorship, and continuous guidance to crack the toughest hiring bars.</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
+          {/* ── 7. Image Bento ── */}
+          <section ref={refImages} className={`fu-sec fu-sec-images fu-reveal ${visImages ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              <div className="fu-img-bento">
+                <div className="fu-img-card fu-img-large">
+                  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="Students collaborating" />
+                  <div className="fu-img-overlay"><span>Build Together</span></div>
+                </div>
+                <div className="fu-img-card">
+                  <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop" alt="Coding" />
+                  <div className="fu-img-overlay"><span>Ship Code</span></div>
+                </div>
+                <div className="fu-img-card">
+                  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" alt="Mentorship" />
+                  <div className="fu-img-overlay"><span>Learn from Experts</span></div>
+                </div>
+                <div className="fu-img-card fu-img-wide">
+                  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop" alt="Campus" />
+                  <div className="fu-img-overlay"><span>Transform Your Campus</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── 7. CTA ── */}
+          <section ref={refCta} className={`fu-sec fu-sec-cta-final fu-reveal ${visCta ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner fu-cta-final-inner">
+              <Coffee size={48} className="fu-cta-coffee-icon" />
+              <h2 className="fu-cta-final-title">
+                Let's connect over a <span className="fu-pitch-accent">chai or coffee.</span>
+              </h2>
+              <p className="fu-cta-final-sub">
+                No pitch decks. No hard sells. Just a real conversation about your students.
+              </p>
+              <button className="fu-pitch-cta-btn" style={{ marginTop: '2rem' }}>
+                Book a Chat <ArrowRight size={20} />
+              </button>
+            </div>
+          </section>
+
+        </div>
+      )}
+
+      {/* ── STICKY CTA ── */}
+      <div className={`fu-sticky-cta ${showStickyCta ? 'fu-sticky-visible' : ''}`}>
+        <div className="fu-sticky-cta-inner">
+          <p>Let's connect over a quick meeting for a <strong>QUICK walk through</strong></p>
+          <button className="fu-sticky-btn">Book Meeting</button>
+        </div>
+      </div>
     </div>
   );
 };

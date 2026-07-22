@@ -6,7 +6,6 @@ import ImageGallery from '../components/ImageGallery';
 import MentorsSection from '../components/MentorsSection';
 import ExplorePrograms from '../components/ExplorePrograms';
 import BentoFeatures from '../components/BentoFeatures';
-import PremiumExperience from '../components/PremiumExperience';
 import Testimonials from '../components/Testimonials';
 
 import TrustedBy from '../components/TrustedBy';
@@ -21,7 +20,6 @@ const HomePage = () => {
       <Ecosystem />
       <MentorsSection />
       <ExplorePrograms />
-      <PremiumExperience />
       <BentoFeatures />
       <Testimonials />
     </>
