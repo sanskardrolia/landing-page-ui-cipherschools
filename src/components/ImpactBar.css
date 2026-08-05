@@ -1,340 +1,330 @@
-/* ===========================
-   IMPACT SECTION – Editorial
-   =========================== */
+/* ===================================================
+   IMPACT SECTION – Bento Grid Light Theme (White BG)
+   =================================================== */
 
-.impact-section {
-  background: #fff;
-  padding: 5rem 2rem;
-}
-
-/* ── Main Layout: Hero | Divider | Stacked ── */
-.impact-layout {
-  display: flex;
-  align-items: center;
-  gap: 4rem;
-  padding: 3rem 0;
-  opacity: 0;
-  transform: translateY(16px);
-}
-
-.impact-in-view.impact-layout {
-  animation: ilFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-@keyframes ilFadeIn {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-
-/* ═══════════════════════════════
-   LEFT – Hero Stat (50k+)
-   ═══════════════════════════════ */
-.il-hero-stat {
-  display: flex;
-  align-items: center;
-  gap: 1.75rem;
-  flex-shrink: 0;
+.impact-section.light-bento-theme {
+  background-color: #FAFAFA;
+  color: #111827;
+  padding: 6rem 2rem;
   position: relative;
-}
-
-/* Animated ring */
-.il-hero-ring {
-  width: 90px;
-  height: 90px;
-  position: relative;
-  flex-shrink: 0;
-}
-.il-ring-svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-.il-ring-progress {
-  transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.impact-in-view .il-ring-progress {
-  stroke-dashoffset: 40; /* ~88% fill */
-}
-
-.il-hero-icon {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffa103;
-}
-
-/* Pulse behind ring */
-.il-hero-pulse {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,161,3,0.1), transparent 70%);
-  transform: translate(0, -50%);
-  animation: ilPulse 3s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes ilPulse {
-  0%, 100% { transform: translate(0, -50%) scale(1); opacity: 0.5; }
-  50% { transform: translate(0, -50%) scale(1.6); opacity: 1; }
-}
-
-/* Number + label */
-.il-hero-text {
-  display: flex;
-  flex-direction: column;
-}
-.il-big-num {
-  font-size: 3.75rem;
-  font-weight: 800;
-  color: #232323;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -2px;
-  transition: color 0.3s ease;
-}
-.il-hero-stat:hover .il-big-num {
-  color: #ffa103;
-}
-.il-big-label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #999;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-top: 0.3rem;
-}
-
-
-/* ═══════════════════════════════
-   DIVIDER
-   ═══════════════════════════════ */
-.il-divider {
-  width: 1px;
-  height: 120px;
-  background: linear-gradient(to bottom, transparent, #E0E0E0, transparent);
-  flex-shrink: 0;
-}
-
-
-/* ═══════════════════════════════
-   RIGHT – Stacked Rows
-   ═══════════════════════════════ */
-.il-stacked {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.il-stat-row {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 1.25rem 0;
-  transition: background 0.3s ease;
-  border-radius: 12px;
-}
-.il-stat-row:hover {
-  background: #FAFAFA;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.il-row-sep {
-  height: 1px;
-  background: #F0F0F0;
-}
-
-.il-stat-icon-wrap {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(255,161,3,0.08);
-  color: #ffa103;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
-}
-.il-stat-row:hover .il-stat-icon-wrap {
-  transform: scale(1.1) rotate(-5deg);
-}
-
-.il-stat-info {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-
-.il-stat-num {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #232323;
-  margin: 0;
-  line-height: 1;
-  letter-spacing: -1px;
-  transition: color 0.3s ease;
-}
-.il-stat-row:hover .il-stat-num {
-  color: #ffa103;
-}
-
-.il-stat-label {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: #888;
-}
-
-/* Tags */
-.il-stat-tags {
-  display: flex;
-  gap: 0.4rem;
-  margin-left: auto;
-}
-.il-tag {
-  padding: 4px 12px;
-  border-radius: 999px;
-  background: #F5F5F5;
-  border: 1px solid #ECECEC;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #777;
-  opacity: 0;
-  transform: translateX(8px);
-  transition: border-color 0.3s ease, color 0.3s ease, background 0.3s ease;
-}
-.impact-in-view .il-tag {
-  animation: tagIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: calc(0.5s + var(--tag-i) * 0.06s);
-}
-@keyframes tagIn {
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.il-stat-row:hover .il-tag {
-  border-color: #ffa103;
-  color: #ffa103;
-  background: rgba(255,161,3,0.04);
-}
-
-.il-tag-accent {
-  background: rgba(255,161,3,0.08);
-  color: #ffa103;
-  border-color: rgba(255,161,3,0.2);
-}
-
-
-/* ═══════════════════════════════
-   GROWTH STRIP
-   ═══════════════════════════════ */
-.il-growth-strip {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-top: 2rem;
-  padding: 1.25rem 1.5rem;
-  background: #FAFAFA;
-  border: 1px solid #F0F0F0;
-  border-radius: 16px;
-  opacity: 0;
-  transform: translateY(10px);
-}
-.impact-in-view.il-growth-strip {
-  animation: ilFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: 0.3s;
-}
-
-.il-growth-left {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-shrink: 0;
-}
-.il-growth-icon {
-  color: #ffa103;
-}
-.il-growth-text {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #888;
-  white-space: nowrap;
-}
-
-.il-growth-graph {
-  flex: 1;
-  height: 40px;
   overflow: hidden;
 }
-.il-growth-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
+
+.impact-parallax-bg {
+  position: absolute;
+  top: -30%;
+  left: -20%;
+  width: 140%;
+  height: 160%;
+  background: 
+    radial-gradient(circle at 20% 40%, rgba(243, 145, 46, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
 }
 
-.il-graph-line {
-  stroke-dasharray: 700;
-  stroke-dashoffset: 700;
-}
-.impact-in-view .il-graph-line {
-  animation: drawLine 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: 0.6s;
-}
-@keyframes drawLine {
-  to { stroke-dashoffset: 0; }
-}
-
-.il-graph-area {
+/* ── Bento Grid 3-Column Layout ── */
+.bento-impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.25fr;
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
   opacity: 0;
-}
-.impact-in-view .il-graph-area {
-  animation: areaFade 0.8s ease forwards;
-  animation-delay: 1.8s;
-}
-@keyframes areaFade {
-  to { opacity: 1; }
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
-/* Hover: graph glows */
-.il-growth-strip:hover .il-graph-line {
-  filter: drop-shadow(0 0 4px rgba(255,161,3,0.3));
+.impact-in-view.bento-impact-grid {
+  opacity: 1;
+  transform: translateY(0);
 }
 
+/* ── Columns & Card Base ── */
+.bento-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
 
-/* ═══════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════ */
-@media (max-width: 900px) {
-  .impact-layout {
+.bento-col.col-tall {
+  height: 100%;
+}
+
+.bento-card {
+  border-radius: 4px;
+  padding: 2.25rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+}
+
+/* Standard White Bento Card */
+.bento-card.card-dark {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  height: 215px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bento-card.card-dark:hover {
+  border-color: rgba(243, 145, 46, 0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* Tall Hero Right Card (Soft Warm White Gradient) */
+.bento-card.card-tall-hero {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FFF7ED 50%, #FFEDD5 100%);
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  height: 100%;
+  min-height: 442px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+}
+
+.bento-card.card-tall-hero:hover {
+  border-color: rgba(243, 145, 46, 0.6);
+  box-shadow: 0 20px 45px rgba(243, 145, 46, 0.15);
+  transform: translateY(-4px);
+}
+
+/* ── Dynamic Metrics & Typography ── */
+.card-metric-num {
+  font-size: 3.6rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -1.5px;
+}
+
+.text-brand-orange {
+  color: #F3912E !important;
+  font-size: 2.6rem;
+  font-weight: 800;
+}
+
+.text-orange-highlight {
+  color: #F3912E;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.text-hero-num {
+  font-size: 4.2rem;
+  color: #111827;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.card-label-block {
+  margin-top: auto;
+}
+
+.card-metric-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1F2937;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.flex-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-orange {
+  color: #F3912E;
+}
+
+.card-subtext {
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.tall-card-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0.6rem 0 1rem 0;
+  letter-spacing: -0.3px;
+}
+
+/* Domain Pills */
+.impact-domain-pills-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  max-width: 240px;
+  position: relative !important;
+  z-index: 5;
+  margin-top: 0.5rem;
+}
+
+.impact-domain-pill {
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(243, 145, 46, 0.12) !important;
+  color: #F3912E !important;
+  border: 1px solid rgba(243, 145, 46, 0.3) !important;
+  padding: 6px 12px !important;
+  border-radius: 4px !important;
+  font-size: 0.775rem !important;
+  font-weight: 600 !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+}
+
+/* Impact Bento CTA Button */
+.impact-cta-btn {
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 10;
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.8rem 1.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 20px rgba(243, 145, 46, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.impact-cta-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(243, 145, 46, 0.45);
+}
+
+/* ── 3D Floating Metallic Coins Mockup Graphic (Light Theme) ── */
+.coins-mockup-container {
+  position: absolute;
+  right: -5px;
+  bottom: -15px;
+  width: 210px;
+  height: 360px;
+  pointer-events: none;
+}
+
+.coin-3d {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFFFFF 0%, #F3F4F6 55%, #E5E7EB 100%);
+  border: 2px solid rgba(243, 145, 46, 0.55);
+  box-shadow: 
+    -10px 15px 25px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    0 0 18px rgba(243, 145, 46, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: perspective(600px) rotateY(-22deg) rotateX(15deg) rotateZ(-12deg);
+  transition: transform 0.4s ease;
+}
+
+.card-tall-hero:hover .coin-3d {
+  transform: perspective(600px) rotateY(-15deg) rotateX(10deg) rotateZ(-6deg) scale(1.04);
+}
+
+.coin-inner {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(243, 145, 46, 0.18) 0%, rgba(255, 255, 255, 0.95) 80%);
+  color: #F3912E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Staggered Coins Diagonal Stack Position */
+.coin-1 {
+  bottom: 15px;
+  right: 10px;
+  z-index: 4;
+}
+
+.coin-2 {
+  bottom: 85px;
+  right: 48px;
+  z-index: 3;
+}
+
+.coin-3 {
+  bottom: 155px;
+  right: 86px;
+  z-index: 2;
+}
+
+.coin-4 {
+  bottom: 225px;
+  right: 124px;
+  z-index: 1;
+}
+
+/* ── Responsive Adjustments ── */
+@media (max-width: 992px) {
+  .bento-impact-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bento-col.col-tall {
+    grid-column: span 2;
+  }
+  .bento-card.card-tall-hero {
+    min-height: 260px;
+    flex-direction: row;
+    align-items: center;
+  }
+  .coins-mockup-container {
+    height: 240px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bento-impact-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-col.col-tall {
+    grid-column: span 1;
+  }
+  .bento-card.card-tall-hero {
     flex-direction: column;
-    gap: 2rem;
-    align-items: stretch;
+    align-items: flex-start;
+    min-height: 380px;
   }
-  .il-hero-stat {
-    justify-content: center;
+  .card-metric-num {
+    font-size: 3rem;
   }
-  .il-divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #E0E0E0, transparent);
+  .text-hero-num {
+    font-size: 3.5rem;
   }
-  .il-stat-tags {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .il-big-num { font-size: 3rem; }
-  .il-hero-ring { width: 72px; height: 72px; }
-  .il-stat-num { font-size: 1.75rem; }
-  .il-growth-strip {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .il-growth-graph { height: 32px; width: 100%; }
 }

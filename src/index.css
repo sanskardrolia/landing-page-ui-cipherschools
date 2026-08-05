@@ -78,27 +78,32 @@ button {
   position: relative;
 }
 
-/* Subtle background grid pattern to fill white space elegantly */
-.section::before,
-.hero::before {
+/* 5% Opacity Architectural Grid Lines for White/Light Sections */
+.light-grid-pattern::before,
+.impact-section.light-bento-theme::before,
+.mentors-section::before,
+.fu-shift-bento-section::before,
+.welcome-gateway-section::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(to right, rgba(243, 145, 46, 0.012) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(243, 145, 46, 0.012) 1px, transparent 1px);
-  background-size: 60px 60px;
-  z-index: 1;
+    linear-gradient(to right, rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, #000 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, #000 40%, transparent 100%);
   pointer-events: none;
+  z-index: 1;
 }
 
-/* Override for dark sections with a very subtle white grid */
-.ecosystem::before,
-.premium-story-section::before,
-.bg-dark::before {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px) !important;
+/* Ensure inner content sits above background grid lines */
+.impact-section.light-bento-theme > *,
+.mentors-section > *,
+.fu-shift-bento-section > *,
+.welcome-gateway-section > * {
+  position: relative;
+  z-index: 2;
 }
 
 .section-title {

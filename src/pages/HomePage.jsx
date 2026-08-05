@@ -16,8 +16,8 @@ const HomePage = () => {
       <StoryHero />
       <TrustedBy />
       <ImpactBar />
-      <ImageGallery />
       <Ecosystem />
+      <ImageGallery />
       <MentorsSection />
       <ExplorePrograms />
       <BentoFeatures />

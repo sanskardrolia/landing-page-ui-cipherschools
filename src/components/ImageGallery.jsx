@@ -6,72 +6,108 @@ const ImageGallery = () => {
   return (
     <section className="image-gallery-section">
       <div className="container">
+        
+        {/* Section Header */}
         <div className="gallery-header text-center">
-          <h2 className="section-title">Community at CipherSchools</h2>
-          <p className="section-subtitle text-muted" style={{ fontSize: '0.75rem', fontWeight: 300 }}>A glimpse into our vibrant community of learners and builders.</p>
+          <h1 className="section-title">Learn Together. Build Together.</h1>
+          <p className="section-subtitle text-muted">
+            Join a network of passionate learners, build projects together, participate in hackathons, and attend exclusive live workshops and networking sessions.
+          </p>
+          <div style={{ marginTop: '1.5rem', marginBottom: '2.5rem' }}>
+            <button className="start-free-cta-btn">Join Community for FREE</button>
+          </div>
         </div>
         
-        <div className="gallery-bento-grid">
-          {/* Main Large Image */}
-          <div className="gallery-item large">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="Students collaborating" />
-            <div className="gallery-overlay">
-              <div className="gallery-icon" style={{ marginBottom: 'auto' }}><Users size={24} /></div>
-              <div className="gallery-content">
-                <h4>Collaborative Learning</h4>
-                <p>Grow together with peers.</p>
-              </div>
-            </div>
-          </div>
+        {/* ── Community Grid Layout ── */}
+        <div className="community-flex-layout">
           
-          {/* Top Right Wide Image */}
-          <div className="gallery-item wide">
-            <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800&auto=format&fit=crop" alt="Coding on laptop" />
-            <div className="gallery-overlay">
-              <div className="gallery-icon" style={{ marginBottom: 'auto' }}><Code2 size={20} /></div>
-              <div className="gallery-content">
-                <h4>Build Products</h4>
-                <p>Turn ideas into reality.</p>
+          {/* ── LEFT COLUMN ── */}
+          <div className="community-col-left">
+            
+            {/* Card 1: Learner Community (Tall) */}
+            <div className="community-card card-learner-community">
+              <img 
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop" 
+                alt="Learner Community" 
+                className="community-card-img" 
+              />
+              <div className="card-dark-overlay"></div>
+              <div className="card-glass-icon">
+                <Users size={18} />
               </div>
+              <h3 className="card-bottom-title">Learner Community</h3>
             </div>
-          </div>
-          
-          {/* Bottom Right Small 1 */}
-          <div className="gallery-item small">
-            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" alt="Team meeting" />
-            <div className="gallery-overlay">
-              <div className="gallery-icon" style={{ marginBottom: 'auto' }}><Target size={20} /></div>
-              <div className="gallery-content">
-                <h4>Mentorship</h4>
-                <p>Learn from the best.</p>
+
+            {/* Card 2: Live/Offline Sessions (Wide) */}
+            <div className="community-card card-live-sessions">
+              <img 
+                src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=800&auto=format&fit=crop" 
+                alt="Live/Offline Sessions" 
+                className="community-card-img" 
+              />
+              <div className="card-dark-overlay"></div>
+              <div className="card-glass-icon">
+                <Briefcase size={18} />
               </div>
+              <h3 className="card-bottom-title">Live/Offline Sessions</h3>
             </div>
+
           </div>
-          
-          {/* Bottom Right Small 2 */}
-          <div className="gallery-item small">
-            <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600&auto=format&fit=crop" alt="Whiteboard session" />
-            <div className="gallery-overlay">
-              <div className="gallery-icon" style={{ marginBottom: 'auto' }}><Zap size={20} /></div>
-              <div className="gallery-content">
-                <h4>Ideation</h4>
-                <p>Solve complex problems.</p>
+
+          {/* ── RIGHT COLUMN ── */}
+          <div className="community-col-right">
+            
+            {/* Card 3: Events & Networking (Top Wide) */}
+            <div className="community-card card-events-networking">
+              <img 
+                src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1000&auto=format&fit=crop" 
+                alt="Events & Networking" 
+                className="community-card-img" 
+              />
+              <div className="card-dark-overlay"></div>
+              <div className="card-glass-icon">
+                <Code2 size={18} />
               </div>
+              <h3 className="card-bottom-title">Events & Networking</h3>
             </div>
-          </div>
-          
-          {/* Bottom Wide Image */}
-          <div className="gallery-item wide">
-            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop" alt="Clean desk setup" />
-            <div className="gallery-overlay">
-              <div className="gallery-icon" style={{ marginBottom: 'auto' }}><Briefcase size={20} /></div>
-              <div className="gallery-content">
-                <h4>Deep Work</h4>
-                <p>Master the fundamentals.</p>
+
+            {/* Bottom Row of Right Column */}
+            <div className="community-subrow-right">
+              
+              {/* Card 4: Hackathons & Competitions */}
+              <div className="community-card card-hackathons">
+                <img 
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" 
+                  alt="Hackathons & Competitions" 
+                  className="community-card-img" 
+                />
+                <div className="card-dark-overlay"></div>
+                <div className="card-glass-icon">
+                  <Target size={18} />
+                </div>
+                <h3 className="card-bottom-title">Hackathons & Competitions</h3>
               </div>
+
+              {/* Card 5: Ideation */}
+              <div className="community-card card-ideation">
+                <img 
+                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=600&auto=format&fit=crop" 
+                  alt="Ideation" 
+                  className="community-card-img" 
+                />
+                <div className="card-dark-overlay"></div>
+                <div className="card-glass-icon">
+                  <Zap size={18} />
+                </div>
+                <h3 className="card-bottom-title">Ideation</h3>
+              </div>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
     </section>
   );

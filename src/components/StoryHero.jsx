@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Hero from './Hero';
 import './StoryHero.css';
 import { ArrowRight, Sparkles } from 'lucide-react';
@@ -51,9 +51,43 @@ const StoryHero = () => {
   const [finalVisible, setFinalVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const [hasStarted, setHasStarted] = useState(false);
+  const containerRef = useRef(null);
+
+  // Trigger animation when scrolled into view (with dwell check and navigation lock)
+  useEffect(() => {
+    let dwellTimer = null;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        if (window.isNavigatingToUniversity) return;
+
+        // Dwell 350ms to ensure user didn't just fast-scroll past
+        dwellTimer = setTimeout(() => {
+          if (!window.isNavigatingToUniversity) {
+            setHasStarted(true);
+            observer.disconnect();
+          }
+        }, 350);
+      } else {
+        if (dwellTimer) clearTimeout(dwellTimer);
+      }
+    }, { threshold: 0.3 });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (dwellTimer) clearTimeout(dwellTimer);
+      observer.disconnect();
+    };
+  }, []);
+
   // Handle smooth progress bar tracking
   useEffect(() => {
-    const totalDuration = 13300; // 13.3s total
+    if (!hasStarted) return;
+    const totalDuration = 10900; // ~10.9s total duration
     const intervalTime = 50; // update progress every 50ms
     const stepAmount = (intervalTime / totalDuration) * 100;
 
@@ -68,10 +102,12 @@ const StoryHero = () => {
     }, intervalTime);
 
     return () => clearInterval(progressTimer);
-  }, []);
+  }, [hasStarted]);
 
   // Run the story animation sequence
   useEffect(() => {
+    if (!hasStarted) return;
+
     if (step < STORY_PHRASES.length) {
       // Reveal each question quickly (stacking them)
       const nextTimer = setTimeout(() => {
@@ -85,7 +121,7 @@ const StoryHero = () => {
         setQuestionsVisible(false);
       }, 1500);
       
-      // After they fade out (600ms transition), show reassurance phrase
+      // After they fade out (600ms transition), show merged reassurance & ecosystem phase
       const nextPhaseTimer = setTimeout(() => {
         setStep(s => s + 1);
         setReassuranceVisible(true);
@@ -94,41 +130,26 @@ const StoryHero = () => {
       return () => { clearTimeout(fadeOutTimer); clearTimeout(nextPhaseTimer); };
     } 
     else if (step === STORY_PHRASES.length + 1) {
-      // Reassurance phrase is on screen. Wait 2s, then fade out.
+      // Merged Reassurance & Ecosystem phrase on screen. Wait 3.2s, then fade out.
       const fadeOutTimer = setTimeout(() => {
         setReassuranceVisible(false);
-      }, 2000);
+      }, 3200);
       
-      // After it fades out (600ms transition), show final phrase
-      const nextPhaseTimer = setTimeout(() => {
-        setStep(s => s + 1);
-        setFinalVisible(true);
-      }, 2600);
-      
-      return () => { clearTimeout(fadeOutTimer); clearTimeout(nextPhaseTimer); };
-    }
-    else if (step === STORY_PHRASES.length + 2) {
-      // Final phrase is on screen. Wait 3s, fade out.
-      const finalFadeOut = setTimeout(() => {
-        setFinalVisible(false);
-      }, 3000);
-      
-      // End story entirely
+      // End story transition (600ms fade transition)
       const endStoryTimer = setTimeout(() => {
         setIsComplete(true);
-      }, 3600);
+      }, 3800);
       
-      return () => { clearTimeout(finalFadeOut); clearTimeout(endStoryTimer); };
+      return () => { clearTimeout(fadeOutTimer); clearTimeout(endStoryTimer); };
     }
-  }, [step]);
+  }, [step, hasStarted]);
 
   const finishStory = () => {
     setQuestionsVisible(false);
     setReassuranceVisible(false);
-    setFinalVisible(false);
     setTimeout(() => {
       setIsComplete(true);
-    }, 600);
+    }, 500);
   };
 
   if (isComplete) {
@@ -139,15 +160,15 @@ const StoryHero = () => {
           setStep(0);
           setQuestionsVisible(true);
           setReassuranceVisible(false);
-          setFinalVisible(false);
           setProgress(0);
+          setHasStarted(true); // immediate restart
         }} />
       </div>
     );
   }
 
   return (
-    <div className="story-hero-container">
+    <div className="story-hero-container" ref={containerRef}>
       {/* Progress Bar */}
       <div className="story-progress-bar-container">
         <div className="story-progress-bar-fill" style={{ width: `${Math.min(progress, 100)}%` }}></div>
@@ -160,7 +181,7 @@ const StoryHero = () => {
 
       {/* Questions Stack */}
       <div className={`story-questions-stack ${questionsVisible ? '' : 'fade-out'}`}>
-        {STORY_PHRASES.slice(0, step).map((phrase, i) => (
+        {hasStarted && STORY_PHRASES.slice(0, step).map((phrase, i) => (
           <div 
             key={i} 
             className="story-phrase-wrapper fade-in-up" 
@@ -177,19 +198,13 @@ const StoryHero = () => {
         ))}
       </div>
 
-      {/* Reassurance Phrase */}
+      {/* Merged Reassurance & Ecosystem Screen */}
       {step === STORY_PHRASES.length + 1 && (
-        <div className={`story-reassurance-wrapper ${reassuranceVisible ? 'fade-in-scale' : 'fade-out'}`}>
-          <h1 className="story-phrase reassurance-phrase">
+        <div className={`story-merged-wrapper ${reassuranceVisible ? 'fade-in-scale' : 'fade-out'}`}>
+          <p className="story-reassurance-sub">
             Don't worry, we got you.
-          </h1>
-        </div>
-      )}
-
-      {/* Final Phrase */}
-      {step > STORY_PHRASES.length + 1 && (
-        <div className={`story-final-wrapper ${finalVisible ? 'fade-in-scale' : 'fade-out'}`}>
-          <Sparkles className="story-sparkle text-primary mb-4" size={48} />
+          </p>
+          <Sparkles className="story-sparkle text-primary my-3" size={44} />
           <h1 className="story-phrase final-phrase">
             {FINAL_PHRASE}
           </h1>

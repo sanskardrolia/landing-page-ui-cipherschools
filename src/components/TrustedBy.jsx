@@ -1,17 +1,17 @@
 import React from 'react';
-import { Building2, Briefcase, LandPlot, ShieldCheck, CreditCard, Home, Landmark, Shield } from 'lucide-react';
+import { GraduationCap, Building2, Landmark, Award, BookOpen, School, Globe, Shield } from 'lucide-react';
 import './TrustedBy.css';
 
 const TrustedBy = () => {
   const logos = [
-    { name: 'NABARD', icon: <LandPlot size={24} /> },
-    { name: 'SBI Life', icon: <Shield size={24} /> },
-    { name: 'Ministry of Skill Development', icon: <Building2 size={24} /> },
-    { name: 'TATA CAPITAL', icon: <Landmark size={24} /> },
-    { name: 'Urban Company', icon: <Home size={24} /> },
-    { name: 'AADHAAR', icon: <ShieldCheck size={24} /> },
-    { name: 'AXIS BANK', icon: <Briefcase size={24} /> },
-    { name: 'CRED', icon: <CreditCard size={24} /> },
+    { name: 'Lovely Professional University', icon: <GraduationCap size={24} /> },
+    { name: 'Galgotias University', icon: <School size={24} /> },
+    { name: 'Chandigarh University', icon: <Building2 size={24} /> },
+    { name: 'SRM Institute of Tech', icon: <Award size={24} /> },
+    { name: 'Amity University', icon: <Landmark size={24} /> },
+    { name: 'VIT Vellore', icon: <Globe size={24} /> },
+    { name: 'Chitkara University', icon: <BookOpen size={24} /> },
+    { name: 'KL University', icon: <Shield size={24} /> },
   ];
 
   // Duplicate for seamless infinite scroll
@@ -20,7 +20,7 @@ const TrustedBy = () => {
   return (
     <section className="trusted-by-section">
       <div className="trusted-container">
-        <h4 className="trusted-title">TRUSTED BY LEADING ORGANIZATIONS</h4>
+        <h4 className="trusted-title">TRUSTED BY TOP COLLEGES IN INDIA</h4>
         <div className="marquee-wrapper">
           <div className="marquee-content">
             {duplicatedLogos.map((logo, index) => (

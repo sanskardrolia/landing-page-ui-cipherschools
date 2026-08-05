@@ -9,9 +9,9 @@ const BentoFeatures = () => {
     <section className="bento-section section">
       <div className="container relative z-10">
         <div className="section-header text-center animate-fade-in" style={{marginBottom: '4rem'}}>
-          <div className="bf-tag">Features</div>
+          <div className="bf-tag">FEATURES</div>
           <h2 className="section-title" style={{fontSize: '2.5rem', fontWeight: '800', color: '#fff', maxWidth: '700px', margin: '0 auto 1rem', letterSpacing: '-1px'}}>
-            Beyond the Ecosystem. Built for Growth.
+            Lessons That Keeps You Motivated
           </h2>
         </div>
 
@@ -39,15 +39,19 @@ const BentoFeatures = () => {
           <div className="bf-card bf-wrap">
             <div className="bf-text">
               <h3>Gamified Rewards 🎁</h3>
-              <p>Collect points, unlock shiny badges, and climb tiers as you code.</p>
+              <p>Collect points, unlock more learning and climb tiers as you code.</p>
               <a href="#" className="bf-link">Know more <ArrowRight size={14}/></a>
             </div>
             <div className="bf-mock" style={{ alignItems: 'center' }}>
               <div className="mock-rewards">
-                <div className="mrew-badge">🏆</div>
+                <div className="mrew-badge-dashed-ring">
+                  <div className="mrew-coin-gold">
+                    <span className="coin-c-logo">C</span>
+                  </div>
+                </div>
                 <div className="mrew-stats">
                   <div className="mrew-pts">2,450</div>
-                  <div className="mrew-label">CipherPoints</div>
+                  <div className="mrew-label">CIPHERPOINTS</div>
                 </div>
               </div>
             </div>

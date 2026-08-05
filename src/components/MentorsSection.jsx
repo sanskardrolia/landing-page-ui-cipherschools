@@ -1,86 +1,131 @@
 import React from 'react';
-import { User, Sparkles } from 'lucide-react';
 import './MentorsSection.css';
 
-const MENTORS = [
-  { name: 'Anjali Sharma', role: 'Sr. Software Engineer', company: 'Google', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop' },
-  { name: 'Rahul Desai', role: 'Staff Engineer', company: 'Microsoft', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop' },
-  { name: 'Priya Patel', role: 'Product Manager', company: 'Amazon', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop' },
-  { name: 'Vikram Singh', role: 'Engineering Manager', company: 'Apple', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop' },
-  { name: 'Neha Gupta', role: 'Frontend Lead', company: 'Adobe', avatar: 'https://images.unsplash.com/photo-1598550874175-4d0ef43ee90d?w=150&h=150&fit=crop' },
-  { name: 'Arjun Mehta', role: 'Backend Architect', company: 'Netflix', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop' },
-  { name: 'Kavita Rao', role: 'ML Engineer', company: 'Meta', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop' },
-  { name: 'Siddharth Jain', role: 'Cloud Architect', company: 'AWS', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop' },
+const MENTOR_PHOTOS = [
+  { name: 'Alex Rivera', role: 'Sr. Product Designer', company: 'Google', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop' },
+  { name: 'Sarah Connor', role: 'Data Scientist', company: 'AWS', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop' },
+  { name: 'Maya Lin', role: 'UX Director', company: 'Apple', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apple/apple-original.svg', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop' },
+  { name: 'Chen Wei', role: 'SDE Lead', company: 'Netflix', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop' },
+  { name: 'Yuki Tanaka', role: 'Frontend Architect', company: 'Twitter', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/twitter/twitter-original.svg', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop' },
+  { name: 'Amara Okafor', role: 'AI Researcher', company: 'Meta', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop' },
+  { name: 'Anjali Sharma', role: 'Engineering Manager', company: 'Microsoft', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop' },
+  { name: 'Vikram Singh', role: 'Cloud Architect', company: 'Adobe', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop' },
 ];
 
-const MentorCard = ({ mentor }) => (
-  <div className="ms-mentor-card">
-    <img src={mentor.avatar} alt={mentor.name} className="ms-mc-avatar" />
-    <div className="ms-mc-info">
-      <h4>{mentor.name}</h4>
-      <p>{mentor.role}</p>
-      <span className="ms-mc-company">{mentor.company}</span>
-    </div>
-  </div>
-);
-
 const MentorsSection = () => {
-  // Duplicate for seamless loop
-  const doubledMentors = [...MENTORS, ...MENTORS];
+
+  // Column 1 Track Items (Only Mentor Photo Cards)
+  const col1Items = [
+    MENTOR_PHOTOS[0],
+    MENTOR_PHOTOS[1],
+    MENTOR_PHOTOS[2],
+    MENTOR_PHOTOS[3],
+    MENTOR_PHOTOS[4],
+  ];
+
+  // Column 2 Track Items (Only Mentor Photo Cards)
+  const col2Items = [
+    MENTOR_PHOTOS[5],
+    MENTOR_PHOTOS[6],
+    MENTOR_PHOTOS[7],
+    MENTOR_PHOTOS[0],
+    MENTOR_PHOTOS[2],
+  ];
+
+  // Column 3 Track Items (Only Mentor Photo Cards)
+  const col3Items = [
+    MENTOR_PHOTOS[2],
+    MENTOR_PHOTOS[3],
+    MENTOR_PHOTOS[4],
+    MENTOR_PHOTOS[1],
+    MENTOR_PHOTOS[5],
+  ];
 
   return (
-    <section className="mentors-section section bg-white">
+    <section className="mentors-section section">
       <div className="container">
-        <div className="mentors-card">
-          <div className="mentors-bg-pattern"></div>
-
-          {/* ── Top: Two-column hero ── */}
-          <div className="ms-hero-grid">
+        <div className="mentors-split-layout">
+          
+          {/* ── Left Half: Text & CTA ── */}
+          <div className="mentors-left-col">
             
-            {/* Left: Copy */}
-            <div className="ms-top-content">
-              <div className="ms-top-tag">
-                <div className="ms-tag-icon"><User size={14}/></div>
-                <div className="ms-tag-text">
-                  <strong>50k+ Learners</strong>
-                  <span>Read Our <a href="#">Success Stories</a></span>
-                </div>
-              </div>
+            <h2 className="mentors-headline">
+              Learn From Industry Professionals
+            </h2>
+            
+            <p className="mentors-subheadline">
+              Get guided by top engineers and leaders from Google, Meta, Netflix, Amazon, and Apple who have been in your shoes.
+            </p>
 
-              <h2 className="ms-headline">Mentors</h2>
-
-              <p className="ms-subheadline">
-                Expert guidance, real-world insights, and placement support. All powered by elite industry leaders.
-              </p>
-
-              <div className="ms-stats-block">
-                <div className="ms-stat-text">
-                  <span>100+ FAANG Mentors</span>
-                  <span className="ms-divider">/</span>
-                  <span className="ms-rating">★ 4.9</span>
-                </div>
-              </div>
-
-              <div className="ms-actions">
-                <button className="ms-btn-primary">Start Learning — It's Free</button>
-              </div>
-            </div>
-
-            {/* Right: Image */}
-            <div className="ms-hero-image">
-              <img src="/mentors-group.jpg" alt="Our mentors" className="ms-hero-img" />
-            </div>
+            <button className="start-free-cta-btn">
+              Start Learning for FREE
+            </button>
 
           </div>
 
-          {/* ── Bottom: Auto-scroll Marquee ── */}
-          <div className="ms-marquee-wrap">
-            <div className="ms-marquee-fade ms-fade-left"></div>
-            <div className="ms-marquee-fade ms-fade-right"></div>
-            <div className="ms-marquee-track">
-              {doubledMentors.map((mentor, i) => (
-                <MentorCard key={i} mentor={mentor} />
-              ))}
+          {/* ── Right Half: Auto-Scrolling Vertical Container Box ── */}
+          <div className="mentors-right-col">
+            <div className="vertical-scroll-container">
+              <div className="scroll-v-fade top-fade"></div>
+              <div className="scroll-v-fade bottom-fade"></div>
+
+              <div className="vertical-grid-tracks">
+                
+                {/* Track 1: Scroll UP */}
+                <div className="v-track track-up">
+                  {[...col1Items, ...col1Items].map((mentor, index) => (
+                    <div className="track-item-wrapper" key={`col1-${index}`}>
+                      <div className="mentor-photo-card">
+                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
+                        <div className="company-badge-icon">
+                          <img src={mentor.logo} alt={mentor.company} />
+                        </div>
+                        <div className="mentor-overlay-info">
+                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
+                          <p className="mentor-overlay-role">{mentor.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Track 2: Scroll DOWN */}
+                <div className="v-track track-down">
+                  {[...col2Items, ...col2Items].map((mentor, index) => (
+                    <div className="track-item-wrapper" key={`col2-${index}`}>
+                      <div className="mentor-photo-card">
+                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
+                        <div className="company-badge-icon">
+                          <img src={mentor.logo} alt={mentor.company} />
+                        </div>
+                        <div className="mentor-overlay-info">
+                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
+                          <p className="mentor-overlay-role">{mentor.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Track 3: Scroll UP */}
+                <div className="v-track track-up">
+                  {[...col3Items, ...col3Items].map((mentor, index) => (
+                    <div className="track-item-wrapper" key={`col3-${index}`}>
+                      <div className="mentor-photo-card">
+                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
+                        <div className="company-badge-icon">
+                          <img src={mentor.logo} alt={mentor.company} />
+                        </div>
+                        <div className="mentor-overlay-info">
+                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
+                          <p className="mentor-overlay-role">{mentor.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
             </div>
           </div>
 

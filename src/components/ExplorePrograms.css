@@ -1,117 +1,223 @@
+/* ===================================================
+   EXPLORE PROGRAMS – Top Trending 3D Ranked Posters
+   =================================================== */
+
 .explore-programs {
-  background-color: #FFF;
+  background-color: #0D0D0E;
   padding: 6rem 2rem;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
 }
 
+.ep-dark-tag {
+  background: rgba(243, 145, 46, 0.12) !important;
+  color: #F3912E !important;
+  border: 1px solid rgba(243, 145, 46, 0.25) !important;
+  border-radius: 4px !important;
+}
+
+/* ── 3D Poster Grid ── */
 .ep-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  gap: 3.5rem 2.5rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding-left: 1.5rem;
 }
 
-.ep-card {
-  background: #FFFFFF;
+/* ── Poster Card Wrapper ── */
+.ep-poster-card {
+  position: relative;
   border-radius: 4px;
-  border: 1px solid #EAEAEA;
+}
+
+/* GIANT 3D RANK NUMBER (Overlapping Bottom-Left) */
+.ep-rank-num {
+  position: absolute;
+  bottom: -15px;
+  left: -35px;
+  font-size: 9.5rem;
+  font-weight: 900;
+  line-height: 0.85;
+  font-family: 'Impact', 'Trebuchet MS', 'Arial Black', sans-serif;
+  background: linear-gradient(180deg, #FFFFFF 0%, #B8B8C0 50%, #4A4A52 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(4px 8px 15px rgba(0, 0, 0, 0.95));
+  z-index: 25;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -4px;
+}
+
+/* ── Poster Inner Container ── */
+.ep-poster-inner {
+  position: relative;
+  height: 440px;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.4s ease, 
+              box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  background: #18181B;
 }
 
-.ep-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 30px rgba(0,0,0,0.08);
+.ep-poster-card:hover .ep-poster-inner {
+  transform: translateY(-8px) scale(1.02);
+  border-color: rgba(243, 145, 46, 0.55);
+  box-shadow: 0 30px 65px rgba(243, 145, 46, 0.25);
 }
 
-.ep-image-wrap {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.ep-image {
+/* Background Image & Overlay */
+.ep-poster-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
-.ep-card:hover .ep-image {
-  transform: scale(1.05);
+.ep-poster-card:hover .ep-poster-img {
+  transform: scale(1.06);
 }
 
-.ep-free-label {
+.ep-poster-overlay {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: var(--primary);
-  color: #FFF;
+  inset: 0;
+  background: linear-gradient(
+    to top, 
+    rgba(13, 13, 14, 0.98) 0%, 
+    rgba(13, 13, 14, 0.75) 45%, 
+    rgba(13, 13, 14, 0.25) 100%
+  );
+  z-index: 2;
+}
+
+/* Poster Header Badges */
+.ep-poster-header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ep-badge {
+  font-size: 0.7rem;
   font-weight: 800;
-  font-size: 0.75rem;
-  padding: 0.3rem 0.8rem;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
   border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 2px 10px rgba(243,145,46,0.4);
 }
 
-.ep-content {
-  padding: 1.5rem;
+.ep-free-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  background: var(--primary);
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 10px rgba(243, 145, 46, 0.4);
+}
+
+/* Poster Bottom Content */
+.ep-poster-content {
+  position: relative;
+  z-index: 5;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  gap: 0.5rem;
 }
 
-.ep-title {
-  font-size: 1.2rem;
+.ep-category {
+  font-size: 0.75rem;
   font-weight: 700;
-  color: #111;
-  margin-bottom: 0.5rem;
+  color: #F3912E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.ep-desc {
-  font-size: 0.9rem;
-  color: #6B7280;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
+.ep-poster-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.3px;
 }
 
-.ep-cta {
+.ep-poster-desc {
+  font-size: 0.85rem;
+  color: #9CA3AF;
+  line-height: 1.45;
+  margin: 0 0 0.5rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ep-watch-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 8px;
   width: 100%;
-  background: #FFF;
-  border: 1px solid #EAEAEA;
-  color: #111;
-  padding: 0.75rem;
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.8rem 1rem;
   border-radius: 4px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 20px rgba(243, 145, 46, 0.35);
+  margin-top: 0.25rem;
 }
 
-.ep-cta:hover {
-  background: var(--primary);
-  color: #FFF;
-  border-color: var(--primary);
+.ep-watch-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(243, 145, 46, 0.5);
 }
 
+/* Responsive Adjustments */
 @media (max-width: 992px) {
   .ep-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem 2rem;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .ep-grid {
     grid-template-columns: 1fr;
+    padding-left: 1.5rem;
+  }
+  .ep-poster-inner {
+    height: 400px;
+  }
+  .ep-rank-num {
+    font-size: 7.5rem;
+    left: -25px;
+    bottom: -10px;
   }
 }

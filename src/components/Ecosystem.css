@@ -566,7 +566,7 @@
   position: relative;
 }
 
-.domain-pill {
+.domains-mockup .domain-pill {
   position: absolute;
   padding: 4px 12px;
   background: rgba(255, 255, 255, 0.1);

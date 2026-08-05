@@ -1,0 +1,475 @@
+/* ═══════════════════════════════════════════
+   SPACIOUS & ELEGANT ORBITAL WELCOME GATEWAY
+   Zero Overlap & Smart Responsive Spacing
+   ═══════════════════════════════════════════ */
+
+.welcome-gateway-section {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 50%, #F5F2EC 100%);
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8rem 2rem 10rem;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Subtle 5% Opacity Architectural Grid Lines */
+.welcome-gateway-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, #000 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 50% 50%, #000 35%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient Radial Background Glows */
+.gateway-ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(140px);
+  z-index: 0;
+}
+
+.glow-top-left {
+  top: -20%;
+  left: -15%;
+  width: 700px;
+  height: 700px;
+  background: rgba(243, 145, 46, 0.08);
+}
+
+.glow-bottom-right {
+  bottom: -20%;
+  right: -15%;
+  width: 700px;
+  height: 700px;
+  background: rgba(59, 130, 246, 0.07);
+}
+
+
+/* ── 1. ORBITAL SYSTEM (Pushed Far Outward to Edges) ── */
+.orbital-system {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 680px;
+  height: 800px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.orbital-system-left {
+  left: -240px;
+}
+
+.orbital-system-right {
+  right: -240px;
+}
+
+.orbital-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: spinSpiralArcs 40s linear infinite;
+  transform-origin: 0px 400px;
+}
+
+.orbital-system-right .orbital-svg {
+  animation: spinSpiralArcsReverse 40s linear infinite;
+  transform-origin: 700px 400px;
+}
+
+@keyframes spinSpiralArcs {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinSpiralArcsReverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+
+/* ── 2. SLEEK CAPSULE ORBITAL NODES (Circular Spiral Motion) ── */
+.orbital-capsule-node {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 6px 14px 6px 8px;
+  border-radius: 30px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
+  pointer-events: auto;
+  z-index: 2;
+  transition: box-shadow 0.3s ease;
+  animation: spiralOrbitNode 8s ease-in-out infinite alternate;
+}
+
+.orbital-capsule-node:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+}
+
+.node-right.orbital-capsule-node {
+  padding: 6px 8px 6px 14px;
+}
+
+.capsule-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.amber-capsule-icon {
+  background: rgba(243, 145, 46, 0.12);
+  color: #F3912E;
+}
+
+.blue-capsule-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3B82F6;
+}
+
+.capsule-label {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1F2937;
+  white-space: nowrap;
+}
+
+/* Outer Margin Node Revolving Trajectories (Radius = 320px, 50° Spacing for Dual Visibility) */
+.orbital-system-left .orbital-capsule-node {
+  top: 400px;
+  left: 0px;
+}
+
+.orbital-system-right .orbital-capsule-node {
+  top: 400px;
+  right: 0px;
+}
+
+/* All nodes move at identical comfortable reading speed (46s loop) */
+.node-left.node-pos-1 { animation: revolveLeft0 46s linear infinite; }
+.node-left.node-pos-2 { animation: revolveLeft50 46s linear infinite; }
+.node-left.node-pos-3 { animation: revolveLeft100 46s linear infinite; }
+.node-left.node-pos-4 { animation: revolveLeft150 46s linear infinite; }
+
+.node-right.node-pos-1 { animation: revolveRight0 46s linear infinite; }
+.node-right.node-pos-2 { animation: revolveRight50 46s linear infinite; }
+.node-right.node-pos-3 { animation: revolveRight100 46s linear infinite; }
+.node-right.node-pos-4 { animation: revolveRight150 46s linear infinite; }
+
+/* Dynamic 360° Circular Revolving Keyframes for Left Nodes (Radius = 320px) */
+@keyframes revolveLeft0 {
+  0%   { transform: rotate(-50deg) translate(320px) rotate(50deg); }
+  100% { transform: rotate(310deg) translate(320px) rotate(-310deg); }
+}
+
+@keyframes revolveLeft50 {
+  0%   { transform: rotate(0deg) translate(320px) rotate(0deg); }
+  100% { transform: rotate(360deg) translate(320px) rotate(-360deg); }
+}
+
+@keyframes revolveLeft100 {
+  0%   { transform: rotate(50deg) translate(320px) rotate(-50deg); }
+  100% { transform: rotate(410deg) translate(320px) rotate(-410deg); }
+}
+
+@keyframes revolveLeft150 {
+  0%   { transform: rotate(100deg) translate(320px) rotate(-100deg); }
+  100% { transform: rotate(460deg) translate(320px) rotate(-460deg); }
+}
+
+/* Dynamic 360° Circular Revolving Keyframes for Right Nodes (Radius = 320px) */
+@keyframes revolveRight0 {
+  0%   { transform: rotate(-50deg) translate(-320px) rotate(50deg); }
+  100% { transform: rotate(-410deg) translate(-320px) rotate(410deg); }
+}
+
+@keyframes revolveRight50 {
+  0%   { transform: rotate(0deg) translate(-320px) rotate(0deg); }
+  100% { transform: rotate(-360deg) translate(-320px) rotate(360deg); }
+}
+
+@keyframes revolveRight100 {
+  0%   { transform: rotate(50deg) translate(-320px) rotate(-50deg); }
+  100% { transform: rotate(-310deg) translate(-320px) rotate(310deg); }
+}
+
+@keyframes revolveRight150 {
+  0%   { transform: rotate(100deg) translate(-320px) rotate(-100deg); }
+  100% { transform: rotate(-260deg) translate(-320px) rotate(260deg); }
+}
+
+
+/* ── 3. CENTER HEADER COPY ── */
+.gateway-header-content {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  max-width: 920px;
+  margin-top: 0.5rem;
+  margin-bottom: 2.75rem;
+}
+
+.gateway-top-badge {
+  display: inline-block;
+  font-size: 1.05rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #111827;
+  margin-bottom: 1.25rem;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.badge-orange-italic {
+  color: #F3912E;
+  font-style: italic;
+  font-weight: 900;
+}
+
+.gateway-main-h1 {
+  font-size: clamp(2.4rem, 4.8vw, 4.25rem);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  color: #050505;
+  white-space: nowrap;
+  margin: 0 0 1.25rem 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hero-title-logo {
+  height: 1.15em;
+  width: 1.15em;
+  object-fit: contain;
+  vertical-align: middle;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 0.1rem;
+}
+
+.hero-title-logo:hover {
+  transform: scale(1.1) rotate(6deg);
+}
+
+.cipherschools-orange-box {
+  background-color: #F3912E;
+  color: #FFFFFF;
+  padding: 0.1em 0.35em 0.15em 0.35em;
+  border-radius: 8px;
+  display: inline-block;
+  font-weight: 900;
+  box-shadow: 0 4px 20px rgba(243, 145, 46, 0.25);
+}
+
+.gateway-sub-text {
+  font-size: 1.15rem;
+  color: #6B7280;
+  margin: 0;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.text-orange-italic {
+  color: #F3912E;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.gateway-sub-text em {
+  font-style: normal;
+  color: #F3912E;
+  font-weight: 700;
+}
+
+
+/* ── 4. TWO SELECTION CARDS ── */
+.gateway-cards-grid {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(2, 350px);
+  gap: 2rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.gateway-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 26px;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.gateway-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08);
+}
+
+.student-card:hover {
+  border-color: rgba(243, 145, 46, 0.4);
+}
+
+.university-card:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Card Glows */
+.gateway-card-glow {
+  position: absolute;
+  top: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.student-glow {
+  background: rgba(243, 145, 46, 0.22);
+}
+
+.university-glow {
+  background: rgba(59, 130, 246, 0.22);
+}
+
+/* Icon Boxes */
+.gateway-icon-box {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.gateway-card:hover .gateway-icon-box {
+  transform: scale(1.08);
+}
+
+.student-icon-box {
+  background: rgba(243, 145, 46, 0.12);
+  border: 1px solid rgba(243, 145, 46, 0.2);
+}
+
+.university-icon-box {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.icon-amber { color: #F3912E; }
+.icon-blue { color: #3B82F6; }
+
+/* Titles & Descriptions */
+.gateway-card-title {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: #111827;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.02em;
+}
+
+.gateway-card-desc {
+  font-size: 0.9rem;
+  color: #6B7280;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+}
+
+/* Bottom Tag Pill */
+.gateway-bottom-pill {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFDF9;
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #1F2937;
+  transition: all 0.2s ease;
+}
+
+.pill-blue {
+  background: #F8FAFC;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.gateway-card:hover .gateway-bottom-pill {
+  background: #F3912E;
+  color: #FFFFFF;
+  border-color: #F3912E;
+}
+
+.gateway-card:hover .pill-blue {
+  background: #3B82F6;
+  color: #FFFFFF;
+  border-color: #3B82F6;
+}
+
+.gateway-card:hover .icon-amber-sm,
+.gateway-card:hover .icon-blue-sm {
+  color: #FFFFFF;
+}
+
+.icon-amber-sm { color: #F3912E; }
+.icon-blue-sm { color: #3B82F6; }
+
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1450px) {
+  .orbital-system-left { left: -320px; }
+  .orbital-system-right { right: -320px; }
+}
+
+@media (max-width: 1250px) {
+  .orbital-system { display: none; }
+}
+
+@media (max-width: 850px) {
+  .gateway-cards-grid {
+    grid-template-columns: 1fr;
+    max-width: 360px;
+  }
+}

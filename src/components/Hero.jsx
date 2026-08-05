@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, ChevronDown, RotateCcw } from 'lucide-react';
 import InteractiveParticles from './InteractiveParticles';
 import './Hero.css';
 
@@ -13,7 +14,6 @@ const Hero = ({ onReplay }) => {
     'Proctored Tests',
     'DSA Problems',
     'FAANG Mentors',
-    'GenAI Tools',
   ];
 
   const handleVideoEnded = useCallback(() => {
@@ -38,25 +38,21 @@ const Hero = ({ onReplay }) => {
       <div className="hero-grid">
         {/* Left — Copy */}
         <div className="hero-left">
-          <div className="hero-badge">CipherSchools Ecosystem</div>
+          <div className="hero-badge">Beyond Ed-Tech</div>
 
           <h1 className="hero-h1">
-            Build skills that <br />
-            <span className="hero-h1-accent">get you hired.</span>
+            <span className="hero-h1-accent">Growth</span> is the<br />
+            destination.
           </h1>
 
           <p className="hero-p">
-            Project-based learning, CipherLabs, and mentorship from engineers at
-            Google, Microsoft, and Amazon.
+            An outcome-driven learning platform that bridges the gap between learning and landing your dream tech career.
           </p>
 
           <div className="hero-cta-row">
-            <a href="#" className="hero-btn-primary">
-              Start for free <ArrowRight size={18} />
-            </a>
-            <a href="#ecosystem" className="hero-btn-ghost">
-              See how it works
-            </a>
+            <Link to="/courses" className="hero-btn-primary">
+              Start Learning for FREE <ArrowRight size={18} />
+            </Link>
           </div>
 
           <div className="hero-features-strip">
@@ -69,6 +65,17 @@ const Hero = ({ onReplay }) => {
         {/* Right — Video */}
         <div className="hero-right">
           <div className="hero-video-wrap">
+            {onReplay && (
+              <button 
+                className="hero-replay-smart-btn" 
+                onClick={onReplay}
+                title="Replay Story"
+                aria-label="Replay Story"
+              >
+                <RotateCcw size={16} />
+              </button>
+            )}
+
             <video
               ref={videoRef}
               className="hero-video"
@@ -85,13 +92,6 @@ const Hero = ({ onReplay }) => {
               </div>
             )}
           </div>
-          {onReplay && (
-            <div className="hero-story-replay-wrap">
-              <button className="hero-story-replay-btn" onClick={onReplay}>
-                I can relate to story — <span>rewatch</span>
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

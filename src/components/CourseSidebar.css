@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════
+   CIPHERSCHOOLS EXACT SIDEBAR RAIL
+   Matches Uploaded Screenshot 100%
+   ═══════════════════════════════════════════ */
+
+.cs-exact-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 72px;
+  height: calc(100vh - 64px);
+  background-color: var(--cs-sb-bg, #18181B);
+  border-right: 1px solid var(--cs-sb-border, #27272A);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.85rem 0.4rem;
+  z-index: 100;
+  flex-shrink: 0;
+  user-select: none;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.cs-exact-sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.cs-sidebar-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cs-sidebar-item {
+  width: 60px;
+  height: 56px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  color: var(--cs-sb-text, #A1A1AA);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 4px 2px;
+}
+
+.cs-sidebar-item:hover {
+  background: var(--cs-sb-hover, #27272A);
+  color: var(--cs-sb-text-active, #FFFFFF);
+}
+
+/* Active State (Courses) -> Brand Orange Fill */
+.cs-sidebar-item.active {
+  background: #F3912E !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.4);
+}
+
+.cs-sidebar-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-gold-crown {
+  color: #F59E0B;
+}
+
+.cs-sidebar-item.active .icon-gold-crown {
+  color: #FFFFFF;
+}
+
+.cs-sidebar-item-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+
+.cs-sidebar-bottom {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--cs-sb-border, #27272A);
+}
+
+.cs-signin-icon {
+  transform: rotate(180deg);
+}
+
+/* ═══════════════════════════════════════════
+   LIGHT MODE OVERRIDES FOR EXACT SIDEBAR
+   ═══════════════════════════════════════════ */
+.courses-light-mode .cs-exact-sidebar {
+  --cs-sb-bg: #FFFFFF;
+  --cs-sb-border: #E5E7EB;
+  --cs-sb-text: #4B5563;
+  --cs-sb-hover: #F3F4F6;
+  --cs-sb-text-active: #111827;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04);
+}
+
+.courses-light-mode .cs-sidebar-item.active {
+  background: #F3912E !important;
+  color: #FFFFFF !important;
+}

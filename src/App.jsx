@@ -2,19 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import StudentPage from './pages/StudentPage';
-import UniversityPage from './pages/UniversityPage';
-import UniversityPageV2 from './pages/UniversityPageV2';
-import WelcomePage from './pages/WelcomePage';
+import MainPage from './pages/MainPage';
 import './App.css';
 
 function App() {
   const location = useLocation();
 
   useEffect(() => {
-    // Scroll to top on route change
-    window.scrollTo(0, 0);
+    // We remove scroll to top here so anchor links work
+    // window.scrollTo(0, 0);
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -47,10 +43,7 @@ function App() {
         <Navbar />
         <main>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="/students" element={<HomePage />} />
-            <Route path="/universities" element={<UniversityPage />} />
-            <Route path="/universities-v2" element={<UniversityPageV2 />} />
+            <Route path="/*" element={<MainPage />} />
           </Routes>
         </main>
         <Footer />
