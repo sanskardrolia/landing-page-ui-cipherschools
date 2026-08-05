@@ -249,3 +249,28 @@ button {
   .section-title { font-size: 1.75rem !important; }
 }
 
+/* ═══════════════════════════════════════════
+   STRICT 4PX BORDER-RADIUS DESIGN OVERRIDE
+   ═══════════════════════════════════════════ */
+button:not(.slider-arrow):not(.cs-c-logo-circle):not(.lms-avatar-circle):not(.lms-logo-icon),
+a.btn,
+.btn,
+.tag,
+.badge,
+.chip,
+.hero-badge,
+.hero-btn-primary,
+.hero-chip,
+.fu-smart-option-card,
+.fu-smart-card-icon,
+.fu-outcome-hero-card,
+.fu-outcome-side-card,
+.fu-photo-card,
+.fu-bento-card,
+.stack-card,
+.cred-eco-card,
+.beyond-badge-pill,
+.floating-sticky-section-badge {
+  border-radius: 4px !important;
+}
+

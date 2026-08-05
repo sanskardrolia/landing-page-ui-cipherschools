@@ -273,41 +273,70 @@
   gap: 10px;
 }
 
-.active-section-indicator-badge {
-  display: inline-flex !important;
+/* ═══════════════════════════════════════════
+   FLOATING BOTTOM STICKY SECTION BADGE
+   ═══════════════════════════════════════════ */
+.floating-sticky-section-badge {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9990;
+  display: flex;
   align-items: center;
-  gap: 7px;
-  background: #FFF7ED;
-  border: 1.5px solid #FDBA74;
-  color: #EA580C;
-  font-size: 0.785rem;
-  font-weight: 800;
-  padding: 4px 14px;
-  border-radius: 50px;
+  gap: 10px;
+  background: rgba(15, 17, 23, 0.92);
+  border: 1px solid rgba(243, 145, 46, 0.4);
+  color: #FFFFFF;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.85rem;
   letter-spacing: 0.02em;
-  box-shadow: 0 3px 12px rgba(234, 88, 12, 0.18);
-  animation: badgeFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  white-space: nowrap;
-  z-index: 10;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(243, 145, 46, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  animation: floatStickySlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.active-section-indicator-badge .dot-pulse {
-  width: 7px;
-  height: 7px;
+.floating-sticky-section-badge:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(243, 145, 46, 0.8);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55), 0 0 25px rgba(243, 145, 46, 0.25);
+}
+
+.dot-pulse-orange {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: #EA580C;
-  box-shadow: 0 0 8px #EA580C;
-  animation: pulseDot 1.5s infinite;
+  background-color: #F3912E;
+  box-shadow: 0 0 10px #F3912E;
+  animation: pulseDotOrange 1.6s infinite;
 }
 
-@keyframes badgeFadeIn {
-  from { opacity: 0; transform: scale(0.9) translateX(-4px); }
-  to { opacity: 1; transform: scale(1) translateX(0); }
+.floating-badge-label {
+  color: #E5E7EB;
 }
 
-@keyframes pulseDot {
+.floating-badge-label strong {
+  color: #F3912E;
+  font-weight: 700;
+}
+
+@keyframes floatStickySlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseDotOrange {
   0% { transform: scale(0.9); opacity: 0.7; }
-  50% { transform: scale(1.35); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 1; }
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 

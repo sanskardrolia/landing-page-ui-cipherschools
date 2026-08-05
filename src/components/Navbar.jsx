@@ -135,74 +135,87 @@ const Navbar = () => {
     );
   }
 
-  /* ── Standard Navigation Bar for Single Page Landing (Notion Style) ── */
   return (
-    <nav className={`navbar ${isScrolled ? 'scrolled' : ''} navbar-theme-notion`}>
-      <div className="container navbar-container">
-        <div className="navbar-logo-wrap">
-          <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('welcome-section')}>
-            <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
-            <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+    <>
+      <nav className={`navbar ${isScrolled ? 'scrolled' : ''} navbar-theme-notion`}>
+        <div className="container navbar-container">
+          <div className="navbar-logo-wrap">
+            <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('welcome-section')}>
+              <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
+              <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+            </div>
+          </div>
+          
+          <div className="navbar-links desktop-only">
+            <button 
+              onClick={() => scrollToSection('student-section')} 
+              className={`notion-nav-link ${activeSection === 'student' ? 'active' : ''}`}
+            >
+              For Students
+            </button>
+            <button 
+              onClick={() => scrollToSection('university-section')} 
+              className={`notion-nav-link ${activeSection === 'university' ? 'active' : ''}`}
+            >
+              For University
+            </button>
+            <button onClick={() => scrollToSection('ecosystem')} className="notion-nav-link">
+              CipherLabs
+            </button>
+          </div>
+          
+          <div className="navbar-actions desktop-only">
+            <a href="#login" className="notion-login-btn">Login</a>
           </div>
 
-          {activeSection === 'student' && (
-            <div className="active-section-indicator-badge animate-fade-in">
-              <span className="dot-pulse"></span> For Students
-            </div>
-          )}
-          {activeSection === 'university' && (
-            <div className="active-section-indicator-badge animate-fade-in">
-              <span className="dot-pulse"></span> For University
-            </div>
-          )}
-        </div>
-        
-        <div className="navbar-links desktop-only">
           <button 
-            onClick={() => scrollToSection('student-section')} 
-            className={`notion-nav-link ${activeSection === 'student' ? 'active' : ''}`}
+            className="mobile-menu-btn mobile-only"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            For Students
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <button 
-            onClick={() => scrollToSection('university-section')} 
-            className={`notion-nav-link ${activeSection === 'university' ? 'active' : ''}`}
-          >
-            For University
-          </button>
-          <button onClick={() => scrollToSection('ecosystem')} className="notion-nav-link">
-            CipherLabs
-          </button>
-        </div>
-        
-        <div className="navbar-actions desktop-only">
-          <a href="#login" className="notion-login-btn">Login</a>
         </div>
 
-        <button 
-          className="mobile-menu-btn mobile-only"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="mobile-menu mobile-only animate-fade-in">
+            <button onClick={() => scrollToSection('student-section')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
+              <span>For Students</span>
+            </button>
+            <button onClick={() => scrollToSection('university-section')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
+              <span>For University</span>
+            </button>
+            <button onClick={() => scrollToSection('ecosystem')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
+              <span>CipherLabs</span>
+            </button>
+            <a href="#login" className="notion-cta-btn-mobile" onClick={() => setMobileMenuOpen(false)}>Login</a>
+          </div>
+        )}
+      </nav>
+
+      {/* ── SMART FLOATING BOTTOM STICKY SECTION INDICATOR BADGE ── */}
+      {activeSection === 'student' && (
+        <div 
+          className="floating-sticky-section-badge"
+          onClick={() => scrollToSection('student-section')}
+          title="Currently in Students Section — Click to align top"
         >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="mobile-menu mobile-only animate-fade-in">
-          <button onClick={() => scrollToSection('student-section')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
-            <span>For Students</span>
-          </button>
-          <button onClick={() => scrollToSection('university-section')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
-            <span>For University</span>
-          </button>
-          <button onClick={() => scrollToSection('ecosystem')} className="mobile-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: '0.75rem 0' }}>
-            <span>CipherLabs</span>
-          </button>
-          <a href="#login" className="notion-cta-btn-mobile" onClick={() => setMobileMenuOpen(false)}>Login</a>
+          <span className="dot-pulse-orange"></span>
+          <span className="floating-badge-label">Section: <strong>For Students</strong></span>
         </div>
       )}
-    </nav>
+
+      {activeSection === 'university' && (
+        <div 
+          className="floating-sticky-section-badge"
+          onClick={() => scrollToSection('university-section')}
+          title="Currently in University Section — Click to align top"
+        >
+          <span className="dot-pulse-orange"></span>
+          <span className="floating-badge-label">Section: <strong>For University</strong></span>
+        </div>
+      )}
+    </>
   );
 };
 
