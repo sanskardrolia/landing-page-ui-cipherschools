@@ -38,7 +38,7 @@ const Hero = ({ onReplay }) => {
       <div className="hero-grid">
         {/* Left — Copy */}
         <div className="hero-left">
-          <div className="hero-badge">Beyond Ed-Tech</div>
+          <div className="hero-badge">FREE To Start</div>
 
           <h1 className="hero-h1">
             <span className="hero-h1-accent">Growth</span> is the<br />
@@ -51,7 +51,7 @@ const Hero = ({ onReplay }) => {
 
           <div className="hero-cta-row">
             <Link to="/courses" className="hero-btn-primary">
-              Start Learning for FREE <ArrowRight size={18} />
+              Explore & Learn For Free <ArrowRight size={18} />
             </Link>
           </div>
 

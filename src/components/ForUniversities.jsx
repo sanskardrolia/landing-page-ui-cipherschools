@@ -210,7 +210,7 @@ const ForUniversities = () => {
     setTimeout(() => {
       setIsVisible(true);
       let targetId = 'shift-section';
-      if (id === 'training') targetId = 'training-section';
+      if (id === 'training') targetId = 'shift-section';
       if (id === 'lms') targetId = 'lms-section';
       if (id === 'assessment') targetId = 'assessment-section';
 
@@ -218,7 +218,7 @@ const ForUniversities = () => {
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    }, 200);
+    }, 100);
   };
 
   const handleBack = () => {
@@ -472,6 +472,19 @@ const ForUniversities = () => {
 
               </div>
 
+              {/* 3-Image Horizontal Classroom/Workshop Grid (Matching Screenshot) */}
+              <div className="fu-outcome-photos-grid">
+                <div className="fu-photo-card">
+                  <img src="/company-look-1.jpg" alt="CipherSchools Classroom Workshop 1" className="fu-photo-img" />
+                </div>
+                <div className="fu-photo-card">
+                  <img src="/company-look-2.jpg" alt="CipherSchools Classroom Workshop 2" className="fu-photo-img" />
+                </div>
+                <div className="fu-photo-card">
+                  <img src="/company-look-3.jpg" alt="CipherSchools Classroom Workshop 3" className="fu-photo-img" />
+                </div>
+              </div>
+
             </div>
           </section>
 
@@ -673,18 +686,6 @@ const ForUniversities = () => {
 
 
 
-
-          {/* ── BREATHER 2 ── */}
-          <section ref={refBreather2} className={`fu-sec fu-sec-breather fu-reveal ${visBreather2 ? 'fu-revealed' : ''}`}>
-            <div className="fu-sec-inner">
-              <div className="fu-breather-img-container fu-breather-tall">
-                <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=2000&auto=format&fit=crop" alt="Modern workspace" className="fu-breather-img" />
-              </div>
-            </div>
-          </section>
-
-
-
           {/* ── 5.5 LMS Bento Section ── */}
           <section id="lms-section" ref={refLms} className={`fu-sec fu-lms-bento-section fu-reveal ${visLms ? 'fu-revealed' : ''}`}>
             <div className="fu-sec-inner">
@@ -708,11 +709,6 @@ const ForUniversities = () => {
                       <span className="lms-logo-icon">C</span>
                       <span className="lms-logo-text">CipherSchools</span>
                     </div>
-                    <div className="lms-guide-me-btn">Guide Me</div>
-                  </div>
-                  <div className="lms-top-search">
-                    <input type="text" placeholder="Search and Learn" readOnly />
-                    <Search size={16} className="lms-search-icon" />
                   </div>
                   <div className="lms-top-right">
                     <div className="lms-bell-box">
@@ -724,10 +720,6 @@ const ForUniversities = () => {
                         <User size={16} />
                       </div>
                       <span className="lms-user-name">Hey Sanskar</span>
-                    </div>
-                    <div className="lms-coin-pill">
-                      <span className="lms-coin-icon">C</span>
-                      <span>2.68K</span>
                     </div>
                     <div className="lms-theme-toggle">
                       <Sun size={16} />
@@ -965,11 +957,6 @@ const ForUniversities = () => {
                             &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">__init__</span>(self, nodes):<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;self.nodes = nodes<br/>
                             &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">route</span>(self, req):<br/>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-kwd">return</span> self.nodes[hash(req) % len(self.nodes)]
-                          </div>
-                          <div className="fme-editor-action">
-                            <span className="fme-status-text">Production Ready</span>
-                            <div className="fm-editor-btn">Run & Submit</div>
                           </div>
                         </div>
                       </div>
@@ -1381,7 +1368,7 @@ const ForUniversities = () => {
             <div className="fu-sec-inner fu-cta-final-inner">
               <Coffee size={48} className="fu-cta-coffee-icon" />
               <h2 className="fu-cta-final-title">
-                Let's connect over a <span className="fu-pitch-accent">chai or coffee.</span>
+                Let's connect over a <span className="fu-pitch-accent">coffee.</span>
               </h2>
               <p className="fu-cta-final-sub">
                 Explore how CipherSchools can transform your institution's placement numbers and technical training.
@@ -1390,6 +1377,11 @@ const ForUniversities = () => {
                 Book a Meeting <ArrowRight size={20} />
               </button>
             </div>
+          </section>
+
+          {/* ── 8. #BEYOND ED-TECH Watermark Section (Below Coffee CTA) ── */}
+          <section className="beyond-edtech-footer-banner">
+            <div className="beyond-watermark-text">#BEYOND ED-TECH</div>
           </section>
 
         </div>

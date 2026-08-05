@@ -141,7 +141,7 @@ const Testimonials = () => {
   const nextItem = testimonials[nextIndex1];
 
   return (
-    <section className="testimonials-section dark-bg">
+    <section className="testimonials-section light-theme light-grid-pattern">
       <div className="container">
         
         {/* Section Header */}
@@ -149,10 +149,10 @@ const Testimonials = () => {
           <div className="tag-brand">
             <Sparkles size={14} /> STUDENT REVIEWS
           </div>
-          <h2 className="section-title dark-theme-title">
+          <h2 className="section-title light-theme-title">
             Don't just take our word for it.
           </h2>
-          <p className="section-subtitle dark-theme-subtitle">
+          <p className="section-subtitle light-theme-subtitle">
             Hear how CipherSchools transformed careers and helped students land jobs at top tech product companies.
           </p>
         </div>
