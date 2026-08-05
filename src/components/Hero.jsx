@@ -50,9 +50,17 @@ const Hero = ({ onReplay }) => {
           </p>
 
           <div className="hero-cta-row">
-            <Link to="/courses" className="hero-btn-primary">
+            <button 
+              className="hero-btn-primary"
+              onClick={() => {
+                const target = document.getElementById('ecosystem');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+            >
               Explore & Learn For Free <ArrowRight size={18} />
-            </Link>
+            </button>
           </div>
 
           <div className="hero-features-strip">

@@ -7,6 +7,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [activeSection, setActiveSection] = useState('welcome');
   const location = useLocation();
 
   useEffect(() => {
@@ -19,6 +20,35 @@ const Navbar = () => {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  /* Track Active Section On Scroll */
+  useEffect(() => {
+    if (location.pathname === '/courses') return;
+
+    const checkActiveSection = () => {
+      const secStudent = document.getElementById('student-section');
+      const secUniversity = document.getElementById('university-section');
+
+      if (!secStudent || !secUniversity) return;
+
+      const studentTop = secStudent.getBoundingClientRect().top;
+      const uniTop = secUniversity.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+
+      if (uniTop <= windowHeight * 0.45) {
+        setActiveSection('university');
+      } else if (studentTop <= windowHeight * 0.55) {
+        setActiveSection('student');
+      } else {
+        setActiveSection('welcome');
+      }
+    };
+
+    window.addEventListener('scroll', checkActiveSection, { passive: true });
+    checkActiveSection(); // Run immediately
+
+    return () => window.removeEventListener('scroll', checkActiveSection);
+  }, [location.pathname]);
 
   const isCoursePage = location.pathname === '/courses';
 
@@ -109,16 +139,35 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''} navbar-theme-notion`}>
       <div className="container navbar-container">
-        <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('welcome-section')}>
-          <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
-          <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+        <div className="navbar-logo-wrap">
+          <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('welcome-section')}>
+            <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
+            <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+          </div>
+
+          {activeSection === 'student' && (
+            <div className="active-section-indicator-badge animate-fade-in">
+              <span className="dot-pulse"></span> For Students
+            </div>
+          )}
+          {activeSection === 'university' && (
+            <div className="active-section-indicator-badge animate-fade-in">
+              <span className="dot-pulse"></span> For University
+            </div>
+          )}
         </div>
         
         <div className="navbar-links desktop-only">
-          <button onClick={() => scrollToSection('student-section')} className="notion-nav-link">
+          <button 
+            onClick={() => scrollToSection('student-section')} 
+            className={`notion-nav-link ${activeSection === 'student' ? 'active' : ''}`}
+          >
             For Students
           </button>
-          <button onClick={() => scrollToSection('university-section')} className="notion-nav-link">
+          <button 
+            onClick={() => scrollToSection('university-section')} 
+            className={`notion-nav-link ${activeSection === 'university' ? 'active' : ''}`}
+          >
             For University
           </button>
           <button onClick={() => scrollToSection('ecosystem')} className="notion-nav-link">
