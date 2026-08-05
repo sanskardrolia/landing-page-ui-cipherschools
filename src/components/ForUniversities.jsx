@@ -268,72 +268,66 @@ const ForUniversities = () => {
   return (
     <div className="fu-pitch-page" ref={containerRef}>
 
-      {/* ─── QUESTION SCREEN (Always visible now) ─── */}
-      <div className={`fu-pitch-container fu-visible`}>
-        <div className="fu-pitch-header">
-          <p className="fu-pitch-eyebrow">For Universities & Colleges</p>
-          <h1 className="fu-pitch-title">
-            How <span className="fu-pitch-accent">CipherSchools</span> can help your university?
-          </h1>
-        </div>
+      {/* Full Screen Text Reveal Hero + Embedded Smart Help Options */}
+      <div ref={refHeroText} className={`fu-fullscreen-hero fu-reveal ${visHeroText ? 'fu-revealed' : ''}`}>
+        <div className="gemini-ambient-glow"></div>
+        <div className="fu-hero-glow-orb orb-1"></div>
+        <div className="fu-hero-glow-orb orb-2"></div>
 
-        <div className="fu-pitch-grid">
-          {options.map((opt, idx) => (
-            <div
-              key={opt.id}
-              className={`fu-pitch-option ${selected === opt.id ? 'fu-selected' : ''} ${ripple === opt.id ? 'fu-ripple' : ''} ${autoHighlightIndex === idx ? 'fu-auto-highlight' : ''}`}
-              onClick={() => handleSelect(opt.id)}
-              style={{ animationDelay: `${0.15 + idx * 0.1}s` }}
-            >
-              {/* Top visual area */}
-              <div className="fu-pitch-option-visual">
-                <div className="fu-pitch-option-icon-wrapper">
-                  {opt.icon}
-                </div>
-                <div className="fu-pitch-option-stats">
-                  {opt.stats.map((stat, si) => (
-                    <div key={si} className="fu-stat-chip">
-                      <span className="fu-stat-value">{stat.value}</span>
-                      <span className="fu-stat-label">{stat.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <div className="fu-fullscreen-content">
+          <GeminiTextReveal text="We are the Ultimate Arms for Training and Placement Support" />
 
-              {/* Content area */}
-              <div className="fu-pitch-option-body">
-                <h3 className="fu-pitch-option-text">{opt.label}</h3>
-                <p className="fu-pitch-option-desc">{opt.desc}</p>
-                <div className="fu-pitch-option-tags">
-                  {opt.features.map((f, fi) => (
-                    <span key={fi} className="fu-feature-tag">{f}</span>
-                  ))}
+          {/* Smart Help Options UI Embedded Directly inside Hero */}
+          <div className="fu-smart-help-stage">
+            <p className="fu-smart-help-question">
+              How <span className="fu-pitch-accent">CipherSchools</span> can help your university?
+            </p>
+            <div className="fu-smart-options-grid">
+              <button 
+                className={`fu-smart-option-card ${selected === 'training' ? 'active' : ''}`}
+                onClick={() => handleSelect('training')}
+              >
+                <div className="fu-smart-card-icon"><BrainCircuit size={22} /></div>
+                <div className="fu-smart-card-body">
+                  <span className="fu-smart-card-title">Training Support</span>
+                  <span className="fu-smart-card-sub">Skilling & Placement Prep</span>
                 </div>
-              </div>
+                <ChevronRight size={18} className="fu-smart-card-arrow" />
+              </button>
 
-              {selected === opt.id && <div className="fu-check-badge"><Sparkles size={16} /></div>}
+              <button 
+                className={`fu-smart-option-card ${selected === 'lms' ? 'active' : ''}`}
+                onClick={() => handleSelect('lms')}
+              >
+                <div className="fu-smart-card-icon"><Laptop size={22} /></div>
+                <div className="fu-smart-card-body">
+                  <span className="fu-smart-card-title">Campus LMS</span>
+                  <span className="fu-smart-card-sub">White-Labeled Management</span>
+                </div>
+                <ChevronRight size={18} className="fu-smart-card-arrow" />
+              </button>
+
+              <button 
+                className={`fu-smart-option-card ${selected === 'assessment' ? 'active' : ''}`}
+                onClick={() => handleSelect('assessment')}
+              >
+                <div className="fu-smart-card-icon"><CheckCircle2 size={22} /></div>
+                <div className="fu-smart-card-body">
+                  <span className="fu-smart-card-title">Assessment Platform</span>
+                  <span className="fu-smart-card-sub">AI-Proctored Testing</span>
+                </div>
+                <ChevronRight size={18} className="fu-smart-card-arrow" />
+              </button>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      {/* ─── RESULT SCREEN (Visible conditionally) ─── */}
-      {step === 'result' && (
-        <div className={`fu-result-page ${isVisible ? 'fu-visible' : ''}`}>
+      {/* Trusted By Top Colleges Marquee */}
+      <TrustedBy />
 
-          {/* Full Screen Text Reveal Hero */}
-          <div ref={refHeroText} className={`fu-fullscreen-hero fu-reveal ${visHeroText ? 'fu-revealed' : ''}`}>
-            <div className="gemini-ambient-glow"></div>
-            <div className="fu-hero-glow-orb orb-1"></div>
-            <div className="fu-hero-glow-orb orb-2"></div>
-
-            <div className="fu-fullscreen-content">
-              <GeminiTextReveal text="We are the Ultimate Arms for Training and Placement Support" />
-            </div>
-          </div>
-
-          {/* Trusted By Top Colleges Marquee */}
-          <TrustedBy />
+      {/* ─── RESULT SCREEN ─── */}
+      <div className={`fu-result-page fu-visible`}>
 
           {/* ── 1. The Shift (Light Theme 2-Card Layout) ── */}
           <section id="shift-section" ref={refShift} className={`fu-sec fu-shift-bento-section fu-reveal ${visShift ? 'fu-revealed' : ''}`}>
@@ -1399,7 +1393,6 @@ const ForUniversities = () => {
           </section>
 
         </div>
-      )}
 
       {/* ── STICKY CTA ── */}
       <div className={`fu-sticky-cta ${showStickyCta ? 'fu-sticky-visible' : ''}`}>
