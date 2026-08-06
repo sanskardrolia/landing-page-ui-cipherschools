@@ -145,7 +145,6 @@ const ForUniversities = () => {
   const [refStack, visStack] = useReveal();
   const [refQuote, visQuote] = useReveal();
   const [refPair, visPair] = useReveal();
-  const [refImages, visImages] = useReveal();
   const [refCta, visCta] = useReveal();
   const [refIndustry, visIndustry] = useReveal();
   const [refDoers, visDoers] = useReveal();
@@ -1339,29 +1338,7 @@ const ForUniversities = () => {
 
 
 
-          {/* ── 7. Image Bento ── */}
-          <section ref={refImages} className={`fu-sec fu-sec-images fu-reveal ${visImages ? 'fu-revealed' : ''}`}>
-            <div className="fu-sec-inner">
-              <div className="fu-img-bento">
-                <div className="fu-img-card fu-img-large">
-                  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="Students collaborating" />
-                  <div className="fu-img-overlay"><span>Build Together</span></div>
-                </div>
-                <div className="fu-img-card">
-                  <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop" alt="Coding" />
-                  <div className="fu-img-overlay"><span>Ship Code</span></div>
-                </div>
-                <div className="fu-img-card">
-                  <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format&fit=crop" alt="Mentorship" />
-                  <div className="fu-img-overlay"><span>Learn from Experts</span></div>
-                </div>
-                <div className="fu-img-card fu-img-wide">
-                  <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1000&auto=format&fit=crop" alt="Campus" />
-                  <div className="fu-img-overlay"><span>Transform Your Campus</span></div>
-                </div>
-              </div>
-            </div>
-          </section>
+
 
           {/* ── 7. CTA ── */}
           <section ref={refCta} className={`fu-sec fu-sec-cta-final fu-reveal ${visCta ? 'fu-revealed' : ''}`}>

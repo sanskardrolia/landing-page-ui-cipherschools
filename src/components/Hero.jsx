@@ -41,8 +41,7 @@ const Hero = ({ onReplay }) => {
           <div className="hero-badge">FREE To Start</div>
 
           <h1 className="hero-h1">
-            <span className="hero-h1-accent">Growth</span> is the<br />
-            destination.
+            <span className="hero-h1-accent">Growth</span> is the destination.
           </h1>
 
           <p className="hero-p">

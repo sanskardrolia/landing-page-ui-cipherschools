@@ -201,7 +201,7 @@ const Navbar = () => {
           title="Currently in Students Section — Click to align top"
         >
           <span className="dot-pulse-orange"></span>
-          <span className="floating-badge-label">Section: <strong>For Students</strong></span>
+          <span className="floating-badge-label"><strong>For Students</strong></span>
         </div>
       )}
 
@@ -212,7 +212,7 @@ const Navbar = () => {
           title="Currently in University Section — Click to align top"
         >
           <span className="dot-pulse-orange"></span>
-          <span className="floating-badge-label">Section: <strong>For University</strong></span>
+          <span className="floating-badge-label"><strong>For University</strong></span>
         </div>
       )}
     </>

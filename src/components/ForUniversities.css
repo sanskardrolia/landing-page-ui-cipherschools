@@ -516,11 +516,11 @@
 
 /* Gemini AI Title Word-by-Word Fluid Reveal */
 .gemini-ai-reveal-title {
-  font-size: 4.4rem;
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
   font-weight: 800;
   line-height: 1.15;
-  letter-spacing: -2px;
-  max-width: 1020px;
+  letter-spacing: -1.5px;
+  max-width: 920px;
   margin: 0 auto 1.5rem;
   display: flex;
   flex-wrap: wrap;

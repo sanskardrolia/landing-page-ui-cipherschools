@@ -36,8 +36,10 @@ const ExplorePrograms = () => {
         
         {/* Section Header */}
         <div className="section-header text-center animate-fade-in">
-          <h2 className="section-title dark-theme-title">Our Top Recommendations</h2>
-          <p className="section-subtitle dark-theme-subtitle">
+          <h2 className="section-title dark-theme-title" style={{ color: '#FFFFFF' }}>
+            Our Top <span style={{ color: '#F3912E' }}>Recommendations</span>
+          </h2>
+          <p className="section-subtitle dark-theme-subtitle" style={{ color: '#9CA3AF' }}>
             Join thousands of learners building production-ready projects across in-demand technologies.
           </p>
         </div>
