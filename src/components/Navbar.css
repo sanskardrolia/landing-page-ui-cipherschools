@@ -808,3 +808,41 @@
   transform: scale(1.1);
   color: #F3912E;
 }
+
+/* ═══════════════════════════════════════════
+   STRICT MOBILE UI: LOGO & HAMBURGER ONLY
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .desktop-only,
+  .navbar-links,
+  .navbar-actions,
+  .cs-guide-me-pill,
+  .cs-header-search-wrap,
+  .cs-header-right-actions,
+  .active-section-indicator-badge {
+    display: none !important;
+  }
+
+  .navbar-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 1rem !important;
+  }
+
+  .navbar-logo-wrap {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background: transparent;
+    border: none;
+    color: #111827;
+    cursor: pointer;
+  }
+}

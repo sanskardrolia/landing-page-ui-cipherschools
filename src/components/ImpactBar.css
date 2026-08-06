@@ -224,38 +224,40 @@
 /* ── 3D Floating Metallic Coins Mockup Graphic (Light Theme) ── */
 .coins-mockup-container {
   position: absolute;
-  right: -5px;
-  bottom: -15px;
-  width: 210px;
-  height: 360px;
+  right: 0;
+  bottom: 0;
+  width: 180px;
+  height: 320px;
   pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
 }
 
 .coin-3d {
   position: absolute;
-  width: 96px;
-  height: 96px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   background: linear-gradient(145deg, #FFFFFF 0%, #F3F4F6 55%, #E5E7EB 100%);
-  border: 2px solid rgba(243, 145, 46, 0.55);
+  border: 1.5px solid rgba(243, 145, 46, 0.45);
   box-shadow: 
-    -10px 15px 25px rgba(0, 0, 0, 0.1),
+    -8px 12px 20px rgba(0, 0, 0, 0.08),
     inset 0 2px 4px rgba(255, 255, 255, 0.9),
-    0 0 18px rgba(243, 145, 46, 0.2);
+    0 0 14px rgba(243, 145, 46, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: perspective(600px) rotateY(-22deg) rotateX(15deg) rotateZ(-12deg);
+  transform: perspective(600px) rotateY(-18deg) rotateX(12deg) rotateZ(-10deg);
   transition: transform 0.4s ease;
 }
 
 .card-tall-hero:hover .coin-3d {
-  transform: perspective(600px) rotateY(-15deg) rotateX(10deg) rotateZ(-6deg) scale(1.04);
+  transform: perspective(600px) rotateY(-12deg) rotateX(8deg) rotateZ(-4deg) scale(1.04);
 }
 
 .coin-inner {
-  width: 58px;
-  height: 58px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(243, 145, 46, 0.18) 0%, rgba(255, 255, 255, 0.95) 80%);
   color: #F3912E;
@@ -263,31 +265,31 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(243, 145, 46, 0.3);
-  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Staggered Coins Diagonal Stack Position */
+/* Staggered Coins Position (Pushed to bottom-right corner behind text) */
 .coin-1 {
-  bottom: 15px;
-  right: 10px;
+  bottom: -10px;
+  right: -10px;
   z-index: 4;
 }
 
 .coin-2 {
-  bottom: 85px;
-  right: 48px;
+  bottom: 50px;
+  right: 20px;
   z-index: 3;
 }
 
 .coin-3 {
-  bottom: 155px;
-  right: 86px;
+  bottom: 110px;
+  right: 50px;
   z-index: 2;
 }
 
 .coin-4 {
-  bottom: 225px;
-  right: 124px;
+  bottom: 170px;
+  right: 80px;
   z-index: 1;
 }
 
@@ -306,6 +308,7 @@
   }
   .coins-mockup-container {
     height: 240px;
+    opacity: 0.5;
   }
 }
 
@@ -319,12 +322,45 @@
   .bento-card.card-tall-hero {
     flex-direction: column;
     align-items: flex-start;
-    min-height: 380px;
+    min-height: auto;
+    padding: 2.25rem 1.5rem;
+    overflow: hidden;
+  }
+  .tall-card-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
   }
   .card-metric-num {
     font-size: 3rem;
   }
   .text-hero-num {
-    font-size: 3.5rem;
+    font-size: 3.25rem;
   }
+  .impact-domain-pills-row {
+    max-width: 100% !important;
+  }
+  .impact-cta-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .coins-mockup-container {
+    width: 140px;
+    height: 220px;
+    right: -20px;
+    bottom: -20px;
+    opacity: 0.25; /* Subtle background glow accent on mobile so text is 100% visible */
+  }
+  .coin-3d {
+    width: 60px;
+    height: 60px;
+  }
+  .coin-inner {
+    width: 36px;
+    height: 36px;
+  }
+  .coin-1 { bottom: -10px; right: -10px; }
+  .coin-2 { bottom: 40px; right: 15px; }
+  .coin-3 { bottom: 90px; right: 40px; }
+  .coin-4 { bottom: 140px; right: 65px; }
 }

@@ -359,8 +359,9 @@
 }
 
 .fu-smart-option-card {
-  background: rgba(24, 24, 27, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  background: rgba(24, 24, 27, 0.85);
+  border: 1.5px solid rgba(243, 145, 46, 0.3);
   border-radius: 4px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -369,16 +370,33 @@
   cursor: pointer;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.2s ease, 
+              border-color 0.2s ease, 
+              background 0.2s ease;
   text-align: left;
+  user-select: none;
+  animation: optionCardPulse 4s infinite ease-in-out;
+}
+
+@keyframes optionCardPulse {
+  0%, 100% { border-color: rgba(243, 145, 46, 0.3); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+  50% { border-color: rgba(243, 145, 46, 0.65); box-shadow: 0 8px 25px rgba(243, 145, 46, 0.25); }
 }
 
 .fu-smart-option-card:hover,
 .fu-smart-option-card.active {
-  background: rgba(243, 145, 46, 0.14);
+  background: rgba(243, 145, 46, 0.16);
   border-color: #F3912E;
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(243, 145, 46, 0.2);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(243, 145, 46, 0.32), 0 0 20px rgba(243, 145, 46, 0.18);
+}
+
+/* Tactile Spring Press Compression Animation */
+.fu-smart-option-card:active {
+  transform: scale(0.96) translateY(2px) !important;
+  box-shadow: 0 4px 15px rgba(243, 145, 46, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  border-color: #F3912E !important;
 }
 
 .fu-smart-card-icon {
@@ -386,12 +404,20 @@
   height: 44px;
   border-radius: 4px;
   background: rgba(243, 145, 46, 0.15);
-  border: 1px solid rgba(243, 145, 46, 0.3);
+  border: 1px solid rgba(243, 145, 46, 0.35);
   color: #F3912E;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, color 0.3s ease;
+}
+
+.fu-smart-option-card:hover .fu-smart-card-icon {
+  background: #F3912E;
+  color: #FFFFFF;
+  border-color: #F3912E;
+  transform: scale(1.1) rotate(5deg);
 }
 
 .fu-smart-card-body {
@@ -414,14 +440,14 @@
 }
 
 .fu-smart-card-arrow {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.35);
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .fu-smart-option-card:hover .fu-smart-card-arrow,
 .fu-smart-option-card.active .fu-smart-card-arrow {
   color: #F3912E;
-  transform: translateX(4px);
+  transform: translateX(6px) scale(1.15);
 }
 
 @media (max-width: 900px) {
@@ -4944,4 +4970,169 @@
   max-width: 650px;
   margin: 0;
   line-height: 1.5;
+}
+
+/* ── Mobile UI Optimizations: 16:9 Widescreen Fit for LMS Mockup ── */
+@media (max-width: 640px) {
+  .lms-replica-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    margin-top: 1.25rem;
+  }
+
+  .lms-replica-topbar {
+    min-width: 100% !important;
+    height: 32px;
+    padding: 0 0.5rem;
+  }
+
+  .lms-logo-icon {
+    width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+  }
+
+  .lms-logo-text {
+    font-size: 0.65rem;
+  }
+
+  .lms-hamburger-btn {
+    margin-right: 6px;
+    padding: 2px;
+  }
+
+  .lms-hamburger-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .lms-bell-box svg,
+  .lms-theme-toggle svg,
+  .lms-avatar-circle svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .lms-avatar-circle {
+    width: 20px;
+    height: 20px;
+  }
+
+  .lms-user-name {
+    font-size: 0.6rem;
+  }
+
+  .lms-replica-body {
+    min-width: 100% !important;
+    min-height: unset !important;
+    flex: 1;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    overflow: hidden;
+  }
+
+  .lms-replica-sidebar {
+    padding: 0.4rem 0;
+    align-items: center;
+  }
+
+  .lms-menu-item {
+    padding: 6px;
+    justify-content: center;
+  }
+
+  .lms-menu-item span {
+    display: none;
+  }
+
+  .lms-menu-item svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .lms-menu-item.active {
+    margin: 0 4px;
+    padding: 5px;
+  }
+
+  .lms-replica-right-col {
+    display: none !important;
+  }
+
+  .lms-replica-workspace {
+    padding: 0.4rem;
+    overflow: hidden;
+  }
+
+  .lms-banner-card {
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .lms-banner-title {
+    font-size: 0.65rem;
+    margin-bottom: 2px;
+  }
+
+  .lms-banner-sub {
+    font-size: 0.55rem;
+    line-height: 1.2;
+  }
+
+  .lms-grid-2col {
+    gap: 0.35rem;
+  }
+
+  .lms-course-card {
+    padding: 0.4rem;
+  }
+
+  .lms-course-title {
+    font-size: 0.6rem;
+    margin-bottom: 2px;
+  }
+
+  .lms-course-meta {
+    font-size: 0.525rem;
+  }
+
+  .lms-progress-bar {
+    height: 3px;
+  }
+
+  .fu-outcome-hero-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .fu-hero-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .fu-action-btn-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  .fu-shuffle-domain-btn,
+  .fu-solution-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .beyond-edtech-footer-banner {
+    height: 140px;
+  }
+
+  .beyond-watermark-text {
+    font-size: clamp(1.8rem, 7.5vw, 3.5rem);
+  }
 }
