@@ -23,23 +23,8 @@
   pointer-events: none;
 }
 
-/* Isometric Grid */
 .hero-bg-isometric-grid {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background-image: 
-    linear-gradient(rgba(243, 145, 46, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(243, 145, 46, 0.08) 1px, transparent 1px);
-  background-size: 60px 60px;
-  transform: rotateX(60deg) rotateZ(-45deg);
-  transform-origin: center center;
-  z-index: 0;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
+  display: none !important;
 }
 
 /* Center-aligned Hero Layout */

@@ -61,6 +61,11 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* ── #BEYOND ED-TECH Large Interactive Watermark Banner ── */}
+      <div className="beyond-edtech-footer-banner">
+        <div className="beyond-watermark-text">#BEYOND ED-TECH</div>
+      </div>
     </footer>
   );
 };

@@ -1,0 +1,323 @@
+/* ===================================================
+   BOOK MEETING MODAL – Notion Studio Aesthetic
+   =================================================== */
+
+.bm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 15, 18, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: bmFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes bmFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.bm-modal-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 540px;
+  padding: 2.25rem 2.5rem;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  animation: bmSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes bmSlideUp {
+  from { transform: translateY(16px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Close Button */
+.bm-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #6B7280;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bm-close-btn:hover {
+  background: #E5E7EB;
+  color: #111827;
+}
+
+/* Modal Header */
+.bm-modal-header {
+  margin-bottom: 1.75rem;
+}
+
+.bm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(243, 145, 46, 0.1);
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  color: #F3912E;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.725rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.bm-badge-icon {
+  color: #F3912E;
+}
+
+.bm-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.5px;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.bm-subtitle {
+  font-size: 0.9rem;
+  color: #6B7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Form Layout */
+.bm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.bm-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bm-input-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.bm-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.bm-field-icon {
+  position: absolute;
+  left: 12px;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.bm-input-wrapper input {
+  width: 100%;
+  padding: 0.65rem 0.85rem 0.65rem 2.4rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #111827;
+  background: #FFFFFF;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.bm-input-wrapper input:focus {
+  border-color: #F3912E;
+  box-shadow: 0 0 0 3px rgba(243, 145, 46, 0.15);
+}
+
+.bm-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Designation Option Pills */
+.bm-designation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.bm-desig-pill {
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bm-desig-pill:hover {
+  background: #E5E7EB;
+  color: #111827;
+}
+
+.bm-desig-pill.active {
+  background: #F3912E;
+  color: #FFFFFF;
+  border-color: #F3912E;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(243, 145, 46, 0.25);
+}
+
+.bm-custom-desig {
+  animation: bmFadeIn 0.2s ease-out;
+}
+
+/* Time Guarantee Notice */
+.bm-time-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.bm-clock-icon {
+  color: #D97706;
+  flex-shrink: 0;
+}
+
+/* Submit Button */
+.bm-submit-btn {
+  background: #F3912E;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.3);
+  margin-top: 0.5rem;
+}
+
+.bm-submit-btn:hover {
+  background: #E07E1B;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(243, 145, 46, 0.4);
+}
+
+/* Success View */
+.bm-success-state {
+  text-align: center;
+  padding: 1.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bm-success-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #D1FAE5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.bm-success-icon {
+  color: #059669;
+}
+
+.bm-success-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.bm-success-desc {
+  font-size: 0.95rem;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.bm-success-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #374151;
+  padding: 12px 18px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  text-align: left;
+  line-height: 1.4;
+  margin: 0.5rem 0;
+}
+
+.bm-done-btn {
+  background: #111827;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.bm-done-btn:hover {
+  background: #1F2937;
+}
+
+/* Responsive adjustment */
+@media (max-width: 600px) {
+  .bm-modal-card {
+    padding: 1.75rem 1.5rem;
+  }
+  .bm-input-row {
+    grid-template-columns: 1fr;
+  }
+}

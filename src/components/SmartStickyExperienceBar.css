@@ -1,0 +1,143 @@
+/* ===================================================
+   SMART NOTION STICKY BAR – Floating & Docking CTA
+   =================================================== */
+
+.smart-sticky-bar-wrapper {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  will-change: transform, opacity;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+/* Active Floating State */
+.smart-sticky-bar-wrapper.floating-active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Smart Docked / Merged State (As user reaches section) */
+.smart-sticky-bar-wrapper.merged-docked {
+  opacity: 0;
+  transform: translateX(-50%) translateY(24px) scale(0.95);
+  pointer-events: none;
+}
+
+/* Notion-Style Bar Frame */
+.smart-sticky-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(18, 18, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 8px 12px 8px 18px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  color: #FFFFFF;
+}
+
+/* Left Label */
+.sticky-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #D1D5DB;
+  white-space: nowrap;
+}
+
+.sticky-sparkle {
+  color: #F3912E;
+  flex-shrink: 0;
+}
+
+/* Action Buttons Group */
+.sticky-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sticky-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 15px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.sticky-action-btn.btn-student {
+  background: rgba(243, 145, 46, 0.15);
+  border-color: rgba(243, 145, 46, 0.35);
+  color: #F3912E;
+}
+
+.sticky-action-btn.btn-student:hover {
+  background: #F3912E;
+  color: #FFFFFF;
+  border-color: #F3912E;
+  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.3);
+}
+
+.sticky-action-btn.btn-university {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #F3F4F6;
+}
+
+.sticky-action-btn.btn-university:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Jump Hint Arrow */
+.sticky-jump-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.sticky-jump-hint:hover {
+  color: #FFFFFF;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .smart-sticky-bar-wrapper {
+    bottom: 16px;
+    width: 92%;
+  }
+
+  .smart-sticky-bar-container {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .sticky-bar-label {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.775rem;
+  }
+}

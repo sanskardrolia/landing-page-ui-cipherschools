@@ -172,3 +172,50 @@
     text-align: center;
   }
 }
+
+/* ===================================================
+   #BEYOND ED-TECH Large Interactive Watermark Banner
+   =================================================== */
+
+.beyond-edtech-footer-banner {
+  position: relative;
+  height: 180px;
+  background: #FAF8F5;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #E5E7EB;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  cursor: default;
+  transition: background-color 0.4s ease;
+}
+
+.beyond-edtech-footer-banner:hover {
+  background: #F3F4F6;
+}
+
+.beyond-watermark-text {
+  font-size: clamp(2.5rem, 10.5vw, 10.5rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #D1D5DB;
+  -webkit-text-stroke: 1.5px rgba(243, 145, 46, 0.25);
+  white-space: nowrap;
+  max-width: 100%;
+  pointer-events: none;
+  user-select: none;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, color, letter-spacing;
+}
+
+.beyond-edtech-footer-banner:hover .beyond-watermark-text {
+  color: #111827;
+  -webkit-text-stroke: 1.5px #F3912E;
+  letter-spacing: 0.14em;
+  transform: scale(1.03);
+  text-shadow: 0 10px 30px rgba(243, 145, 46, 0.15);
+}

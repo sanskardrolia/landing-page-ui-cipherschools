@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import './MentorsSection.css';
 
 const MENTOR_PHOTOS = [
@@ -13,123 +14,60 @@ const MENTOR_PHOTOS = [
 ];
 
 const MentorsSection = () => {
+  const row1Mentors = [...MENTOR_PHOTOS, ...MENTOR_PHOTOS];
+  const row2Mentors = [...MENTOR_PHOTOS.slice().reverse(), ...MENTOR_PHOTOS.slice().reverse()];
 
-  // Column 1 Track Items (Only Mentor Photo Cards)
-  const col1Items = [
-    MENTOR_PHOTOS[0],
-    MENTOR_PHOTOS[1],
-    MENTOR_PHOTOS[2],
-    MENTOR_PHOTOS[3],
-    MENTOR_PHOTOS[4],
-  ];
-
-  // Column 2 Track Items (Only Mentor Photo Cards)
-  const col2Items = [
-    MENTOR_PHOTOS[5],
-    MENTOR_PHOTOS[6],
-    MENTOR_PHOTOS[7],
-    MENTOR_PHOTOS[0],
-    MENTOR_PHOTOS[2],
-  ];
-
-  // Column 3 Track Items (Only Mentor Photo Cards)
-  const col3Items = [
-    MENTOR_PHOTOS[2],
-    MENTOR_PHOTOS[3],
-    MENTOR_PHOTOS[4],
-    MENTOR_PHOTOS[1],
-    MENTOR_PHOTOS[5],
-  ];
+  const scrollToEcosystem = () => {
+    const el = document.getElementById('ecosystem');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   return (
     <section className="mentors-section section">
       <div className="container">
-        <div className="mentors-split-layout">
-          
-          {/* ── Left Half: Text & CTA ── */}
-          <div className="mentors-left-col">
-            
-            <h2 className="mentors-headline">
-              Learn From Industry Professionals
-            </h2>
-            
-            <p className="mentors-subheadline">
-              Get guided by top engineers and leaders from Google, Meta, Netflix, Amazon, and Apple who have been in your shoes.
-            </p>
-
-            <button className="start-free-cta-btn">
-              Start Learning for FREE
-            </button>
-
-          </div>
-
-          {/* ── Right Half: Auto-Scrolling Vertical Container Box ── */}
-          <div className="mentors-right-col">
-            <div className="vertical-scroll-container">
-              <div className="scroll-v-fade top-fade"></div>
-              <div className="scroll-v-fade bottom-fade"></div>
-
-              <div className="vertical-grid-tracks">
-                
-                {/* Track 1: Scroll UP */}
-                <div className="v-track track-up">
-                  {[...col1Items, ...col1Items].map((mentor, index) => (
-                    <div className="track-item-wrapper" key={`col1-${index}`}>
-                      <div className="mentor-photo-card">
-                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
-                        <div className="company-badge-icon">
-                          <img src={mentor.logo} alt={mentor.company} />
-                        </div>
-                        <div className="mentor-overlay-info">
-                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
-                          <p className="mentor-overlay-role">{mentor.role}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Track 2: Scroll DOWN */}
-                <div className="v-track track-down">
-                  {[...col2Items, ...col2Items].map((mentor, index) => (
-                    <div className="track-item-wrapper" key={`col2-${index}`}>
-                      <div className="mentor-photo-card">
-                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
-                        <div className="company-badge-icon">
-                          <img src={mentor.logo} alt={mentor.company} />
-                        </div>
-                        <div className="mentor-overlay-info">
-                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
-                          <p className="mentor-overlay-role">{mentor.role}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Track 3: Scroll UP */}
-                <div className="v-track track-up">
-                  {[...col3Items, ...col3Items].map((mentor, index) => (
-                    <div className="track-item-wrapper" key={`col3-${index}`}>
-                      <div className="mentor-photo-card">
-                        <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
-                        <div className="company-badge-icon">
-                          <img src={mentor.logo} alt={mentor.company} />
-                        </div>
-                        <div className="mentor-overlay-info">
-                          <h4 className="mentor-overlay-name">{mentor.name}</h4>
-                          <p className="mentor-overlay-role">{mentor.role}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-              </div>
-            </div>
-          </div>
-
+        
+        {/* ── Section Header ── */}
+        <div className="mentors-header-block">
+          <span className="mentors-eyebrow">INDUSTRY MENTORS</span>
+          <h2 className="mentors-headline">
+            Learn From Industry Professionals
+          </h2>
+          <p className="mentors-subheadline">
+            Get guided by top engineers and leaders from Google, Meta, Netflix, Amazon, and Apple who have been in your shoes.
+          </p>
+          <button className="start-free-cta-btn" onClick={scrollToEcosystem}>
+            Start Learning for FREE <ArrowRight size={18} />
+          </button>
         </div>
+
+      </div>
+
+      {/* ── Full-Width Horizontal Infinite Scroll Container ── */}
+      <div className="horizontal-scroll-stage">
+        {/* Edge Fade Shadows */}
+        <div className="scroll-h-fade left-fade"></div>
+        <div className="scroll-h-fade right-fade"></div>
+
+        {/* Single Row: Infinite Horizontal Marquee */}
+        <div className="horizontal-marquee-row row-left">
+          <div className="marquee-track">
+            {row1Mentors.map((mentor, index) => (
+              <div className="mentor-photo-card" key={`row1-${index}`}>
+                <img src={mentor.avatar} alt={mentor.name} className="mentor-img" />
+                <div className="company-badge-icon">
+                  <img src={mentor.logo} alt={mentor.company} />
+                </div>
+                <div className="mentor-overlay-info">
+                  <h4 className="mentor-overlay-name">{mentor.name}</h4>
+                  <p className="mentor-overlay-role">{mentor.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );

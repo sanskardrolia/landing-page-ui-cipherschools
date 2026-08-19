@@ -1,116 +1,193 @@
 /* ===================================================
-   IMPACT SECTION – Bento Grid Light Theme (White BG)
+   IMPACT HERO BAR – Modern Light Theme Bento Grid
    =================================================== */
 
-.impact-section.light-bento-theme {
-  background-color: #FAFAFA;
+.impact-section.modern-bento-light-theme {
+  background-color: #FAF8F5;
+  background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
   color: #111827;
-  padding: 6rem 2rem;
+  padding: 9.5rem 3rem 8rem;
   position: relative;
   overflow: hidden;
 }
 
-.impact-parallax-bg {
-  position: absolute;
-  top: -30%;
-  left: -20%;
-  width: 140%;
-  height: 160%;
-  background: 
-    radial-gradient(circle at 20% 40%, rgba(243, 145, 46, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 60%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
+.impact-grid-pattern-bg {
+  display: none !important;
 }
 
-/* ── Bento Grid 3-Column Layout ── */
-.bento-impact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.25fr;
-  gap: 1.25rem;
-  max-width: 1200px;
-  margin: 0 auto;
+/* ── Notion/Trello Centered Hero Header ── */
+.notion-hero-header {
+  text-align: center;
+  max-width: 940px;
+  margin: 0 auto 7rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
-.impact-in-view.bento-impact-grid {
+.notion-hero-header.impact-in-view {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* ── Columns & Card Base ── */
-.bento-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.bento-col.col-tall {
-  height: 100%;
-}
-
-.bento-card {
-  border-radius: 4px;
-  padding: 2.25rem 2rem;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
-}
-
-/* Standard White Bento Card */
-.bento-card.card-dark {
+/* Top Pill Badge */
+.notion-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  height: 215px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: #374151;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 2.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
 
-.bento-card.card-dark:hover {
-  border-color: rgba(243, 145, 46, 0.45);
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+.notion-pill-badge:hover {
+  border-color: #F3912E;
+  color: #F3912E;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(243, 145, 46, 0.18);
 }
 
-/* Tall Hero Right Card (Soft Warm White Gradient) */
-.bento-card.card-tall-hero {
-  background: linear-gradient(145deg, #FFFFFF 0%, #FFF7ED 50%, #FFEDD5 100%);
-  border: 1px solid rgba(243, 145, 46, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  height: 100%;
-  min-height: 442px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
-  position: relative;
+.notion-badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #F3912E;
+  box-shadow: 0 0 8px rgba(243, 145, 46, 0.6);
 }
 
-.bento-card.card-tall-hero:hover {
-  border-color: rgba(243, 145, 46, 0.6);
-  box-shadow: 0 20px 45px rgba(243, 145, 46, 0.15);
-  transform: translateY(-4px);
-}
-
-/* ── Dynamic Metrics & Typography ── */
-.card-metric-num {
-  font-size: 3.6rem;
+.notion-badge-arrow {
+  color: #F3912E;
   font-weight: 800;
+}
+
+/* Main Headline */
+.impact-headline-main {
+  font-size: clamp(2.8rem, 5.6vw, 4.8rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  margin-bottom: 2.75rem;
+}
+
+.headline-black-italic {
+  font-weight: 900;
+  font-style: italic;
   color: #111827;
-  line-height: 1;
-  letter-spacing: -1.5px;
 }
 
-.text-brand-orange {
-  color: #F3912E !important;
-  font-size: 2.6rem;
+.headline-orange-italic {
+  font-weight: 900;
+  font-style: italic;
+  color: #F3912E;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.notion-paragraph-wrapper {
+  max-width: 840px;
+  margin: 0 auto 3.25rem auto;
+}
+
+.impact-subheading-text {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #4B5563;
+  font-weight: 400;
+  cursor: pointer;
+  text-align: center;
+}
+
+.impact-subheading-text strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.text-brand-orange-bold {
+  color: #F3912E;
   font-weight: 800;
+}
+
+.text-italic-muted {
+  font-style: italic;
+  color: #4B5563;
+}
+
+/* ── Thanos Dust Disintegration & Materialize Reveal ── */
+.thanos-container {
+  display: block;
+}
+
+.thanos-word-span {
+  display: inline-block;
+  position: relative;
+  white-space: pre-wrap;
+  opacity: 0;
+  transform: translateY(18px) scale(0.92);
+  filter: blur(8px);
+  will-change: transform, opacity, filter;
+}
+
+.thanos-in-view .thanos-word-span {
+  animation: thanosDustMaterialize 0.75s cubic-bezier(0.16, 1, 0.3, 1) var(--delay) forwards;
+}
+
+@keyframes thanosDustMaterialize {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.9) rotate(3deg);
+    filter: blur(10px);
+    text-shadow: 0 0 12px rgba(243, 145, 46, 0.6);
+  }
+  60% {
+    text-shadow: 0 0 8px rgba(243, 145, 46, 0.4);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: blur(0);
+    text-shadow: none;
+  }
+}
+
+.thanos-word-span.thanos-snapping {
+  animation: thanosDustDisintegrate 1.4s cubic-bezier(0.25, 1, 0.5, 1) var(--delay) forwards !important;
+}
+
+@keyframes thanosDustDisintegrate {
+  0% { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+  100% { opacity: 0; filter: blur(14px); transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.2); }
+}
+
+.interactive-accent-link {
+  color: #F3912E;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(243, 145, 46, 0.4);
+  transition: all 0.2s ease;
+}
+
+.interactive-accent-link:hover {
+  text-decoration-color: #F3912E;
+  color: #E07B19;
+}
+
+.text-muted {
+  color: #9CA3AF;
 }
 
 .text-orange-highlight {
@@ -119,248 +196,864 @@
   font-weight: 700;
 }
 
-.text-hero-num {
-  font-size: 4.2rem;
-  color: #111827;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -2px;
+/* ── CTA Action Group ── */
+.notion-cta-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
-.card-label-block {
+.notion-primary-btn {
+  background: #F3912E;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.95rem 2.25rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.notion-primary-btn:hover {
+  background: #E07B19;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(243, 145, 46, 0.5);
+}
+
+.notion-secondary-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.notion-pill-btn {
+  background: #FFFFFF;
+  color: #374151;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 0.85rem 1.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.notion-pill-btn:hover {
+  border-color: #F3912E;
+  color: #F3912E;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Modern Light Theme Bento Grid Dock (All-in-One Frame) ── */
+.modern-light-bento-dock {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.modern-light-bento-dock.impact-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Unified Master Bento Outer Frame (Inspired by reference image layout) */
+.modern-bento-container-frame {
+  background: #EFECE6;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 4px;
+  padding: 1.25rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.03);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Individual Bento Cell Cards */
+.bento-cell {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+}
+
+.bento-cell:hover {
+  transform: translateY(-3px);
+  border-color: rgba(243, 145, 46, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
+}
+
+.bento-cell-tag {
+  font-size: 0.675rem;
+  font-weight: 800;
+  color: #6B7280;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bento-cell-tag.tag-orange {
+  color: #F3912E;
+}
+
+.bento-stat-num {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-bottom: 0.5rem;
+}
+
+.bento-stat-num.inline {
+  display: inline-block;
+}
+
+.bento-cell-body h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.bento-cell-body p {
+  font-size: 0.825rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cell-zero {
+  border-top: 3px solid #F3912E;
+}
+
+/* Practice Card */
+.bento-practice-header {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.bento-pill-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.bento-pill-tags span {
+  background: #F3F4F6;
+  color: #374151;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.bento-pill-tags .pill-orange {
+  background: rgba(243, 145, 46, 0.15);
+  color: #F3912E;
+}
+
+.bento-practice-desc {
+  font-size: 0.825rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Domains Card */
+.bento-domains-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.domains-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.bento-domain-pills-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.bento-domain-pill {
+  background: #F3F4F6;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #374151;
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* WhatsApp Community Bento Cell */
+.cell-whatsapp {
+  border-top: 3px solid #25D366;
+  background: linear-gradient(135deg, rgba(37, 211, 102, 0.04) 0%, #FFFFFF 100%);
+}
+
+.bento-cell-tag.tag-whatsapp {
+  color: #128C7E;
+}
+
+.bento-whatsapp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.whatsapp-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.whatsapp-badge-live {
+  background: rgba(37, 211, 102, 0.12);
+  color: #128C7E;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 211, 102, 0.3);
+}
+
+.bento-whatsapp-desc {
+  font-size: 0.825rem;
+  color: #6B7280;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.5;
+}
+
+.bento-whatsapp-btn {
+  background: #25D366;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+  transition: all 0.25s ease;
   margin-top: auto;
 }
 
-.card-metric-label {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1F2937;
-  display: block;
-  margin-bottom: 3px;
+.bento-whatsapp-btn:hover {
+  background: #128C7E;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
 }
 
-.flex-label {
+@media (max-width: 900px) {
+  .modern-bento-container-frame {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .modern-bento-container-frame {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===================================================
+   HERO SURROUNDING FLOATING MOCKUPS (Learn, Video, Code, Resume, Career)
+   =================================================== */
+
+.notion-hero-header {
+  position: relative;
+}
+
+.hero-floating-mockups-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1280px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-float-card {
+  position: absolute;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 170px;
+  max-width: 210px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  user-select: none;
+  text-align: left;
+}
+
+.hero-float-card:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  border-color: #F3912E;
+}
+
+/* Float Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes floatMedium {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(-1.5deg); }
+}
+
+@keyframes floatFast {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(1deg); }
+}
+
+.float-anim-slow { animation: floatSlow 6s ease-in-out infinite; }
+.float-anim-medium { animation: floatMedium 5s ease-in-out infinite; }
+.float-anim-fast { animation: floatFast 4.5s ease-in-out infinite; }
+
+/* Positions Around Hero Title */
+.hero-float-card.card-learn {
+  top: -15px;
+  left: -80px;
+}
+
+.hero-float-card.card-video {
+  top: 5px;
+  right: -80px;
+}
+
+.hero-float-card.card-code {
+  top: 42%;
+  left: -120px;
+}
+
+.hero-float-card.card-resume {
+  top: 45%;
+  right: -120px;
+}
+
+.hero-float-card.card-career {
+  bottom: 10px;
+  right: -60px;
+}
+
+/* Inner Micro Elements */
+.float-card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.float-card-icon-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.float-card-icon-box.orange { background: rgba(243, 145, 46, 0.12); color: #F3912E; }
+.float-card-icon-box.purple { background: rgba(139, 92, 246, 0.12); color: #8B5CF6; }
+.float-card-icon-box.blue { background: rgba(59, 130, 246, 0.12); color: #3B82F6; }
+.float-card-icon-box.emerald { background: rgba(16, 185, 129, 0.12); color: #10B981; }
+.float-card-icon-box.amber { background: rgba(245, 158, 11, 0.12); color: #D97706; }
+
+.float-card-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #9CA3AF;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.float-card-title {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.float-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 2px 0;
+}
+
+.float-progress-fill {
+  height: 100%;
+  background: #F3912E;
+  border-radius: 2px;
+}
+
+.float-card-meta {
+  font-size: 0.7rem;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+.float-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.live-dot-red {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #EF4444;
+  box-shadow: 0 0 6px #EF4444;
+}
+
+.float-card-sub-row {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.icon-orange {
-  color: #F3912E;
-}
-
-.card-subtext {
-  font-size: 0.85rem;
-  color: #6B7280;
-  margin: 0;
-  font-weight: 400;
-  line-height: 1.35;
-}
-
-.tall-card-title {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #111827;
-  margin: 0.6rem 0 1rem 0;
-  letter-spacing: -0.3px;
-}
-
-/* Domain Pills */
-.impact-domain-pills-row {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-  max-width: 240px;
-  position: relative !important;
-  z-index: 5;
-  margin-top: 0.5rem;
-}
-
-.impact-domain-pill {
-  position: relative !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  background: rgba(243, 145, 46, 0.12) !important;
-  color: #F3912E !important;
-  border: 1px solid rgba(243, 145, 46, 0.3) !important;
-  padding: 6px 12px !important;
-  border-radius: 4px !important;
-  font-size: 0.775rem !important;
-  font-weight: 600 !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  transform: none !important;
-}
-
-/* Impact Bento CTA Button */
-.impact-cta-btn {
-  margin-top: 1.5rem;
-  position: relative;
-  z-index: 10;
-  background: var(--primary);
-  color: #FFFFFF;
-  border: none;
-  padding: 0.8rem 1.4rem;
+.float-sub-chip {
+  font-size: 0.675rem;
+  background: #F3F4F6;
+  color: #4B5563;
+  padding: 2px 6px;
   border-radius: 4px;
+  font-weight: 600;
+}
+
+.float-rating-chip {
+  font-size: 0.675rem;
+  color: #D97706;
   font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 20px rgba(243, 145, 46, 0.3);
+}
+
+.float-code-snippet {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: #334155;
+}
+
+.float-test-passed-tag {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  font-size: 0.685rem;
+  font-weight: 700;
+  color: #059669;
 }
 
-.impact-cta-btn:hover {
-  background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(243, 145, 46, 0.45);
+.float-score-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* ── 3D Floating Metallic Coins Mockup Graphic (Light Theme) ── */
-.coins-mockup-container {
+.float-score-num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.float-percentile-pill {
+  font-size: 0.65rem;
+  background: #D1FAE5;
+  color: #065F46;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.float-package-pill {
+  font-size: 0.725rem;
+  background: rgba(243, 145, 46, 0.1);
+  color: #D97706;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+/* ── Mobile / Tablet Responsive Adjustments ── */
+@media (max-width: 1240px) {
+  .hero-floating-mockups-wrapper {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    pointer-events: auto;
+  }
+
+  .hero-float-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    min-width: 140px;
+    max-width: 180px;
+    animation: none !important;
+  }
+}
+
+/* ===================================================
+   NOTION STUDIO HERO BANNER (3D App Tile + Corner Folder Cards)
+   =================================================== */
+
+.notion-app-icon-tile {
+  width: 64px;
+  height: 64px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.notion-app-icon-tile:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 20px 42px rgba(243, 145, 46, 0.22);
+}
+
+.app-tile-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  width: 26px;
+  height: 26px;
+}
+
+.app-tile-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.app-tile-dot.dot-orange { background: #F3912E; box-shadow: 0 0 6px rgba(243, 145, 46, 0.6); }
+.app-tile-dot.dot-dark { background: #111827; }
+
+/* Wrapper Positioning Surrounding Hero */
+.notion-hero-banner-wrapper {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 180px;
-  height: 320px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1380px;
+  height: 100%;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.85;
 }
 
-.coin-3d {
+.notion-banner-card {
   position: absolute;
-  width: 76px;
-  height: 76px;
+  pointer-events: auto;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  user-select: none;
+  text-align: left;
+}
+
+.notion-banner-card:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* 1. Yellow Post-It Sticky Note (Top-Left) */
+.notion-banner-card.card-postit {
+  top: -45px;
+  left: -140px;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  border-radius: 4px;
+  padding: 14px 16px;
+  width: 200px;
+  box-shadow: 0 12px 28px rgba(217, 119, 6, 0.12);
+  transform: rotate(-3deg);
+}
+
+.postit-pin {
+  width: 9px;
+  height: 9px;
+  background: #EF4444;
   border-radius: 50%;
-  background: linear-gradient(145deg, #FFFFFF 0%, #F3F4F6 55%, #E5E7EB 100%);
-  border: 1.5px solid rgba(243, 145, 46, 0.45);
-  box-shadow: 
-    -8px 12px 20px rgba(0, 0, 0, 0.08),
-    inset 0 2px 4px rgba(255, 255, 255, 0.9),
-    0 0 14px rgba(243, 145, 46, 0.15);
+  margin: 0 auto 8px auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.postit-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #78350F;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* 2. Floating Blue Check Badge (Top-Left) */
+.notion-banner-card.card-check-badge {
+  top: 155px;
+  left: -170px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transform: perspective(600px) rotateY(-18deg) rotateX(12deg) rotateZ(-10deg);
-  transition: transform 0.4s ease;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  transform: rotate(4deg);
 }
 
-.card-tall-hero:hover .coin-3d {
-  transform: perspective(600px) rotateY(-12deg) rotateX(8deg) rotateZ(-4deg) scale(1.04);
+.check-icon-blue {
+  color: #2563EB;
 }
 
-.coin-inner {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(243, 145, 46, 0.18) 0%, rgba(255, 255, 255, 0.95) 80%);
-  color: #F3912E;
+/* 3. Stopwatch Badge (Top-Right) */
+.notion-banner-card.card-stopwatch {
+  top: -55px;
+  right: 390px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  width: 54px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(243, 145, 46, 0.3);
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  transform: rotate(-4deg);
 }
 
-/* Staggered Coins Position (Pushed to bottom-right corner behind text) */
-.coin-1 {
-  bottom: -10px;
-  right: -10px;
-  z-index: 4;
+.stopwatch-icon {
+  color: #111827;
 }
 
-.coin-2 {
-  bottom: 50px;
-  right: 20px;
-  z-index: 3;
+/* 4. Reminders Card (Top-Right) */
+.notion-banner-card.card-reminders {
+  top: -45px;
+  right: -150px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  width: 220px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.07);
+  transform: rotate(3deg);
+  overflow: hidden;
 }
 
-.coin-3 {
-  bottom: 110px;
-  right: 50px;
-  z-index: 2;
+.notion-card-tab-header {
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 7px 12px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.coin-4 {
-  bottom: 170px;
-  right: 80px;
-  z-index: 1;
+.notion-card-body {
+  padding: 12px 14px;
 }
 
-/* ── Responsive Adjustments ── */
-@media (max-width: 992px) {
-  .bento-impact-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .bento-col.col-tall {
-    grid-column: span 2;
-  }
-  .bento-card.card-tall-hero {
-    min-height: 260px;
-    flex-direction: row;
-    align-items: center;
-  }
-  .coins-mockup-container {
-    height: 240px;
-    opacity: 0.5;
+.reminder-task-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.reminder-time-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(243, 145, 46, 0.12);
+  color: #D97706;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* 5. Today's Tasks Card (Bottom-Left) */
+.notion-banner-card.card-tasks {
+  bottom: -55px;
+  left: -160px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  width: 225px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.07);
+  transform: rotate(-2deg);
+  overflow: hidden;
+}
+
+.task-item {
+  margin-bottom: 8px;
+}
+
+.task-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.task-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.task-dot.orange { background: #F3912E; }
+.task-dot.green { background: #10B981; }
+.task-dot.blue { background: #2563EB; }
+
+.task-name {
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.task-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.task-progress-fill {
+  height: 100%;
+  background: #F3912E;
+}
+
+.task-status-badge {
+  font-size: 0.65rem;
+  background: #D1FAE5;
+  color: #065F46;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* 6. Recruiter Partners Card (Bottom-Right) */
+.notion-banner-card.card-integrations {
+  bottom: -60px;
+  right: -170px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  width: 235px;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.07);
+  transform: rotate(2deg);
+  overflow: hidden;
+}
+
+.partners-icon-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.partner-logo-pill {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #E5E7EB;
+}
+
+.partner-logo-pill.google { background: #EEF2FF; color: #4F46E5; }
+.partner-logo-pill.msft { background: #F0FDF4; color: #166534; }
+.partner-logo-pill.amzn { background: #FFFBEB; color: #B45309; }
+
+/* ── Mobile / Tablet Responsive Rules ── */
+/* ── Hide Banner Cards on Mobile/Tablet screens (< 1240px) ── */
+@media (max-width: 1240px) {
+  .notion-hero-banner-wrapper {
+    display: none !important;
   }
 }
 
 @media (max-width: 640px) {
-  .bento-impact-grid {
-    grid-template-columns: 1fr;
+  .notion-app-icon-tile {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 1.25rem;
   }
-  .bento-col.col-tall {
-    grid-column: span 1;
-  }
-  .bento-card.card-tall-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: auto;
-    padding: 2.25rem 1.5rem;
-    overflow: hidden;
-  }
-  .tall-card-content {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-  }
-  .card-metric-num {
-    font-size: 3rem;
-  }
-  .text-hero-num {
-    font-size: 3.25rem;
-  }
-  .impact-domain-pills-row {
-    max-width: 100% !important;
-  }
-  .impact-cta-btn {
-    width: 100%;
-    justify-content: center;
-  }
-  .coins-mockup-container {
-    width: 140px;
-    height: 220px;
-    right: -20px;
-    bottom: -20px;
-    opacity: 0.25; /* Subtle background glow accent on mobile so text is 100% visible */
-  }
-  .coin-3d {
-    width: 60px;
-    height: 60px;
-  }
-  .coin-inner {
-    width: 36px;
-    height: 36px;
-  }
-  .coin-1 { bottom: -10px; right: -10px; }
-  .coin-2 { bottom: 40px; right: 15px; }
-  .coin-3 { bottom: 90px; right: 40px; }
-  .coin-4 { bottom: 140px; right: 65px; }
 }

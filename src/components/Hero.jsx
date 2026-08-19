@@ -72,17 +72,6 @@ const Hero = ({ onReplay }) => {
         {/* Right — Video */}
         <div className="hero-right">
           <div className="hero-video-wrap">
-            {onReplay && (
-              <button 
-                className="hero-replay-smart-btn" 
-                onClick={onReplay}
-                title="Replay Story"
-                aria-label="Replay Story"
-              >
-                <RotateCcw size={16} />
-              </button>
-            )}
-
             <video
               ref={videoRef}
               className="hero-video"

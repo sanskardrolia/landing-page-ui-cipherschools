@@ -192,29 +192,6 @@ const Navbar = () => {
           </div>
         )}
       </nav>
-
-      {/* ── SMART FLOATING BOTTOM STICKY SECTION INDICATOR BADGE ── */}
-      {activeSection === 'student' && (
-        <div 
-          className="floating-sticky-section-badge"
-          onClick={() => scrollToSection('student-section')}
-          title="Currently in Students Section — Click to align top"
-        >
-          <span className="dot-pulse-orange"></span>
-          <span className="floating-badge-label"><strong>For Students</strong></span>
-        </div>
-      )}
-
-      {activeSection === 'university' && (
-        <div 
-          className="floating-sticky-section-badge"
-          onClick={() => scrollToSection('university-section')}
-          title="Currently in University Section — Click to align top"
-        >
-          <span className="dot-pulse-orange"></span>
-          <span className="floating-badge-label"><strong>For University</strong></span>
-        </div>
-      )}
     </>
   );
 };
