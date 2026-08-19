@@ -110,7 +110,7 @@ const PlacementMarquee = () => {
             Our Students Are Hired At
           </h2>
           <p className="placement-subtitle">
-            CipherSchools learners are working at the world's most sought-after product engineering companies.
+            CipherSchools learners are now working with top product based companies
           </p>
         </div>
 
