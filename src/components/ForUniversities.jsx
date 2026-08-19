@@ -263,8 +263,27 @@ const ForUniversities = () => {
   const [refHelp, visHelp] = useReveal();
   const [refLms, visLms] = useReveal();
   const [refAssessment, visAssessment] = useReveal();
-  const [autoHighlightIndex, setAutoHighlightIndex] = useState(null);
   const [activeAssessmentTab, setActiveAssessmentTab] = useState('coding');
+  const [isAutoRotateAssessment, setIsAutoRotateAssessment] = useState(true);
+
+  // Auto-rotate Assessment Tabs every 2.5s until user interacts
+  useEffect(() => {
+    if (!isAutoRotateAssessment) return;
+    const assessmentTabs = ['coding', 'aptitude', 'comm_skill', 'analytics'];
+    const interval = setInterval(() => {
+      setActiveAssessmentTab(prev => {
+        const nextIdx = (assessmentTabs.indexOf(prev) + 1) % assessmentTabs.length;
+        return assessmentTabs[nextIdx];
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [isAutoRotateAssessment]);
+
+  const handleAssessmentTabClick = (tabId) => {
+    setIsAutoRotateAssessment(false);
+    setActiveAssessmentTab(tabId);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1098,7 +1117,10 @@ const ForUniversities = () => {
 
                 {/* Right Column: Spacious Interactive Window Showcase */}
                 <div className="fu-assessment-right-showcase">
-                  <div className="fu-assessment-mockup-wrapper notion-window-wrapper">
+                  <div 
+                    className="fu-assessment-mockup-wrapper notion-window-wrapper"
+                    onClick={() => setIsAutoRotateAssessment(false)}
+                  >
                     
                     {/* Interactive Tab Switcher Bar inside Window Header */}
                     <div className="notion-stage-topbar spacious-topbar">
@@ -1110,7 +1132,7 @@ const ForUniversities = () => {
                       
                       <div className="notion-stage-tabs">
                         {[
-                          { id: 'coding', label: 'Coding IDE' },
+                          { id: 'coding', label: 'Coding Test' },
                           { id: 'aptitude', label: 'Aptitude Test' },
                           { id: 'comm_skill', label: 'AI Mock' },
                           { id: 'analytics', label: 'Analytics' },
@@ -1118,7 +1140,10 @@ const ForUniversities = () => {
                           <button
                             key={t.id}
                             className={`notion-tab-btn ${activeAssessmentTab === t.id ? 'active-tab' : ''}`}
-                            onClick={() => setActiveAssessmentTab(t.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAssessmentTabClick(t.id);
+                            }}
                           >
                             {t.label}
                           </button>

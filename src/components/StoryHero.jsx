@@ -113,7 +113,7 @@ const StoryHero = () => {
     return () => clearInterval(progressTimer);
   }, [hasStarted]);
 
-  // Run the story animation sequence (Seamless zero-gap timing)
+  // Run the story animation sequence (Seamless zero-gap timing with smooth fade before reveal)
   useEffect(() => {
     if (!hasStarted) return;
 
@@ -125,19 +125,28 @@ const StoryHero = () => {
       return () => clearTimeout(nextTimer);
     } 
     else if (step === STORY_PHRASES.length) {
-      // All questions on screen. Fade questions and immediately show final complete stage with mentors & CTAs
-      const fadeOutTimer = setTimeout(() => {
-        setQuestionsVisible(false);
+      // Step 1: Dwell on completed questions so user reads them
+      const fadeStartTimer = setTimeout(() => {
+        setQuestionsVisible(false); // Trigger smooth CSS fade-out animation
+      }, 1000);
+
+      // Step 2: Wait 600ms for questions to fade out completely before revealing ecosystem stage
+      const revealTimer = setTimeout(() => {
         setIsComplete(true);
-      }, 1200);
+      }, 1600);
       
-      return () => clearTimeout(fadeOutTimer);
+      return () => {
+        clearTimeout(fadeStartTimer);
+        clearTimeout(revealTimer);
+      };
     }
   }, [step, hasStarted]);
 
   const finishStory = () => {
     setQuestionsVisible(false);
-    setIsComplete(true);
+    setTimeout(() => {
+      setIsComplete(true);
+    }, 450);
   };
 
   const replayStory = () => {
@@ -196,7 +205,6 @@ const StoryHero = () => {
                         <img src={mentor.logo} alt={mentor.company} />
                       </div>
                       <div className="compact-overlay">
-                        <span className="compact-status-dot">● Available</span>
                         <h4 className="compact-name">{mentor.name}</h4>
                         <p className="compact-role">{mentor.role} @ {mentor.company}</p>
                       </div>
