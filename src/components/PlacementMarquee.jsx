@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Building2, ShieldCheck, Globe, Zap, CreditCard, Cpu } from 'lucide-react';
+import { Sparkles, Building2 } from 'lucide-react';
 import './PlacementMarquee.css';
 
 const CompanyLogos = {
@@ -73,7 +73,7 @@ const CompanyLogos = {
 };
 
 const PlacementMarquee = () => {
-  const companies = [
+  const row1 = [
     { name: 'Google' },
     { name: 'PayPal' },
     { name: 'Amazon' },
@@ -83,6 +83,9 @@ const PlacementMarquee = () => {
     { name: 'Adobe' },
     { name: 'Microsoft' },
     { name: 'JusPay' },
+  ];
+
+  const row2 = [
     { name: 'Morgan Stanley' },
     { name: 'OpenAI' },
     { name: 'Figma' },
@@ -94,7 +97,8 @@ const PlacementMarquee = () => {
     { name: 'Flipkart' },
   ];
 
-  const marqueeList = [...companies, ...companies, ...companies];
+  const row1Marquee = [...row1, ...row1, ...row1, ...row1];
+  const row2Marquee = [...row2, ...row2, ...row2, ...row2];
 
   return (
     <section className="placement-marquee-section">
@@ -110,22 +114,40 @@ const PlacementMarquee = () => {
             Our Students Are Hired At
           </h2>
           <p className="placement-subtitle">
-            CipherSchools learners are now working with top product based companies
+            Some of the top product based companies around the world
           </p>
         </div>
 
-        {/* Single Marquee Row */}
-        <div className="placement-marquee-wrap">
-          <div className="placement-track marquee-track-left">
-            {marqueeList.map((item, index) => (
-              <div key={`pill-${index}`} className="placement-pill-card">
-                <span className="placement-company-logo">
-                  {CompanyLogos[item.name] || <Building2 size={16} className="company-fallback-icon" />}
-                </span>
-                <span className="placement-company-name">{item.name}</span>
-                <span className="placement-dot-sep">•</span>
-              </div>
-            ))}
+        {/* Double Marquee Rows */}
+        <div className="placement-double-marquee-stage">
+          {/* Row 1: Leftward Auto-Scroll */}
+          <div className="placement-marquee-wrap">
+            <div className="placement-track marquee-track-left">
+              {row1Marquee.map((item, index) => (
+                <div key={`pill-r1-${index}`} className="placement-pill-card">
+                  <span className="placement-company-logo">
+                    {CompanyLogos[item.name] || <Building2 size={16} className="company-fallback-icon" />}
+                  </span>
+                  <span className="placement-company-name">{item.name}</span>
+                  <span className="placement-dot-sep">•</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Row 2: Rightward Auto-Scroll */}
+          <div className="placement-marquee-wrap">
+            <div className="placement-track marquee-track-right">
+              {row2Marquee.map((item, index) => (
+                <div key={`pill-r2-${index}`} className="placement-pill-card">
+                  <span className="placement-company-logo">
+                    {CompanyLogos[item.name] || <Building2 size={16} className="company-fallback-icon" />}
+                  </span>
+                  <span className="placement-company-name">{item.name}</span>
+                  <span className="placement-dot-sep">•</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

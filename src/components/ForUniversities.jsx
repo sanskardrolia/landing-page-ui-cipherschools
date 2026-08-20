@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, Sparkles, Bot, Code2, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check } from 'lucide-react';
+import { ArrowRight, Sparkles, Bot, Code2, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal } from 'lucide-react';
 import TrustedBy from './TrustedBy';
 import BookMeetingModal from './BookMeetingModal';
 import './ForUniversities.css';
@@ -75,9 +75,6 @@ const TypewriterChatQuestion = ({ inView }) => {
         {renderTextWithHighlight(currentText)}
         <span className="fu-typing-cursor">|</span>
       </p>
-      <div className={`fu-select-hint-pill ${displayedLength >= 12 ? 'pill-visible' : ''}`}>
-        <span>Select a solution to explore ↓</span>
-      </div>
     </div>
   );
 };
@@ -105,24 +102,24 @@ const useReveal = (threshold = 0.15) => {
 /* ─── Open Source Tech Stack SVGs ─── */
 const getTechLogo = (skill) => {
   if (!skill || typeof skill !== 'string') {
-    return <Terminal size={16} className="tech-icon-amber" />;
+    return <Code2 size={16} className="tech-icon-amber" />;
   }
   try {
-    if (skill.includes('Next.js') || skill.includes('React')) {
+    if (skill.includes('Next.js') || skill.includes('React') || skill.includes('Frontend') || skill.includes('Tailwind')) {
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="#000000">
           <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm4.4 14.8-5.3-7.5v7.5H9.6V7.2h1.6l5.3 7.5V7.2h1.5v9.6z"/>
         </svg>
       );
     }
-    if (skill.includes('DevOps') || skill.includes('Docker') || skill.includes('IaC')) {
+    if (skill.includes('DevOps') || skill.includes('Docker') || skill.includes('IaC') || skill.includes('Terraform')) {
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="#2496ED">
           <path d="M13.98 11.08h2.12v2.12h-2.12zm-3.18 0h2.12v2.12h-2.12zm-3.18 0h2.12v2.12H7.62zm-3.18 0h2.12v2.12H4.44zm3.18-3.18h2.12v2.12H7.62zm3.18 0h2.12v2.12h-2.12zm3.18 0h2.12v2.12h-2.12zm-6.36-3.18h2.12v2.12H7.62zm3.18 0h2.12v2.12h-2.12zm11.75 6.94c-.45-.33-1.42-.45-2.27-.33-.27-1.12-1.09-2.07-2.19-2.58l-.4-.18-.28.33c-.66.77-.96 1.76-.9 2.76H1.5v1.89c0 3.86 2.92 7 6.51 7 4.14 0 7.42-3.15 7.82-7.14.7-.09 1.94-.48 2.5-1.43l.23-.38-.27-.22z"/>
         </svg>
       );
     }
-    if (skill.includes('AWS') || skill.includes('Cloud')) {
+    if (skill.includes('AWS') || skill.includes('Cloud') || skill.includes('Security')) {
       return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="#FF9900">
           <path d="M18.75 14.23c-1.34 1.07-3.23 1.62-4.91 1.62-2.37 0-4.5-.89-6.13-2.37-.13-.12-.29-.06-.23.1.52 1.34 1.76 2.73 3.39 3.49 1.78.83 3.73.95 5.56.44.25-.07.39-.33.25-.56l-.32-.57c-.11-.2-.36-.26-.61-.15zm1.57-2.48c-.28-.36-1.85-.43-2.54-.34-.21.03-.25.26-.06.39.63.43 1.66.74 2.33.37.19-.11.45-.19.27-.42zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
@@ -137,7 +134,7 @@ const getTechLogo = (skill) => {
         </svg>
       );
     }
-    if (skill.includes('Vercel')) {
+    if (skill.includes('Vercel') || skill.includes('Edge')) {
       return (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="#000000">
           <path d="M12 1L24 22H0L12 1Z"/>
@@ -160,7 +157,7 @@ const getTechLogo = (skill) => {
   } catch (err) {
     console.error("Tech logo error:", err);
   }
-  return <Terminal size={16} className="tech-icon-amber" />;
+  return <Code2 size={16} className="tech-icon-amber" />;
 };
 
 /* ─── Tech Pairing Combos & Industry Outcome Mapping ─── */
@@ -212,27 +209,36 @@ const DOMAIN_MAPPINGS = [
   }
 ];
 
-/* ─── Gemini AI Fluid Text Reveal Component ─── */
-const GeminiTextReveal = ({ text }) => {
-  const words = text.split(" ");
-  const accentWords = ["Ultimate", "Arms", "Training", "Placement", "Support"];
-  
+/* ─── Gemini AI Fluid Text Reveal Component (Hero Style) ─── */
+const GeminiTextReveal = () => {
   return (
-    <h1 className="gemini-ai-reveal-title">
-      {words.map((word, idx) => {
-        const cleanWord = word.replace(/[^a-zA-Z]/g, "");
-        const isAccent = accentWords.includes(cleanWord);
-        return (
-          <span 
-            key={idx} 
-            className={`gemini-word ${isAccent ? 'gemini-accent' : ''}`}
-            style={{ animationDelay: `${0.12 * idx}s` }}
-          >
-            {word}{' '}
-          </span>
-        );
-      })}
-    </h1>
+    <div className="fu-hero-header-wrap">
+      {/* Top Hero Pill Badge */}
+      <div className="fu-hero-pill-badge">
+        <span className="fu-pill-dot"></span>
+        <span>FOR UNIVERSITIES & INSTITUTIONS</span>
+        <span className="fu-pill-arrow">→</span>
+      </div>
+
+      <h1 className="gemini-ai-reveal-title">
+        <span className="gemini-title-line">
+          <span className="gemini-word" style={{ animationDelay: '0.05s' }}>We</span>{' '}
+          <span className="gemini-word" style={{ animationDelay: '0.1s' }}>are</span>{' '}
+          <span className="gemini-word" style={{ animationDelay: '0.15s' }}>the</span>{' '}
+          <span className="gemini-word gemini-accent" style={{ animationDelay: '0.2s' }}>Ultimate Arms</span>{' '}
+          <span className="gemini-word" style={{ animationDelay: '0.28s' }}>for</span>
+        </span>
+        <span className="gemini-title-line">
+          <span className="gemini-word gemini-accent" style={{ animationDelay: '0.36s' }}>Training</span>{' '}
+          <span className="gemini-word" style={{ animationDelay: '0.44s' }}>and</span>{' '}
+          <span className="gemini-word gemini-accent" style={{ animationDelay: '0.52s' }}>Placement Support</span>
+        </span>
+      </h1>
+
+      <p className="gemini-hero-sub-text">
+        Transforming campus placement outcomes with industry-aligned technical training, automated coding assessments, and enterprise LMS infrastructure.
+      </p>
+    </div>
   );
 };
 
@@ -288,25 +294,45 @@ const ForUniversities = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setTimeout(() => setIsVisible(true), 100);
-
-    // Auto-highlight sequence
-    const timers = [];
-    timers.push(setTimeout(() => setAutoHighlightIndex(0), 800));
-    timers.push(setTimeout(() => setAutoHighlightIndex(1), 1600));
-    timers.push(setTimeout(() => setAutoHighlightIndex(2), 2400));
-    timers.push(setTimeout(() => setAutoHighlightIndex(null), 3200));
-
-    return () => timers.forEach(t => clearTimeout(t));
   }, []);
 
   useEffect(() => {
-    if (step === 'result') {
-      const timer = setTimeout(() => setShowStickyCta(true), 5000);
-      return () => clearTimeout(timer);
-    } else {
-      setShowStickyCta(false);
-    }
-  }, [step]);
+    const handleScroll = () => {
+      const universityEl = document.getElementById('university-section');
+      const studentEl = document.getElementById('student-section');
+      const heroEl = document.getElementById('hero-impact-section');
+      const welcomeEl = document.getElementById('welcome-section');
+
+      const windowHeight = window.innerHeight;
+
+      // Check if student, hero, or welcome sections are active in viewport
+      const isStudentActive = studentEl && (studentEl.getBoundingClientRect().top <= windowHeight * 0.6 && studentEl.getBoundingClientRect().bottom >= 100);
+      const isHeroActive = heroEl && (heroEl.getBoundingClientRect().bottom > 150);
+      const isWelcomeActive = welcomeEl && (welcomeEl.getBoundingClientRect().top <= windowHeight * 0.6 && welcomeEl.getBoundingClientRect().bottom >= 100);
+
+      // If user is viewing For Students or Hero or Welcome Gateway section, HIDE sticky CTA completely
+      if (isStudentActive || isHeroActive || isWelcomeActive) {
+        setShowStickyCta(false);
+        setIsMeetingModalOpen(false);
+        return;
+      }
+
+      // Check if For University section is in viewport
+      if (universityEl) {
+        const uniRect = universityEl.getBoundingClientRect();
+        if (uniRect.top <= windowHeight * 0.75 && uniRect.bottom >= 150) {
+          setShowStickyCta(true);
+        } else {
+          setShowStickyCta(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const containerRef = useRef(null);
   const [isInView, setIsInView] = useState(false);
@@ -402,7 +428,7 @@ const ForUniversities = () => {
         <div className="fu-hero-glow-orb orb-2"></div>
 
         <div className="fu-fullscreen-content">
-          <GeminiTextReveal text="We are the Ultimate Arms for Training and Placement Support" />
+          <GeminiTextReveal />
 
           {/* Smart Help Options UI Embedded Directly inside Hero */}
           <div className="fu-smart-help-stage">
@@ -597,7 +623,7 @@ const ForUniversities = () => {
                               if (target) target.scrollIntoView({ behavior: 'smooth' });
                             }}
                           >
-                            <RefreshCw size={15} /> Want Solution?
+                            Want Solution?
                           </button>
                         </div>
                         <span className="fu-demand-score-tag">{safeCombo.demandScore}</span>
@@ -712,8 +738,12 @@ const ForUniversities = () => {
           </section>
 
           {/* ── 3-Image Horizontal Classroom/Workshop Grid Section ── */}
-          <section className="fu-sec fu-gallery-section" style={{ padding: '3.5rem 0', background: '#0B0B0C' }}>
+          <section className="fu-sec fu-gallery-section" style={{ padding: '4rem 0 3.5rem', background: '#0B0B0C' }}>
             <div className="fu-sec-inner">
+              <div className="fu-campus-presence-header">
+                <span className="fu-campus-badge">CAMPUS GALLERY</span>
+                <h3 className="fu-campus-title">Glimpse of our campus presence</h3>
+              </div>
               <div className="fu-outcome-photos-grid">
                 <div className="fu-photo-card">
                   <img src="/company-look-1.jpg" alt="CipherSchools Classroom Workshop 1" className="fu-photo-img" />
@@ -1091,7 +1121,7 @@ const ForUniversities = () => {
                     <li>
                       <span className="bullet-dot"></span>
                       <div>
-                        <strong>Multi-Language Coding IDE:</strong> Full compiler supporting C, C++, Java, and Python with System Design sandbox.
+                        <strong>Coding Test:</strong> Full compiler supporting C, C++, Java, and Python with System Design sandbox.
                       </div>
                     </li>
                     <li>

@@ -3,11 +3,16 @@
    =================================================== */
 
 .impact-section.modern-bento-light-theme {
-  background-color: #FAF8F5;
+  background-color: #FAFAFA;
   background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
   background-size: 28px 28px;
   color: #111827;
-  padding: 9.5rem 3rem 8rem;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10rem 3rem 7.5rem;
   position: relative;
   overflow: hidden;
 }
@@ -16,14 +21,131 @@
   display: none !important;
 }
 
+/* ── 3D Stacked App Showcase Container (Placed right above Placement Success) ── */
+.hero-stacked-mockup-showcase {
+  width: 100%;
+  max-width: 960px;
+  margin: 5.5rem auto 4.5rem auto;
+  position: relative;
+  perspective: 1200px;
+}
+
+.stacked-mockup-inner {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stacked-mockup-card {
+  width: 100%;
+  max-width: 860px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.12),
+    0 10px 25px -5px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
+}
+
+/* Back Layer: Course Player */
+.stacked-mockup-card.card-back {
+  position: absolute;
+  top: -24px;
+  transform: translateX(45px) rotate(3deg) scale(0.95);
+  opacity: 0.85;
+  z-index: 1;
+}
+
+/* Front Layer: CipherLabs IDE */
+.stacked-mockup-card.card-front {
+  position: relative;
+  transform: translateX(-25px) rotate(-1.5deg) scale(1);
+  z-index: 2;
+  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.16);
+}
+
+.hero-stacked-mockup-showcase:hover .stacked-mockup-card.card-back {
+  transform: translateX(85px) translateY(-10px) rotate(4deg) scale(0.97);
+  opacity: 1;
+}
+
+.hero-stacked-mockup-showcase:hover .stacked-mockup-card.card-front {
+  transform: translateX(-45px) translateY(5px) rotate(-2deg) scale(1.01);
+  box-shadow: 0 45px 90px -20px rgba(0, 0, 0, 0.22);
+}
+
+.mockup-window-header {
+  background: #F3F4F6;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.window-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.window-dots .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.window-dots .dot.red { background: #FF5F56; }
+.window-dots .dot.yellow { background: #FFBD2E; }
+.window-dots .dot.green { background: #27C93F; }
+
+.window-title {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #4B5563;
+  letter-spacing: 0.2px;
+}
+
+.mockup-window-body {
+  width: 100%;
+  background: #FFFFFF;
+  overflow: hidden;
+}
+
+.mockup-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .hero-stacked-mockup-showcase {
+    margin: 2.5rem auto 3rem auto;
+  }
+  
+  .stacked-mockup-card.card-back {
+    display: none;
+  }
+
+  .stacked-mockup-card.card-front {
+    transform: none;
+  }
+}
+
 /* ── Notion/Trello Centered Hero Header ── */
 .notion-hero-header {
   text-align: center;
-  max-width: 940px;
-  margin: 0 auto 7rem auto;
+  max-width: 1180px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   opacity: 0;
   transform: translateY(20px);
@@ -75,18 +197,59 @@
   font-weight: 800;
 }
 
-/* Main Headline */
+/* Main Headline (+30% Larger) */
 .impact-headline-main {
-  font-size: clamp(2.8rem, 5.6vw, 4.8rem);
-  line-height: 1.18;
-  letter-spacing: -0.025em;
-  margin-bottom: 2.75rem;
+  font-size: clamp(3.64rem, 7.28vw, 6.24rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 3.25rem;
+}
+
+.headline-line1-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  vertical-align: middle;
 }
 
 .headline-black-italic {
   font-weight: 900;
   font-style: italic;
   color: #111827;
+  line-height: 1;
+}
+
+/* Notion-Style Animated Rotating Word Pill Badge (BEYOND - BETTER - BEST) */
+.notion-hero-word-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22em;
+  background: rgba(243, 145, 46, 0.12);
+  border: 1px solid rgba(243, 145, 46, 0.32);
+  padding: 0.05em 0.35em 0.05em 0.3em;
+  border-radius: 4px;
+  line-height: 1;
+  vertical-align: middle;
+  transform: translateY(-0.04em);
+  box-shadow: 0 4px 16px rgba(243, 145, 46, 0.12);
+}
+
+.notion-word-text {
+  font-weight: 900;
+  font-style: italic;
+  color: #F3912E;
+  display: inline-block;
+  min-width: 3.5ch;
+  text-align: center;
+  line-height: 1;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
+}
+
+.notion-word-text.word-animating {
+  transform: translateY(-10px) scale(0.92);
+  opacity: 0;
 }
 
 .headline-orange-italic {
@@ -98,7 +261,7 @@
 }
 
 .notion-paragraph-wrapper {
-  max-width: 840px;
+  max-width: 1020px;
   margin: 0 auto 3.25rem auto;
 }
 
@@ -445,7 +608,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   padding: 3px 8px;
-  border-radius: 999px;
+  border-radius: 4px;
   border: 1px solid rgba(37, 211, 102, 0.3);
 }
 
@@ -812,7 +975,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1380px;
+  max-width: 1520px;
   height: 100%;
   pointer-events: none;
   z-index: 1;
@@ -833,8 +996,8 @@
 
 /* 1. Yellow Post-It Sticky Note (Top-Left) */
 .notion-banner-card.card-postit {
-  top: -45px;
-  left: -140px;
+  top: 15px;
+  left: -160px;
   background: #FEF3C7;
   border: 1px solid #FDE68A;
   border-radius: 4px;
@@ -864,8 +1027,8 @@
 
 /* 2. Floating Blue Check Badge (Top-Left) */
 .notion-banner-card.card-check-badge {
-  top: 155px;
-  left: -170px;
+  top: 195px;
+  left: -190px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 14px;
@@ -904,8 +1067,8 @@
 
 /* 4. Reminders Card (Top-Right) */
 .notion-banner-card.card-reminders {
-  top: -45px;
-  right: -150px;
+  top: 15px;
+  right: -170px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 12px;
@@ -951,8 +1114,8 @@
 
 /* 5. Today's Tasks Card (Bottom-Left) */
 .notion-banner-card.card-tasks {
-  bottom: -55px;
-  left: -160px;
+  bottom: -65px;
+  left: -180px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 12px;
@@ -1013,8 +1176,8 @@
 
 /* 6. Recruiter Partners Card (Bottom-Right) */
 .notion-banner-card.card-integrations {
-  bottom: -60px;
-  right: -170px;
+  bottom: -70px;
+  right: -190px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 12px;

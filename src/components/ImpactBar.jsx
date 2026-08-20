@@ -177,6 +177,7 @@ const ThanosParagraphReveal = ({ scrollToSection, inView }) => {
 const ImpactBar = () => {
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
+  const [scrollRatio, setScrollRatio] = useState(0);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -185,6 +186,44 @@ const ImpactBar = () => {
     );
     if (sectionRef.current) obs.observe(sectionRef.current);
     return () => obs.disconnect();
+  }, []);
+
+  // Parallax Scroll Tracking for Smart Disappear / Reappear
+  useEffect(() => {
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sy = window.scrollY || document.documentElement.scrollTop;
+          // Map scroll 0 to 420px to ratio 0 -> 1
+          const ratio = Math.min(Math.max(sy / 420, 0), 1);
+          setScrollRatio(ratio);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Notion-Style Rotating Words state (BEYOND -> BETTER -> BEST every 2s)
+  const rotatingWords = ["BEYOND", "BETTER", "BEST"];
+  const [wordIndex, setWordIndex] = useState(0);
+  const [isWordAnimating, setIsWordAnimating] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIsWordAnimating(true);
+      setTimeout(() => {
+        setWordIndex((prev) => (prev + 1) % rotatingWords.length);
+        setIsWordAnimating(false);
+      }, 220);
+    }, 2000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const scrollToSection = (id) => {
@@ -204,96 +243,20 @@ const ImpactBar = () => {
         {/* ── Centered Hero Header with Notion Studio Banner Cards ── */}
         <div className={`notion-hero-header ${inView ? 'impact-in-view' : ''}`}>
           
-          {/* Surround Notion Studio Hero Cards */}
-          <div className="notion-hero-banner-wrapper">
-            
-            {/* Top-Left 1: Yellow Post-It Note */}
-            <div className="notion-banner-card card-postit">
-              <div className="postit-pin"></div>
-              <p className="postit-text">
-                Build real-world projects, master DSA, and crack dream engineering roles with ease.
-              </p>
-            </div>
-
-            {/* Top-Left 2: Floating Blue Check Icon Badge */}
-            <div className="notion-banner-card card-check-badge">
-              <div className="check-badge-inner">
-                <CheckCircle2 size={24} className="check-icon-blue" />
-              </div>
-            </div>
-
-            {/* Top-Right 2: Reminders Tab Card */}
-            <div className="notion-banner-card card-reminders">
-              <div className="notion-card-tab-header">
-                <span>Reminders</span>
-              </div>
-              <div className="notion-card-body">
-                <div className="reminder-task-title">Today's Workshop</div>
-                <div className="reminder-time-pill">
-                  <Clock size={12} /> 14:00 - 15:30
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom-Left: Practice Today Folder Card */}
-            <div className="notion-banner-card card-tasks">
-              <div className="notion-card-tab-header">
-                <span>Practice Today</span>
-              </div>
-              <div className="notion-card-body">
-                <div className="task-item">
-                  <div className="task-info">
-                    <span className="task-dot orange"></span>
-                    <span className="task-name">Programming</span>
-                  </div>
-                  <div className="task-progress-bar">
-                    <div className="task-progress-fill" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="task-item">
-                  <div className="task-info">
-                    <span className="task-dot green"></span>
-                    <span className="task-name">DSA & Algorithms</span>
-                  </div>
-                  <div className="task-progress-bar">
-                    <div className="task-progress-fill" style={{ width: '65%' }}></div>
-                  </div>
-                </div>
-                <div className="task-item" style={{ marginBottom: 0 }}>
-                  <div className="task-info">
-                    <span className="task-dot blue"></span>
-                    <span className="task-name">SQL Queries</span>
-                  </div>
-                  <span className="task-status-badge">Ready</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom-Right: Resume Builder Card */}
-            <div className="notion-banner-card card-integrations">
-              <div className="notion-card-tab-header">
-                <span>Resume Builder</span>
-              </div>
-              <div className="notion-card-body partners-icon-row">
-                <div className="partner-logo-pill google">ATS Optimized</div>
-                <div className="partner-logo-pill msft">Professional</div>
-                <div className="partner-logo-pill amzn">Multiple Variants</div>
-              </div>
-            </div>
-
-          </div>
-          
-          {/* Top Pill Badge */}
-          <div className="notion-pill-badge" onClick={() => scrollToSection('welcome-section')}>
-            <span className="notion-badge-dot"></span>
-            <span>BEYOND ED-TECH PLATFORM</span>
-            <span className="notion-badge-arrow">→</span>
-          </div>
-
-          {/* Main Headline */}
+          {/* Main Headline with Notion-Style BEYOND - BETTER - BEST Rotating Pill Badge */}
           <h1 className="impact-headline-main">
-            <span className="headline-black-italic">WE ARE BEYOND</span><br className="headline-break" />
-            <span className="headline-orange-italic">ED-TECH COMPANY</span>
+            <span className="headline-line1-wrap">
+              <span className="headline-black-italic">WE ARE</span>
+              <span className="notion-hero-word-pill">
+                <span className={`notion-word-text ${isWordAnimating ? 'word-animating' : ''}`}>
+                  {rotatingWords[wordIndex]}
+                </span>
+              </span>
+            </span>
+            <br className="headline-break" />
+            <span className="headline-orange-italic">ED-TECH</span>
+            {' '}
+            <span className="headline-black-italic">COMPANY</span>
           </h1>
 
           {/* Thanos Word-by-Word Reveal & Snap Paragraph */}
@@ -310,6 +273,92 @@ const ImpactBar = () => {
               Start Your Journey <ArrowDown size={18} />
             </button>
           </div>
+
+          {/* ── 3D Scroll-Driven Card Deck Shuffle App Showcase ── */}
+          {(() => {
+            // Card 1 (CipherLabs IDE) shuffle math
+            const card1X = scrollRatio < 0.5 
+              ? -15 - (scrollRatio * 250) 
+              : -140 + ((scrollRatio - 0.5) * 350);
+            const card1Rot = scrollRatio < 0.5 
+              ? -1.5 - (scrollRatio * 10) 
+              : -6.5 + ((scrollRatio - 0.5) * 18);
+            const card1Z = scrollRatio > 0.5 ? 1 : 3;
+            const card1Opacity = scrollRatio > 0.55 ? 0.88 : 1;
+
+            // Card 2 (Course Player) shuffle math
+            const card2X = scrollRatio < 0.5 
+              ? 35 - (scrollRatio * 30) 
+              : 20 - ((scrollRatio - 0.5) * 70);
+            const card2Rot = scrollRatio < 0.5 
+              ? 2.5 - (scrollRatio * 3) 
+              : 1 - ((scrollRatio - 0.5) * 5);
+            const card2Z = scrollRatio > 0.5 ? 3 : 1;
+            const card2Scale = 0.94 + (scrollRatio * 0.08);
+
+            return (
+              <div 
+                className="hero-stacked-mockup-showcase"
+                style={{
+                  transform: `scale(${0.92 + scrollRatio * 0.08}) translateY(${scrollRatio * 15}px)`,
+                  transition: 'transform 0.12s ease-out',
+                  willChange: 'transform'
+                }}
+              >
+                <div className="stacked-mockup-inner">
+                  {/* Back Card: Course Player (Promotes to Front on Scroll Shuffle) */}
+                  <div 
+                    className="stacked-mockup-card card-back"
+                    style={{
+                      transform: `translateX(${card2X}px) translateY(${-18 + scrollRatio * 12}px) rotate(${card2Rot}deg) scale(${card2Scale})`,
+                      zIndex: card2Z,
+                      opacity: Math.min(0.85 + scrollRatio * 0.15, 1),
+                      boxShadow: card2Z === 3 ? `0 ${30 + scrollRatio * 20}px ${60 + scrollRatio * 25}px -15px rgba(0,0,0,0.18)` : '0 15px 35px rgba(0,0,0,0.08)',
+                      transition: 'transform 0.12s ease-out, opacity 0.12s ease-out, box-shadow 0.12s ease-out',
+                      willChange: 'transform, opacity'
+                    }}
+                  >
+                    <div className="mockup-window-header">
+                      <div className="window-dots">
+                        <span className="dot red"></span>
+                        <span className="dot yellow"></span>
+                        <span className="dot green"></span>
+                      </div>
+                      <span className="window-title">CipherSchools - Interactive Learning Portal</span>
+                    </div>
+                    <div className="mockup-window-body">
+                      <img src="/hero-mockup-right.png" alt="CipherSchools Course Player Mockup" className="mockup-img" />
+                    </div>
+                  </div>
+
+                  {/* Front Card: CipherLabs IDE (Shuffles Out & Slides to Back Stack) */}
+                  <div 
+                    className="stacked-mockup-card card-front"
+                    style={{
+                      transform: `translateX(${card1X}px) translateY(${scrollRatio * 12}px) rotate(${card1Rot}deg)`,
+                      zIndex: card1Z,
+                      opacity: card1Opacity,
+                      boxShadow: card1Z === 3 ? `0 ${30 + scrollRatio * 20}px ${60 + scrollRatio * 25}px -15px rgba(0,0,0,0.18)` : '0 15px 35px rgba(0,0,0,0.08)',
+                      transition: 'transform 0.12s ease-out, opacity 0.12s ease-out, box-shadow 0.12s ease-out',
+                      willChange: 'transform, opacity'
+                    }}
+                  >
+                    <div className="mockup-window-header">
+                      <div className="window-dots">
+                        <span className="dot red"></span>
+                        <span className="dot yellow"></span>
+                        <span className="dot green"></span>
+                      </div>
+                      <span className="window-title">CipherLabs - Multi-Language IDE & Problem Solver</span>
+                    </div>
+                    <div className="mockup-window-body">
+                      <img src="/hero-mockup-left.png" alt="CipherLabs IDE Coding Mockup" className="mockup-img" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* ── PLACEMENT SUCCESS Marquee Section (Directly Above Bento Grid Frame) ── */}

@@ -63,6 +63,14 @@
   margin: 0;
 }
 
+/* Double Marquee Stage */
+.placement-double-marquee-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
 /* Marquee Wrapper */
 .placement-marquee-wrap {
   width: 100%;
@@ -70,11 +78,6 @@
   position: relative;
   mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  margin-bottom: 1rem;
-}
-
-.placement-marquee-wrap.marquee-secondary-wrap {
-  margin-bottom: 0;
 }
 
 .placement-track {
@@ -86,7 +89,11 @@
 }
 
 .marquee-track-left {
-  animation: marqueeScrollLeft 95s linear infinite;
+  animation: marqueeScrollLeft 85s linear infinite;
+}
+
+.marquee-track-right {
+  animation: marqueeScrollRight 85s linear infinite;
 }
 
 .placement-marquee-wrap:hover .placement-track {
@@ -96,6 +103,11 @@
 @keyframes marqueeScrollLeft {
   0% { transform: translateX(0); }
   100% { transform: translateX(-33.33%); }
+}
+
+@keyframes marqueeScrollRight {
+  0% { transform: translateX(-33.33%); }
+  100% { transform: translateX(0); }
 }
 
 /* Pill Badges with SVG Logos */
