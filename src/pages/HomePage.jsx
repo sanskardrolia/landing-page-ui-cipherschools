@@ -1,5 +1,4 @@
 import React from 'react';
-import StoryHero from '../components/StoryHero';
 import ImpactBar from '../components/ImpactBar';
 import Ecosystem from '../components/Ecosystem';
 import ImageGallery from '../components/ImageGallery';
@@ -13,7 +12,6 @@ import TrustedBy from '../components/TrustedBy';
 const HomePage = () => {
   return (
     <>
-      <StoryHero />
       <TrustedBy />
       <ImpactBar />
       <Ecosystem />

@@ -4,8 +4,6 @@
 
 .impact-section.modern-bento-light-theme {
   background-color: #FAFAFA;
-  background-image: radial-gradient(#CBD5E1 1.2px, transparent 1.2px);
-  background-size: 28px 28px;
   color: #111827;
   min-height: 92vh;
   display: flex;
@@ -21,88 +19,336 @@
   display: none !important;
 }
 
-/* ── 3D Stacked App Showcase Container (Placed right above Placement Success) ── */
+/* ── Ambient Scribble & Handwriting Watermark Pattern (5-7% Visibility) ── */
+.hero-scribble-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  user-select: none;
+  overflow: hidden;
+  opacity: 0.06; /* 6% subtle ambient visibility */
+  color: #0F172A;
+}
+
+.scribble-item {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.scribble-text {
+  font-family: 'Caveat', 'Segoe Print', 'Bradley Hand', 'Comic Sans MS', cursive;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.scribble-svg {
+  color: currentColor;
+  overflow: visible;
+}
+
+/* Specific Placements across hero edges & margins */
+.sc-top-left-1 {
+  top: 6%;
+  left: 3%;
+  transform: rotate(-8deg);
+}
+
+.sc-top-left-2 {
+  top: 15%;
+  left: 7%;
+  transform: rotate(5deg);
+}
+
+.sc-top-left-doodle {
+  top: 10%;
+  left: 18%;
+  transform: rotate(-12deg);
+}
+
+.sc-top-right-1 {
+  top: 7%;
+  right: 4%;
+  transform: rotate(6deg);
+}
+
+.sc-top-right-2 {
+  top: 16%;
+  right: 7%;
+  transform: rotate(-4deg);
+}
+
+.sc-top-right-spark {
+  top: 10%;
+  right: 20%;
+  transform: rotate(15deg);
+}
+
+.sc-mid-left-1 {
+  top: 38%;
+  left: 2.5%;
+  transform: rotate(-5deg);
+}
+
+.sc-mid-left-2 {
+  top: 48%;
+  left: 4.5%;
+  transform: rotate(4deg);
+}
+
+.sc-mid-right-1 {
+  top: 39%;
+  right: 2.5%;
+  transform: rotate(7deg);
+}
+
+.sc-mid-right-2 {
+  top: 49%;
+  right: 5%;
+  transform: rotate(-6deg);
+}
+
+.sc-bottom-left-1 {
+  top: 72%;
+  left: 3%;
+  transform: rotate(4deg);
+}
+
+.sc-bottom-right-1 {
+  top: 73%;
+  right: 3%;
+  transform: rotate(-5deg);
+}
+
+@media (max-width: 1024px) {
+  .hero-scribble-bg-layer {
+    opacity: 0.045;
+  }
+  .scribble-text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .sc-top-left-doodle,
+  .sc-top-right-spark,
+  .sc-mid-left-2,
+  .sc-mid-right-2 {
+    display: none;
+  }
+}
+
+/* ── 2-Column Split Hero Layout ── */
+.hero-split-container {
+  max-width: 1380px !important;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.hero-split-grid {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 3.5rem;
+  align-items: center;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-bottom: 3.5rem;
+}
+
+.hero-split-grid.impact-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-left-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.hero-right-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+/* ── 3D Interactive & Auto-Changing Mockup Deck ── */
 .hero-stacked-mockup-showcase {
   width: 100%;
-  max-width: 960px;
-  margin: 5.5rem auto 4.5rem auto;
+  max-width: 640px;
+  margin: 0 auto;
   position: relative;
-  perspective: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  perspective: 1400px;
+}
+
+.mockup-stage-indicators {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.15rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 20;
+}
+
+.mockup-indicator-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6B7280;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  outline: none;
+}
+
+.mockup-indicator-pill:hover {
+  border-color: rgba(243, 145, 46, 0.3);
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+.mockup-indicator-pill .ind-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D1D5DB;
+  transition: all 0.3s ease;
+}
+
+.mockup-indicator-pill.active {
+  color: #111827;
+  border-color: #F3912E;
+  background: #FFFBF5;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.18);
+  transform: translateY(-2px);
+}
+
+.mockup-indicator-pill.active .ind-dot {
+  background: #F3912E;
+  box-shadow: 0 0 8px rgba(243, 145, 46, 0.6);
 }
 
 .stacked-mockup-inner {
   position: relative;
   width: 100%;
+  max-width: 620px;
+  min-height: 410px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 4px;
 }
 
 .stacked-mockup-card {
   width: 100%;
-  max-width: 860px;
+  max-width: 590px;
   background: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 12px;
-  box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.12),
-    0 10px 25px -5px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
-}
-
-/* Back Layer: Course Player */
-.stacked-mockup-card.card-back {
   position: absolute;
-  top: -24px;
-  transform: translateX(45px) rotate(3deg) scale(0.95);
-  opacity: 0.85;
-  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.55s ease, box-shadow 0.55s ease, filter 0.55s ease;
+  will-change: transform, opacity;
+  cursor: pointer;
+  user-select: none;
 }
 
-/* Front Layer: CipherLabs IDE */
-.stacked-mockup-card.card-front {
-  position: relative;
-  transform: translateX(-25px) rotate(-1.5deg) scale(1);
-  z-index: 2;
-  box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.16);
-}
-
-.hero-stacked-mockup-showcase:hover .stacked-mockup-card.card-back {
-  transform: translateX(85px) translateY(-10px) rotate(4deg) scale(0.97);
+/* Card 3D Depth States */
+.stacked-mockup-card.card-active {
+  transform: translateX(0) translateY(0) scale(1) rotate(0deg);
+  z-index: 10;
   opacity: 1;
+  box-shadow: 
+    0 24px 48px -12px rgba(0, 0, 0, 0.16),
+    0 8px 20px -4px rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+  filter: blur(0px);
 }
 
-.hero-stacked-mockup-showcase:hover .stacked-mockup-card.card-front {
-  transform: translateX(-45px) translateY(5px) rotate(-2deg) scale(1.01);
-  box-shadow: 0 45px 90px -20px rgba(0, 0, 0, 0.22);
+.stacked-mockup-card.card-past {
+  transform: translateX(-35px) translateY(-14px) scale(0.96) rotate(-2deg);
+  z-index: 5;
+  opacity: 0.65;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
+  pointer-events: auto;
+  filter: blur(0.4px);
+}
+
+.stacked-mockup-card.card-next {
+  transform: translateX(32px) translateY(22px) scale(0.96) rotate(1.8deg);
+  z-index: 7;
+  opacity: 0.82;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.07);
+  pointer-events: auto;
+  filter: blur(0px);
+}
+
+.stacked-mockup-card.card-deep {
+  transform: translateX(58px) translateY(44px) scale(0.92) rotate(3.2deg);
+  z-index: 3;
+  opacity: 0.55;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+  filter: blur(0.4px);
+}
+
+@media (max-width: 768px) {
+  .stacked-mockup-inner {
+    min-height: 280px;
+  }
+
+  .stacked-mockup-card.card-past {
+    transform: translateX(-18px) translateY(-8px) scale(0.96) rotate(-1.5deg);
+  }
+
+  .stacked-mockup-card.card-next {
+    transform: translateX(18px) translateY(12px) scale(0.96) rotate(1.2deg);
+  }
+
+  .stacked-mockup-card.card-deep {
+    transform: translateX(28px) translateY(22px) scale(0.92) rotate(2deg);
+  }
 }
 
 .mockup-window-header {
-  background: #F3F4F6;
+  background: #F9FAFB;
   border-bottom: 1px solid #E5E7EB;
-  padding: 10px 16px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: flex-start;
 }
-
-.window-dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.window-dots .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.window-dots .dot.red { background: #FF5F56; }
-.window-dots .dot.yellow { background: #FFBD2E; }
-.window-dots .dot.green { background: #27C93F; }
 
 .window-title {
   font-size: 0.775rem;
@@ -126,14 +372,6 @@
 @media (max-width: 768px) {
   .hero-stacked-mockup-showcase {
     margin: 2.5rem auto 3rem auto;
-  }
-  
-  .stacked-mockup-card.card-back {
-    display: none;
-  }
-
-  .stacked-mockup-card.card-front {
-    transform: none;
   }
 }
 
@@ -197,20 +435,248 @@
   font-weight: 800;
 }
 
-/* Main Headline (+30% Larger) */
+/* Main Headline */
 .impact-headline-main {
-  font-size: clamp(3.64rem, 7.28vw, 6.24rem);
-  line-height: 1.15;
+  font-size: clamp(1.85rem, 3.2vw, 3.4rem);
+  line-height: 1.2;
   letter-spacing: -0.03em;
-  margin-bottom: 3.25rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  width: 100%;
 }
 
-.headline-line1-wrap {
-  display: inline-flex;
+.hero-left-column .impact-headline-main {
+  text-align: left;
+}
+
+/* ── Hero Value Proposition ── */
+.hero-value-prop {
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: #374151;
+  font-weight: 500;
+  text-align: left;
+  max-width: 580px;
+  margin: 0 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.hero-left-column .hero-value-prop {
+  text-align: left;
+  margin: 0 0 2rem 0;
+}
+
+.hero-left-column .hero-product-offerings-container {
+  margin: 0 0 2.25rem 0;
+  max-width: 100%;
+  align-items: flex-start;
+}
+
+.hero-left-column .notion-cta-group {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.hero-value-prop strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.hero-value-prop-sub {
+  font-size: 1.05rem;
+  color: #6B7280;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.hero-value-prop-sub .prop-highlight {
+  font-style: italic;
+  font-weight: 800;
+  color: #F3912E;
+}
+
+/* ── Hero Core Product Offerings Dock ── */
+.hero-product-offerings-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  max-width: 1040px;
+}
+
+/* ── Trust Strip ── */
+.hero-trust-strip {
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.25em;
-  vertical-align: middle;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.trust-item svg {
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+.trust-divider {
+  color: #D1D5DB;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* ── Sequential Product Journey Path ── */
+.hero-product-offerings-path-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.path-flow-dock {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.35rem;
+  width: 100%;
+  max-width: 540px;
+}
+
+.path-step-card {
+  flex: 1 1 0px;
+  min-width: 0;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 0.8rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.03);
+  position: relative;
+  text-align: left;
+  cursor: default;
+  user-select: none;
+  transition: all 0.25s ease;
+}
+
+.pillar-step-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.pillar-step-tag {
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #9CA3AF;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.hero-path-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 22px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.path-line {
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  right: -4px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(243, 145, 46, 0.2), rgba(243, 145, 46, 0.6), rgba(243, 145, 46, 0.2));
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.path-arrow-node {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid rgba(243, 145, 46, 0.35);
+  color: #F3912E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(243, 145, 46, 0.15);
+}
+
+.offering-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.offering-title {
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  line-height: 1.2;
+  min-height: 2.05rem;
+  display: flex;
+  align-items: flex-start;
+  letter-spacing: -0.01em;
+}
+
+.offering-desc {
+  font-size: 0.735rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.3;
+  min-height: 1.95rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .path-flow-dock {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .hero-path-connector {
+    transform: rotate(90deg);
+    margin: -0.25rem 0;
+  }
+}
+
+.headline-line-block {
+  display: block;
+  white-space: nowrap;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+}
+
+.hero-left-column .headline-line-block {
+  text-align: left;
+  margin: 0;
 }
 
 .headline-black-italic {
@@ -241,7 +707,7 @@
   font-style: italic;
   color: #F3912E;
   display: inline-block;
-  min-width: 3.5ch;
+  min-width: 6.8ch;
   text-align: center;
   line-height: 1;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease;
@@ -388,6 +854,141 @@
   background: #E07B19;
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(243, 145, 46, 0.5);
+}
+
+/* ── Founder Story Narrative (YC Editorial Drop-Cap Style) ── */
+.hero-founder-story-card {
+  max-width: 780px;
+  margin: 3.5rem auto 1.5rem auto;
+  background: #FBFBFA;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+  text-align: left;
+  position: relative;
+  z-index: 3;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-founder-story-card.story-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.founder-story-content {
+  font-family: Georgia, Cambria, 'Times New Roman', 'Newsreader', serif;
+  color: #1F2937;
+}
+
+.founder-drop-cap {
+  float: left;
+  font-family: Georgia, 'Times New Roman', 'Newsreader', serif;
+  font-size: 4.4rem;
+  line-height: 0.78;
+  padding-top: 4px;
+  padding-right: 12px;
+  padding-bottom: 2px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.founder-story-paragraph {
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: #374151;
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.01em;
+}
+
+.founder-story-paragraph strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.founder-text-highlight {
+  background: linear-gradient(180deg, transparent 50%, rgba(243, 145, 46, 0.5) 50%);
+  padding: 0 4px;
+  color: #111827;
+  font-weight: 800;
+  border-radius: 2px;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.founder-highlight-univ {
+  color: #111827;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #F3912E;
+  text-underline-offset: 3px;
+}
+
+.founder-highlight-accent {
+  background: linear-gradient(180deg, transparent 50%, rgba(243, 145, 46, 0.5) 50%);
+  padding: 0 4px;
+  color: #111827;
+  font-weight: 800;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.founder-story-tagline {
+  margin-bottom: 1.75rem;
+}
+
+.story-tagline-highlight {
+  font-weight: 800;
+  color: #111827;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.founder-signoff {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 1.25rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.founder-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.founder-sep {
+  color: #9CA3AF;
+}
+
+.founder-role {
+  font-size: 0.875rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .hero-founder-story-card {
+    padding: 1.75rem 1.5rem;
+    margin: 2.5rem 1rem 1rem 1rem;
+  }
+  
+  .founder-drop-cap {
+    font-size: 3.5rem;
+    line-height: 0.8;
+    padding-right: 8px;
+  }
+
+  .founder-story-paragraph {
+    font-size: 1.025rem;
+    line-height: 1.75;
+  }
 }
 
 .notion-secondary-pills {

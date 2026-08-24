@@ -209,10 +209,45 @@ const DOMAIN_MAPPINGS = [
   }
 ];
 
-/* ─── Gemini AI Fluid Text Reveal Component (Hero Style) ─── */
+/* ─── Gemini AI Fluid Text Reveal Component (Hero Style with Campus Scribbles) ─── */
 const GeminiTextReveal = () => {
   return (
     <div className="fu-hero-header-wrap">
+      {/* Floating Campus Scribble 1: Graduation Cap Doodle (Left) */}
+      <div className="fu-scribble-doodle fu-scribble-mortarboard" aria-hidden="true">
+        <svg width="68" height="56" viewBox="0 0 74 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Cap Diamond */}
+          <path d="M37 6 L68 18 L37 30 L6 18 Z" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="#FFFFFF" />
+          {/* Cap Skull Base */}
+          <path d="M19 23 V34 C19 39 27 43 37 43 C47 43 55 39 55 34 V23" stroke="#111827" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          {/* Tassel Button & String */}
+          <circle cx="37" cy="18" r="2.5" fill="#F3912E" />
+          <path d="M37 18 Q 48 24 53 32" stroke="#F3912E" strokeWidth="2" strokeLinecap="round" fill="none" />
+          <path d="M53 32 L51 44 M53 32 L54 44 M53 32 L57 43" stroke="#F3912E" strokeWidth="2" strokeLinecap="round" />
+          {/* Sparkle lines */}
+          <path d="M10 8 L6 4 M14 5 L14 1 M5 12 L1 12" stroke="#F3912E" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </div>
+
+      {/* Floating Campus Scribble 2: University Pillar Building Doodle (Right) */}
+      <div className="fu-scribble-doodle fu-scribble-campus" aria-hidden="true">
+        <svg width="72" height="60" viewBox="0 0 78 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Pediment / Roof Triangle */}
+          <path d="M8 22 L39 6 L70 22 Z" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="#FFFFFF" />
+          {/* Architrave Beam */}
+          <path d="M11 26 H67" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" />
+          {/* Pillars */}
+          <path d="M18 27 V52 M24 27 V52" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M36 27 V52 M42 27 V52" stroke="#F3912E" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M54 27 V52 M60 27 V52" stroke="#111827" strokeWidth="1.8" strokeLinecap="round" />
+          {/* Base Steps */}
+          <path d="M10 54 H68" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" />
+          <path d="M5 60 H73" stroke="#111827" strokeWidth="2.2" strokeLinecap="round" />
+          {/* Star / Sparkle */}
+          <path d="M68 6 L70 12 L76 14 L70 16 L68 22 L66 16 L60 14 L66 12 Z" fill="#F3912E" opacity="0.8" />
+        </svg>
+      </div>
+
       {/* Top Hero Pill Badge */}
       <div className="fu-hero-pill-badge">
         <span className="fu-pill-dot"></span>
@@ -231,13 +266,20 @@ const GeminiTextReveal = () => {
         <span className="gemini-title-line">
           <span className="gemini-word gemini-accent" style={{ animationDelay: '0.36s' }}>Training</span>{' '}
           <span className="gemini-word" style={{ animationDelay: '0.44s' }}>and</span>{' '}
-          <span className="gemini-word gemini-accent" style={{ animationDelay: '0.52s' }}>Placement Support</span>
+          <span className="fu-scribble-word-wrapper">
+            <span className="gemini-word gemini-accent" style={{ animationDelay: '0.52s' }}>Placement Support</span>
+            <svg className="fu-scribble-underline" viewBox="0 0 320 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path 
+                d="M4 12 Q 90 18 170 11 Q 250 5 314 13 Q 230 17 150 16 Q 70 15 10 16" 
+                stroke="#F3912E" 
+                strokeWidth="3.2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+              />
+            </svg>
+          </span>
         </span>
       </h1>
-
-      <p className="gemini-hero-sub-text">
-        Transforming campus placement outcomes with industry-aligned technical training, automated coding assessments, and enterprise LMS infrastructure.
-      </p>
     </div>
   );
 };
@@ -493,247 +535,217 @@ const ForUniversities = () => {
       {/* ─── RESULT SCREEN ─── */}
       <div className={`fu-result-page fu-visible`}>
 
-          {/* ── 1. The Shift (Light Theme 2-Card Layout) ── */}
-          <section id="shift-section" ref={refShift} className={`fu-sec fu-shift-bento-section fu-reveal ${visShift ? 'fu-revealed' : ''}`}>
+          {/* ── Apple-Style Master Unified Bento Grid ── */}
+          <section id="training-section" ref={refPair} className={`fu-sec fu-apple-bento-section fu-reveal ${visPair ? 'fu-revealed' : ''}`}>
             <div className="fu-sec-inner">
               
-              <div className="fu-shift-header">
-                <p className="fu-sec-eyebrow">THE SHIFT</p>
-                <h2 className="fu-shift-title">
-                  Industry is not looking for what<br />
-                  we saw <span className="fu-pitch-accent">2–3 years</span> back...
+              {/* Section Header */}
+              <div className="fu-apple-bento-header">
+                <p className="fu-sec-eyebrow">TRAINING SUPPORT ECOSYSTEM</p>
+                <h2 className="fu-apple-bento-title">
+                  Everything Campuses Need. <span className="fu-pitch-accent">Built into One System.</span>
                 </h2>
-              </div>
-
-              <div className="fu-shift-bento-grid">
-                
-                {/* Card 1 (Left): Single-Skill Focus */}
-                <div className="fu-bento-card card-circuit">
-                  <div className="fu-card-text">
-                    <h3 className="fu-card-title">Single-Skill Focus</h3>
-                    <p className="fu-card-sub">
-                      Relying on just <em>one technology</em> or <em>DSA practice</em> is <em>no longer</em> enough for <strong>campus placement</strong>.
-                    </p>
-                  </div>
-                  <div className="fu-graphic-circuit">
-                    <div className="circuit-line left-line"></div>
-                    <div className="circuit-line right-line"></div>
-                    <div className="circuit-node-center">
-                      <div className="circuit-ring-outer">
-                        <div className="circuit-ring-inner">
-                          <Code2 size={22} className="circuit-icon" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="glow-dot dot-1"></div>
-                    <div className="glow-dot dot-2"></div>
-                  </div>
-                </div>
-
-                {/* Card 2 (Right): Same Legacy Curriculum */}
-                <div className="fu-bento-card card-pricing">
-                  <div className="fu-card-text">
-                    <h3 className="fu-card-title">Same Legacy Curriculum</h3>
-                    <p className="fu-card-sub">
-                      <em>Static syllabi</em> out of sync with <em>fast-moving tech</em> requirements lack real-world engineering practices.
-                    </p>
-                  </div>
-                  <div className="fu-graphic-pill-banner">
-                    <div className="pill-banner-badge">
-                      <X size={16} className="pill-x-icon" />
-                      <span>Outdated Standards</span>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          {/* ── 5. Industry Outcome Mapping (Exact Screenshot Match) ── */}
-          <section id="hire-section" ref={refPair} className={`fu-sec fu-outcome-mapping-section fu-reveal ${visPair ? 'fu-revealed' : ''}`}>
-            <div className="fu-sec-inner">
-              
-              <div className="fu-outcome-header">
-                <h2 className="fu-outcome-title">
-                  Time Has Changed - Companies <span className="fu-pitch-accent">Look For.</span>
-                </h2>
-                <p className="fu-outcome-sub">
-                  The <em>right combination</em> over just one skill from students
+                <p className="fu-apple-bento-sub">
+                  From multi-skill recruiter mandates to semester-aligned program delivery and agile beyond-syllabus tracks.
                 </p>
               </div>
 
-              {/* Interactive Bento Stage */}
-              <div className="fu-outcome-bento-grid">
+              {/* Apple-Style Asymmetrical Bento Grid */}
+              <div className="fu-apple-bento-grid">
                 
-                {/* Main Hero Combination Card (Notion Studio Theme) */}
-                {(() => {
-                  const safeCombo = DOMAIN_MAPPINGS[activeComboIndex % DOMAIN_MAPPINGS.length] || DOMAIN_MAPPINGS[0];
-                  const safeSkills = safeCombo.skills || [];
+                {/* ── Tile 1: Market Alignment / Skill Combinations (Col Span 7) ── */}
+                <div className="fu-apple-bento-tile tile-market-combo">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">MARKET COMBINATIONS</span>
+                      <span className="fu-demand-score-pill">
+                        {DOMAIN_MAPPINGS[activeComboIndex % DOMAIN_MAPPINGS.length]?.demandScore || '96% Recruiter Alignment'}
+                      </span>
+                    </div>
+                    <h3 className="fu-tile-title">
+                      We Deliver the Right Combination.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Over generic courses — aligning students directly with recruiter multi-skill mandates.
+                    </p>
+                  </div>
 
-                  return (
-                    <div className="fu-outcome-hero-card">
-                      <div className="fu-hero-card-header">
-                        <div className="fu-role-badge">
-                          <Sparkles size={14} /> ROLE: {safeCombo.role}
+                  {/* Interactive Combination Flow */}
+                  {(() => {
+                    const safeCombo = DOMAIN_MAPPINGS[activeComboIndex % DOMAIN_MAPPINGS.length] || DOMAIN_MAPPINGS[0];
+                    const safeSkills = safeCombo.skills || [];
+
+                    return (
+                      <div className="fu-apple-combo-stage">
+                        <div className="fu-apple-combo-topbar">
+                          <div className="fu-role-tag">
+                            <Sparkles size={13} /> ROLE: {safeCombo.role}
+                          </div>
+                          <div className="fu-salary-tag">
+                            Avg Package: <strong className="text-emerald">{safeCombo.avgSalary}</strong>
+                          </div>
                         </div>
-                        <div className="fu-salary-chip">
-                          Avg Package: <strong className="text-emerald">{safeCombo.avgSalary}</strong>
+
+                        <h4 className="fu-apple-combo-name">{safeCombo.title}</h4>
+
+                        <div className="fu-apple-tech-stack-row">
+                          <span className="fu-stack-label">RECRUITER TECH STACK:</span>
+                          <div className="fu-stack-pills">
+                            {safeSkills.map((skill, si) => (
+                              <React.Fragment key={si}>
+                                {si > 0 && <span className="fu-stack-plus">+</span>}
+                                <div className="fu-apple-skill-pill">
+                                  <span className="fu-tech-pill-logo">{getTechLogo(skill)}</span>
+                                  <span>{skill}</span>
+                                </div>
+                              </React.Fragment>
+                            ))}
+                          </div>
                         </div>
-                      </div>
 
-                      <h3 className="fu-hero-combo-title">{safeCombo.title}</h3>
-
-                      {/* Mix & Match Technology Combination Flow */}
-                      <div className="fu-combo-flow-stage">
-                        <p className="fu-flow-label">RECRUITER TECHNOLOGY COMBO STACK:</p>
-                        <div className="fu-combo-pills-flow">
-                          {safeSkills.map((skill, si) => (
-                            <React.Fragment key={si}>
-                              {si > 0 && <span className="fu-flow-plus">+</span>}
-                              <div className="fu-flow-skill-pill">
-                                <span className="fu-tech-pill-logo">{getTechLogo(skill)}</span>
-                                <span>{skill}</span>
-                              </div>
-                            </React.Fragment>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Mix & Match Shuffle & Solution Buttons */}
-                      <div className="fu-hero-card-footer">
-                        <div className="fu-action-btn-group">
+                        <div className="fu-apple-combo-footer">
                           <button 
                             type="button"
-                            className="fu-shuffle-domain-btn"
+                            className="fu-apple-shuffle-btn"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               setActiveComboIndex((prev) => (prev + 1) % DOMAIN_MAPPINGS.length);
                             }}
                           >
-                            <RefreshCw size={15} className="fu-spin-icon" /> Next Combination
-                          </button>
-                          <button 
-                            type="button"
-                            className="fu-solution-btn"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const target = document.getElementById('training-section');
-                              if (target) target.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                          >
-                            Want Solution?
+                            <RefreshCw size={14} className="fu-spin-icon" /> Next Combo
                           </button>
                         </div>
-                        <span className="fu-demand-score-tag">{safeCombo.demandScore}</span>
                       </div>
+                    );
+                  })()}
+                </div>
+
+                {/* ── Tile 2: Structured Programs (Col Span 5) ── */}
+                <div className="fu-apple-bento-tile tile-structured-programs">
+                  <div className="fu-tile-header">
+                    <span className="fu-apple-pill">STRUCTURED PROGRAMS</span>
+                    <h3 className="fu-tile-title">
+                      Programs that build real engineers.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Flexible semester tracks tailored to your academic calendar.
+                    </p>
+                  </div>
+
+                  <div className="fu-apple-programs-list">
+                    {/* Program 1 */}
+                    <div className="fu-apple-program-row">
+                      <div className="fu-program-icon-box"><BookOpen size={16} /></div>
+                      <div className="fu-program-info">
+                        <span className="fu-program-name">Academic Training</span>
+                        <span className="fu-program-meta">1 Semester · 2nd Year Students</span>
+                      </div>
+                      <span className="fu-program-tag">FOUNDATION</span>
                     </div>
-                  );
-                })()}
+
+                    {/* Program 2 */}
+                    <div className="fu-apple-program-row featured-row">
+                      <div className="fu-program-icon-box"><Target size={16} /></div>
+                      <div className="fu-program-info">
+                        <span className="fu-program-name">Placement Preparation</span>
+                        <span className="fu-program-meta">4–6 Weeks · 3rd & 4th Year</span>
+                      </div>
+                      <span className="fu-program-tag tag-featured">MOST POPULAR</span>
+                    </div>
+
+                    {/* Program 3 */}
+                    <div className="fu-apple-program-row">
+                      <div className="fu-program-icon-box"><Rocket size={16} /></div>
+                      <div className="fu-program-info">
+                        <span className="fu-program-name">Advanced Technical Excellence</span>
+                        <span className="fu-program-meta">12 Weeks · High Performers</span>
+                      </div>
+                      <span className="fu-program-tag">ADVANCED</span>
+                    </div>
+
+                    {/* Program 4 */}
+                    <div className="fu-apple-program-row">
+                      <div className="fu-program-icon-box"><Zap size={16} /></div>
+                      <div className="fu-program-info">
+                        <span className="fu-program-name">Seasonal Programs</span>
+                        <span className="fu-program-meta">Summer & Winter · Online / Offline</span>
+                      </div>
+                      <span className="fu-program-tag">SPRINTS</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Tile 3: Calendar Adaptation Stat Spotlight (Col Span 4) ── */}
+                <div className="fu-apple-bento-tile tile-calendar-stat">
+                  <span className="fu-apple-pill">SEMESTER ADAPTIVE</span>
+                  <div className="fu-stat-huge-number">100%</div>
+                  <h4 className="fu-stat-tile-title">Calendar Synchronized</h4>
+                  <p className="fu-stat-tile-desc">
+                    Custom 3, 6, or 9-month modules designed around your university examination dates.
+                  </p>
+                  <div className="fu-stat-footer-pill">
+                    <Clock size={14} /> Agile Scheduling
+                  </div>
+                </div>
+
+                {/* ── Tile 4: Beyond Static Syllabi (Col Span 8) ── */}
+                <div className="fu-apple-bento-tile tile-beyond-syllabi">
+                  <div className="fu-tile-header">
+                    <span className="fu-apple-pill">AGILE EXPANSION</span>
+                    <h3 className="fu-tile-title">
+                      Beyond static syllabi.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Training that adapts dynamically to upcoming tech stacks, GenAI, and industry standards.
+                    </p>
+                  </div>
+
+                  <div className="fu-apple-beyond-grid">
+                    {/* Item 1 */}
+                    <div className="fu-apple-beyond-card">
+                      <div className="fu-beyond-icon-row">
+                        <div className="fu-beyond-icon"><Flame size={18} /></div>
+                        <span className="fu-beyond-chip">Sprint Cohorts</span>
+                      </div>
+                      <h4 className="fu-beyond-card-title">Immersive Bootcamps</h4>
+                      <p className="fu-beyond-card-desc">Production-grade enterprise project sprints.</p>
+                    </div>
+
+                    {/* Item 2 */}
+                    <div className="fu-apple-beyond-card">
+                      <div className="fu-beyond-icon-row">
+                        <div className="fu-beyond-icon"><Presentation size={18} /></div>
+                        <span className="fu-beyond-chip">Live Sessions</span>
+                      </div>
+                      <h4 className="fu-beyond-card-title">Live Masterclasses</h4>
+                      <p className="fu-beyond-card-desc">Modern cloud tools, frameworks, and AI workflows.</p>
+                    </div>
+
+                    {/* Item 3 */}
+                    <div className="fu-apple-beyond-card">
+                      <div className="fu-beyond-icon-row">
+                        <div className="fu-beyond-icon"><Globe size={18} /></div>
+                        <span className="fu-beyond-chip chip-accent">● Live AMAs</span>
+                      </div>
+                      <h4 className="fu-beyond-card-title">Industry Leader Sessions</h4>
+                      <p className="fu-beyond-card-desc">Tech talks with senior engineering leaders.</p>
+                    </div>
+
+                    {/* Item 4 */}
+                    <div className="fu-apple-beyond-card">
+                      <div className="fu-beyond-icon-row">
+                        <div className="fu-beyond-icon"><Compass size={18} /></div>
+                        <span className="fu-beyond-chip">Interview Ready</span>
+                      </div>
+                      <h4 className="fu-beyond-card-title">Mentorship & Prep</h4>
+                      <p className="fu-beyond-card-desc">1:1 code reviews, resume audits & mock interviews.</p>
+                    </div>
+                  </div>
+                </div>
 
               </div>
 
-            </div>
-          </section>
-
-          {/* ── 4. Training Solutions (Crisp & Solution-Oriented - No Emojis) ── */}
-          <section id="training-section" ref={refTraining} className={`fu-sec fu-training-solutions-section fu-reveal ${visTraining ? 'fu-revealed' : ''}`}>
-            <div className="fu-sec-inner">
-              
-              <div className="fu-solutions-header">
-                <p className="fu-sec-eyebrow">Solutions We Provide</p>
-                <h2 className="fu-solutions-title">
-                  Structured programs that build <span className="fu-pitch-accent">real</span> engineers.
-                </h2>
-                <p className="fu-solutions-sub">
-                  Customizable 3, 6, or 9-month programs designed around your university calendar.
-                </p>
-              </div>
-
-              {/* Crisp 4-Card Solution Grid */}
-              <div className="fu-solutions-grid-4">
-                
-                {/* Solution 1: Academic Training */}
-                <div className="fu-solution-card">
-                  <div className="fu-solution-card-top">
-                    <div className="fu-solution-icon-badge">
-                      <BookOpen size={22} className="icon-orange" />
-                    </div>
-                    <span className="fu-solution-tag">Solution 01</span>
-                  </div>
-                  <h3 className="fu-solution-title">Academic Training</h3>
-                  <p className="fu-solution-desc">
-                    Strengthen CS & engineering fundamentals early through semester-aligned DSA, full-stack, and cloud tracks.
-                  </p>
-                  <div className="fu-solution-chips">
-                    <span>1 Semester</span>
-                    <span>2nd Year Students</span>
-                  </div>
-                </div>
-
-                {/* Solution 2: Placement Preparation */}
-                <div className="fu-solution-card fu-featured-solution">
-                  <div className="fu-solution-card-top">
-                    <div className="fu-solution-icon-badge">
-                      <Target size={22} className="icon-orange" />
-                    </div>
-                    <span className="fu-popular-badge">MOST POPULAR</span>
-                  </div>
-                  <h3 className="fu-solution-title">Placement Preparation</h3>
-                  <p className="fu-solution-desc">
-                    Intensive recruitment bootcamp covering DSA, System Design, SQL, and AI mock interviews to boost hiring rates.
-                  </p>
-                  <div className="fu-solution-chips">
-                    <span>4–6 Weeks</span>
-                    <span>3rd & 4th Year</span>
-                  </div>
-                </div>
-
-                {/* Solution 3: Advanced Technical Excellence */}
-                <div className="fu-solution-card">
-                  <div className="fu-solution-card-top">
-                    <div className="fu-solution-icon-badge">
-                      <Rocket size={22} className="icon-orange" />
-                    </div>
-                    <span className="fu-solution-tag">Solution 03</span>
-                  </div>
-                  <h3 className="fu-solution-title">Advanced Technical Excellence</h3>
-                  <p className="fu-solution-desc">
-                    High-performer track for students targeting Tier-1 product companies, high LPA packages, and complex systems.
-                  </p>
-                  <div className="fu-solution-chips">
-                    <span>12 Weeks</span>
-                    <span>High Performers</span>
-                  </div>
-                </div>
-
-                {/* Solution 4: Seasonal Programs */}
-                <div className="fu-solution-card">
-                  <div className="fu-solution-card-top">
-                    <div className="fu-solution-icon-badge">
-                      <Zap size={22} className="icon-orange" />
-                    </div>
-                    <span className="fu-solution-tag">Solution 04</span>
-                  </div>
-                  <h3 className="fu-solution-title">Seasonal Programs</h3>
-                  <p className="fu-solution-desc">
-                    Short-term summer & winter break sprints providing project certifications and rapid skill upgrades.
-                  </p>
-                  <div className="fu-solution-chips">
-                    <span>Summer / Winter</span>
-                    <span>Online / Offline</span>
-                  </div>
-                </div>
-
-              </div>
-
-              <div className="fu-training-custom-banner">
-                <div className="fu-custom-icon-box"><Clock size={18} /></div>
-                <div className="fu-custom-text">
-                  <strong>Need a tailored schedule?</strong> Durations and curriculum modules are fully customizable to fit your university's exact semester dates.
-                </div>
-              </div>
             </div>
           </section>
 
@@ -755,93 +767,6 @@ const ForUniversities = () => {
                   <img src="/company-look-3.jpg" alt="CipherSchools Classroom Workshop 3" className="fu-photo-img" />
                 </div>
               </div>
-            </div>
-          </section>
-
-          {/* ── 6. Beyond Domain (Redesigned Light Theme Bento Grid) ── */}
-          <section ref={refBeyond} className={`fu-sec fu-beyond-light-bento fu-reveal ${visBeyond ? 'fu-revealed' : ''}`}>
-            <div className="fu-sec-inner">
-              
-              <div className="fu-beyond-header">
-                <p className="fu-sec-eyebrow">Beyond Subjects & Domains</p>
-                <h2 className="fu-beyond-title">
-                  We are not limited <span className="fu-pitch-accent">to what you see.</span>
-                </h2>
-                <p className="fu-beyond-sub">
-                  We support your institution for all upcoming tech stacks, domain specializations, and career pathways.
-                </p>
-              </div>
-
-              <div className="fu-beyond-bento-grid">
-                
-                {/* Card 1: Immersive Bootcamps */}
-                <div className="fu-light-bento-card card-bootcamps">
-                  <div className="fu-card-text">
-                    <div className="fu-light-icon-badge">
-                      <Flame size={24} className="icon-orange" />
-                    </div>
-                    <h3 className="fu-light-card-title">Immersive Bootcamps</h3>
-                    <p className="fu-light-card-sub">
-                      Intensive, hands-on sprints designed to build and deploy full-scale enterprise projects in weeks, not years.
-                    </p>
-                  </div>
-                  <div className="fu-bento-graphic-bootcamp">
-                    <div className="bootcamp-stat-pill">
-                      <Sparkles size={14} /> 4-6 Week Sprints
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card 2: Hands-on Workshops */}
-                <div className="fu-light-bento-card card-workshops">
-                  <div className="fu-card-text">
-                    <div className="fu-light-icon-badge">
-                      <Presentation size={24} className="icon-orange" />
-                    </div>
-                    <h3 className="fu-light-card-title">Hands-on Workshops</h3>
-                    <p className="fu-light-card-sub">
-                      Focused interactive masterclasses mastering the latest production tools, cloud systems, and AI workflows.
-                    </p>
-                  </div>
-                  <div className="fu-bento-graphic-workshop">
-                    <div className="workshop-pill">Live Masterclasses</div>
-                  </div>
-                </div>
-
-                {/* Card 3: Industry Leader Sessions */}
-                <div className="fu-light-bento-card card-sessions">
-                  <div className="fu-card-text">
-                    <div className="fu-light-icon-badge">
-                      <Globe size={24} className="icon-orange" />
-                    </div>
-                    <h3 className="fu-light-card-title">Industry Leader Sessions</h3>
-                    <p className="fu-light-card-sub">
-                      Direct live interactions, tech talks, and AMA sessions with engineering leaders from top product companies.
-                    </p>
-                  </div>
-                  <div className="fu-bento-graphic-sessions">
-                    <span className="live-dot-tag">● Live Tech Talks</span>
-                  </div>
-                </div>
-
-                {/* Card 4: 1:1 Mentorship & Career Guidance */}
-                <div className="fu-light-bento-card card-mentorship">
-                  <div className="fu-card-text">
-                    <div className="fu-light-icon-badge">
-                      <Compass size={24} className="icon-orange" />
-                    </div>
-                    <h3 className="fu-light-card-title">1:1 Mentorship & Career Guidance</h3>
-                    <p className="fu-light-card-sub">
-                      Mock interviews, resume reviews, portfolio audits, and 1:1 mentorship to crack top technical hiring bars.
-                    </p>
-                  </div>
-                  <div className="fu-bento-graphic-mentorship">
-                    <div className="mentorship-chip">100% Interview Ready</div>
-                  </div>
-                </div>
-
-              </div>
-
             </div>
           </section>
 
@@ -1098,263 +1023,220 @@ const ForUniversities = () => {
           </section>
 
           {/* ── 7. Assessment Platform (Spacious HackerRank/Engage Inspired Layout) ── */}
-          <section id="assessment-section" ref={refAssessment} className={`fu-sec fu-assessment-light-section fu-reveal ${visAssessment ? 'fu-revealed' : ''}`}>
+          {/* ── Apple-Style Master Assessment Bento Grid ── */}
+          <section id="assessment-section" ref={refAssessment} className={`fu-sec fu-assessment-apple-bento-section fu-reveal ${visAssessment ? 'fu-revealed' : ''}`}>
             <div className="fu-sec-inner">
               
-              <div className="fu-assessment-spacious-grid">
-                
-                {/* Left Column: Airy Typography & Bullet Points */}
-                <div className="fu-assessment-left-info">
-                  <div className="notion-section-tag">
-                    <Sparkles size={14} className="tag-sparkle" /> ASSESSMENT PLATFORM
-                  </div>
-                  
-                  <h2 className="fu-assessment-main-h2">
-                    Measure what matters, <span className="fu-pitch-accent">automatically.</span>
-                  </h2>
-                  
-                  <p className="fu-assessment-main-desc">
-                    AI-powered evaluations, multi-language coding sandboxes, proctored aptitude tests, and real-time candidate analytics.
-                  </p>
+              {/* Section Header */}
+              <div className="fu-apple-bento-header">
+                <p className="fu-sec-eyebrow">ASSESSMENT PLATFORM</p>
+                <h2 className="fu-apple-bento-title">
+                  Measure what matters, <span className="fu-pitch-accent">automatically.</span>
+                </h2>
+                <p className="fu-apple-bento-sub">
+                  AI-powered evaluations, multi-language coding sandboxes, proctored aptitude tests, and real-time candidate analytics.
+                </p>
+              </div>
 
-                  <ul className="fu-assessment-feature-bullets">
-                    <li>
-                      <span className="bullet-dot"></span>
-                      <div>
-                        <strong>Coding Test:</strong> Full compiler supporting C, C++, Java, and Python with System Design sandbox.
+              {/* Apple-Style Asymmetrical Bento Grid */}
+              <div className="fu-apple-bento-grid">
+                
+                {/* ── Tile 1: Multi-Language Coding Sandbox & System Design (Col Span 7) ── */}
+                <div className="fu-apple-bento-tile tile-coding-sandbox">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">CODING EVALUATION</span>
+                      <span className="fu-demand-score-pill">14 Testcases Auto-Scored</span>
+                    </div>
+                    <h3 className="fu-tile-title">
+                      Multi-Language Compiler & Sandbox.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Full production compiler supporting C, C++, Java, and Python with live System Design testing.
+                    </p>
+                  </div>
+
+                  <div className="fu-mock-as-coding-rich">
+                    <div className="fme-coding-header">
+                      <div className="fme-lang-pills">
+                        <span className="fme-lang-chip">C</span>
+                        <span className="fme-lang-chip">C++</span>
+                        <span className="fme-lang-chip">JAVA</span>
+                        <span className="fme-lang-chip">Python</span>
                       </div>
-                    </li>
-                    <li>
-                      <span className="bullet-dot"></span>
-                      <div>
-                        <strong>AI Technical & HR Mock Interviews:</strong> Simulated voice evaluations with real-time confidence metrics.
+                      <div className="fme-sys-badge"><Sparkles size={12} /> System Design ⚡</div>
+                    </div>
+
+                    <div className="fme-coding-body">
+                      <div className="fme-editor-top">
+                        <span className="fme-file-tab">system_architecture.py</span>
+                        <span className="fme-mode-tag">Production Engine</span>
                       </div>
-                    </li>
-                    <li>
-                      <span className="bullet-dot"></span>
-                      <div>
-                        <strong>Proctored Aptitude & Reasoning Tests:</strong> Timed evaluations with automated scoring & question curation.
+                      <div className="fm-editor-code">
+                        <span className="fm-comment"># Live Automated Scoring & Execution</span><br/>
+                        <span className="fm-kwd">class</span> <span className="fm-func">LoadBalancer</span>:<br/>
+                        &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">__init__</span>(self, nodes):<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;self.nodes = nodes<br/>
+                        &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">route</span>(self, req):<br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-comment"># Evaluating edge-cases & memory bounds</span><br/>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-kwd">return</span> self.nodes[0]
                       </div>
-                    </li>
-                    <li>
-                      <span className="bullet-dot"></span>
-                      <div>
-                        <strong>Real-Time Performance Trajectories:</strong> Deep student growth analytics and batch accuracy insights.
-                      </div>
-                    </li>
-                  </ul>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Right Column: Spacious Interactive Window Showcase */}
-                <div className="fu-assessment-right-showcase">
-                  <div 
-                    className="fu-assessment-mockup-wrapper notion-window-wrapper"
-                    onClick={() => setIsAutoRotateAssessment(false)}
-                  >
-                    
-                    {/* Interactive Tab Switcher Bar inside Window Header */}
-                    <div className="notion-stage-topbar spacious-topbar">
-                      <div className="notion-topbar-dots">
-                        <span className="dot red"></span>
-                        <span className="dot yellow"></span>
-                        <span className="dot green"></span>
+                {/* ── Tile 2: AI Technical & HR Mock Interviews (Col Span 5) ── */}
+                <div className="fu-apple-bento-tile tile-ai-mock">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">AI VOICE INTERVIEWS</span>
+                      <span className="fu-confidence-badge">94% Confidence</span>
+                    </div>
+                    <h3 className="fu-tile-title">
+                      AI Mock Interviews.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Simulated technical & HR voice evaluations with real-time speech and confidence scoring.
+                    </p>
+                  </div>
+
+                  <div className="fu-apple-interview-card">
+                    <div className="fu-ai-call-info">
+                      <div className="fu-ai-avatar-badge">
+                        <Bot size={18} />
                       </div>
-                      
-                      <div className="notion-stage-tabs">
-                        {[
-                          { id: 'coding', label: 'Coding Test' },
-                          { id: 'aptitude', label: 'Aptitude Test' },
-                          { id: 'comm_skill', label: 'AI Mock' },
-                          { id: 'analytics', label: 'Analytics' },
-                        ].map(t => (
-                          <button
-                            key={t.id}
-                            className={`notion-tab-btn ${activeAssessmentTab === t.id ? 'active-tab' : ''}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAssessmentTabClick(t.id);
-                            }}
-                          >
-                            {t.label}
-                          </button>
-                        ))}
+                      <div>
+                        <h4 className="fu-ai-call-name">AI Technical Interviewer</h4>
+                        <span className="fu-ai-call-sub">System Architecture & Coding Session</span>
                       </div>
                     </div>
 
-                    <div className="fu-assessment-mockup tab-fade-enter" key={activeAssessmentTab}>
-                    {activeAssessmentTab === 'coding' && (
-                      <div className="fu-mock-as-coding-rich">
-                        <div className="fme-coding-header">
-                          <div className="fme-lang-pills">
-                            <span className="fme-lang-chip active">C</span>
-                            <span className="fme-lang-chip active">C++</span>
-                            <span className="fme-lang-chip active">JAVA</span>
-                            <span className="fme-lang-chip active">Python</span>
-                          </div>
-                          <div className="fme-sys-badge"><Sparkles size={12} /> System Design ⚡</div>
-                        </div>
+                    <div className="fu-ai-speech-bubble" style={{ margin: '0.75rem 0' }}>
+                      <span className="fu-speech-author">AI Question:</span>
+                      <p className="fu-speech-text" style={{ fontSize: '0.8rem', margin: '2px 0 0 0' }}>
+                        "How do you handle data consistency vs availability in distributed DBs?"
+                      </p>
+                    </div>
 
-                        <div className="fme-coding-body">
-                          <div className="fme-editor-top">
-                            <span className="fme-file-tab">system_architecture.py</span>
-                            <span className="fme-mode-tag">Multi-Language Compiler</span>
-                          </div>
-                          <div className="fm-editor-code">
-                            <span className="fm-comment"># Fully charged for System Design & Coding</span><br/>
-                            <span className="fm-kwd">class</span> <span className="fm-func">LoadBalancer</span>:<br/>
-                            &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">__init__</span>(self, nodes):<br/>
-                            &nbsp;&nbsp;&nbsp;&nbsp;self.nodes = nodes<br/>
-                            &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">route</span>(self, req):<br/>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-comment"># Auto-evaluating 14 testcases</span><br/>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-kwd">return</span> self.nodes[0]
-                          </div>
+                    <div className="fu-candidate-res-card">
+                      <div className="fu-res-header">
+                        <span className="fu-res-label">Candidate Voice Analysis</span>
+                        <span className="fu-res-score">Confidence 94%</span>
+                      </div>
+                      <div className="fu-res-wave-row">
+                        <div className="fu-mic-icon-box">
+                          <Volume2 size={15} />
+                        </div>
+                        <div className="fu-res-wave-bars">
+                          <span className="res-bar"></span>
+                          <span className="res-bar"></span>
+                          <span className="res-bar"></span>
+                          <span className="res-bar"></span>
+                          <span className="res-bar"></span>
                         </div>
                       </div>
-                    )}
-                    {activeAssessmentTab === 'aptitude' && (
-                      <div className="fu-mock-as-exam">
-                        <div className="fme-header">
-                          <span className="fme-time">12:30</span>
-                          <span className="fme-qnum">Logical Reasoning & Quant</span>
-                        </div>
-                        <div className="fme-body">
-                          <div className="fme-q">If all A are B, and some B are C, which statement is true?</div>
-                          <div className="fme-options">
-                            <div className="fme-opt"><div className="fme-radio"></div>All A are C</div>
-                            <div className="fme-opt"><div className="fme-radio"></div>Some A are C</div>
-                            <div className="fme-opt active"><div className="fme-radio checked"></div>None of the above</div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {activeAssessmentTab === 'comm_skill' && (
-                      <div className="fu-mock-ai-interview-light">
-                        {/* Top Video Call Bar */}
-                        <div className="fu-ai-call-topbar">
-                          <div className="fu-ai-call-info">
-                            <div className="fu-ai-avatar-badge">
-                              <Bot size={18} />
-                            </div>
-                            <div>
-                              <h4 className="fu-ai-call-name">AI Technical Interviewer</h4>
-                              <span className="fu-ai-call-sub">System Architecture & Coding Session</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Video Call Stage Grid */}
-                        <div className="fu-ai-call-stage">
-                          <div className="fu-ai-screen-card">
-                            <div className="fu-ai-screen-inner">
-                              <div className="fu-ai-avatar-orb">
-                                <div className="fu-ai-pulse-ring ring-1"></div>
-                                <div className="fu-ai-pulse-ring ring-2"></div>
-                                <div className="fu-ai-orb-core">
-                                  <Bot size={32} className="fu-ai-bot-icon" />
-                                </div>
-                              </div>
-                              <span className="fu-ai-speaking-label">AI Interviewer</span>
-                            </div>
-                          </div>
-
-                          <div className="fu-ai-dialogue-panel">
-                            <div className="fu-ai-speech-bubble">
-                              <span className="fu-speech-author">AI Question:</span>
-                              <p className="fu-speech-text">
-                                "How do you handle data consistency vs availability in distributed DBs?"
-                              </p>
-                            </div>
-
-                            <div className="fu-candidate-res-card">
-                              <div className="fu-res-header">
-                                <span className="fu-res-label">Candidate Response</span>
-                                <span className="fu-res-score">Confidence 94%</span>
-                              </div>
-                              <div className="fu-res-wave-row">
-                                <div className="fu-mic-icon-box">
-                                  <Volume2 size={16} />
-                                </div>
-                                <div className="fu-res-wave-bars">
-                                  <span className="res-bar"></span>
-                                  <span className="res-bar"></span>
-                                  <span className="res-bar"></span>
-                                  <span className="res-bar"></span>
-                                  <span className="res-bar"></span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {activeAssessmentTab === 'analytics' && (
-                      <div className="fu-mock-as-analytics">
-                        <div className="fma-header">
-                          <div className="fma-title-group">
-                            <TrendingUp size={18} color="#f7931e" />
-                            <div>
-                              <h4>Student Performance Trajectory</h4>
-                              <span className="fma-sub">Jan to May Growth Curve</span>
-                            </div>
-                          </div>
-                          <span className="fma-badge">+184% Growth 🚀</span>
-                        </div>
-
-                        <div className="fma-chart-box">
-                          <div className="fma-chart-header">
-                            <div className="fma-chart-metric">
-                              <span className="fma-metric-num">96%</span>
-                              <span className="fma-metric-lbl">May Readiness Score</span>
-                            </div>
-                          </div>
-
-                          <div className="fma-svg-container">
-                            <svg viewBox="0 0 500 160" className="fma-svg-chart">
-                              <defs>
-                                <linearGradient id="fmaGradient" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="0%" stopColor="#f7931e" stopOpacity="0.35"/>
-                                  <stop offset="100%" stopColor="#f7931e" stopOpacity="0.0"/>
-                                </linearGradient>
-                              </defs>
-                              <line x1="40" y1="30" x2="470" y2="30" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                              <line x1="40" y1="70" x2="470" y2="70" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                              <line x1="40" y1="110" x2="470" y2="110" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
-                              <path d="M 40 125 Q 150 115 250 85 T 470 25 L 470 140 L 40 140 Z" fill="url(#fmaGradient)" />
-                              <path d="M 40 125 Q 150 115 250 85 T 470 25" fill="none" stroke="#f7931e" strokeWidth="3.5" strokeLinecap="round" />
-                              <circle cx="40" cy="125" r="5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
-                              <text x="40" y="115" fill="#aaa" fontSize="11" textAnchor="middle">32%</text>
-                              <text x="40" y="155" fill="#888" fontSize="11" textAnchor="middle">Jan</text>
-                              <circle cx="255" cy="85" r="5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
-                              <text x="255" y="72" fill="#ffa103" fontSize="11" fontWeight="bold" textAnchor="middle">68%</text>
-                              <text x="255" y="155" fill="#888" fontSize="11" textAnchor="middle">March</text>
-                              <circle cx="470" cy="25" r="6.5" fill="#00c853" stroke="#fff" strokeWidth="2" />
-                              <text x="470" y="14" fill="#00c853" fontSize="11" fontWeight="900" textAnchor="middle">96% 🔥</text>
-                              <text x="470" y="155" fill="#00c853" fontSize="11" fontWeight="bold" textAnchor="middle">May</text>
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                    </div>
                   </div>
                 </div>
+
+                {/* ── Tile 3: Proctored Aptitude & Reasoning Tests (Col Span 4) ── */}
+                <div className="fu-apple-bento-tile tile-aptitude-test">
+                  <div className="fu-tile-header">
+                    <span className="fu-apple-pill">PROCTORED EXAMS</span>
+                    <h3 className="fu-tile-title" style={{ fontSize: '1.15rem' }}>
+                      Aptitude & Reasoning.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Timed evaluations with anti-cheat proctoring & automated scoring.
+                    </p>
+                  </div>
+
+                  <div className="fu-mock-as-exam" style={{ marginTop: 'auto' }}>
+                    <div className="fme-header">
+                      <span className="fme-time">12:30 left</span>
+                      <span className="fme-qnum">Logical Reasoning</span>
+                    </div>
+                    <div className="fme-body">
+                      <div className="fme-q" style={{ fontSize: '0.78rem' }}>If all A are B, and some B are C, which statement is true?</div>
+                      <div className="fme-options" style={{ gap: '4px', marginTop: '6px' }}>
+                        <div className="fme-opt" style={{ padding: '4px 8px', fontSize: '0.74rem' }}><div className="fme-radio"></div>All A are C</div>
+                        <div className="fme-opt active" style={{ padding: '4px 8px', fontSize: '0.74rem' }}><div className="fme-radio checked"></div>None of the above</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Tile 4: Real-Time Performance Analytics & Trajectory (Col Span 8) ── */}
+                <div className="fu-apple-bento-tile tile-analytics-trajectory">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">GROWTH ANALYTICS</span>
+                      <span className="fma-badge">+184% Growth 🚀</span>
+                    </div>
+                    <h3 className="fu-tile-title">
+                      Performance Trajectories.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Deep student cohort analytics, batch readiness tracking, and domain percentile rankings.
+                    </p>
+                  </div>
+
+                  <div className="fu-apple-analytics-box">
+                    <div className="fma-chart-header" style={{ marginBottom: '0.5rem' }}>
+                      <div className="fma-chart-metric">
+                        <span className="fma-metric-num" style={{ fontSize: '1.75rem' }}>96%</span>
+                        <span className="fma-metric-lbl">Cohort Readiness Benchmark</span>
+                      </div>
+                      <span className="fu-growth-tag">Top 5% Tier Recruiter Level</span>
+                    </div>
+
+                    <div className="fma-svg-container">
+                      <svg viewBox="0 0 500 140" className="fma-svg-chart">
+                        <defs>
+                          <linearGradient id="fmaGradientApple" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#f7931e" stopOpacity="0.3"/>
+                            <stop offset="100%" stopColor="#f7931e" stopOpacity="0.0"/>
+                          </linearGradient>
+                        </defs>
+                        <line x1="40" y1="25" x2="470" y2="25" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                        <line x1="40" y1="65" x2="470" y2="65" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                        <line x1="40" y1="105" x2="470" y2="105" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
+                        <path d="M 40 115 Q 150 105 250 75 T 470 20 L 470 130 L 40 130 Z" fill="url(#fmaGradientApple)" />
+                        <path d="M 40 115 Q 150 105 250 75 T 470 20" fill="none" stroke="#f7931e" strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="40" cy="115" r="4.5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
+                        <text x="40" y="105" fill="#aaa" fontSize="10" textAnchor="middle">32%</text>
+                        <text x="40" y="135" fill="#888" fontSize="10" textAnchor="middle">Jan</text>
+                        <circle cx="255" cy="75" r="4.5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
+                        <text x="255" y="62" fill="#ffa103" fontSize="10" fontWeight="bold" textAnchor="middle">68%</text>
+                        <text x="255" y="135" fill="#888" fontSize="10" textAnchor="middle">March</text>
+                        <circle cx="470" cy="20" r="5.5" fill="#00c853" stroke="#fff" strokeWidth="2" />
+                        <text x="470" y="11" fill="#00c853" fontSize="10" fontWeight="900" textAnchor="middle">96% 🔥</text>
+                        <text x="470" y="135" fill="#00c853" fontSize="10" fontWeight="bold" textAnchor="middle">May</text>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
             </div>
-          </div>
-        </section>
+          </section>
 
 
 
 
 
-          {/* ── 7. CTA ── */}
+          {/* ── 7. Professional Executive CTA ── */}
           <section ref={refCta} className={`fu-sec fu-sec-cta-final fu-reveal ${visCta ? 'fu-revealed' : ''}`}>
             <div className="fu-sec-inner fu-cta-final-inner">
-              <Coffee size={48} className="fu-cta-coffee-icon" />
+              <div className="fu-cta-icon-badge">
+                <GraduationCap size={28} />
+              </div>
               <h2 className="fu-cta-final-title">
-                Let's connect over a <span className="fu-pitch-accent">coffee.</span>
+                Let's discuss your campus roadmap.
               </h2>
               <p className="fu-cta-final-sub">
-                Explore how CipherSchools can transform your institution's placement numbers and technical training.
+                Explore how CipherSchools can transform your institution's placement outcomes, curriculum agility, and technical training.
               </p>
               <button className="fu-pitch-cta-btn" style={{ marginTop: '2rem' }} onClick={() => setIsMeetingModalOpen(true)}>
                 Book a Meeting <ArrowRight size={20} />
@@ -1367,8 +1249,8 @@ const ForUniversities = () => {
       {/* ── STICKY CTA ── */}
       <div className={`fu-sticky-cta ${showStickyCta ? 'fu-sticky-visible' : ''}`}>
         <div className="fu-sticky-cta-inner">
-          <p>Let's connect over a <strong>quick</strong> meeting</p>
-          <button className="fu-sticky-btn" onClick={() => setIsMeetingModalOpen(true)}>Book Meeting <ArrowRight size={16} /></button>
+          <p>Partner with <strong>CipherSchools</strong> for your campus</p>
+          <button className="fu-sticky-btn" onClick={() => setIsMeetingModalOpen(true)}>Book a Meeting <ArrowRight size={16} /></button>
         </div>
       </div>
 

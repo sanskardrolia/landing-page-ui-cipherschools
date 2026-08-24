@@ -308,17 +308,17 @@
    ═══════════════════════════════════════════ */
 .fu-result-page { position: relative; z-index: 1; }
 
-/* ─── Full Screen Text Reveal Hero ─── */
+/* ─── Full Screen Text Reveal Hero (Clean Light Theme) ─── */
 .fu-fullscreen-hero {
-  min-height: 88vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  background: #0B0B0C;
-  color: #FFFFFF;
+  background: #FFFFFF;
+  color: #111827;
   padding: 6.5rem 2rem 5rem;
   overflow: hidden;
 }
@@ -333,21 +333,105 @@
   z-index: 5;
 }
 
+/* ─── Campus Scribble SVGs (Modern Hand-Drawn Editorial & Professional) ─── */
+.fu-scribble-doodle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  user-select: none;
+  animation: scribbleFloat 6s ease-in-out infinite alternate;
+}
+
+.fu-scribble-mortarboard {
+  top: -10px;
+  left: 20px;
+  transform: rotate(-12deg);
+}
+
+.fu-scribble-campus {
+  top: -15px;
+  right: 25px;
+  transform: rotate(8deg);
+  animation-name: scribbleFloatRight;
+  animation-delay: -3s;
+}
+
+@keyframes scribbleFloat {
+  0% {
+    transform: translateY(0px) rotate(-12deg);
+  }
+  100% {
+    transform: translateY(-8px) rotate(-8deg);
+  }
+}
+
+@keyframes scribbleFloatRight {
+  0% {
+    transform: translateY(0px) rotate(8deg);
+  }
+  100% {
+    transform: translateY(-8px) rotate(12deg);
+  }
+}
+
+.fu-scribble-word-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.fu-scribble-underline {
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 100%;
+  height: 18px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+@media (max-width: 900px) {
+  .fu-scribble-mortarboard {
+    top: -25px;
+    left: -5px;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  .fu-scribble-campus {
+    top: -25px;
+    right: -5px;
+    transform: scale(0.8) rotate(6deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .fu-scribble-doodle {
+    display: none;
+  }
+}
+
 .fu-hero-pill-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   padding: 7px 18px;
   border-radius: 4px;
   font-size: 0.775rem;
   font-weight: 700;
-  color: #D1D5DB;
+  color: #374151;
   letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-bottom: 2.25rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.fu-hero-pill-badge:hover {
+  border-color: #F3912E;
+  color: #F3912E;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.15);
 }
 
 .fu-pill-dot {
@@ -366,13 +450,13 @@
 .gemini-hero-sub-text {
   font-size: 1.15rem;
   line-height: 1.65;
-  color: #9CA3AF;
+  color: #6B7280;
   max-width: 780px;
   margin: 0 auto 2.5rem auto;
   font-weight: 400;
 }
 
-/* ─── Smart Help Options embedded inside Hero ─── */
+/* ─── Smart Help Options embedded inside Hero (Light Theme) ─── */
 .fu-smart-help-stage {
   margin-top: 3rem;
   width: 100%;
@@ -394,7 +478,7 @@
 .fu-smart-help-question {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #E5E7EB;
+  color: #1F2937;
   letter-spacing: 0.3px;
   margin: 0 auto;
   text-align: center;
@@ -451,40 +535,36 @@
 
 .fu-smart-option-card {
   position: relative;
-  background: rgba(16, 16, 20, 0.75);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
   padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   cursor: pointer;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  opacity: 0.75;
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               box-shadow 0.25s ease, 
               border-color 0.25s ease, 
-              background 0.25s ease,
-              opacity 0.25s ease;
+              background 0.25s ease;
   text-align: left;
   user-select: none;
 }
 
 .fu-smart-option-card:hover {
-  opacity: 0.95;
-  background: rgba(24, 24, 30, 0.9);
-  border-color: rgba(243, 145, 46, 0.5);
+  background: #FFFDFB;
+  border-color: rgba(243, 145, 46, 0.4);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.12);
 }
 
 .fu-smart-option-card.active {
-  opacity: 1;
-  background: linear-gradient(135deg, rgba(243, 145, 46, 0.2) 0%, rgba(24, 24, 30, 0.95) 100%);
+  background: #FFFBF5;
   border-color: #F3912E;
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 0 25px rgba(243, 145, 46, 0.32), 0 8px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 0 20px rgba(243, 145, 46, 0.2), 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
 .fu-selected-active-badge {
@@ -497,24 +577,24 @@
   font-weight: 800;
   padding: 2px 8px;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.4);
+  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 /* Tactile Spring Press Compression Animation */
 .fu-smart-option-card:active {
-  transform: scale(0.96) translateY(2px) !important;
-  box-shadow: 0 4px 15px rgba(243, 145, 46, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  transform: scale(0.97) translateY(1px) !important;
+  box-shadow: 0 4px 15px rgba(243, 145, 46, 0.3) !important;
   border-color: #F3912E !important;
 }
 
 .fu-smart-card-icon {
   width: 44px;
   height: 44px;
-  border-radius: 4px;
-  background: rgba(243, 145, 46, 0.15);
-  border: 1px solid rgba(243, 145, 46, 0.35);
+  border-radius: 6px;
+  background: rgba(243, 145, 46, 0.1);
+  border: 1px solid rgba(243, 145, 46, 0.25);
   color: #F3912E;
   display: flex;
   align-items: center;
@@ -527,7 +607,7 @@
   background: #F3912E;
   color: #FFFFFF;
   border-color: #F3912E;
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.08) rotate(4deg);
 }
 
 .fu-smart-card-body {
@@ -537,27 +617,27 @@
 }
 
 .fu-smart-card-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #111827;
   line-height: 1.3;
 }
 
 .fu-smart-card-sub {
   font-size: 0.775rem;
-  color: #9CA3AF;
+  color: #6B7280;
   margin-top: 2px;
 }
 
 .fu-smart-card-arrow {
-  color: rgba(255, 255, 255, 0.35);
+  color: #9CA3AF;
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .fu-smart-option-card:hover .fu-smart-card-arrow,
 .fu-smart-option-card.active .fu-smart-card-arrow {
   color: #F3912E;
-  transform: translateX(6px) scale(1.15);
+  transform: translateX(4px);
 }
 
 @media (max-width: 900px) {
@@ -567,27 +647,7 @@
 }
 
 .fu-hero-glow-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(140px);
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-.fu-hero-glow-orb.orb-1 {
-  width: 500px;
-  height: 500px;
-  background: #F3912E;
-  top: -100px;
-  left: 20%;
-}
-
-.fu-hero-glow-orb.orb-2 {
-  width: 550px;
-  height: 550px;
-  background: #FF6B00;
-  bottom: -150px;
-  right: 15%;
+  display: none !important;
 }
 
 /* ─── Gemini AI Text Reveal & Ambient Animations (Brand Color Theme) ─── */
@@ -649,7 +709,7 @@
   transform: translateY(28px) scale(0.92);
   filter: blur(10px);
   animation: geminiWordReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  color: #FFFFFF;
+  color: #111827;
 }
 
 @keyframes geminiWordReveal {
@@ -1408,8 +1468,535 @@
 }
 
 /* ═══════════════════════════════════════════
-   INDUSTRY OUTCOME MAPPING – REDESIGNED BENTO GRID
+   APPLE-STYLE MASTER BENTO GRID
    ═══════════════════════════════════════════ */
+.fu-apple-bento-section {
+  background: #FAFAFA;
+  color: #111827;
+  padding: 6rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.fu-apple-bento-header {
+  text-align: center;
+  margin-bottom: 2.75rem;
+}
+
+.fu-apple-bento-title {
+  font-size: clamp(2.1rem, 3.5vw, 3rem);
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0.5rem 0 0.75rem 0;
+}
+
+.fu-apple-bento-sub {
+  font-size: 1.05rem;
+  color: #6B7280;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+/* 12-Column Apple Asymmetrical Bento Grid */
+.fu-apple-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.25rem;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+/* Base Apple Bento Tile */
+.fu-apple-bento-tile {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.fu-apple-bento-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(243, 145, 46, 0.4);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+}
+
+/* Apple Tile Spans */
+.fu-apple-bento-tile.tile-market-combo {
+  grid-column: span 7;
+}
+
+.fu-apple-bento-tile.tile-structured-programs {
+  grid-column: span 5;
+}
+
+.fu-apple-bento-tile.tile-calendar-stat {
+  grid-column: span 4;
+  background: #FFFFFF;
+  border-color: #E5E7EB;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.fu-apple-bento-tile.tile-beyond-syllabi {
+  grid-column: span 8;
+}
+
+/* Neutral Pill Badges */
+.fu-apple-pill {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #4B5563;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  padding: 3px 9px;
+  border-radius: 4px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.fu-demand-score-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.fu-tile-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.fu-tile-header {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.fu-tile-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  margin: 0.4rem 0 0.35rem 0;
+  line-height: 1.25;
+}
+
+.fu-tile-desc {
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Tile 1: Combo Stage */
+.fu-apple-combo-stage {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  padding: 1.35rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fu-apple-combo-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.fu-role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #EA580C;
+  background: #FFF7ED;
+  padding: 3px 9px;
+  border-radius: 4px;
+  border: 1px solid #FDBA74;
+}
+
+.fu-salary-tag {
+  font-size: 0.78rem;
+  color: #4B5563;
+}
+
+.fu-apple-combo-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  text-align: left;
+}
+
+.fu-apple-tech-stack-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.fu-stack-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: 0.6px;
+}
+
+.fu-stack-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.fu-stack-plus {
+  color: #9CA3AF;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.fu-apple-skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1F2937;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.fu-apple-combo-footer {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.25rem;
+}
+
+.fu-apple-shuffle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #111827;
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fu-apple-shuffle-btn:hover {
+  background: #374151;
+  transform: translateY(-1px);
+}
+
+/* Tile 2: Programs List */
+.fu-apple-programs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.fu-apple-program-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.fu-apple-program-row:hover {
+  background: #FFFFFF;
+  border-color: #D1D5DB;
+  transform: translateX(2px);
+}
+
+.fu-apple-program-row.featured-row {
+  background: #FFFDF9;
+  border-color: #FED7AA;
+}
+
+.fu-program-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #F3F4F6;
+  color: #4B5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fu-program-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.fu-program-name {
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.25;
+}
+
+.fu-program-meta {
+  font-size: 0.7rem;
+  color: #6B7280;
+  margin-top: 1px;
+}
+
+.fu-program-tag {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #6B7280;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.fu-program-tag.tag-featured {
+  color: #EA580C;
+  border-color: #FDBA74;
+  background: #FFF7ED;
+  font-weight: 800;
+}
+
+/* Tile 3: Calendar Stat Spotlight */
+.fu-stat-huge-number {
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #F3912E;
+  letter-spacing: -2px;
+  margin: 0.25rem 0;
+  text-align: left;
+}
+
+.fu-stat-tile-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  text-align: left;
+  letter-spacing: -0.01em;
+}
+
+.fu-stat-tile-desc {
+  font-size: 0.8rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.fu-stat-footer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #4B5563;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+  margin-top: auto;
+}
+
+/* Tile 4: Beyond Syllabi Grid */
+.fu-apple-beyond-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.fu-apple-beyond-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.fu-apple-beyond-card:hover {
+  background: #FFFFFF;
+  border-color: #D1D5DB;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.fu-beyond-icon-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.fu-beyond-icon {
+  color: #4B5563;
+}
+
+.fu-beyond-chip {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #6B7280;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.fu-beyond-chip.chip-accent {
+  color: #EA580C;
+  background: #FFF7ED;
+  border-color: #FDBA74;
+}
+
+.fu-beyond-card-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.fu-beyond-card-desc {
+  font-size: 0.75rem;
+  color: #6B7280;
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .fu-apple-bento-tile.tile-market-combo,
+  .fu-apple-bento-tile.tile-structured-programs,
+  .fu-apple-bento-tile.tile-calendar-stat,
+  .fu-apple-bento-tile.tile-beyond-syllabi,
+  .fu-apple-bento-tile.tile-coding-sandbox,
+  .fu-apple-bento-tile.tile-ai-mock,
+  .fu-apple-bento-tile.tile-aptitude-test,
+  .fu-apple-bento-tile.tile-analytics-trajectory {
+    grid-column: span 12;
+  }
+}
+
+@media (max-width: 640px) {
+  .fu-apple-beyond-grid {
+    grid-template-columns: 1fr;
+  }
+  .fu-apple-bento-tile {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   APPLE-STYLE ASSESSMENT PLATFORM BENTO GRID
+   ═══════════════════════════════════════════ */
+.fu-assessment-apple-bento-section {
+  background: #FFFFFF;
+  color: #111827;
+  padding: 6.5rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.fu-apple-bento-tile.tile-coding-sandbox {
+  grid-column: span 7;
+}
+
+.fu-apple-bento-tile.tile-ai-mock {
+  grid-column: span 5;
+}
+
+.fu-apple-bento-tile.tile-aptitude-test {
+  grid-column: span 4;
+}
+
+.fu-apple-bento-tile.tile-analytics-trajectory {
+  grid-column: span 8;
+}
+
+.fu-confidence-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0284C7;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.fu-apple-interview-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.fu-apple-analytics-box {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.fu-growth-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
 .fu-outcome-mapping-section {
   background: #FAFAFA;
   color: #111827;
@@ -3886,20 +4473,51 @@
 .fu-img-wide  { grid-column: span 2; }
 
 
-/* ── 7. Final CTA ── */
-.fu-sec-cta-final { padding: 8rem 0; background: #f8f8f8; }
-.fu-cta-final-inner { text-align: center; }
+/* ── 7. Final Executive CTA ── */
+.fu-sec-cta-final {
+  padding: 7rem 0;
+  background: #FFFFFF;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
 
-.fu-cta-coffee-icon { color: #ffa103; margin-bottom: 1.5rem; }
+.fu-cta-final-inner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.fu-cta-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
 
 .fu-cta-final-title {
-  font-size: 3rem; font-weight: 800; color: #111;
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   margin: 0 0 1rem 0;
 }
 
 .fu-cta-final-sub {
-  font-size: 1.15rem; color: #666;
-  max-width: 550px; margin: 0 auto; line-height: 1.6;
+  font-size: 1.1rem;
+  color: #6B7280;
+  max-width: 580px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 
@@ -5519,34 +6137,6 @@
   }
 }
 
-/* ─── #BEYOND ED-TECH Watermark Bottom Banner ─── */
-.beyond-edtech-footer-banner {
-  position: relative;
-  height: 120px;
-  background: #FAF8F5;
-  border-top: 1px solid #E5E7EB;
-  border-bottom: 1px solid #E5E7EB;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 1.5rem;
-}
-
-.beyond-watermark-text {
-  font-size: clamp(1.8rem, 6vw, 4.8rem);
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #E5E7EB;
-  -webkit-text-stroke: 1px rgba(243, 145, 46, 0.25);
-  white-space: nowrap;
-  max-width: 100%;
-  pointer-events: none;
-  user-select: none;
-}
-
 /* ─── Campus Presence Header ─── */
 .fu-campus-presence-header {
   text-align: center;
@@ -5801,13 +6391,5 @@
   .fu-solution-btn {
     width: 100%;
     justify-content: center;
-  }
-
-  .beyond-edtech-footer-banner {
-    height: 140px;
-  }
-
-  .beyond-watermark-text {
-    font-size: clamp(1.8rem, 7.5vw, 3.5rem);
   }
 }

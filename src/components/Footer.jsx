@@ -62,9 +62,20 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* ── #BEYOND ED-TECH Large Interactive Watermark Banner ── */}
+      {/* ── CIPHERSCHOOLS Massive Display Footer Banner ── */}
       <div className="beyond-edtech-footer-banner">
-        <div className="beyond-watermark-text">#BEYOND ED-TECH</div>
+        <svg className="beyond-watermark-svg" viewBox="0 0 1600 200" preserveAspectRatio="xMidYMid meet">
+          <text 
+            x="50%" 
+            y="50%" 
+            textAnchor="middle" 
+            dominantBaseline="central"
+            className="beyond-watermark-text"
+          >
+            CIPHERSCHOOLS
+          </text>
+        </svg>
+        <span className="beyond-footer-tagline">#Beyond Ed-tech</span>
       </div>
     </footer>
   );
