@@ -404,8 +404,8 @@ const ForUniversities = () => {
     setStep('result');
     setTimeout(() => {
       setIsVisible(true);
-      let targetId = 'shift-section';
-      if (id === 'training') targetId = 'shift-section';
+      let targetId = 'training-section';
+      if (id === 'training') targetId = 'training-section';
       if (id === 'lms') targetId = 'lms-section';
       if (id === 'assessment') targetId = 'assessment-section';
 
@@ -697,7 +697,7 @@ const ForUniversities = () => {
                       Beyond static syllabi.
                     </h3>
                     <p className="fu-tile-desc">
-                      Training that adapts dynamically to upcoming tech stacks, GenAI, and industry standards.
+                      Beyond syllabus, we encourage students with multiple activities.
                     </p>
                   </div>
 
@@ -746,6 +746,17 @@ const ForUniversities = () => {
 
               </div>
 
+              {/* Section CTA */}
+              <div className="fu-section-action-footer">
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
+              </div>
+
             </div>
           </section>
 
@@ -767,6 +778,17 @@ const ForUniversities = () => {
                   <img src="/company-look-3.jpg" alt="CipherSchools Classroom Workshop 3" className="fu-photo-img" />
                 </div>
               </div>
+
+              {/* Section CTA */}
+              <div className="fu-section-action-footer" style={{ marginTop: '2.5rem' }}>
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
+              </div>
             </div>
           </section>
 
@@ -775,85 +797,187 @@ const ForUniversities = () => {
 
 
           {/* ── 5.5 LMS Bento Section ── */}
-          <section id="lms-section" ref={refLms} className={`fu-sec fu-lms-bento-section fu-reveal ${visLms ? 'fu-revealed' : ''}`}>
+          <section id="lms-section" ref={refLms} className={`fu-sec fu-lms-apple-bento-section fu-reveal ${visLms ? 'fu-revealed' : ''}`}>
             <div className="fu-sec-inner">
-              <div className="fu-lms-header">
-                <p className="fu-sec-eyebrow">LMS - CipherSchools</p>
-                <h2 className="fu-lms-title">
-                  A platform built for effortless learning management.
+              
+              {/* Section Header */}
+              <div className="fu-apple-bento-header">
+                <p className="fu-sec-eyebrow">CAMPUS LMS PLATFORM</p>
+                <h2 className="fu-apple-bento-title">
+                  A platform built for effortless <span className="fu-pitch-accent">learning management.</span>
                 </h2>
-                <p className="fu-lms-sub">
+                <p className="fu-apple-bento-sub">
                   White-labeled campus ecosystem providing seamless course delivery, real-time analytics, automated stage locking, and student progress tracking.
                 </p>
               </div>
-              
-              {/* LMS Modern Notion-Style Feature Cards Grid (Above Mockup) */}
-              <div className="fu-lms-bento-cards-grid notion-style-grid" style={{ marginBottom: '2.5rem' }}>
+
+              {/* Apple-Style Asymmetrical Bento Grid */}
+              <div className="fu-apple-bento-grid">
                 
-                {/* Notion Card 1: Automated Stage Locking */}
-                <div className="fu-notion-card">
-                  <div className="notion-card-icon-wrapper">
-                    <div className="notion-card-icon-box amber-icon-box">
-                      <Lock size={20} />
+                {/* ── Tile 1: White-Labeled Campus Portal (Col Span 7) ── */}
+                <div className="fu-apple-bento-tile tile-lms-portal">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">CUSTOM INFRASTRUCTURE</span>
+                      <span className="fu-demand-score-pill">Custom Sub-Domain & SSO</span>
                     </div>
+                    <h3 className="fu-tile-title">
+                      White-Labeled Branding.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Custom-branded portal integrated with your university logo, primary palette, and domain.
+                    </p>
                   </div>
 
-                  <div className="notion-card-header">
-                    <div className="notion-card-meta">
-                      <span className="notion-eyebrow">Prerequisite Control</span>
-                      <h3 className="notion-card-title">Automated Stage Locking</h3>
+                  <div className="fu-lms-portal-preview-card">
+                    {/* Browser Address Bar */}
+                    <div className="fu-lms-browser-bar">
+                      <div className="fu-lms-browser-dots">
+                        <span></span><span></span><span></span>
+                      </div>
+                      <div className="fu-lms-url-pill">
+                        <Lock size={11} />
+                        <span>lms.youruniversity.edu.in</span>
+                      </div>
+                    </div>
+
+                    {/* Mini Course Header & Active Session */}
+                    <div className="fu-lms-active-course-row">
+                      <div className="fu-lms-course-icon-badge">
+                        <Laptop size={18} />
+                      </div>
+                      <div className="fu-lms-course-details">
+                        <span className="fu-lms-course-tag">LIVE SEMESTER TRACK</span>
+                        <h4 className="fu-lms-course-name">Full Stack & Java OOPs Specialization</h4>
+                      </div>
+                    </div>
+
+                    {/* Progress Track */}
+                    <div className="fu-lms-progress-box">
+                      <div className="fu-lms-progress-meta">
+                        <span className="fu-lms-progress-label">Batch Completion Track</span>
+                        <span className="fu-lms-progress-val">86% Completed</span>
+                      </div>
+                      <div className="fu-lms-progress-track">
+                        <div className="fu-lms-progress-bar" style={{ width: '86%' }}></div>
+                      </div>
                     </div>
                   </div>
-                  
-                  <p className="notion-card-desc">
-                    Ensure prerequisite compliance by unlocking advanced modules only after students pass automated checkpoint quizzes.
-                  </p>
                 </div>
 
-                {/* Notion Card 2: Real-Time Campus Analytics */}
-                <div className="fu-notion-card">
-                  <div className="notion-card-icon-wrapper">
-                    <div className="notion-card-icon-box dark-icon-box">
-                      <BarChart2 size={20} />
+                {/* ── Tile 2: Prerequisite Stage Locking (Col Span 5) ── */}
+                <div className="fu-apple-bento-tile tile-lms-stage-lock">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">PREREQUISITE CONTROL</span>
+                      <span className="fu-stage-lock-badge">Automated Gate</span>
                     </div>
+                    <h3 className="fu-tile-title">
+                      Automated Stage Locking.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Unlocks advanced modules only after students pass checkpoint evaluations.
+                    </p>
                   </div>
 
-                  <div className="notion-card-header">
-                    <div className="notion-card-meta">
-                      <span className="notion-eyebrow">Campus Intelligence</span>
-                      <h3 className="notion-card-title">Real-Time Campus Analytics</h3>
+                  <div className="fu-stage-lock-stack">
+                    {/* Stage 1: Done */}
+                    <div className="fu-stage-item stage-completed">
+                      <div className="fu-stage-check-icon"><Check size={14} /></div>
+                      <div className="fu-stage-info">
+                        <span className="fu-stage-title">Module 1: Core Fundamentals</span>
+                        <span className="fu-stage-sub">12 Quizzes Passed</span>
+                      </div>
+                      <span className="fu-stage-status-chip chip-done">PASSED</span>
+                    </div>
+
+                    {/* Stage 2: In Progress */}
+                    <div className="fu-stage-item stage-active">
+                      <div className="fu-stage-active-icon"><Sparkles size={14} /></div>
+                      <div className="fu-stage-info">
+                        <span className="fu-stage-title">Module 2: DSA & Algorithms</span>
+                        <span className="fu-stage-sub">Checkpoint Test Active</span>
+                      </div>
+                      <span className="fu-stage-status-chip chip-active">CURRENT</span>
+                    </div>
+
+                    {/* Stage 3: Locked */}
+                    <div className="fu-stage-item stage-locked">
+                      <div className="fu-stage-lock-icon"><Lock size={14} /></div>
+                      <div className="fu-stage-info">
+                        <span className="fu-stage-title">Module 3: Enterprise Architecture</span>
+                        <span className="fu-stage-sub">Unlocks after Module 2</span>
+                      </div>
+                      <span className="fu-stage-status-chip chip-locked">LOCKED</span>
                     </div>
                   </div>
-
-                  <p className="notion-card-desc">
-                    Granular insights into student attendance, test attempt rates, code submissions, and batch-wise performance metrics.
-                  </p>
                 </div>
 
-                {/* Notion Card 3: White-Labeled Branding */}
-                <div className="fu-notion-card">
-                  <div className="notion-card-icon-wrapper">
-                    <div className="notion-card-icon-box amber-icon-box">
-                      <Laptop size={20} />
-                    </div>
-                  </div>
-
-                  <div className="notion-card-header">
-                    <div className="notion-card-meta">
-                      <span className="notion-eyebrow">Custom Infrastructure</span>
-                      <h3 className="notion-card-title">White-Labeled Branding</h3>
-                    </div>
-                  </div>
-
-                  <p className="notion-card-desc">
-                    Custom-branded LMS portal integrated with your university logo, colors, and custom sub-domain name.
+                {/* ── Tile 3: Assignment & Engagement Stat (Col Span 4) ── */}
+                <div className="fu-apple-bento-tile tile-lms-engagement">
+                  <span className="fu-apple-pill">CAMPUS ENGAGEMENT</span>
+                  <div className="fu-stat-huge-number">99.4%</div>
+                  <h4 className="fu-stat-tile-title">Assignment Completion</h4>
+                  <p className="fu-stat-tile-desc">
+                    Instant automated grading & code checks reduce evaluation time from days to seconds.
                   </p>
+                  <div className="fu-stat-footer-pill">
+                    <Clock size={14} /> 24/7 Automated Evaluation
+                  </div>
+                </div>
+
+                {/* ── Tile 4: Granular Cohort Analytics & Live Stream (Col Span 8) ── */}
+                <div className="fu-apple-bento-tile tile-lms-analytics">
+                  <div className="fu-tile-header">
+                    <div className="fu-tile-badge-row">
+                      <span className="fu-apple-pill">CAMPUS INTELLIGENCE</span>
+                      <span className="fu-demand-score-pill">Real-Time Data Streams</span>
+                    </div>
+                    <h3 className="fu-tile-title">
+                      Real-Time Campus Analytics.
+                    </h3>
+                    <p className="fu-tile-desc">
+                      Granular faculty insights into attendance, code submissions, and batch-wise rankings.
+                    </p>
+                  </div>
+
+                  <div className="fu-lms-analytics-grid">
+                    {/* Metric 1 */}
+                    <div className="fu-lms-metric-card">
+                      <div className="fu-lms-metric-top">
+                        <span className="fu-lms-metric-lbl">Total Tests Attempted</span>
+                        <BarChart2 size={16} className="text-gray-400" />
+                      </div>
+                      <div className="fu-lms-metric-val">8/8 Passed</div>
+                      <span className="fu-lms-metric-sub">94% Batch Average Score</span>
+                    </div>
+
+                    {/* Metric 2 */}
+                    <div className="fu-lms-metric-card">
+                      <div className="fu-lms-metric-top">
+                        <span className="fu-lms-metric-lbl">Code Quality Index</span>
+                        <Code2 size={16} className="text-gray-400" />
+                      </div>
+                      <div className="fu-lms-metric-val">92.8%</div>
+                      <span className="fu-lms-metric-sub">Optimal Big-O Complexity</span>
+                    </div>
+
+                    {/* Metric 3 */}
+                    <div className="fu-lms-metric-card">
+                      <div className="fu-lms-metric-top">
+                        <span className="fu-lms-metric-lbl">Placement Readiness</span>
+                        <TrendingUp size={16} className="text-gray-400" />
+                      </div>
+                      <div className="fu-lms-metric-val">Top 5% Tier</div>
+                      <span className="fu-lms-metric-sub">Recruiter Benchmark Met</span>
+                    </div>
+                  </div>
                 </div>
 
               </div>
 
-              {/* Exact Replica LMS Dashboard Screen */}
-              <div className="lms-replica-wrapper">
+              {/* ── Exact Replica LMS Live Dashboard Showcase ── */}
+              <div className="lms-replica-wrapper" style={{ marginTop: '2.5rem' }}>
                 {/* Top Navbar */}
                 <div className="lms-replica-topbar">
                   <div className="lms-top-left">
@@ -896,6 +1020,10 @@ const ForUniversities = () => {
                       <span>Syllabus</span>
                     </div>
                     <div className="lms-menu-item">
+                      <Presentation size={18} />
+                      <span>Lectures</span>
+                    </div>
+                    <div className="lms-menu-item">
                       <ClipboardList size={18} />
                       <span>Practice</span>
                     </div>
@@ -914,7 +1042,7 @@ const ForUniversities = () => {
                     <div className="lms-menu-item">
                       <Volume2 size={18} />
                       <span>Updates</span>
-                      <span className="lms-updates-badge">14</span>
+                      <span className="lms-updates-badge">16</span>
                     </div>
                     <div className="lms-menu-item">
                       <HelpCircle size={18} />
@@ -947,10 +1075,10 @@ const ForUniversities = () => {
 
                     {/* Course Announcement Card */}
                     <div className="lms-main-course-card">
-                      <h3>Java Programming Live 2026</h3>
+                      <h3>Python Programming Self Paced 2026</h3>
                       <p className="lms-course-greeting">Hey there,</p>
                       <p className="lms-course-desc">
-                        We're excited to have you join our LIVE course — designed to help you learn concepts in a practical and engaging way....
+                        we're excited to have you join our course, designed to help you learn concepts in a practical and flexible way. Get access to recorded content on the platform, along with live weekend sessions for better understanding...
                       </p>
                       <a href="#" className="lms-readmore-link" onClick={(e) => e.preventDefault()}>Read more <span>⌄</span></a>
 
@@ -966,8 +1094,26 @@ const ForUniversities = () => {
                           <span className="lms-meta-val">7 Weeks</span>
                         </div>
                         <div className="lms-meta-col">
-                          <span className="lms-meta-label">Mentor</span>
-                          <span className="lms-meta-val">Cipher Schools</span>
+                          <span className="lms-meta-label">Mentors</span>
+                          <span className="lms-meta-val" style={{ fontSize: '0.82rem', lineHeight: '1.3' }}>Cipher Schools, Zubair Proddutur, Akarsh Thakur, Harsh Tyagi</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Keep Practicing Section */}
+                    <div className="lms-practice-resume-card">
+                      <div className="lms-practice-header">
+                        <h4>Keep Practicing From Where You Left</h4>
+                        <a href="#" className="lms-viewmore-link" onClick={(e) => e.preventDefault()}>View more ›</a>
+                      </div>
+                      <div className="lms-practice-item-row">
+                        <div className="lms-practice-item-info">
+                          <span className="lms-practice-item-title">Daily Temperature Streak</span>
+                          <span className="lms-practice-item-type">Practice Problem</span>
+                        </div>
+                        <div className="lms-practice-item-actions">
+                          <span className="lms-diff-tag easy">Easy</span>
+                          <button className="lms-continue-btn">Continue</button>
                         </div>
                       </div>
                     </div>
@@ -978,45 +1124,52 @@ const ForUniversities = () => {
                     {/* Dark Graphic Banner */}
                     <div className="lms-course-banner-card">
                       <div className="lms-banner-content">
-                        <span className="lms-live-badge">Live Lectures | Online</span>
-                        <h4>Java Programming with OOPs</h4>
+                        <span className="lms-live-badge">Recorded + Live Lectures | Online</span>
+                        <h4>Python with OOPs Programming Language</h4>
                       </div>
-                      <div className="lms-java-logo">☕</div>
+                      <div className="lms-java-logo">🐍</div>
                     </div>
 
-                    {/* Widget 1: Total Tests Attempted */}
+                    {/* Widget 1: Total Videos Watched */}
+                    <div className="lms-widget-card">
+                      <span className="lms-widget-title">Total Videos Watched</span>
+                      <div className="lms-widget-stat">0/35</div>
+                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Watch Now →</a>
+                    </div>
+
+                    {/* Widget 2: Total Questions Solved */}
+                    <div className="lms-widget-card">
+                      <span className="lms-widget-title">Total Questions Solved</span>
+                      <div className="lms-widget-stat">0/67</div>
+                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Practice Now →</a>
+                    </div>
+
+                    {/* Widget 3: Total Tests Attempted */}
                     <div className="lms-widget-card">
                       <span className="lms-widget-title">Total Tests Attempted</span>
-                      <div className="lms-widget-stat">0/8</div>
+                      <div className="lms-widget-stat">0/20</div>
                       <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Take Test →</a>
                     </div>
 
-                    {/* Widget 2: Total Projects Completed */}
+                    {/* Widget 4: Total Projects Completed */}
                     <div className="lms-widget-card">
                       <span className="lms-widget-title">Total Projects Completed</span>
                       <div className="lms-widget-stat">0/1</div>
                       <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>View Projects →</a>
                     </div>
-
-                    {/* Widget 3: Upcoming Test */}
-                    <div className="lms-widget-card upcoming-test-widget">
-                      <div className="lms-widget-header">
-                        <span>Upcoming Test</span>
-                        <a href="#" onClick={(e) => e.preventDefault()}>View more ›</a>
-                      </div>
-                      <div className="lms-upcoming-box">
-                        <div className="lms-code-badge">&gt;_</div>
-                        <div className="lms-upcoming-info">
-                          <div className="lms-upcoming-title">STP'26 – Final Test | ...</div>
-                          <div className="lms-upcoming-tags">
-                            <span className="lms-tag-coding">CODING</span>
-                            <span className="lms-tag-meta">3 Questions</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Section CTA */}
+              <div className="fu-section-action-footer">
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
               </div>
 
             </div>
@@ -1217,6 +1370,17 @@ const ForUniversities = () => {
                   </div>
                 </div>
 
+              </div>
+
+              {/* Section CTA */}
+              <div className="fu-section-action-footer">
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
               </div>
 
             </div>

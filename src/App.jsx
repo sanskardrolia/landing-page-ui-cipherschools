@@ -3,10 +3,12 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
+import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
 
 function App() {
   const location = useLocation();
+  useSmoothScroll();
 
   useEffect(() => {
     // We remove scroll to top here so anchor links work

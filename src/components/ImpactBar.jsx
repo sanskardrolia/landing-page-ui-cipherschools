@@ -382,7 +382,11 @@ const ImpactBar = () => {
                 <div className="hero-product-offerings-dock path-flow-dock">
                   
                   {/* Step 1: LEARN */}
-                  <div className="hero-offering-pillar path-step-card step-1">
+                  <div 
+                    className="hero-offering-pillar path-step-card step-1"
+                    onClick={() => scrollToSection('training-section')}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="pillar-step-top">
                       <span className="pillar-step-tag">FOUNDATION</span>
                     </div>
@@ -401,7 +405,11 @@ const ImpactBar = () => {
                   </div>
 
                   {/* Step 2: ASSESS */}
-                  <div className="hero-offering-pillar path-step-card step-2">
+                  <div 
+                    className="hero-offering-pillar path-step-card step-2"
+                    onClick={() => scrollToSection('assessment-section')}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="pillar-step-top">
                       <span className="pillar-step-tag">EVALUATION</span>
                     </div>
@@ -420,7 +428,11 @@ const ImpactBar = () => {
                   </div>
 
                   {/* Step 3: PRACTICE */}
-                  <div className="hero-offering-pillar path-step-card step-3">
+                  <div 
+                    className="hero-offering-pillar path-step-card step-3"
+                    onClick={() => scrollToSection('lms-section')}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="pillar-step-top">
                       <span className="pillar-step-tag">HANDS-ON</span>
                     </div>

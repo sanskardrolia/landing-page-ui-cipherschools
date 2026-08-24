@@ -214,19 +214,21 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.95rem 2.5rem;
-  background: #ffa103;
-  color: #121212;
+  background: #F3912E;
+  color: #FFFFFF !important;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 4px 18px rgba(243, 145, 46, 0.28);
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 .fu-pitch-cta-btn:hover {
-  background: #ffb333;
+  background: #E07D1B;
+  color: #FFFFFF !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255,161,3,0.25);
+  box-shadow: 0 8px 25px rgba(243, 145, 46, 0.38);
 }
 .fu-pitch-cta-btn:active { transform: translateY(0); }
 
@@ -1913,6 +1915,10 @@
   .fu-apple-bento-tile.tile-structured-programs,
   .fu-apple-bento-tile.tile-calendar-stat,
   .fu-apple-bento-tile.tile-beyond-syllabi,
+  .fu-apple-bento-tile.tile-lms-portal,
+  .fu-apple-bento-tile.tile-lms-stage-lock,
+  .fu-apple-bento-tile.tile-lms-engagement,
+  .fu-apple-bento-tile.tile-lms-analytics,
   .fu-apple-bento-tile.tile-coding-sandbox,
   .fu-apple-bento-tile.tile-ai-mock,
   .fu-apple-bento-tile.tile-aptitude-test,
@@ -1927,6 +1933,312 @@
   }
   .fu-apple-bento-tile {
     padding: 1.5rem 1.25rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   APPLE-STYLE LMS BENTO GRID
+   ═══════════════════════════════════════════ */
+.fu-lms-apple-bento-section {
+  background: #FAFAFA;
+  color: #111827;
+  padding: 6.5rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.fu-apple-bento-tile.tile-lms-portal {
+  grid-column: span 7;
+}
+
+.fu-apple-bento-tile.tile-lms-stage-lock {
+  grid-column: span 5;
+}
+
+.fu-apple-bento-tile.tile-lms-engagement {
+  grid-column: span 4;
+}
+
+.fu-apple-bento-tile.tile-lms-analytics {
+  grid-column: span 8;
+}
+
+/* LMS Tile 1: Portal Preview Card */
+.fu-lms-portal-preview-card {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fu-lms-browser-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.fu-lms-browser-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fu-lms-browser-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #D1D5DB;
+}
+
+.fu-lms-url-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: monospace;
+  font-size: 0.74rem;
+  color: #4B5563;
+  font-weight: 600;
+}
+
+.fu-lms-active-course-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.fu-lms-course-icon-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #F3F4F6;
+  color: #4B5563;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fu-lms-course-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.fu-lms-course-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #EA580C;
+  letter-spacing: 0.5px;
+}
+
+.fu-lms-course-name {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.fu-lms-progress-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.fu-lms-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.fu-lms-progress-val {
+  color: #111827;
+  font-weight: 800;
+}
+
+.fu-lms-progress-track {
+  width: 100%;
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.fu-lms-progress-bar {
+  height: 100%;
+  background: #F3912E;
+  border-radius: 3px;
+}
+
+/* LMS Tile 2: Stage Lock Stack */
+.fu-stage-lock-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4B5563;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+
+.fu-stage-lock-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.fu-stage-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+}
+
+.fu-stage-check-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fu-stage-active-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #FFF7ED;
+  color: #EA580C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fu-stage-lock-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #F3F4F6;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fu-stage-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.fu-stage-title {
+  font-size: 0.825rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.fu-stage-sub {
+  font-size: 0.68rem;
+  color: #6B7280;
+}
+
+.fu-stage-status-chip {
+  font-size: 0.58rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.fu-stage-status-chip.chip-done {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.fu-stage-status-chip.chip-active {
+  color: #EA580C;
+  background: #FFF7ED;
+  border: 1px solid #FDBA74;
+}
+
+.fu-stage-status-chip.chip-locked {
+  color: #9CA3AF;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+}
+
+/* LMS Tile 4: Analytics Grid */
+.fu-lms-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.fu-lms-metric-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 0.35rem;
+}
+
+.fu-lms-metric-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fu-lms-metric-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.fu-lms-metric-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.fu-lms-metric-sub {
+  font-size: 0.68rem;
+  color: #9CA3AF;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .fu-lms-analytics-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1995,6 +2307,42 @@
   border: 1px solid rgba(16, 185, 129, 0.2);
   padding: 3px 8px;
   border-radius: 4px;
+}
+
+/* ── Section Action Footers (Book a Meeting CTAs) ── */
+.fu-section-action-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3.5rem;
+  width: 100%;
+}
+
+.fu-section-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 13px 30px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(243, 145, 46, 0.28);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fu-section-cta-btn:hover {
+  background: #E07D1B;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(243, 145, 46, 0.4);
+}
+
+.fu-section-cta-btn:active {
+  transform: translateY(0);
 }
 
 .fu-outcome-mapping-section {
@@ -5913,6 +6261,96 @@
   font-size: 0.95rem;
   font-weight: 800;
   color: #111111;
+}
+
+/* LMS Practice Resume Card */
+.lms-practice-resume-card {
+  background: #ffffff;
+  border: 1px solid #eef0f3;
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.lms-practice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lms-practice-header h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+}
+
+.lms-viewmore-link {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #777;
+  text-decoration: none;
+}
+
+.lms-practice-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+}
+
+.lms-practice-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lms-practice-item-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #111;
+}
+
+.lms-practice-item-type {
+  font-size: 0.74rem;
+  color: #888;
+}
+
+.lms-practice-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lms-diff-tag.easy {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #00c853;
+  background: rgba(0, 200, 83, 0.08);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.lms-continue-btn {
+  border: 1.5px solid #F3912E;
+  background: #ffffff;
+  color: #F3912E;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lms-continue-btn:hover {
+  background: #F3912E;
+  color: #ffffff;
 }
 
 /* Right Panel Widgets */
