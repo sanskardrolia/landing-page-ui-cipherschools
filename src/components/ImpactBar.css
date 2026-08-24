@@ -856,21 +856,56 @@
   box-shadow: 0 12px 32px rgba(243, 145, 46, 0.5);
 }
 
-/* ── Founder Story Narrative (YC Editorial Drop-Cap Style) ── */
+/* ── Founder Story Narrative (YC Editorial Drop-Cap & Rough Newspaper Texture) ── */
 .hero-founder-story-card {
   max-width: 780px;
   margin: 3.5rem auto 1.5rem auto;
-  background: #FBFBFA;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  padding: 2.5rem 3rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+  background-color: #FDFDFD;
+  background-image: url('/rough-paper-texture.png');
+  background-repeat: repeat;
+  background-size: 320px auto;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  padding: 2.75rem 3.25rem;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.02),
+    0 16px 40px rgba(0, 0, 0, 0.05),
+    inset 0 0 50px rgba(0, 0, 0, 0.035),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
   text-align: left;
   position: relative;
   z-index: 3;
+  overflow: hidden;
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Authentic rough newsprint grain & pulp fiber overlay */
+.hero-founder-story-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/rough-paper-texture.png');
+  background-repeat: repeat;
+  background-size: 240px auto;
+  pointer-events: none;
+  opacity: 0.65;
+  mix-blend-mode: multiply;
+  z-index: 1;
+}
+
+/* Subtle newspaper top hairline header rule */
+.hero-founder-story-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1) 15%, rgba(0, 0, 0, 0.1) 85%, transparent);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .hero-founder-story-card.story-in-view {
@@ -879,6 +914,8 @@
 }
 
 .founder-story-content {
+  position: relative;
+  z-index: 2;
   font-family: Georgia, Cambria, 'Times New Roman', 'Newsreader', serif;
   color: #1F2937;
 }
