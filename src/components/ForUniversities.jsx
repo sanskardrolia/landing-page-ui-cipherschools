@@ -590,7 +590,12 @@ const ForUniversities = () => {
 
                         <div className="fu-apple-tech-stack-row">
                           <span className="fu-stack-label">RECRUITER TECH STACK:</span>
-                          <div className="fu-stack-pills">
+                          <div 
+                            className="fu-stack-pills"
+                            onClick={() => setActiveComboIndex((prev) => (prev + 1) % DOMAIN_MAPPINGS.length)}
+                            style={{ cursor: 'pointer' }}
+                            title="Click to view next combination"
+                          >
                             {safeSkills.map((skill, si) => (
                               <React.Fragment key={si}>
                                 {si > 0 && <span className="fu-stack-plus">+</span>}
@@ -639,7 +644,7 @@ const ForUniversities = () => {
                       <div className="fu-program-icon-box"><BookOpen size={16} /></div>
                       <div className="fu-program-info">
                         <span className="fu-program-name">Academic Training</span>
-                        <span className="fu-program-meta">1 Semester · 2nd Year Students</span>
+                        <span className="fu-program-meta">First Year to Final Year</span>
                       </div>
                       <span className="fu-program-tag">FOUNDATION</span>
                     </div>
@@ -648,28 +653,18 @@ const ForUniversities = () => {
                     <div className="fu-apple-program-row featured-row">
                       <div className="fu-program-icon-box"><Target size={16} /></div>
                       <div className="fu-program-info">
-                        <span className="fu-program-name">Placement Preparation</span>
-                        <span className="fu-program-meta">4–6 Weeks · 3rd & 4th Year</span>
+                        <span className="fu-program-name">Placement Training</span>
+                        <span className="fu-program-meta">Pre-Final to Final Year</span>
                       </div>
                       <span className="fu-program-tag tag-featured">MOST POPULAR</span>
                     </div>
 
                     {/* Program 3 */}
                     <div className="fu-apple-program-row">
-                      <div className="fu-program-icon-box"><Rocket size={16} /></div>
-                      <div className="fu-program-info">
-                        <span className="fu-program-name">Advanced Technical Excellence</span>
-                        <span className="fu-program-meta">12 Weeks · High Performers</span>
-                      </div>
-                      <span className="fu-program-tag">ADVANCED</span>
-                    </div>
-
-                    {/* Program 4 */}
-                    <div className="fu-apple-program-row">
                       <div className="fu-program-icon-box"><Zap size={16} /></div>
                       <div className="fu-program-info">
                         <span className="fu-program-name">Seasonal Programs</span>
-                        <span className="fu-program-meta">Summer & Winter · Online / Offline</span>
+                        <span className="fu-program-meta">Summer & Winter Training</span>
                       </div>
                       <span className="fu-program-tag">SPRINTS</span>
                     </div>
@@ -837,7 +832,7 @@ const ForUniversities = () => {
                       </div>
                       <div className="fu-lms-url-pill">
                         <Lock size={11} />
-                        <span>lms.youruniversity.edu.in</span>
+                        <span>youruniversity.cipherschools.com</span>
                       </div>
                     </div>
 
@@ -1212,18 +1207,20 @@ const ForUniversities = () => {
                   <div className="fu-mock-as-coding-rich">
                     <div className="fme-coding-header">
                       <div className="fme-lang-pills">
-                        <span className="fme-lang-chip">C</span>
-                        <span className="fme-lang-chip">C++</span>
-                        <span className="fme-lang-chip">JAVA</span>
-                        <span className="fme-lang-chip">Python</span>
+                        <span className="fme-lang-chip active">System Design</span>
+                        <span className="fme-lang-chip">DSA</span>
+                        <span className="fme-lang-chip">SQL</span>
                       </div>
-                      <div className="fme-sys-badge"><Sparkles size={12} /> System Design ⚡</div>
                     </div>
 
                     <div className="fme-coding-body">
                       <div className="fme-editor-top">
-                        <span className="fme-file-tab">system_architecture.py</span>
-                        <span className="fme-mode-tag">Production Engine</span>
+                        <div className="fme-editor-lang-tabs">
+                          <span className="fme-editor-tab">C</span>
+                          <span className="fme-editor-tab">C++</span>
+                          <span className="fme-editor-tab">JAVA</span>
+                          <span className="fme-editor-tab active-tab">Python</span>
+                        </div>
                       </div>
                       <div className="fm-editor-code">
                         <span className="fm-comment"># Live Automated Scoring & Execution</span><br/>
@@ -1397,10 +1394,10 @@ const ForUniversities = () => {
                 <GraduationCap size={28} />
               </div>
               <h2 className="fu-cta-final-title">
-                Let's discuss your campus roadmap.
+                Tailored Integration for Your Campus Ecosystem.
               </h2>
               <p className="fu-cta-final-sub">
-                Explore how CipherSchools can transform your institution's placement outcomes, curriculum agility, and technical training.
+                Explore credit-aligned curriculum modules, white-labeled LMS infrastructure, and turnkey placement sprints designed to integrate seamlessly into your university.
               </p>
               <button className="fu-pitch-cta-btn" style={{ marginTop: '2rem' }} onClick={() => setIsMeetingModalOpen(true)}>
                 Book a Meeting <ArrowRight size={20} />

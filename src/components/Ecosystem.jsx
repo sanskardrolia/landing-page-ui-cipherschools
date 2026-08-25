@@ -109,7 +109,7 @@ const Ecosystem = () => {
 
       <div className="container relative z-10">
         <div className="section-header text-center animate-fade-in">
-          <div className="tag cred-tag">Free For Learners</div>
+          <div className="tag cred-tag">Free For Students</div>
           <h2 className="section-title text-white">Everything You Need To <span className="text-primary">Learn</span>, Practice & Grow</h2>
           <p className="section-subtitle cred-subtitle">
             No switching between different platforms. Everything lives in one place.

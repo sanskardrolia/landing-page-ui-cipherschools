@@ -480,14 +480,14 @@ const ImpactBar = () => {
                   onClick={() => setActiveMockupIndex(1)}
                   type="button"
                 >
-                  <span className="ind-dot"></span> Learn From Videos
+                  <span className="ind-dot"></span> LMS
                 </button>
                 <button 
                   className={`mockup-indicator-pill ${activeMockupIndex === 2 ? 'active' : ''}`}
                   onClick={() => setActiveMockupIndex(2)}
                   type="button"
                 >
-                  <span className="ind-dot"></span> Build Resume
+                  <span className="ind-dot"></span> CipherLabs
                 </button>
               </div>
 
@@ -507,29 +507,29 @@ const ImpactBar = () => {
                   </div>
                 </div>
 
-                {/* Card 2: Interactive Learning Portal */}
+                {/* Card 2: Campus LMS Platform */}
                 <div 
                   className={`stacked-mockup-card card-portal ${activeMockupIndex === 1 ? 'card-active' : (activeMockupIndex === 0 ? 'card-next' : 'card-past')}`}
                   onClick={() => setActiveMockupIndex(1)}
                 >
                   <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - Interactive Learning Portal</span>
+                    <span className="window-title">CipherSchools - Campus LMS Platform</span>
                   </div>
                   <div className="mockup-window-body">
-                    <img src="/hero-mockup-right.png" alt="CipherSchools Course Player Mockup" className="mockup-img" />
+                    <img src="/hero-mockup-lms.png" alt="CipherSchools LMS Dashboard Mockup" className="mockup-img" />
                   </div>
                 </div>
 
-                {/* Card 3: AI Resume Builder */}
+                {/* Card 3: CipherLabs */}
                 <div 
                   className={`stacked-mockup-card card-resume ${activeMockupIndex === 2 ? 'card-active' : (activeMockupIndex === 1 ? 'card-next' : 'card-deep')}`}
                   onClick={() => setActiveMockupIndex(2)}
                 >
                   <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - AI Resume Builder</span>
+                    <span className="window-title">CipherSchools - CipherLabs Practice & Problem Set</span>
                   </div>
                   <div className="mockup-window-body">
-                    <img src="/hero-mockup-resume.png" alt="CipherSchools AI Resume Builder Mockup" className="mockup-img" />
+                    <img src="/hero-mockup-cipherlabs.png" alt="CipherSchools CipherLabs Practice Platform Mockup" className="mockup-img" />
                   </div>
                 </div>
 
@@ -560,16 +560,70 @@ const ImpactBar = () => {
               }}
             >
               <div className="founder-story-content">
-                <p className="founder-story-paragraph">
-                  <span className="founder-drop-cap">S</span>ince <strong>2020</strong>, <strong>CipherSchools</strong> has been building more than a learning platform. We started by helping students learn <strong className="founder-text-highlight">practical skills</strong>, <strong className="founder-text-highlight">build projects</strong>, and <strong className="founder-text-highlight">prepare for their careers</strong>. Today, we work with <strong className="founder-highlight-univ">universities</strong> to strengthen <strong className="founder-text-highlight">learning, assessment, training, and career readiness</strong>—while continuing to support students beyond the classroom.
-                </p>
-                <p className="founder-story-paragraph founder-story-tagline">
-                  <span className="story-tagline-highlight">Started in 2020. Still learning. Still building. Still growing.</span>
-                </p>
-                <div className="founder-signoff">
-                  <span className="founder-name">Anurag</span>
-                  <span className="founder-sep">—</span>
-                  <span className="founder-role">Founder, CipherSchools</span>
+                {/* ── Times of India Inspired Masthead Header (Full Blurred Editorial Backdrop) ── */}
+                <div className="toi-masthead-wrapper">
+                  {/* Big Centered TOI Masthead Title */}
+                  <div className="toi-masthead-center">
+                    <h2 className="toi-brand-title">THE TIMES OF INDIA</h2>
+                  </div>
+
+                  {/* TOI Sub-Navigation Strip */}
+                  <div className="toi-nav-strip">
+                    <div className="toi-nav-left">
+                      <span className="toi-logo-badge">TOI<span className="toi-plus">+</span></span>
+                      <span className="toi-nav-item">Videos</span>
+                      <span className="toi-nav-item">City</span>
+                      <span className="toi-nav-item">India</span>
+                      <span className="toi-nav-item">World</span>
+                      <span className="toi-nav-item">Business</span>
+                      <span className="toi-nav-item">Tech</span>
+                      <span className="toi-nav-item">Gadgets Now</span>
+                      <span className="toi-nav-item">Cricket</span>
+                      <span className="toi-nav-item">Sports</span>
+                      <span className="toi-nav-item">Education</span>
+                    </div>
+                    <div className="toi-nav-right">
+                      <span className="toi-live-pill">🔴 Live</span>
+                      <span className="toi-icon">🔍</span>
+                      <span className="toi-icon">☰</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Newspaper Body with Subtle Blurred Side Column */}
+                <div className="newspaper-columns-grid">
+                  <div className="newspaper-main-column">
+                    <p className="founder-story-paragraph">
+                      <span className="founder-drop-cap">S</span>ince <strong>2020</strong>, <strong>CipherSchools</strong> has been building more than a learning platform. We started by helping students learn <strong className="founder-text-highlight">practical skills</strong>, <strong className="founder-text-highlight">build projects</strong>, and <strong className="founder-text-highlight">prepare for their careers</strong>. Today, we work with <strong className="founder-highlight-univ">universities</strong> to strengthen <strong className="founder-text-highlight">learning, assessment, training, and career readiness</strong>—while continuing to support students beyond the classroom.
+                    </p>
+                    <p className="founder-story-paragraph founder-story-tagline">
+                      <span className="story-tagline-highlight">Started in 2020. Still learning. Still building. Still growing.</span>
+                    </p>
+                    <div className="founder-signoff">
+                      <span className="founder-name">Anurag</span>
+                      <span className="founder-sep">—</span>
+                      <span className="founder-role">Founder, CipherSchools</span>
+                    </div>
+                  </div>
+
+                  {/* Blurred Right Newspaper Column Preview */}
+                  <div className="newspaper-side-column-blur">
+                    <div className="news-side-header">Recent post</div>
+                    <div className="news-side-card">
+                      <div className="news-side-avatar">
+                        <span>🎓</span>
+                      </div>
+                      <div className="news-side-info">
+                        <span className="news-side-date">2020 – 2026</span>
+                        <h5 className="news-side-title">Campus Impact</h5>
+                      </div>
+                    </div>
+                    <div className="news-side-dummy-lines">
+                      <span className="dummy-line" style={{ width: '92%' }}></span>
+                      <span className="dummy-line" style={{ width: '78%' }}></span>
+                      <span className="dummy-line" style={{ width: '84%' }}></span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -583,6 +637,15 @@ const ImpactBar = () => {
 
         {/* ── Modern Light Bento Grid Dock (All-in-One View) ── */}
         <div className={`modern-light-bento-dock ${inView ? 'impact-in-view' : ''}`}>
+          
+          {/* Section Header */}
+          <div className="bento-impact-header">
+            <span className="bento-impact-eyebrow">OUR REACH & OUTCOMES</span>
+            <h2 className="bento-impact-title">
+              The Impact CipherSchools Has Created.
+            </h2>
+          </div>
+
           <div className="modern-bento-container-frame">
             
             {/* Bento Cell 1: 50k+ Active Learners */}
