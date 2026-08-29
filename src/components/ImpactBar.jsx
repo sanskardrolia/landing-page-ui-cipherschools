@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users } from 'lucide-react';
+import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp } from 'lucide-react';
 import PlacementMarquee from './PlacementMarquee';
 import './ImpactBar.css';
 
@@ -665,19 +665,21 @@ const ImpactBar = () => {
               </div>
             </div>
 
-            {/* Bento Cell 5: 15+ Domains */}
-            <div className="bento-cell cell-domains">
-              <div className="bento-cell-tag"><Cloud size={14} /> CURRICULUM</div>
-              <div className="bento-domains-header">
-                <span className="bento-stat-num inline"><CountUp end={15} suffix="+" /></span>
-                <span className="domains-title">In-Demand Domains</span>
+            {/* Bento Cell 5: Service-Based to Product-Based Transition */}
+            <div className="bento-cell cell-transition">
+              <div className="bento-cell-tag"><TrendingUp size={14} /> CAREER TRANSITION</div>
+              <div className="bento-stat-num text-brand-dark" style={{ fontSize: '1.75rem', lineHeight: 1.15, marginTop: '0.25rem', marginBottom: '0.35rem' }}>
+                Service <span style={{ color: '#F3912E' }}>➔</span> Product
               </div>
-              <div className="bento-domain-pills-row">
-                <span className="bento-domain-pill"><Brain size={12} /> AI & ML</span>
-                <span className="bento-domain-pill"><Cloud size={12} /> Cloud</span>
-                <span className="bento-domain-pill"><Terminal size={12} /> DevOps</span>
-                <span className="bento-domain-pill"><Layers size={12} /> DSA</span>
-                <span className="bento-domain-pill"><Brain size={12} /> Web3</span>
+              <div className="bento-cell-body">
+                <h4>Prepare for Top Product Companies</h4>
+                <p>Curriculum and real-world project rigor built to help you transition from service-based to high-growth product companies.</p>
+              </div>
+              <div className="bento-pill-tags" style={{ marginTop: '0.65rem', marginBottom: 0 }}>
+                <span className="pill-orange">System Design</span>
+                <span>DSA Mastery</span>
+                <span>Live Projects</span>
+                <span>Mock Interviews</span>
               </div>
             </div>
 
