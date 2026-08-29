@@ -232,20 +232,20 @@
 }
 .fu-pitch-cta-btn:active { transform: translateY(0); }
 
-/* ── STICKY CTA ── */
+/* ── STICKY CTA (Modern Glass Dock) ── */
 .fu-sticky-cta {
   position: fixed;
-  bottom: 0;
+  bottom: 1.25rem;
   left: 0;
   right: 0;
   display: flex;
   justify-content: center;
-  padding: 1rem;
-  z-index: 100;
+  padding: 0 1rem;
+  z-index: 1000;
   pointer-events: none; /* Let clicks pass through empty areas */
   transform: translateY(150%);
   opacity: 0;
-  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
 }
 
 .fu-sticky-cta.fu-sticky-visible {
@@ -256,17 +256,21 @@
 .fu-sticky-cta-inner {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  background: #111111;
-  border: 1px solid rgba(255,161,3,0.35);
-  border-radius: 4px;
-  padding: 0.85rem 1.75rem;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+  justify-content: space-between;
+  gap: 1.25rem;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50px;
+  padding: 0.45rem 0.55rem 0.45rem 1.35rem;
+  box-shadow: 
+    0 16px 40px -10px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.04);
   pointer-events: auto;
-  animation: fuSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: 0.2s;
-  opacity: 0;
-  transform: translateY(30px);
+  animation: fuSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-width: 520px;
+  width: auto;
 }
 
 @keyframes fuSlideUp {
@@ -275,33 +279,44 @@
 
 .fu-sticky-cta-inner p {
   margin: 0;
-  font-size: 0.95rem;
-  color: #ffffff;
+  font-size: 0.875rem;
+  color: #374151;
   font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
+
 .fu-sticky-cta-inner p strong {
-  color: #ffa103;
+  color: #111827;
   font-weight: 800;
 }
 
 .fu-sticky-btn {
-  background: #ffa103;
-  color: #ffffff;
+  background: #F3912E;
+  color: #FFFFFF;
   border: none;
-  padding: 0.65rem 1.4rem;
-  border-radius: 4px;
+  padding: 0.55rem 1.2rem;
+  border-radius: 50px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.825rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 14px rgba(255,161,3,0.35);
-  transition: transform 0.2s ease, background 0.2s ease;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+
 .fu-sticky-btn:hover {
-  background: #ff8000;
-  transform: translateY(-2px);
+  background: #E27E1D;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(243, 145, 46, 0.4);
+}
+
+.fu-sticky-btn:active {
+  transform: translateY(0);
 }
 
 
@@ -1581,6 +1596,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-bottom: 0.75rem;
 }
 
@@ -1668,18 +1685,16 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
-  background: #F9FAFB;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  padding: 2px 0;
   width: fit-content;
   max-width: 100%;
-  transition: all 0.2s ease;
 }
 
 .fu-stack-pills:hover {
-  background: #F3F4F6;
-  border-color: #D1D5DB;
+  background: transparent;
+  border: none;
 }
 
 .fu-stack-plus {
@@ -1923,33 +1938,6 @@
   color: #6B7280;
   margin: 0;
   line-height: 1.35;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .fu-apple-bento-tile.tile-market-combo,
-  .fu-apple-bento-tile.tile-structured-programs,
-  .fu-apple-bento-tile.tile-calendar-stat,
-  .fu-apple-bento-tile.tile-beyond-syllabi,
-  .fu-apple-bento-tile.tile-lms-portal,
-  .fu-apple-bento-tile.tile-lms-stage-lock,
-  .fu-apple-bento-tile.tile-lms-engagement,
-  .fu-apple-bento-tile.tile-lms-analytics,
-  .fu-apple-bento-tile.tile-coding-sandbox,
-  .fu-apple-bento-tile.tile-ai-mock,
-  .fu-apple-bento-tile.tile-aptitude-test,
-  .fu-apple-bento-tile.tile-analytics-trajectory {
-    grid-column: span 12;
-  }
-}
-
-@media (max-width: 640px) {
-  .fu-apple-beyond-grid {
-    grid-template-columns: 1fr;
-  }
-  .fu-apple-bento-tile {
-    padding: 1.5rem 1.25rem;
-  }
 }
 
 /* ═══════════════════════════════════════════
@@ -2359,6 +2347,61 @@
 
 .fu-section-cta-btn:active {
   transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE ADJUSTMENTS FOR ALL APPLE BENTO GRIDS
+   ═══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .fu-apple-bento-grid {
+    grid-template-columns: repeat(12, 1fr) !important;
+    gap: 1.25rem !important;
+  }
+
+  .fu-apple-bento-tile,
+  .fu-apple-bento-tile.tile-market-combo,
+  .fu-apple-bento-tile.tile-structured-programs,
+  .fu-apple-bento-tile.tile-calendar-stat,
+  .fu-apple-bento-tile.tile-beyond-syllabi,
+  .fu-apple-bento-tile.tile-lms-portal,
+  .fu-apple-bento-tile.tile-lms-stage-lock,
+  .fu-apple-bento-tile.tile-lms-engagement,
+  .fu-apple-bento-tile.tile-lms-analytics,
+  .fu-apple-bento-tile.tile-coding-sandbox,
+  .fu-apple-bento-tile.tile-ai-mock,
+  .fu-apple-bento-tile.tile-aptitude-test,
+  .fu-apple-bento-tile.tile-analytics-trajectory {
+    grid-column: span 12 !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .fu-apple-bento-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .fu-apple-bento-tile {
+    grid-column: 1 / -1 !important;
+    padding: 1.35rem 1.15rem !important;
+    border-radius: 12px !important;
+  }
+
+  .fu-tile-badge-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .fu-tile-title {
+    font-size: 1.25rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .fu-tile-desc {
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
 }
 
 .fu-outcome-mapping-section {
@@ -4924,14 +4967,35 @@
   .fu-industry-images { grid-template-columns: 1fr; }
   .fu-industry-images img { height: 180px; }
   
-  .fu-sticky-cta-inner {
-    flex-direction: column;
-    padding: 1rem;
-    border-radius: 4px;
-    gap: 1rem;
-    text-align: center;
+  .fu-sticky-cta {
+    bottom: 0.85rem;
+    padding: 0 0.75rem;
   }
-  .fu-sticky-btn { width: 100%; }
+
+  .fu-sticky-cta-inner {
+    width: 100%;
+    max-width: 390px;
+    padding: 0.45rem 0.5rem 0.45rem 1rem;
+    gap: 0.75rem;
+    border-radius: 50px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .fu-sticky-cta-inner p {
+    font-size: 0.775rem;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .fu-sticky-btn {
+    width: auto;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.75rem;
+    gap: 4px;
+    border-radius: 50px;
+  }
 }
 
 /* ── LMS BENTO GRID ── */
@@ -5921,20 +5985,22 @@
   .fu-journey-wide { grid-column: span 1; }
 }
 
-/* ── Exact Replica LMS Dashboard Styling ── */
+/* ── Exact Replica LMS Dashboard Styling (Sleek Desktop Density) ── */
 .lms-replica-wrapper {
   background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 4px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   text-align: left;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Topbar */
 .lms-replica-topbar {
-  height: 60px;
+  height: 52px;
   background: #ffffff;
   border-bottom: 1px solid #eef0f3;
   padding: 0 1.5rem;
@@ -5964,13 +6030,13 @@
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #111;
 }
 
 .lms-logo-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #f7931e;
   color: #ffffff;
@@ -5978,15 +6044,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .lms-guide-me-btn {
   border: 1.5px solid #f7931e;
   color: #333;
-  padding: 4px 14px;
+  padding: 3px 12px;
   border-radius: 4px;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   margin-left: 1.25rem;
   cursor: pointer;
@@ -5996,8 +6062,8 @@
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 6px 14px;
-  width: 380px;
+  padding: 5px 12px;
+  width: 340px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6005,7 +6071,7 @@
 .lms-top-search input {
   border: none;
   outline: none;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #555;
   width: 100%;
 }
@@ -6016,7 +6082,7 @@
 .lms-top-right {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.1rem;
 }
 
 .lms-experience-btn {
@@ -6026,9 +6092,9 @@
   background: #F3912E;
   color: #FFFFFF;
   border: none;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -6052,10 +6118,10 @@
   right: -6px;
   background: #f7931e;
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   border-radius: 50%;
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6065,15 +6131,15 @@
 .lms-user-avatar-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 7px;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #222;
 }
 
 .lms-avatar-circle {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #e0e0e0;
   display: flex;
@@ -6085,21 +6151,21 @@
 .lms-coin-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  gap: 5px;
+  font-size: 0.8rem;
   font-weight: 800;
   color: #222;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 4px 10px;
+  padding: 3px 8px;
 }
 .lms-coin-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background: #f7931e;
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -6109,7 +6175,7 @@
 .lms-theme-toggle {
   border: 1px solid #e0e0e0;
   border-radius: 4px;
-  padding: 5px;
+  padding: 4px;
   color: #555;
   display: flex;
   align-items: center;
@@ -6120,27 +6186,27 @@
 /* Body Grid Layout */
 .lms-replica-body {
   display: grid;
-  grid-template-columns: 210px 1fr 310px;
+  grid-template-columns: 190px 1fr 290px;
   background: #f8f9fa;
-  min-height: 540px;
+  min-height: 480px;
 }
 
 /* Sidebar */
 .lms-replica-sidebar {
   background: #ffffff;
   border-right: 1px solid #eef0f3;
-  padding: 1rem 0;
+  padding: 0.85rem 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .lms-menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 1.5rem;
-  font-size: 0.88rem;
+  gap: 10px;
+  padding: 8px 1.25rem;
+  font-size: 0.82rem;
   font-weight: 500;
   color: #444;
   cursor: pointer;
@@ -6156,16 +6222,16 @@
   color: #ffffff;
   font-weight: 700;
   border-radius: 4px;
-  margin: 0 10px;
-  padding: 10px 1.25rem;
+  margin: 0 8px;
+  padding: 8px 1rem;
 }
 
 .lms-updates-badge {
   margin-left: auto;
   background: #2196f3;
   color: #ffffff;
-  font-size: 0.68rem;
-  padding: 2px 7px;
+  font-size: 0.65rem;
+  padding: 2px 6px;
   border-radius: 10px;
   font-weight: 800;
 }
@@ -6173,15 +6239,15 @@
 .lms-menu-bottom {
   margin-top: auto;
   border-top: 1px solid #f0f0f0;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
 }
 
 /* Center Workspace */
 .lms-replica-center {
-  padding: 1.75rem 2rem;
+  padding: 1.35rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .lms-center-header {
@@ -6191,7 +6257,7 @@
 }
 
 .lms-center-header h2 {
-  font-size: 1.85rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: #111111;
   margin: 0;
@@ -6201,29 +6267,29 @@
   border: 1px solid #e0e0e0;
   background: #ffffff;
   border-radius: 4px;
-  padding: 6px 16px;
-  font-size: 0.85rem;
+  padding: 4px 12px;
+  font-size: 0.76rem;
   font-weight: 600;
   color: #333;
   cursor: pointer;
 }
 
 .lms-important-label {
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #222;
-  margin-top: 0.25rem;
+  margin-top: 0.15rem;
 }
 
 .lms-action-buttons-row {
   display: flex;
-  gap: 12px;
+  gap: 8px;
 }
 
 .lms-action-btn {
-  padding: 9px 18px;
+  padding: 6px 14px;
   border-radius: 4px;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -6246,37 +6312,37 @@
   background: #ffffff;
   border: 1px solid #eef0f3;
   border-radius: 4px;
-  padding: 1.75rem;
+  padding: 1.35rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
 .lms-main-course-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #111111;
   margin: 0;
 }
 
 .lms-course-greeting {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #444;
   margin: 0;
 }
 
 .lms-course-desc {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #777777;
-  line-height: 1.55;
+  line-height: 1.5;
   margin: 0;
 }
 
 .lms-readmore-link {
   color: #f7931e;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
   text-decoration: none;
   display: inline-flex;
@@ -6288,24 +6354,24 @@
 .lms-card-divider {
   height: 1px;
   background: #f0f0f0;
-  margin: 0.75rem 0;
+  margin: 0.6rem 0;
 }
 
 .lms-course-metadata-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .lms-meta-label {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: #888888;
   display: block;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .lms-meta-val {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 800;
   color: #111111;
 }
@@ -6315,10 +6381,10 @@
   background: #ffffff;
   border: 1px solid #eef0f3;
   border-radius: 4px;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.65rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.02);
 }
 
@@ -6329,14 +6395,14 @@
 }
 
 .lms-practice-header h4 {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: #111;
   margin: 0;
 }
 
 .lms-viewmore-link {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   color: #777;
   text-decoration: none;
@@ -6348,7 +6414,7 @@
   align-items: center;
   border: 1px solid #f0f0f0;
   border-radius: 4px;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.85rem;
 }
 
 .lms-practice-item-info {
@@ -6358,28 +6424,28 @@
 }
 
 .lms-practice-item-title {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: #111;
 }
 
 .lms-practice-item-type {
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   color: #888;
 }
 
 .lms-practice-item-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .lms-diff-tag.easy {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #00c853;
   background: rgba(0, 200, 83, 0.08);
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
@@ -6387,9 +6453,9 @@
   border: 1.5px solid #F3912E;
   background: #ffffff;
   color: #F3912E;
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 4px 14px;
+  padding: 3px 10px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -6402,76 +6468,76 @@
 
 /* Right Panel Widgets */
 .lms-replica-right {
-  padding: 1.75rem 1.75rem 1.75rem 0;
+  padding: 1.35rem 1.5rem 1.35rem 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .lms-course-banner-card {
   background: linear-gradient(135deg, #0b1329 0%, #111e38 100%);
   border-radius: 4px;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 110px;
+  min-height: 95px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
 .lms-live-badge {
   background: rgba(255,255,255,0.12);
   color: #f7931e;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
-  padding: 3px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: inline-block;
   letter-spacing: 0.5px;
 }
 
 .lms-banner-content h4 {
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 800;
   margin: 0;
   color: #ffffff;
   line-height: 1.3;
-  max-width: 170px;
+  max-width: 150px;
 }
 
 .lms-java-logo {
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .lms-widget-card {
   background: #ffffff;
   border: 1px solid #eef0f3;
   border-radius: 4px;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.02);
 }
 
 .lms-widget-title {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #555555;
 }
 
 .lms-widget-stat {
-  font-size: 1.65rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: #111111;
   margin: 2px 0;
 }
 
 .lms-widget-link {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: #555555;
   text-decoration: none;
@@ -6602,6 +6668,111 @@
   color: #111111;
   margin: 0 0 4px 0;
   letter-spacing: -0.2px;
+}
+
+/* ── Mobile UI Optimizations: Clean Mobile LMS Dashboard ── */
+@media (max-width: 900px) {
+  .lms-replica-body {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .lms-replica-sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #eef0f3;
+    padding: 0.5rem 0.75rem;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lms-menu-item {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .lms-menu-bottom {
+    margin-top: 0;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .lms-replica-right {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .lms-replica-wrapper {
+    width: 100%;
+    margin-top: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .lms-replica-topbar {
+    height: 46px;
+    padding: 0 0.85rem;
+  }
+
+  .lms-top-search,
+  .lms-guide-me-btn {
+    display: none !important;
+  }
+
+  .lms-experience-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .lms-replica-center {
+    padding: 1rem 0.85rem;
+    gap: 0.85rem;
+  }
+
+  .lms-center-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .lms-action-buttons-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .lms-action-btn {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .lms-main-course-card {
+    padding: 1rem;
+  }
+
+  .lms-main-course-card h3 {
+    font-size: 0.95rem;
+  }
+
+  .lms-course-desc {
+    font-size: 0.75rem;
+  }
+
+  .lms-course-metadata-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .lms-practice-resume-card {
+    padding: 0.85rem 1rem;
+  }
+
+  .lms-replica-right {
+    padding: 0 0.85rem 1rem 0.85rem;
+    gap: 0.75rem;
+  }
 }
 
 .lms-cap-info p {

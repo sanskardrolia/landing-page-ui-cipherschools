@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight } from 'lucide-react';
+import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users } from 'lucide-react';
 import PlacementMarquee from './PlacementMarquee';
 import './ImpactBar.css';
 
@@ -378,70 +378,36 @@ const ImpactBar = () => {
 
             {/* Sequential Product Journey Path */}
             <div className="hero-product-offerings-container">
-              <div className="hero-product-offerings-path-wrapper">
-                <div className="hero-product-offerings-dock path-flow-dock">
-                  
-                  {/* Step 1: LEARN */}
-                  <div 
-                    className="hero-offering-pillar path-step-card step-1"
-                    onClick={() => scrollToSection('training-section')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="pillar-step-top">
-                      <span className="pillar-step-tag">FOUNDATION</span>
-                    </div>
-                    <div className="offering-content">
-                      <h4 className="offering-title">TRAINING SUPPORT</h4>
-                      <p className="offering-desc">Campus LMS & Learning</p>
-                    </div>
-                  </div>
+              <div className="hero-product-pipeline-card">
+                {/* Step 1: TRAINING */}
+                <div className="pipeline-step-item">
+                  <div className="pipeline-step-tag">FOUNDATION</div>
+                  <h4 className="pipeline-step-title">TRAINING</h4>
+                  <p className="pipeline-step-desc">Campus LMS & Learning</p>
+                </div>
 
-                  {/* Connector Arrow 1 -> 2 */}
-                  <div className="hero-path-connector">
-                    <div className="path-line"></div>
-                    <div className="path-arrow-node">
-                      <ChevronRight size={12} />
-                    </div>
-                  </div>
+                {/* Flow Separator 1 -> 2 */}
+                <div className="pipeline-flow-sep">
+                  <ChevronRight size={16} className="pipeline-chevron" />
+                </div>
 
-                  {/* Step 2: ASSESS */}
-                  <div 
-                    className="hero-offering-pillar path-step-card step-2"
-                    onClick={() => scrollToSection('assessment-section')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="pillar-step-top">
-                      <span className="pillar-step-tag">EVALUATION</span>
-                    </div>
-                    <div className="offering-content">
-                      <h4 className="offering-title">ASSESS</h4>
-                      <p className="offering-desc">Assessments & Performance</p>
-                    </div>
-                  </div>
+                {/* Step 2: ASSESS */}
+                <div className="pipeline-step-item">
+                  <div className="pipeline-step-tag">EVALUATION</div>
+                  <h4 className="pipeline-step-title">ASSESS</h4>
+                  <p className="pipeline-step-desc">Assessments & Performance</p>
+                </div>
 
-                  {/* Connector Arrow 2 -> 3 */}
-                  <div className="hero-path-connector">
-                    <div className="path-line"></div>
-                    <div className="path-arrow-node">
-                      <ChevronRight size={12} />
-                    </div>
-                  </div>
+                {/* Flow Separator 2 -> 3 */}
+                <div className="pipeline-flow-sep">
+                  <ChevronRight size={16} className="pipeline-chevron" />
+                </div>
 
-                  {/* Step 3: PRACTICE */}
-                  <div 
-                    className="hero-offering-pillar path-step-card step-3"
-                    onClick={() => scrollToSection('lms-section')}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="pillar-step-top">
-                      <span className="pillar-step-tag">HANDS-ON</span>
-                    </div>
-                    <div className="offering-content">
-                      <h4 className="offering-title">PRACTICE</h4>
-                      <p className="offering-desc">CipherLabs & Resume Builder</p>
-                    </div>
-                  </div>
-
+                {/* Step 3: PRACTICE */}
+                <div className="pipeline-step-item">
+                  <div className="pipeline-step-tag">HANDS-ON</div>
+                  <h4 className="pipeline-step-title">PRACTICE</h4>
+                  <p className="pipeline-step-desc">CipherLabs & Resume Builder</p>
                 </div>
               </div>
             </div>
@@ -562,28 +528,26 @@ const ImpactBar = () => {
               <div className="founder-story-content">
                 {/* ── Times of India Inspired Masthead Header (Full Blurred Editorial Backdrop) ── */}
                 <div className="toi-masthead-wrapper">
-                  {/* Big Centered TOI Masthead Title */}
+                  {/* Big Centered Generic Newspaper Masthead Title */}
                   <div className="toi-masthead-center">
-                    <h2 className="toi-brand-title">THE TIMES OF INDIA</h2>
+                    <h2 className="toi-brand-title">THE DAILY DISPATCH</h2>
                   </div>
 
-                  {/* TOI Sub-Navigation Strip */}
+                  {/* Generic Newspaper Sub-Navigation Strip */}
                   <div className="toi-nav-strip">
                     <div className="toi-nav-left">
-                      <span className="toi-logo-badge">TOI<span className="toi-plus">+</span></span>
-                      <span className="toi-nav-item">Videos</span>
-                      <span className="toi-nav-item">City</span>
-                      <span className="toi-nav-item">India</span>
-                      <span className="toi-nav-item">World</span>
-                      <span className="toi-nav-item">Business</span>
-                      <span className="toi-nav-item">Tech</span>
-                      <span className="toi-nav-item">Gadgets Now</span>
-                      <span className="toi-nav-item">Cricket</span>
-                      <span className="toi-nav-item">Sports</span>
-                      <span className="toi-nav-item">Education</span>
+                      <span className="toi-logo-badge">DAILY<span className="toi-plus">+</span></span>
+                      <span className="toi-nav-item">Editorial</span>
+                      <span className="toi-nav-item">Campus</span>
+                      <span className="toi-nav-item">Innovation</span>
+                      <span className="toi-nav-item">Technology</span>
+                      <span className="toi-nav-item">Higher Ed</span>
+                      <span className="toi-nav-item">Careers</span>
+                      <span className="toi-nav-item">Research</span>
+                      <span className="toi-nav-item">Special Report</span>
                     </div>
                     <div className="toi-nav-right">
-                      <span className="toi-live-pill">🔴 Live</span>
+                      <span className="toi-live-pill">🔴 Edition</span>
                       <span className="toi-icon">🔍</span>
                       <span className="toi-icon">☰</span>
                     </div>
@@ -672,11 +636,11 @@ const ImpactBar = () => {
               </div>
             </div>
 
-            {/* Bento Cell 3: 20k+ Badges & Certificates */}
+            {/* Bento Cell 3: 30k+ Badges & Certificates */}
             <div className="bento-cell cell-badges">
               <div className="bento-cell-tag"><Layers size={14} /> VERIFIED SKILLS</div>
               <div className="bento-stat-num">
-                <CountUp end={20} suffix="k+" />
+                <CountUp end={30} suffix="k+" />
               </div>
               <div className="bento-cell-body">
                 <h4>Badges & Certificates Created</h4>
@@ -684,18 +648,21 @@ const ImpactBar = () => {
               </div>
             </div>
 
-            {/* Bento Cell 4: Beyond Practice */}
-            <div className="bento-cell cell-practice">
-              <div className="bento-cell-tag"><Terminal size={14} /> CIPHERLABS PLATFORM</div>
-              <h3 className="bento-practice-header">Beyond Practice</h3>
-              <div className="bento-pill-tags">
-                <span>Programming</span>
-                <span className="pill-orange">Data Structures</span>
-                <span>SQL</span>
+            {/* Bento Cell 4: 20k+ Proctored Tests Conducted */}
+            <div className="bento-cell cell-proctored">
+              <div className="bento-cell-tag"><ShieldCheck size={14} /> PROCTORED ASSESSMENTS</div>
+              <div className="bento-stat-num">
+                <CountUp end={20} suffix="k+" />
               </div>
-              <p className="bento-practice-desc">
-                Solve, practice, and repeat — interactive browser environments designed for placement readiness.
-              </p>
+              <div className="bento-cell-body">
+                <h4>Proctored Tests Conducted</h4>
+                <p>Across campuses nationwide with AI anti-cheat, automated code scoring, and live proctoring.</p>
+              </div>
+              <div className="bento-pill-tags" style={{ marginTop: '0.65rem', marginBottom: 0 }}>
+                <span>AI Anti-Cheat</span>
+                <span className="pill-orange">Automated Scoring</span>
+                <span>Campus-Wide</span>
+              </div>
             </div>
 
             {/* Bento Cell 5: 15+ Domains */}
@@ -714,26 +681,23 @@ const ImpactBar = () => {
               </div>
             </div>
 
-            {/* Bento Cell 6: WhatsApp Community */}
-            <div className="bento-cell cell-whatsapp">
-              <div className="bento-cell-tag tag-whatsapp"><MessageCircle size={14} /> BEYOND LEARNING</div>
-              <div className="bento-whatsapp-header">
-                <h4 className="whatsapp-title">WhatsApp Community</h4>
-                <span className="whatsapp-badge-live">10k+ Members</span>
+            {/* Bento Cell 6: 300+ Industry Mentors */}
+            <div className="bento-cell cell-mentors">
+              <div className="bento-cell-tag"><Users size={14} /> INDUSTRY EXPERTS</div>
+              <div className="bento-stat-num text-brand-orange">
+                <CountUp end={300} suffix="+" />
               </div>
-              <p className="bento-whatsapp-desc">
-                Daily tech news, peer networking, doubt support, and exclusive placement alerts.
-              </p>
-              <a 
-                href="#whatsapp-community" 
-                className="bento-whatsapp-btn"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert('Redirecting to CipherSchools WhatsApp Community...');
-                }}
-              >
-                <MessageCircle size={16} /> Join Community <ArrowUpRight size={15} />
-              </a>
+              <div className="bento-cell-body">
+                <h4>Industry Mentors & Leaders</h4>
+                <p>Learn directly from senior engineers & tech leads at top tier product companies.</p>
+              </div>
+              <div className="bento-company-badges-row" style={{ marginTop: '0.65rem' }}>
+                <span className="bento-company-badge">Google</span>
+                <span className="bento-company-badge">Microsoft</span>
+                <span className="bento-company-badge">Adobe</span>
+                <span className="bento-company-badge">Intuit</span>
+                <span className="bento-company-badge">& More</span>
+              </div>
             </div>
 
           </div>

@@ -231,19 +231,19 @@ button {
 @media (max-width: 768px) {
   :root { --section-padding: 3rem 1rem; }
   .container { padding: 0 1.25rem; }
-  h1 { font-size: 2.5rem !important; }
-  h2 { font-size: 2rem !important; }
-  h3 { font-size: 1.5rem !important; }
-  .hero-title { font-size: 2.25rem !important; line-height: 1.2; }
-  .hero-subtitle { font-size: 1rem !important; }
-  .section-title { font-size: 1.75rem !important; }
+  h1:not([class]) { font-size: 2.25rem; }
+  h2:not([class]) { font-size: 1.75rem; }
+  h3:not([class]) { font-size: 1.35rem; }
+  .hero-title { font-size: 2.25rem; line-height: 1.2; }
+  .hero-subtitle { font-size: 1rem; }
+  .section-title { font-size: 1.75rem; }
 }
 
 /* ═══════════════════════════════════════════
    STRICT 4PX BORDER-RADIUS DESIGN OVERRIDE
    ═══════════════════════════════════════════ */
-button:not(.slider-arrow):not(.cs-c-logo-circle):not(.lms-avatar-circle):not(.lms-logo-icon),
-a.btn,
+button:not(.slider-arrow):not(.cs-c-logo-circle):not(.lms-avatar-circle):not(.lms-logo-icon):not(.fu-sticky-btn),
+a.btn:not(.fu-sticky-btn),
 .btn,
 .tag,
 .badge,
