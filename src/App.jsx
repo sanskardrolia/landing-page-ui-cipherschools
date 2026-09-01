@@ -3,6 +3,8 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
+import LoginPage from './pages/LoginPage';
+import BackToTop from './components/BackToTop';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
 
@@ -10,9 +12,10 @@ function App() {
   const location = useLocation();
   useSmoothScroll();
 
+  const isLoginPage = location.pathname === '/login';
+
   useEffect(() => {
-    // We remove scroll to top here so anchor links work
-    // window.scrollTo(0, 0);
+    if (isLoginPage) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -22,7 +25,6 @@ function App() {
       });
     }, { threshold: 0.12 });
 
-    // slight delay to ensure DOM is ready after route switch
     const timeout = setTimeout(() => {
       const sections = document.querySelectorAll('.section');
       sections.forEach(el => {
@@ -37,7 +39,11 @@ function App() {
       clearTimeout(timeout);
       observer.disconnect();
     };
-  }, [location.pathname]);
+  }, [location.pathname, isLoginPage]);
+
+  if (isLoginPage) {
+    return <LoginPage />;
+  }
 
   return (
     <>
@@ -45,10 +51,12 @@ function App() {
         <Navbar />
         <main>
           <Routes>
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/*" element={<MainPage />} />
           </Routes>
         </main>
         <Footer />
+        <BackToTop />
       </div>
     </>
   );

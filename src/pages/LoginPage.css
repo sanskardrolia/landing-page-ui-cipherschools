@@ -1,0 +1,715 @@
+/* ═══════════════════════════════════════════════
+   CIPHERSCHOOLS MODERN SPLIT LOGIN PAGE
+   (Left: Story & Modernity | Right: Credentials)
+   ═══════════════════════════════════════════════ */
+
+.login-page-container {
+  min-height: 100vh;
+  width: 100%;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  color: #111827;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Mobile & Top Bar */
+.login-top-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #F3F4F6;
+  background: #FFFFFF;
+}
+
+.login-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4B5563;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.login-back-link:hover {
+  color: #F3912E;
+}
+
+.login-brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.login-brand-logo img {
+  height: 24px;
+  width: 24px;
+  object-fit: contain;
+}
+
+/* Split Layout 2-Column Container */
+.login-split-layout {
+  display: grid;
+  grid-template-columns: 53% 47%;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════
+   LEFT PANEL: THE CIPHERSCHOOLS STORY & MODERNITY
+   ═══════════════════════════════════════════════ */
+.login-left-panel {
+  background: linear-gradient(145deg, #FFFDF9 0%, #FFF7ED 40%, #FAFAFA 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 4rem;
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid #F3F4F6;
+}
+
+.login-left-panel::before {
+  content: '';
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(243, 145, 46, 0.12) 0%, rgba(243, 145, 46, 0) 70%);
+  pointer-events: none;
+}
+
+.login-story-wrap {
+  width: 100%;
+  max-width: 560px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Story Newspaper Card ── */
+.login-newspaper-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 1.85rem 2.15rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  text-align: left;
+  position: relative;
+}
+
+/* ── Times of India Inspired Masthead Header (Blurred Editorial Backdrop) ── */
+.toi-masthead-wrapper {
+  filter: blur(4px);
+  opacity: 0.35;
+  user-select: none;
+  pointer-events: none;
+  margin-bottom: 1.35rem;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.15);
+  padding-bottom: 0.45rem;
+}
+
+.toi-masthead-center {
+  text-align: center;
+  padding: 0.15rem 0 0.6rem 0;
+}
+
+.toi-brand-title {
+  font-family: 'Times New Roman', Times, Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #111827;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.toi-nav-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F3F4F6;
+  border-top: 1px solid #E5E7EB;
+  border-bottom: 1px solid #111827;
+  padding: 4px 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.6rem;
+  color: #374151;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.toi-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toi-logo-badge {
+  font-weight: 900;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+.toi-plus {
+  color: #DC2626;
+  font-weight: 900;
+  margin-left: 1px;
+}
+
+.toi-nav-item {
+  color: #374151;
+}
+
+.toi-nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.toi-live-pill {
+  background: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+  border-radius: 12px;
+  padding: 2px 7px;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+
+/* ── Newspaper Grid Columns ── */
+.newspaper-columns-grid {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 1.35rem;
+  align-items: flex-start;
+}
+
+.newspaper-main-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.founder-drop-cap {
+  float: left;
+  font-family: Georgia, 'Times New Roman', 'Newsreader', serif;
+  font-size: 3.3rem;
+  line-height: 0.78;
+  padding-top: 2px;
+  padding-right: 9px;
+  padding-bottom: 1px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.founder-story-paragraph {
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: #374151;
+  margin: 0 0 1.15rem 0;
+  letter-spacing: -0.01em;
+}
+
+.founder-story-paragraph strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.founder-text-highlight {
+  background: linear-gradient(180deg, transparent 50%, rgba(243, 145, 46, 0.45) 50%);
+  padding: 0 3px;
+  color: #111827;
+  font-weight: 800;
+  border-radius: 2px;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.founder-highlight-univ {
+  color: #111827;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #F3912E;
+  text-underline-offset: 2px;
+}
+
+.founder-story-tagline {
+  margin-bottom: 1.25rem;
+}
+
+.story-tagline-highlight {
+  font-weight: 800;
+  color: #111827;
+  font-size: 0.88rem;
+}
+
+.founder-signoff {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #4B5563;
+}
+
+.founder-name {
+  font-weight: 700;
+  color: #111827;
+}
+
+.founder-sep {
+  color: #9CA3AF;
+}
+
+.founder-role {
+  color: #6B7280;
+}
+
+/* ── Blurred Secondary Column ── */
+.newspaper-side-column-blur {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  padding-left: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  filter: blur(1px);
+  opacity: 0.5;
+  user-select: none;
+  pointer-events: none;
+}
+
+.news-side-header {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #111827;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 3px;
+}
+
+.news-side-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.news-side-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+}
+
+.news-side-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.news-side-date {
+  font-size: 0.52rem;
+  color: #9CA3AF;
+  font-family: -apple-system, sans-serif;
+}
+
+.news-side-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+.news-side-dummy-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.dummy-line {
+  height: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════
+   RIGHT PANEL: AUTHENTICATION FORM (Notion Style)
+   ═══════════════════════════════════════════════ */
+.login-right-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 3.5rem;
+  background: #FFFFFF;
+  position: relative;
+}
+
+.login-card-inner {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Desktop Logo */
+.login-logo-desktop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+  width: fit-content;
+}
+
+.login-logo-desktop img {
+  height: 28px;
+  width: 28px;
+  object-fit: contain;
+}
+
+.login-logo-desktop .logo-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
+.text-brand {
+  color: #F3912E;
+}
+
+/* Header Text */
+.login-header-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-main-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 0.4rem 0;
+}
+
+.login-sub-text {
+  font-size: 0.875rem;
+  color: #6B7280;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Auth Mode Tabs */
+.login-mode-tabs {
+  display: flex;
+  background: #F3F4F6;
+  padding: 3px;
+  border-radius: 4px;
+  gap: 2px;
+}
+
+.login-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #4B5563;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-tab-btn:hover {
+  color: #111827;
+}
+
+.login-tab-btn.active {
+  background: #FFFFFF;
+  color: #111827;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* OAuth Providers */
+.login-oauth-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.login-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.login-oauth-btn:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.oauth-svg-icon {
+  flex-shrink: 0;
+}
+
+/* Divider */
+.login-divider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0.25rem 0;
+}
+
+.login-divider-line {
+  flex: 1;
+  height: 1px;
+  background: #F3F4F6;
+}
+
+.login-divider-text {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: 0.6px;
+}
+
+/* Form Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.login-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-input-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.login-forgot-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #EA580C;
+  text-decoration: none;
+}
+
+.login-forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 12px;
+  color: #9CA3AF;
+  pointer-events: none;
+}
+
+.login-input-wrap input {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  padding: 0.68rem 2.5rem 0.68rem 2.4rem;
+  font-size: 0.875rem;
+  color: #111827;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.login-input-wrap input:focus {
+  border-color: #F3912E;
+  box-shadow: 0 0 0 3px rgba(243, 145, 46, 0.12);
+}
+
+.invite-code-input {
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.invite-input-hint {
+  font-size: 0.72rem;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.login-pwd-toggle {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.login-pwd-toggle:hover {
+  color: #4B5563;
+}
+
+/* Submit CTA */
+.login-submit-btn {
+  background: #F3912E;
+  color: #FFFFFF;
+  border: 1px solid #EA580C;
+  border-radius: 4px;
+  padding: 0.78rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.25);
+  margin-top: 0.25rem;
+}
+
+.login-submit-btn:hover {
+  background: #EA580C;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(243, 145, 46, 0.35);
+}
+
+.login-feedback-toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #059669;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+/* Have an Invite Code Label Button */
+.login-invite-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+}
+
+.login-invite-label-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.825rem;
+  color: #4B5563;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.login-invite-label-btn:hover {
+  color: #111827;
+}
+
+.login-invite-label-btn .invite-action-text {
+  color: #EA580C;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.login-invite-label-btn:hover .invite-action-text {
+  color: #C2410C;
+}
+
+.login-terms-notice {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.login-terms-notice a {
+  color: #6B7280;
+  text-decoration: underline;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE DESIGN (Tablets & Mobile)
+   ═══════════════════════════════════════════════ */
+@media (max-width: 960px) {
+  .login-top-bar {
+    display: flex;
+  }
+
+  .login-logo-desktop {
+    display: none;
+  }
+
+  .login-split-layout {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .login-right-panel {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .login-left-panel {
+    padding: 3rem 1.5rem;
+    border-right: none;
+    border-top: 1px solid #F3F4F6;
+  }
+}
+
+@media (max-width: 520px) {
+  .notion-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

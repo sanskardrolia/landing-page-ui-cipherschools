@@ -1,0 +1,102 @@
+/* ═══════════════════════════════════════════════
+   CIPHERSCHOOLS FLOATING BACK TO TOP BUTTON
+   ═══════════════════════════════════════════════ */
+
+.back-to-top-btn {
+  position: fixed;
+  bottom: 2.25rem;
+  right: 2.25rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(243, 145, 46, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 1px rgba(243, 145, 46, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px) scale(0.9);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0;
+  color: #111827;
+  overflow: hidden;
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top-btn:hover {
+  background: #FFFFFF;
+  border-color: rgba(243, 145, 46, 0.55);
+  color: #EA580C;
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 28px rgba(243, 145, 46, 0.22), 0 0 0 1px rgba(243, 145, 46, 0.4);
+}
+
+.back-to-top-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Circular Progress Ring */
+.back-to-top-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.ring-bg {
+  fill: none;
+  stroke: rgba(243, 145, 46, 0.12);
+  stroke-width: 2.5;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: #F3912E;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+/* Icon Wrap */
+.back-to-top-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.back-to-top-arrow {
+  color: #111827;
+  transition: all 0.2s ease;
+}
+
+.back-to-top-btn:hover .back-to-top-arrow {
+  color: #EA580C;
+  transform: translateY(-2px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
+}
