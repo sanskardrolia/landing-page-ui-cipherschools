@@ -285,6 +285,54 @@ const GeminiTextReveal = () => {
 };
 
 
+/* ─── Multi-Language Coding Sandbox Pseudo-Code Snippets ─── */
+const SANDBOX_LANG_SNIPPETS = {
+  Python: {
+    code: (
+      <>
+        <span className="fm-comment"># CipherSchools Automated Evaluator</span><br/>
+        <span className="fm-kwd">def</span> <span className="fm-func">evaluate_solution</span>(code, test_suite):<br/>
+        &nbsp;&nbsp;sandbox = <span className="fm-func">CipherSandbox</span>(timeout_ms=<span className="fm-num">1000</span>, memory_limit=<span className="fm-str">"256MB"</span>)<br/>
+        &nbsp;&nbsp;<span className="fm-kwd">return</span> sandbox.<span className="fm-func">run_tests</span>(code, test_suite)  <span className="fm-comment"># 14/14 auto-graded</span>
+      </>
+    )
+  },
+  JAVA: {
+    code: (
+      <>
+        <span className="fm-comment">// CipherSchools Automated Evaluator</span><br/>
+        <span className="fm-kwd">public class</span> <span className="fm-func">CipherEvaluator</span> &#123;<br/>
+        &nbsp;&nbsp;<span className="fm-kwd">public static</span> TestResult <span className="fm-func">evaluate</span>(Code submission, TestCase[] suite) &#123;<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-kwd">return new</span> <span className="fm-func">CipherSandbox</span>(Limits.MB_256).<span className="fm-func">runSuite</span>(submission, suite);<br/>
+        &nbsp;&nbsp;&#125;<br/>
+        &#125;
+      </>
+    )
+  },
+  'C++': {
+    code: (
+      <>
+        <span className="fm-comment">// CipherSchools Automated Evaluator</span><br/>
+        <span className="fm-kwd">auto</span> <span className="fm-func">evaluateSolution</span>(<span className="fm-kwd">const</span> Code&amp; code, <span className="fm-kwd">const</span> vector&lt;TestCase&gt;&amp; suite) &#123;<br/>
+        &nbsp;&nbsp;CipherSandbox <span className="fm-func">sandbox</span>(Timeout::ms(<span className="fm-num">1000</span>), Memory::MB(<span className="fm-num">256</span>));<br/>
+        &nbsp;&nbsp;<span className="fm-kwd">return</span> sandbox.<span className="fm-func">evaluateAll</span>(code, suite); <span className="fm-comment">// Verified all edge-cases</span><br/>
+        &#125;
+      </>
+    )
+  },
+  C: {
+    code: (
+      <>
+        <span className="fm-comment">/* CipherSchools Automated Evaluator */</span><br/>
+        CipherScore <span className="fm-func">evaluate_solution</span>(<span className="fm-kwd">const char</span>* code, TestCase suite[], <span className="fm-kwd">int</span> n) &#123;<br/>
+        &nbsp;&nbsp;CipherSandbox* s = <span className="fm-func">cipherschools_init</span>(<span className="fm-num">1000</span>, <span className="fm-num">256</span>);<br/>
+        &nbsp;&nbsp;<span className="fm-kwd">return</span> <span className="fm-func">cipherschools_grade_suite</span>(s, code, suite, n);<br/>
+        &#125;
+      </>
+    )
+  }
+};
+
 const ForUniversities = () => {
   const [step, setStep] = useState('question'); // 'question' | 'result'
   const [selected, setSelected] = useState(null);
@@ -293,6 +341,8 @@ const ForUniversities = () => {
   const [activeComboIndex, setActiveComboIndex] = useState(0);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
+  const [selectedSandboxLang, setSelectedSandboxLang] = useState('Python');
+  const [lmsActiveTab, setLmsActiveTab] = useState('home');
 
   /* scroll-reveal refs */
   const [refHeroText, visHeroText] = useReveal();
@@ -553,80 +603,7 @@ const ForUniversities = () => {
               {/* Apple-Style Asymmetrical Bento Grid */}
               <div className="fu-apple-bento-grid">
                 
-                {/* ── Tile 1: Market Alignment / Skill Combinations (Col Span 7) ── */}
-                <div className="fu-apple-bento-tile tile-market-combo">
-                  <div className="fu-tile-header">
-                    <div className="fu-tile-badge-row">
-                      <span className="fu-apple-pill">MARKET COMBINATIONS</span>
-                      <span className="fu-demand-score-pill">
-                        {DOMAIN_MAPPINGS[activeComboIndex % DOMAIN_MAPPINGS.length]?.demandScore || '96% Recruiter Alignment'}
-                      </span>
-                    </div>
-                    <h3 className="fu-tile-title">
-                      We Deliver the Right Combination.
-                    </h3>
-                    <p className="fu-tile-desc">
-                      Over generic courses — aligning students directly with recruiter multi-skill mandates.
-                    </p>
-                  </div>
-
-                  {/* Interactive Combination Flow */}
-                  {(() => {
-                    const safeCombo = DOMAIN_MAPPINGS[activeComboIndex % DOMAIN_MAPPINGS.length] || DOMAIN_MAPPINGS[0];
-                    const safeSkills = safeCombo.skills || [];
-
-                    return (
-                      <div className="fu-apple-combo-stage">
-                        <div className="fu-apple-combo-topbar">
-                          <div className="fu-role-tag">
-                            <Sparkles size={13} /> ROLE: {safeCombo.role}
-                          </div>
-                          <div className="fu-salary-tag">
-                            Avg Package: <strong className="text-emerald">{safeCombo.avgSalary}</strong>
-                          </div>
-                        </div>
-
-                        <h4 className="fu-apple-combo-name">{safeCombo.title}</h4>
-
-                        <div className="fu-apple-tech-stack-row">
-                          <span className="fu-stack-label">RECRUITER TECH STACK:</span>
-                          <div 
-                            className="fu-stack-pills"
-                            onClick={() => setActiveComboIndex((prev) => (prev + 1) % DOMAIN_MAPPINGS.length)}
-                            style={{ cursor: 'pointer' }}
-                            title="Click to view next combination"
-                          >
-                            {safeSkills.map((skill, si) => (
-                              <React.Fragment key={si}>
-                                {si > 0 && <span className="fu-stack-plus">+</span>}
-                                <div className="fu-apple-skill-pill">
-                                  <span className="fu-tech-pill-logo">{getTechLogo(skill)}</span>
-                                  <span>{skill}</span>
-                                </div>
-                              </React.Fragment>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="fu-apple-combo-footer">
-                          <button 
-                            type="button"
-                            className="fu-apple-shuffle-btn"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setActiveComboIndex((prev) => (prev + 1) % DOMAIN_MAPPINGS.length);
-                            }}
-                          >
-                            <RefreshCw size={14} className="fu-spin-icon" /> Next Combo
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {/* ── Tile 2: Structured Programs (Col Span 5) ── */}
+                {/* ── Tile 1: Structured Programs ── */}
                 <div className="fu-apple-bento-tile tile-structured-programs">
                   <div className="fu-tile-header">
                     <span className="fu-apple-pill">STRUCTURED PROGRAMS</span>
@@ -1006,7 +983,10 @@ const ForUniversities = () => {
                 <div className="lms-replica-body">
                   {/* Left Sidebar */}
                   <div className="lms-replica-sidebar">
-                    <div className="lms-menu-item active">
+                    <div 
+                      className={`lms-menu-item ${lmsActiveTab === 'home' ? 'active' : ''}`}
+                      onClick={() => setLmsActiveTab('home')}
+                    >
                       <Home size={18} />
                       <span>Home</span>
                     </div>
@@ -1047,6 +1027,17 @@ const ForUniversities = () => {
                       <Code2 size={18} />
                       <span>Online Compiler</span>
                     </div>
+
+                    {/* ── Request Feature in Sidebar (Below Online Compiler, No Custom Word) ── */}
+                    <div 
+                      className={`lms-menu-item lms-menu-feature-req ${lmsActiveTab === 'request-feature' ? 'active' : ''}`}
+                      onClick={() => setLmsActiveTab('request-feature')}
+                      title="Request any feature for your university LMS"
+                    >
+                      <Sparkles size={18} className="lms-sparkle-icon" />
+                      <span>Request Feature</span>
+                    </div>
+
                     <div className="lms-menu-item lms-menu-bottom">
                       <GraduationCap size={18} />
                       <span>My Batches</span>
@@ -1055,9 +1046,34 @@ const ForUniversities = () => {
 
                   {/* Center Workspace */}
                   <div className="lms-replica-center">
+                    {/* Prominently Highlighted Feature Request Banner when Request Feature is selected */}
+                    {lmsActiveTab === 'request-feature' && (
+                      <div className="lms-fr-highlight-banner">
+                        <div className="lms-fr-badge-row">
+                          <div className="lms-fr-tag">
+                            <Sparkles size={13} />
+                            <span>CAMPUS WORKFLOWS</span>
+                          </div>
+                          <button className="lms-fr-close-btn" onClick={() => setLmsActiveTab('home')} title="Close">✕</button>
+                        </div>
+                        <h3 className="lms-fr-main-title">
+                          Request Any Feature for Your Campus LMS — We’ll Build & Implement It.
+                        </h3>
+                        <p className="lms-fr-desc-text">
+                          Have specific requirements for your university? Request any feature for your campus LMS, and our engineering team will build and deploy it for you.
+                        </p>
+                        <div style={{ marginTop: '0.35rem' }}>
+                          <button className="lms-fr-submit-btn" onClick={() => setIsMeetingModalOpen(true)}>
+                            <span>Book a Meeting</span>
+                            <ArrowRight size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="lms-center-header">
                       <h2>Hey Sanskar,</h2>
-                      <button className="lms-back-btn">← Back</button>
+                      <button className="lms-back-btn" onClick={() => setLmsActiveTab('home')}>← Back</button>
                     </div>
 
                     <div className="lms-important-label">Important</div>
@@ -1066,53 +1082,61 @@ const ForUniversities = () => {
                       <button className="lms-action-btn whatsapp-btn">Join WhatsApp Group</button>
                       <button className="lms-action-btn outline-btn">Complete Profile</button>
                       <button className="lms-action-btn outline-btn">Get Certificate</button>
+                      <button 
+                        className={`lms-action-btn feature-req-btn ${lmsActiveTab === 'request-feature' ? 'active' : ''}`}
+                        onClick={() => setLmsActiveTab(prev => prev === 'request-feature' ? 'home' : 'request-feature')}
+                        title="Request any feature for your LMS"
+                      >
+                        <Sparkles size={13} />
+                        <span>Request Feature</span>
+                      </button>
                     </div>
 
-                    {/* Course Announcement Card */}
-                    <div className="lms-main-course-card">
-                      <h3>Python Programming Self Paced 2026</h3>
-                      <p className="lms-course-greeting">Hey there,</p>
-                      <p className="lms-course-desc">
-                        we're excited to have you join our course, designed to help you learn concepts in a practical and flexible way. Get access to recorded content on the platform, along with live weekend sessions for better understanding...
-                      </p>
-                      <a href="#" className="lms-readmore-link" onClick={(e) => e.preventDefault()}>Read more <span>⌄</span></a>
+                        {/* Course Announcement Card */}
+                        <div className="lms-main-course-card">
+                          <h3>Python Programming Self Paced 2026</h3>
+                          <p className="lms-course-greeting">Hey there,</p>
+                          <p className="lms-course-desc">
+                            we're excited to have you join our course, designed to help you learn concepts in a practical and flexible way. Get access to recorded content on the platform, along with live weekend sessions for better understanding...
+                          </p>
+                          <a href="#" className="lms-readmore-link" onClick={(e) => e.preventDefault()}>Read more <span>⌄</span></a>
 
-                      <div className="lms-card-divider"></div>
+                          <div className="lms-card-divider"></div>
 
-                      <div className="lms-course-metadata-grid">
-                        <div className="lms-meta-col">
-                          <span className="lms-meta-label">Start Date</span>
-                          <span className="lms-meta-val">June 12, 2026</span>
+                          <div className="lms-course-metadata-grid">
+                            <div className="lms-meta-col">
+                              <span className="lms-meta-label">Start Date</span>
+                              <span className="lms-meta-val">June 12, 2026</span>
+                            </div>
+                            <div className="lms-meta-col">
+                              <span className="lms-meta-label">Duration</span>
+                              <span className="lms-meta-val">7 Weeks</span>
+                            </div>
+                            <div className="lms-meta-col">
+                              <span className="lms-meta-label">Mentors</span>
+                              <span className="lms-meta-val" style={{ fontSize: '0.82rem', lineHeight: '1.3' }}>Cipher Schools, Zubair Proddutur, Akarsh Thakur, Harsh Tyagi</span>
+                            </div>
+                          </div>
                         </div>
-                        <div className="lms-meta-col">
-                          <span className="lms-meta-label">Duration</span>
-                          <span className="lms-meta-val">7 Weeks</span>
-                        </div>
-                        <div className="lms-meta-col">
-                          <span className="lms-meta-label">Mentors</span>
-                          <span className="lms-meta-val" style={{ fontSize: '0.82rem', lineHeight: '1.3' }}>Cipher Schools, Zubair Proddutur, Akarsh Thakur, Harsh Tyagi</span>
+
+                        {/* Keep Practicing Section */}
+                        <div className="lms-practice-resume-card">
+                          <div className="lms-practice-header">
+                            <h4>Keep Practicing From Where You Left</h4>
+                            <a href="#" className="lms-viewmore-link" onClick={(e) => e.preventDefault()}>View more ›</a>
+                          </div>
+                          <div className="lms-practice-item-row">
+                            <div className="lms-practice-item-info">
+                              <span className="lms-practice-item-title">Daily Temperature Streak</span>
+                              <span className="lms-practice-item-type">Practice Problem</span>
+                            </div>
+                            <div className="lms-practice-item-actions">
+                              <span className="lms-diff-tag easy">Easy</span>
+                              <button className="lms-continue-btn">Continue</button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Keep Practicing Section */}
-                    <div className="lms-practice-resume-card">
-                      <div className="lms-practice-header">
-                        <h4>Keep Practicing From Where You Left</h4>
-                        <a href="#" className="lms-viewmore-link" onClick={(e) => e.preventDefault()}>View more ›</a>
-                      </div>
-                      <div className="lms-practice-item-row">
-                        <div className="lms-practice-item-info">
-                          <span className="lms-practice-item-title">Daily Temperature Streak</span>
-                          <span className="lms-practice-item-type">Practice Problem</span>
-                        </div>
-                        <div className="lms-practice-item-actions">
-                          <span className="lms-diff-tag easy">Easy</span>
-                          <button className="lms-continue-btn">Continue</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Right Panel Widgets */}
                   <div className="lms-replica-right">
@@ -1200,36 +1224,41 @@ const ForUniversities = () => {
                       Multi-Language Compiler & Sandbox.
                     </h3>
                     <p className="fu-tile-desc">
-                      Full production compiler supporting C, C++, Java, and Python with live System Design testing.
+                      Full production compiler and test runner supporting Python, Java, C++, and C with automated testcase evaluation.
                     </p>
                   </div>
 
                   <div className="fu-mock-as-coding-rich">
                     <div className="fme-coding-header">
-                      <div className="fme-lang-pills">
-                        <span className="fme-lang-chip active">System Design</span>
-                        <span className="fme-lang-chip">DSA</span>
-                        <span className="fme-lang-chip">SQL</span>
+                      <div className="fme-support-strip">
+                        <span className="fme-support-label">SUPPORTS:</span>
+                        <span className="fme-support-text">
+                          Programming Problems <span className="fme-dot-sep">•</span> DSA Problems <span className="fme-dot-sep">•</span> SQL Problems <span className="fme-dot-sep">•</span> System Design Problems
+                        </span>
                       </div>
                     </div>
 
                     <div className="fme-coding-body">
                       <div className="fme-editor-top">
-                        <div className="fme-editor-lang-tabs">
-                          <span className="fme-editor-tab">C</span>
-                          <span className="fme-editor-tab">C++</span>
-                          <span className="fme-editor-tab">JAVA</span>
-                          <span className="fme-editor-tab active-tab">Python</span>
+                        <div className="fme-editor-lang-tabs-wrapper">
+                          <span className="fme-lang-label">Languages supported:</span>
+                          <div className="fme-editor-lang-tabs">
+                            {['Python', 'JAVA', 'C++', 'C'].map((lang) => (
+                              <button
+                                key={lang}
+                                type="button"
+                                className={`fme-editor-tab ${selectedSandboxLang === lang ? 'active-tab' : ''}`}
+                                onClick={() => setSelectedSandboxLang(lang)}
+                              >
+                                {lang}
+                              </button>
+                            ))}
+                          </div>
                         </div>
+                        <span className="fme-mode-tag">Production Engine</span>
                       </div>
                       <div className="fm-editor-code">
-                        <span className="fm-comment"># Live Automated Scoring & Execution</span><br/>
-                        <span className="fm-kwd">class</span> <span className="fm-func">LoadBalancer</span>:<br/>
-                        &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">__init__</span>(self, nodes):<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;self.nodes = nodes<br/>
-                        &nbsp;&nbsp;<span className="fm-kwd">def</span> <span className="fm-func">route</span>(self, req):<br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-comment"># Evaluating edge-cases & memory bounds</span><br/>
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="fm-kwd">return</span> self.nodes[0]
+                        {SANDBOX_LANG_SNIPPETS[selectedSandboxLang]?.code || SANDBOX_LANG_SNIPPETS.Python.code}
                       </div>
                     </div>
                   </div>

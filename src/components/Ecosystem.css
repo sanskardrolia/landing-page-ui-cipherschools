@@ -11,9 +11,12 @@
 }
 
 .cred-subtitle {
-  color: rgba(255, 255, 255, 0.7) !important;
-  font-weight: 100;
-  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  max-width: 680px;
+  margin: 0 auto 2.5rem;
 }
 
 .cred-tag {

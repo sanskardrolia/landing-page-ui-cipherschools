@@ -262,7 +262,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 50px;
+  border-radius: 4px;
   padding: 0.45rem 0.55rem 0.45rem 1.35rem;
   box-shadow: 
     0 16px 40px -10px rgba(0, 0, 0, 0.12),
@@ -296,7 +296,7 @@
   color: #FFFFFF;
   border: none;
   padding: 0.55rem 1.2rem;
-  border-radius: 50px;
+  border-radius: 4px;
   font-weight: 700;
   font-size: 0.825rem;
   cursor: pointer;
@@ -1510,11 +1510,11 @@
 }
 
 .fu-apple-bento-sub {
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   color: #6B7280;
-  max-width: 680px;
+  max-width: 740px;
   margin: 0 auto;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* 12-Column Apple Asymmetrical Bento Grid */
@@ -1530,7 +1530,7 @@
 .fu-apple-bento-tile {
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 2rem 2.25rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.03);
   display: flex;
@@ -1548,16 +1548,12 @@
 }
 
 /* Apple Tile Spans */
-.fu-apple-bento-tile.tile-market-combo {
+.fu-apple-bento-tile.tile-structured-programs {
   grid-column: span 7;
 }
 
-.fu-apple-bento-tile.tile-structured-programs {
-  grid-column: span 5;
-}
-
 .fu-apple-bento-tile.tile-calendar-stat {
-  grid-column: span 4;
+  grid-column: span 5;
   background: #FFFFFF;
   border-color: #E5E7EB;
   justify-content: flex-start;
@@ -1565,7 +1561,7 @@
 }
 
 .fu-apple-bento-tile.tile-beyond-syllabi {
-  grid-column: span 8;
+  grid-column: span 12;
 }
 
 /* Neutral Pill Badges */
@@ -1871,12 +1867,24 @@
   margin-top: auto;
 }
 
-/* Tile 4: Beyond Syllabi Grid */
+/* Tile 3: Beyond Syllabi Grid (4 Columns) */
 .fu-apple-beyond-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.85rem;
   width: 100%;
+}
+
+@media (max-width: 900px) {
+  .fu-apple-beyond-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .fu-apple-beyond-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .fu-apple-beyond-card {
@@ -1971,7 +1979,7 @@
 .fu-lms-portal-preview-card {
   background: #F9FAFB;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 1.25rem 1.4rem;
   display: flex;
   flex-direction: column;
@@ -1984,7 +1992,7 @@
   gap: 12px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 6px 12px;
 }
 
@@ -2017,14 +2025,14 @@
   gap: 12px;
   background: #FFFFFF;
   border: 1px solid #F3F4F6;
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 0.85rem 1rem;
 }
 
 .fu-lms-course-icon-badge {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 4px;
   background: #F3F4F6;
   color: #4B5563;
   display: flex;
@@ -2079,14 +2087,14 @@
   width: 100%;
   height: 6px;
   background: #E5E7EB;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .fu-lms-progress-bar {
   height: 100%;
   background: #F3912E;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 /* LMS Tile 2: Stage Lock Stack */
@@ -2113,7 +2121,7 @@
   gap: 0.75rem;
   background: #F9FAFB;
   border: 1px solid #F3F4F6;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 0.75rem 0.9rem;
   text-align: left;
 }
@@ -2121,7 +2129,7 @@
 .fu-stage-check-icon {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
+  border-radius: 4px;
   background: rgba(16, 185, 129, 0.1);
   color: #059669;
   display: flex;
@@ -2133,7 +2141,7 @@
 .fu-stage-active-icon {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
+  border-radius: 4px;
   background: #FFF7ED;
   color: #EA580C;
   display: flex;
@@ -2145,7 +2153,7 @@
 .fu-stage-lock-icon {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
+  border-radius: 4px;
   background: #F3F4F6;
   color: #9CA3AF;
   display: flex;
@@ -2207,7 +2215,7 @@
 .fu-lms-metric-card {
   background: #F9FAFB;
   border: 1px solid #F3F4F6;
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 1rem 1.15rem;
   display: flex;
   flex-direction: column;
@@ -2384,7 +2392,7 @@
   .fu-apple-bento-tile {
     grid-column: 1 / -1 !important;
     padding: 1.35rem 1.15rem !important;
-    border-radius: 12px !important;
+    border-radius: 4px !important;
   }
 
   .fu-tile-badge-row {
@@ -2427,11 +2435,11 @@
 }
 
 .fu-outcome-sub {
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   color: #4B5563;
-  max-width: 680px;
+  max-width: 740px;
   margin: 0 auto;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* 3-Column Bento Grid Layout */
@@ -3489,11 +3497,11 @@
 }
 
 .fu-beyond-sub {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #6B7280;
-  max-width: 680px;
+  max-width: 740px;
   margin: 0 auto;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 /* 2x2 Bento Grid (Light Theme) */
@@ -3632,10 +3640,11 @@
 }
 
 .fu-sec-sub {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #666;
   margin: 0 0 3rem 0;
-  max-width: 600px;
+  max-width: 720px;
+  line-height: 1.6;
 }
 
 
@@ -4977,7 +4986,7 @@
     max-width: 390px;
     padding: 0.45rem 0.5rem 0.45rem 1rem;
     gap: 0.75rem;
-    border-radius: 50px;
+    border-radius: 4px;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -4994,7 +5003,7 @@
     padding: 0.5rem 0.9rem;
     font-size: 0.75rem;
     gap: 4px;
-    border-radius: 50px;
+    border-radius: 4px;
   }
 }
 
@@ -5705,72 +5714,84 @@
 
 .fme-coding-header {
   background: #F9FAFB;
-  padding: 12px 16px;
+  padding: 8px 14px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   border-bottom: 1px solid #E5E7EB;
 }
 
-.fme-lang-pills {
+.fme-support-strip {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-.fme-lang-chip {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 4px;
-  background: #F3F4F6;
-  color: #4B5563;
-  border: 1px solid #E5E7EB;
-}
-.fme-lang-chip.active {
-  background: rgba(243, 145, 46, 0.12);
-  color: #F3912E;
-  border-color: rgba(243, 145, 46, 0.3);
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.fme-sys-badge {
-  font-size: 0.72rem;
+.fme-support-label {
+  font-size: 0.68rem;
   font-weight: 800;
-  color: #F3912E;
-  background: rgba(243, 145, 46, 0.1);
-  padding: 3px 10px;
-  border-radius: 4px;
-  display: flex;
+  color: #9CA3AF;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.fme-support-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4B5563;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  border: 1px solid rgba(243, 145, 46, 0.25);
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.fme-dot-sep {
+  color: #D1D5DB;
+  font-size: 0.75rem;
 }
 
 .fme-coding-body {
   flex: 1;
-  padding: 1.25rem;
+  padding: 0.85rem 1rem;
   background: #F8FAFC;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0.65rem;
 }
 
 .fme-editor-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fme-editor-lang-tabs-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fme-lang-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #4B5563;
 }
 
 .fme-editor-lang-tabs {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .fme-editor-tab {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: 4px;
   background: #FFFFFF;
   color: #4B5563;
@@ -5780,8 +5801,9 @@
 }
 
 .fme-editor-tab:hover {
-  border-color: #D1D5DB;
-  color: #111827;
+  border-color: #F3912E;
+  color: #F3912E;
+  transform: translateY(-1px);
 }
 
 .fme-editor-tab.active-tab {
@@ -5789,37 +5811,43 @@
   color: #EA580C;
   border-color: #FDBA74;
   font-weight: 800;
+  box-shadow: 0 2px 6px rgba(243, 145, 46, 0.12);
 }
 
 .fme-file-tab {
   font-family: monospace;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #F3912E;
   background: rgba(243, 145, 46, 0.12);
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 4px;
   font-weight: 700;
 }
+
 .fme-mode-tag {
-  font-size: 0.72rem;
-  color: #6B7280;
+  font-size: 0.68rem;
+  color: #9CA3AF;
   font-weight: 600;
 }
 
 .fm-editor-code {
   font-family: 'Fira Code', monospace;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: #0F172A;
-  line-height: 1.65;
+  line-height: 1.5;
   background: #FFFFFF;
-  padding: 1rem;
-  border-radius: 4px;
+  padding: 0.75rem 0.95rem;
+  border-radius: 6px;
   border: 1px solid #E5E7EB;
+  min-height: auto;
+  overflow-x: auto;
 }
 
 .fm-kwd { color: #0284C7; font-weight: 700; }
 .fm-func { color: #059669; font-weight: 700; }
 .fm-comment { color: #6B7280; font-style: italic; }
+.fm-str { color: #D97706; }
+.fm-num { color: #7C3AED; font-weight: 600; }
 
 .fme-editor-action {
   margin-top: 1rem;
@@ -5989,7 +6017,7 @@
 .lms-replica-wrapper {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   margin-top: 2.5rem;
@@ -6226,6 +6254,29 @@
   padding: 8px 1rem;
 }
 
+.lms-menu-feature-req {
+  position: relative;
+}
+
+.lms-custom-tag {
+  margin-left: auto;
+  background: rgba(243, 145, 46, 0.15);
+  color: #EA580C;
+  border: 1px solid rgba(243, 145, 46, 0.35);
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lms-menu-item.active .lms-custom-tag {
+  background: #FFFFFF;
+  color: #F7931E;
+  border-color: #FFFFFF;
+}
+
 .lms-updates-badge {
   margin-left: auto;
   background: #2196f3;
@@ -6305,6 +6356,226 @@
   background: #ffffff;
   border: 1px solid #e0e0e0;
   color: #333;
+}
+
+.lms-action-btn.feature-req-btn {
+  background: #FFF7ED;
+  border: 1px solid #FDBA74;
+  color: #C2410C;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lms-action-btn.feature-req-btn:hover {
+  background: #FFEDD5;
+  border-color: #FB923C;
+}
+
+/* Feature Request Dedicated Highlight View */
+.lms-feature-req-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  animation: bmFadeIn 0.3s ease-out;
+}
+
+.lms-fr-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(243, 145, 46, 0.1);
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  color: #EA580C;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 0.35rem;
+}
+
+.lms-fr-main-title {
+  font-size: 1.3rem !important;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* Highlight Banner */
+.lms-fr-highlight-banner {
+  background: linear-gradient(135deg, #FFFDF9 0%, #FFF7ED 100%);
+  border: 1.5px solid #FDBA74;
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-shadow: 0 4px 20px rgba(243, 145, 46, 0.08);
+}
+
+.lms-fr-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lms-fr-close-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  color: #9CA3AF;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.lms-fr-close-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+.lms-fr-badge {
+  background: #EA580C;
+  color: #FFFFFF;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+
+.lms-fr-pill {
+  background: #FFFFFF;
+  border: 1px solid #FED7AA;
+  color: #9A3412;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.lms-fr-highlight-banner h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.lms-fr-desc-text {
+  font-size: 0.86rem;
+  color: #4B5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Interactive Input Box */
+.lms-fr-interactive-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  background: #FFFFFF;
+  border: 1px solid #F3F4F6;
+  padding: 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.lms-fr-input-wrap {
+  display: flex;
+  gap: 8px;
+}
+
+.lms-fr-input {
+  flex: 1;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 0.84rem;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.lms-fr-input:focus {
+  border-color: #F97316;
+}
+
+.lms-fr-submit-btn {
+  background: #F7931E;
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.lms-fr-submit-btn:hover {
+  background: #EA580C;
+  transform: translateY(-1px);
+}
+
+.lms-fr-guarantees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #059669;
+}
+
+/* Example Cards Grid */
+.lms-fr-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.lms-fr-ex-card {
+  background: #FFFFFF;
+  border: 1px solid #EEF0F3;
+  border-radius: 4px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lms-fr-ex-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background: #FFF7ED;
+  color: #EA580C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.lms-fr-ex-card h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.lms-fr-ex-card p {
+  font-size: 0.75rem;
+  color: #6B7280;
+  line-height: 1.45;
+  margin: 0;
 }
 
 /* Main Announcement Card */
@@ -6708,7 +6979,7 @@
   .lms-replica-wrapper {
     width: 100%;
     margin-top: 1.5rem;
-    border-radius: 6px;
+    border-radius: 4px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   }
 
