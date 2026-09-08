@@ -525,7 +525,7 @@
 .login-forgot-link {
   font-size: 0.78rem;
   font-weight: 600;
-  color: #EA580C;
+  color: #ffa103;
   text-decoration: none;
 }
 
@@ -597,7 +597,7 @@
 .login-submit-btn {
   background: #F3912E;
   color: #FFFFFF;
-  border: 1px solid #EA580C;
+  border: 1px solid #ffa103;
   border-radius: 4px;
   padding: 0.78rem 1.25rem;
   font-size: 0.9rem;
@@ -613,7 +613,7 @@
 }
 
 .login-submit-btn:hover {
-  background: #EA580C;
+  background: #ffa103;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(243, 145, 46, 0.35);
 }
@@ -658,14 +658,14 @@
 }
 
 .login-invite-label-btn .invite-action-text {
-  color: #EA580C;
+  color: #ffa103;
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .login-invite-label-btn:hover .invite-action-text {
-  color: #C2410C;
+  color: #e69002;
 }
 
 .login-terms-notice {

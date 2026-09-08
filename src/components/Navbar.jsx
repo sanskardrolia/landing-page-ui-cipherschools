@@ -4,7 +4,7 @@ import {
   Menu, X, Search, Bell, Sun, Moon, User, 
   BookOpen, Code2, Terminal, FileText, Sparkles, 
   GraduationCap, Laptop, CheckCircle2, ArrowRight, 
-  ChevronDown, Layers, Target, Compass, Cpu
+  ChevronDown, Layers, Target, Compass, Cpu, Bot
 } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
 import './Navbar.css';
@@ -347,82 +347,162 @@ const Navbar = () => {
                   onMouseLeave={handleMouseLeave}
                 >
                   <div className="nav-mega-header">
-                    <span className="nav-mega-category">CAMPUS & INSTITUTIONAL PLATFORM</span>
+                    <span className="nav-mega-category">CAMPUS & INSTITUTIONAL SUITE</span>
+                    <button className="nav-mega-header-link" onClick={() => scrollToSection('university-section')}>
+                      <span>Explore Suite</span>
+                      <ArrowRight size={12} />
+                    </button>
                   </div>
 
-                  {/* 3 Cards Grid */}
-                  <div className="nav-mega-grid nav-mega-grid-3">
+                  {/* 2-Pillar Layout: Training (Left) & CipherLabs Smart Group (Right) */}
+                  <div className="nav-mega-uni-layout">
                     
-                    {/* 1. Training */}
-                    <div 
-                      className="nav-mega-card card-training"
-                      onClick={() => scrollToSection('training-section')}
-                    >
-                      <div className="nav-card-preview">
-                        <div className="nav-card-mini-window">
-                          <div className="nav-mini-syllabus-bar">
-                            <span className="nav-mini-sem-tag">Semester Adaptive</span>
-                          </div>
-                          <div className="nav-mini-curriculum-steps">
-                            <div className="nav-mini-step active"></div>
-                            <div className="nav-mini-step"></div>
-                            <div className="nav-mini-step"></div>
-                          </div>
-                        </div>
-                        <div className="nav-card-icon-badge">
-                          <GraduationCap size={16} />
-                        </div>
-                      </div>
-                      <div className="nav-card-content">
-                        <h4 className="nav-card-title">Training</h4>
-                        <p className="nav-card-desc">Semester-adaptive academic and placement readiness programs.</p>
-                      </div>
-                    </div>
-
-                    {/* 2. Campus LMS */}
-                    <div 
-                      className="nav-mega-card card-campuslms"
-                      onClick={() => scrollToSection('lms-section')}
-                    >
-                      <div className="nav-card-preview">
-                        <div className="nav-card-mini-window">
-                          <div className="nav-mini-lms-grid">
-                            <div className="nav-mini-lms-sidebar"></div>
-                            <div className="nav-mini-lms-main">
-                              <div className="nav-mini-line line-brand"></div>
-                              <div className="nav-mini-stage-badge">Stage Lock</div>
+                    {/* Left: Training Pillar */}
+                    <div className="nav-mega-uni-left">
+                      <div 
+                        className="nav-mega-card nav-card-training-pillar"
+                        onClick={() => scrollToSection('training-section')}
+                      >
+                        <div className="nav-card-preview nav-preview-training">
+                          <div className="nav-card-mini-window">
+                            <div className="nav-mini-syllabus-bar">
+                              <span className="nav-mini-sem-tag">Semester Adaptive</span>
+                            </div>
+                            <div className="nav-mini-curriculum-steps">
+                              <div className="nav-mini-step active"></div>
+                              <div className="nav-mini-step"></div>
+                              <div className="nav-mini-step"></div>
                             </div>
                           </div>
+                          <div className="nav-card-icon-badge">
+                            <GraduationCap size={15} />
+                          </div>
                         </div>
-                        <div className="nav-card-icon-badge">
-                          <Laptop size={16} />
+                        <div className="nav-card-content">
+                          <div className="nav-card-header-row">
+                            <h4 className="nav-card-title">Training Support</h4>
+                            <span className="nav-pillar-tag">FOUNDATION</span>
+                          </div>
+                          <p className="nav-card-desc">
+                            Semester-aligned curriculum & placement readiness.
+                          </p>
                         </div>
-                      </div>
-                      <div className="nav-card-content">
-                        <h4 className="nav-card-title">Campus LMS</h4>
-                        <p className="nav-card-desc">Centralized campus portal with automated evaluations & workflows.</p>
                       </div>
                     </div>
 
-                    {/* 3. Assessment Platform */}
-                    <div 
-                      className="nav-mega-card card-assessment"
-                      onClick={() => scrollToSection('assessment-section')}
-                    >
-                      <div className="nav-card-preview">
-                        <div className="nav-card-mini-window">
-                          <div className="nav-mini-proctor-view">
-                            <div className="nav-mini-cam-box"></div>
-                            <div className="nav-mini-score-pill">AI Proctored</div>
+                    {/* Right: CipherLabs Smart Border Group */}
+                    <div className="nav-cipherlabs-smart-group">
+                      <div className="nav-cipherlabs-smart-label">
+                        <Cpu size={12} className="nav-cl-icon" />
+                        <span>CipherLabs</span>
+                        <span className="nav-cl-subtag">SUITE</span>
+                      </div>
+
+                      <div className="nav-cipherlabs-grid">
+                        
+                        {/* 1. Campus LMS */}
+                        <div 
+                          className="nav-mega-card nav-cl-card"
+                          onClick={() => scrollToSection('lms-section')}
+                        >
+                          <div className="nav-card-preview nav-cl-preview">
+                            <div className="nav-card-mini-window">
+                              <div className="nav-mini-lms-grid">
+                                <div className="nav-mini-lms-sidebar"></div>
+                                <div className="nav-mini-lms-main">
+                                  <div className="nav-mini-line line-brand"></div>
+                                  <div className="nav-mini-stage-badge">Stage Lock</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="nav-card-icon-badge">
+                              <Laptop size={13} />
+                            </div>
+                          </div>
+                          <div className="nav-card-content">
+                            <h4 className="nav-card-title">Campus LMS</h4>
+                            <p className="nav-card-desc">Automated evaluations & stage locks.</p>
                           </div>
                         </div>
-                        <div className="nav-card-icon-badge">
-                          <CheckCircle2 size={16} />
+
+                        {/* 2. Assessment Platform */}
+                        <div 
+                          className="nav-mega-card nav-cl-card"
+                          onClick={() => scrollToSection('assessment-section')}
+                        >
+                          <div className="nav-card-preview nav-cl-preview">
+                            <div className="nav-card-mini-window">
+                              <div className="nav-mini-proctor-view">
+                                <div className="nav-mini-cam-box"></div>
+                                <div className="nav-mini-score-pill">AI Proctored</div>
+                              </div>
+                            </div>
+                            <div className="nav-card-icon-badge">
+                              <CheckCircle2 size={13} />
+                            </div>
+                          </div>
+                          <div className="nav-card-content">
+                            <h4 className="nav-card-title">Assessment Platform</h4>
+                            <p className="nav-card-desc">AI-proctored tests & safe browser.</p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="nav-card-content">
-                        <h4 className="nav-card-title">Assessment Platform</h4>
-                        <p className="nav-card-desc">Secure AI-proctored exams, coding challenges & recruiter analytics.</p>
+
+                        {/* 3. Practice Environment [AI] */}
+                        <div 
+                          className="nav-mega-card nav-cl-card"
+                          onClick={() => scrollToSection('practice-section')}
+                        >
+                          <div className="nav-card-preview nav-cl-preview">
+                            <div className="nav-card-mini-window">
+                              <div className="nav-mini-terminal-body">
+                                <span className="nav-mini-term-prompt">&gt;_ fn solve()</span>
+                                <span className="nav-mini-score-tag">340+ Tests</span>
+                              </div>
+                              <div className="nav-mini-line line-brand" style={{ width: '70%', marginTop: '2px' }}></div>
+                            </div>
+                            <div className="nav-card-icon-badge">
+                              <Terminal size={13} />
+                            </div>
+                          </div>
+                          <div className="nav-card-content">
+                            <h4 className="nav-card-title">
+                              <span>Practice Environment</span>
+                              <span className="nav-ai-tag">AI</span>
+                            </h4>
+                            <p className="nav-card-desc">340+ sandboxes & browser compiler.</p>
+                          </div>
+                        </div>
+
+                        {/* 4. Mock Interview [AI] */}
+                        <div 
+                          className="nav-mega-card nav-cl-card"
+                          onClick={() => scrollToSection('mock-interview-section')}
+                        >
+                          <div className="nav-card-preview nav-cl-preview">
+                            <div className="nav-card-mini-window">
+                              <div className="nav-mini-interview-body">
+                                <div className="nav-mini-waves">
+                                  <span className="nav-wave-bar"></span>
+                                  <span className="nav-wave-bar h-lg"></span>
+                                  <span className="nav-wave-bar"></span>
+                                </div>
+                                <span className="nav-mini-score-tag">Voice AI</span>
+                              </div>
+                              <div className="nav-mini-line line-brand" style={{ width: '55%', marginTop: '2px' }}></div>
+                            </div>
+                            <div className="nav-card-icon-badge">
+                              <Bot size={13} />
+                            </div>
+                          </div>
+                          <div className="nav-card-content">
+                            <h4 className="nav-card-title">
+                              <span>Mock Interview</span>
+                              <span className="nav-ai-tag">AI</span>
+                            </h4>
+                            <p className="nav-card-desc">Live voice & technical evaluations.</p>
+                          </div>
+                        </div>
+
                       </div>
                     </div>
 
@@ -431,15 +511,15 @@ const Navbar = () => {
                   {/* Dropdown Footer Bar */}
                   <div className="nav-mega-footer">
                     <div className="nav-mega-footer-left">
-                      <Sparkles size={14} className="text-brand" />
-                      <span>Bespoke workflows built specifically for your campus academic calendar.</span>
+                      <Sparkles size={13} className="text-brand" />
+                      <span>Bespoke workflows for your campus academic calendar.</span>
                     </div>
                     <button 
                       className="nav-mega-footer-btn"
                       onClick={() => { setActiveDropdown(null); setIsMeetingModalOpen(true); }}
                     >
-                      <span>Book University Demo</span>
-                      <ArrowRight size={13} />
+                      <span>Book Demo</span>
+                      <ArrowRight size={12} />
                     </button>
                   </div>
                 </div>
@@ -482,11 +562,11 @@ const Navbar = () => {
 
                     <div className="whats-new-batch-box">
                       <div className="batch-box-icon">
-                        <Layers size={16} />
+                        <User size={16} />
                       </div>
                       <div className="batch-box-text">
-                        <strong>Looking for your enrolled batches?</strong>
-                        <span>You can access all your active batches, labs, and assignments directly after logging in.</span>
+                        <strong>Returning to CipherSchools?</strong>
+                        <span>All your account details, certificates, and learning progress are safe. Simply log in to continue right where you left off.</span>
                       </div>
                     </div>
 
@@ -581,24 +661,44 @@ const Navbar = () => {
               {mobileSubmenu === 'university' && (
                 <div className="mobile-nested-links">
                   <div className="mobile-sub-item" onClick={() => scrollToSection('training-section')}>
-                    <GraduationCap size={15} className="text-brand" />
+                    <GraduationCap size={15} style={{ color: '#ffa103' }} />
                     <div>
-                      <strong>Training</strong>
+                      <strong>Training Support</strong>
                       <small>Semester-aligned placement training</small>
                     </div>
                   </div>
+
+                  <div className="mobile-cl-subheading">
+                    <Cpu size={12} style={{ color: '#ffa103' }} />
+                    <span>CipherLabs Suite</span>
+                  </div>
+
                   <div className="mobile-sub-item" onClick={() => scrollToSection('lms-section')}>
-                    <Laptop size={15} className="text-brand" />
+                    <Laptop size={15} style={{ color: '#ffa103' }} />
                     <div>
                       <strong>Campus LMS</strong>
                       <small>All-in-one portal with automated grading</small>
                     </div>
                   </div>
                   <div className="mobile-sub-item" onClick={() => scrollToSection('assessment-section')}>
-                    <CheckCircle2 size={15} className="text-brand" />
+                    <CheckCircle2 size={15} style={{ color: '#ffa103' }} />
                     <div>
                       <strong>Assessment Platform</strong>
                       <small>AI proctoring & coding tests</small>
+                    </div>
+                  </div>
+                  <div className="mobile-sub-item" onClick={() => scrollToSection('practice-section')}>
+                    <Terminal size={15} style={{ color: '#ffa103' }} />
+                    <div>
+                      <strong>Practice Environment <span className="nav-ai-tag">AI</span></strong>
+                      <small>340+ in-browser coding sandboxes</small>
+                    </div>
+                  </div>
+                  <div className="mobile-sub-item" onClick={() => scrollToSection('mock-interview-section')}>
+                    <Bot size={15} style={{ color: '#ffa103' }} />
+                    <div>
+                      <strong>Mock Interview <span className="nav-ai-tag">AI</span></strong>
+                      <small>Resume-matched live voice & technical evals</small>
                     </div>
                   </div>
                 </div>
@@ -608,10 +708,10 @@ const Navbar = () => {
             {/* Mobile What's New Notification */}
             <div className="mobile-whats-new-card">
               <div className="mobile-whats-new-badge">✨ What's New — Revamped!</div>
-              <strong>Access your batches after login</strong>
-              <p>As we grow, we've upgraded CipherSchools. Log in to access your enrolled batches and live labs.</p>
+              <strong>Returning to CipherSchools?</strong>
+              <p>All your account details, certificates, and learning progress are safe. Simply log in to continue right where you left off.</p>
               <Link to="/login" className="mobile-whats-new-btn" onClick={() => setMobileMenuOpen(false)}>
-                <span>Login Here</span>
+                <span>Login to your account</span>
                 <ArrowRight size={13} />
               </Link>
             </div>

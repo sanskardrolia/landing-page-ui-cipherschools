@@ -37,7 +37,7 @@
 .back-to-top-btn:hover {
   background: #FFFFFF;
   border-color: rgba(243, 145, 46, 0.55);
-  color: #EA580C;
+  color: #ffa103;
   transform: translateY(-3px) scale(1.04);
   box-shadow: 0 12px 28px rgba(243, 145, 46, 0.22), 0 0 0 1px rgba(243, 145, 46, 0.4);
 }
@@ -87,7 +87,7 @@
 }
 
 .back-to-top-btn:hover .back-to-top-arrow {
-  color: #EA580C;
+  color: #ffa103;
   transform: translateY(-2px);
 }
 

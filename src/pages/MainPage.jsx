@@ -3,7 +3,6 @@ import WelcomeGateway from '../components/WelcomeGateway';
 import ImpactBar from '../components/ImpactBar';
 import Ecosystem from '../components/Ecosystem';
 import Testimonials from '../components/Testimonials';
-import TrustedBy from '../components/TrustedBy';
 import ForUniversities from '../components/ForUniversities';
 
 const MainPage = () => {

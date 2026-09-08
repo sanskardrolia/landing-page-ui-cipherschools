@@ -321,7 +321,7 @@
 }
 
 .bm-date-chip.active .bm-chip-day {
-  color: #EA580C;
+  color: #ffa103;
 }
 
 .bm-chip-num {
@@ -332,7 +332,7 @@
 }
 
 .bm-date-chip.active .bm-chip-num {
-  color: #EA580C;
+  color: #ffa103;
 }
 
 .bm-chip-month {
@@ -342,7 +342,7 @@
 }
 
 .bm-date-chip.active .bm-chip-month {
-  color: #EA580C;
+  color: #ffa103;
 }
 
 /* Time Slots Grid */
@@ -406,7 +406,7 @@
 .bm-custom-field-box label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #EA580C;
+  color: #ffa103;
 }
 
 .bm-custom-field-box input {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, Sparkles, Bot, Code2, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal } from 'lucide-react';
-import TrustedBy from './TrustedBy';
+import { ArrowRight, ArrowLeft, ChevronLeft, Sparkles, Bot, Code2, Code, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, ChevronDown, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal, Layers, UploadCloud, Mic, RotateCcw, Download, UserCheck } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
 import './ForUniversities.css';
 
@@ -333,6 +332,398 @@ const SANDBOX_LANG_SNIPPETS = {
   }
 };
 
+/* ─── Proctored Assessment Formats / Exam Tracks ─── */
+const EXAM_TRACKS = [
+  {
+    id: 'mcq',
+    name: 'Logical Reasoning - MCQ Test',
+    tag: 'MCQ Evaluation',
+    time: '12:30 left',
+    category: 'Logical Reasoning',
+    question: 'If all A are B, and some B are C, which statement is true?',
+    options: [
+      { text: 'All A are C', active: false },
+      { text: 'None of the above', active: true }
+    ]
+  },
+  {
+    id: 'system_design',
+    name: 'System Design Test',
+    tag: 'Architecture',
+    time: '45:00 left',
+    category: 'System Architecture',
+    question: 'Design a low-latency Distributed Rate Limiter for API Gateways',
+    specs: [
+      '• Token Bucket Algorithm (Redis Cluster)',
+      '• Fallback Circuit Breaker & 99.99% Availability'
+    ]
+  },
+  {
+    id: 'cp',
+    name: 'Competitive Programming Test',
+    tag: 'DSA & Speed',
+    time: '60:00 left',
+    category: 'Algorithms',
+    question: 'Find maximum sum contiguous subarray with at most K elements',
+    specs: [
+      '• Limits: 1000ms / 256MB • Strict Edge Cases',
+      '• Status: 18/18 Hidden Testcases Passed ✓'
+    ]
+  },
+  {
+    id: 'sql',
+    name: 'SQL Test',
+    tag: 'Database Queries',
+    time: '25:00 left',
+    category: 'Relational DB',
+    question: 'Calculate running total & 30-day moving average per student batch',
+    specs: [
+      '• Window Function: OVER (ORDER BY created_at ROWS ...)',
+      '• Status: Query Cost Optimized (Index Scan) ✓'
+    ]
+  }
+];
+
+/* ─── Practice Environment Problems Dataset ─── */
+const PRACTICE_PROBLEMS_DATA = [
+  {
+    id: 'p1',
+    title: 'Distinct Divisible Subarrays',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Arrays', 'Prefix-Sum.'],
+    difficulty: 'Hard',
+    level: 'advanced',
+    company: 'Amazon',
+    desc: `In a magical kingdom, a wizard has a scroll containing enchanted numbers arranged in order. The wizard studies different continuous parts of the scroll to find special magical patterns.\n\nA group of numbers is called a divisible magical segment if the sum of all numbers in that segment is divisible by k.\n\nYour task is to help the wizard count how many distinct magical segments exist in the scroll. Two magical segments are considered are considered identical if they have the same length and contain the same values in the same order, regardless of their positions. Identical subarrays should be counted only once.\n• Note: The array magicalValues is sorted in non-decreasing order`,
+    examples: [
+      { 
+        input: 'n = 3\nmagical values = [1, 2, 3]\nk = 3', 
+        output: '3', 
+        explanation: 'The distinct magical segments are:\n- [3] (sum = 3, divisible by 3)\n- [1, 2] (sum = 3, divisible by 3)\n- [1, 2, 3] (sum = 6, divisible by 3)' 
+      }
+    ],
+    starterCode: {
+      CPP: `long long countDistinctDivisibleSubarrays(vector<int>& v, int k) {\n    // add your code here\n    \n}`,
+      'C++': `long long countDistinctDivisibleSubarrays(vector<int>& v, int k) {\n    // add your code here\n    \n}`,
+      Python: `def countDistinctDivisibleSubarrays(v: list[int], k: int) -> int:\n    # add your code here\n    pass`,
+      Java: `class Solution {\n    public long countDistinctDivisibleSubarrays(int[] v, int k) {\n        // add your code here\n        return 0;\n    }\n}`
+    },
+    testCases: [
+      {
+        id: 1,
+        input: 'n = 3, magical values = [1, 2, 3], k = 3',
+        expected: '3',
+        actual: '3',
+        time: '2 ms'
+      },
+      {
+        id: 2,
+        input: 'n = 4, magical values = [2, 4, 6, 8], k = 2',
+        expected: '10',
+        actual: '10',
+        time: '3 ms'
+      }
+    ],
+    aiHint: 'Calculate prefix sum remainder modulo k at each index. When two prefix sums share the same modulo, the subarray between them is divisible by k.'
+  },
+  {
+    id: 'p2',
+    title: "Key's Frequent Successor",
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Array'],
+    difficulty: 'Easy',
+    level: 'beginner',
+    company: 'Microsoft',
+    desc: 'Given an array of keys and a target key, identify the most frequently occurring successor item immediately following any instance of the target key.',
+    examples: [
+      { input: 'keys = [1, 2, 1, 2, 1, 3, 1, 2], target = 1', output: '2', explanation: 'Key 1 is followed by 2 three times, making 2 the most frequent successor.' }
+    ],
+    starterCode: {
+      Python: `def mostFrequentSuccessor(keys: list[int], target: int) -> int:\n    from collections import Counter\n    successors = [keys[i+1] for i in range(len(keys)-1) if keys[i] == target]\n    return Counter(successors).most_common(1)[0][0] if successors else -1`,
+      Java: `public int mostFrequentSuccessor(int[] keys, int target) {\n    Map<Integer, Integer> freq = new HashMap<>();\n    for (int i = 0; i < keys.length - 1; i++) {\n        if (keys[i] == target) freq.put(keys[i+1], freq.getOrDefault(keys[i+1], 0) + 1);\n    }\n    return freq.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();\n}`,
+      'C++': `int mostFrequentSuccessor(vector<int>& keys, int target) {\n    map<int, int> freq;\n    for (size_t i = 0; i + 1 < keys.size(); ++i) {\n        if (keys[i] == target) freq[keys[i+1]]++;\n    }\n    return max_element(freq.begin(), freq.end(), [](auto& a, auto& b){ return a.second < b.second; })->first;\n}`
+    },
+    aiHint: 'Iterate up to index n - 2. Check if keys[i] matches target, and increment frequency of keys[i+1] in a hash map.'
+  },
+  {
+    id: 'p3',
+    title: 'Predicting the Next Heatwave',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Stack', 'Array', '+1'],
+    difficulty: 'Medium',
+    level: 'intermediate',
+    company: 'Adobe',
+    desc: 'Given daily temperature recordings, return an array answers where answers[i] is the number of days until a strictly warmer temperature arrives.',
+    examples: [
+      { input: 'temperatures = [73, 74, 75, 71, 69, 72, 76, 73]', output: '[1, 1, 4, 2, 1, 1, 0, 0]', explanation: 'On day 2 (75), day 6 (76) is warmer (4 days later).' }
+    ],
+    starterCode: {
+      Python: `def dailyTemperatures(temps: list[int]) -> list[int]:\n    ans = [0] * len(temps)\n    stack = []\n    for i, t in enumerate(temps):\n        while stack and temps[stack[-1]] < t:\n            prev = stack.pop()\n            ans[prev] = i - prev\n        stack.append(i)\n    return ans`,
+      Java: `public int[] dailyTemperatures(int[] temps) {\n    int[] ans = new int[temps.length];\n    Deque<Integer> stack = new ArrayDeque<>();\n    for (int i = 0; i < temps.length; i++) {\n        while (!stack.isEmpty() && temps[stack.peek()] < temps[i]) {\n            int idx = stack.pop();\n            ans[idx] = i - idx;\n        }\n        stack.push(i);\n    }\n    return ans;\n}`,
+      'C++': `vector<int> dailyTemperatures(vector<int>& temps) {\n    vector<int> ans(temps.size(), 0);\n    stack<int> s;\n    for (int i = 0; i < temps.size(); ++i) {\n        while (!s.empty() && temps[s.top()] < temps[i]) {\n            ans[s.top()] = i - s.top();\n            s.pop();\n        }\n        s.push(i);\n    }\n    return ans;\n}`
+    },
+    aiHint: 'A monotonic decreasing stack storing indices allows resolving day spans in a single O(n) scan.'
+  },
+  {
+    id: 'p4',
+    title: 'Road Trip Snacks',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Sliding-Window', 'Arrays'],
+    difficulty: 'Easy',
+    level: 'beginner',
+    company: 'Meta',
+    desc: 'Calculate the maximum contiguous assortment of road trip snacks a traveler can purchase under a given calorie budget.',
+    examples: [
+      { input: 'calories = [2, 1, 5, 2, 8], budget = 7', output: '3', explanation: 'Window [2, 1, 2] yields maximum 3 snack items under budget.' }
+    ],
+    starterCode: {
+      Python: `def maxSnacks(calories: list[int], budget: int) -> int:\n    left = 0\n    curr_sum = 0\n    max_len = 0\n    for right, c in enumerate(calories):\n        curr_sum += c\n        while curr_sum > budget and left <= right:\n            curr_sum -= calories[left]\n            left += 1\n        max_len = max(max_len, right - left + 1)\n    return max_len`,
+      Java: `public int maxSnacks(int[] calories, int budget) {\n    int left = 0, sum = 0, maxLen = 0;\n    for (int right = 0; right < calories.length; right++) {\n        sum += calories[right];\n        while (sum > budget) sum -= calories[left++];\n        maxLen = Math.max(maxLen, right - left + 1);\n    }\n    return maxLen;\n}`,
+      'C++': `int maxSnacks(vector<int>& calories, int budget) {\n    int l = 0, sum = 0, maxL = 0;\n    for (int r = 0; r < calories.size(); ++r) {\n        sum += calories[r];\n        while (sum > budget) sum -= calories[l++];\n        maxL = max(maxL, r - l + 1);\n    }\n    return maxL;\n}`
+    },
+    aiHint: 'Expand the right pointer while running sum <= budget. Shrink from left pointer whenever sum exceeds budget.'
+  },
+  {
+    id: 'p5',
+    title: 'The Mirror of Numbers',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Arrays', 'Two Pointers'],
+    difficulty: 'Easy',
+    level: 'beginner',
+    company: 'Google',
+    desc: 'Verify if a sequence of numerical sensor readings is palindrome symmetric across its median coordinate.',
+    examples: [
+      { input: 'readings = [12, 45, 99, 45, 12]', output: 'True', explanation: 'Readings are identical forwards and backwards.' }
+    ],
+    starterCode: {
+      Python: `def isMirrorSequence(readings: list[int]) -> bool:\n    left, right = 0, len(readings) - 1\n    while left < right:\n        if readings[left] != readings[right]:\n            return False\n        left += 1\n        right -= 1\n    return True`,
+      Java: `public boolean isMirrorSequence(int[] readings) {\n    int i = 0, j = readings.length - 1;\n    while (i < j) if (readings[i++] != readings[j--]) return false;\n    return true;\n}`,
+      'C++': `bool isMirrorSequence(vector<int>& readings) {\n    int i = 0, j = readings.size() - 1;\n    while (i < j) if (readings[i++] != readings[j--]) return false;\n    return true;\n}`
+    },
+    aiHint: 'Two pointers at head and tail moving inward provide an O(n) check with zero auxiliary memory.'
+  },
+  {
+    id: 'p6',
+    title: 'Balanced Boundary Subarrays',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Arrays', 'Prefix-Sum.'],
+    difficulty: 'Medium',
+    level: 'intermediate',
+    company: 'Uber',
+    desc: 'Return the length of the longest subarray where the boundary values sum up to the exact target calibration constant.',
+    examples: [
+      { input: 'weights = [3, 1, 4, 1, 5, 9, 2, 6], target = 8', output: '4', explanation: 'Subarray [3, 1, 4, 5] has boundary sum 3 + 5 = 8 with length 4.' }
+    ],
+    starterCode: {
+      Python: `def balancedBoundary(weights: list[int], target: int) -> int:\n    max_len = 0\n    first_seen = {}\n    for j, w in enumerate(weights):\n        needed = target - w\n        if needed in first_seen:\n            max_len = max(max_len, j - first_seen[needed] + 1)\n        if w not in first_seen:\n            first_seen[w] = j\n    return max_len`,
+      Java: `public int balancedBoundary(int[] weights, int target) {\n    Map<Integer, Integer> map = new HashMap<>();\n    int maxLen = 0;\n    for (int j = 0; j < weights.length; j++) {\n        int needed = target - weights[j];\n        if (map.containsKey(needed)) maxLen = Math.max(maxLen, j - map.get(needed) + 1);\n        map.putIfAbsent(weights[j], j);\n    }\n    return maxLen;\n}`,
+      'C++': `int balancedBoundary(vector<int>& weights, int target) {\n    unordered_map<int, int> seen;\n    int maxLen = 0;\n    for (int j = 0; j < weights.size(); ++j) {\n        int req = target - weights[j];\n        if (seen.count(req)) maxLen = max(maxLen, j - seen[req] + 1);\n        seen.emplace(weights[j], j);\n    }\n    return maxLen;\n}`
+    },
+    aiHint: 'Record the earliest index of each element in a hash map and check for target - current in each iteration.'
+  },
+  {
+    id: 'p7',
+    title: 'Energy target days',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Hashing', 'Arrays'],
+    difficulty: 'Easy',
+    level: 'beginner',
+    company: 'Goldman Sachs',
+    desc: 'Given daily energy generation readings and an energy quota, identify indices of the two days that aggregate to the quota.',
+    examples: [
+      { input: 'energy = [2, 7, 11, 15], quota = 9', output: '[0, 1]', explanation: 'energy[0] + energy[1] = 2 + 7 = 9' }
+    ],
+    starterCode: {
+      Python: `def twoEnergyDays(energy: list[int], quota: int) -> list[int]:\n    seen = {}\n    for i, e in enumerate(energy):\n        diff = quota - e\n        if diff in seen:\n            return [seen[diff], i]\n        seen[e] = i\n    return []`,
+      Java: `public int[] twoEnergyDays(int[] energy, int quota) {\n    Map<Integer, Integer> map = new HashMap<>();\n    for (int i = 0; i < energy.length; i++) {\n        int rem = quota - energy[i];\n        if (map.containsKey(rem)) return new int[]{map.get(rem), i};\n        map.put(energy[i], i);\n    }\n    return new int[0];\n}`,
+      'C++': `vector<int> twoEnergyDays(vector<int>& energy, int quota) {\n    unordered_map<int, int> seen;\n    for (int i = 0; i < energy.size(); ++i) {\n        int rem = quota - energy[i];\n        if (seen.count(rem)) return {seen[rem], i};\n        seen[energy[i]] = i;\n    }\n    return {};\n}`
+    },
+    aiHint: 'One-pass hash table check: lookup complement (quota - energy[i]) as you iterate.'
+  },
+  {
+    id: 'p8',
+    title: 'Planetary Temperature Surge',
+    type: 'DSA',
+    track: 'dsa',
+    topics: ['Array', 'Stack', '+1'],
+    difficulty: 'Medium',
+    level: 'intermediate',
+    company: 'Apple',
+    desc: 'Compute the peak surge span for deep-space planetary sensors by finding the continuous days of uninterrupted thermal escalation.',
+    examples: [
+      { input: 'surge = [100, 80, 60, 70, 60, 75, 85]', output: '[1, 1, 1, 2, 1, 4, 6]', explanation: 'Span of days where temperature was <= current day temperature.' }
+    ],
+    starterCode: {
+      Python: `def planetarySurgeSpans(readings: list[int]) -> list[int]:\n    stack = []\n    spans = []\n    for i, p in enumerate(readings):\n        while stack and readings[stack[-1]] <= p:\n            stack.pop()\n        span = i + 1 if not stack else i - stack[-1]\n        spans.append(span)\n        stack.append(i)\n    return spans`,
+      Java: `public int[] planetarySurgeSpans(int[] readings) {\n    int[] spans = new int[readings.length];\n    Stack<Integer> s = new Stack<>();\n    for (int i = 0; i < readings.length; i++) {\n        while (!s.isEmpty() && readings[s.peek()] <= readings[i]) s.pop();\n        spans[i] = s.isEmpty() ? i + 1 : i - s.peek();\n        s.push(i);\n    }\n    return spans;\n}`,
+      'C++': `vector<int> planetarySurgeSpans(vector<int>& readings) {\n    vector<int> spans(readings.size());\n    stack<int> s;\n    for (int i = 0; i < readings.size(); ++i) {\n        while (!s.empty() && readings[s.top()] <= readings[i]) s.pop();\n        spans[i] = s.empty() ? i + 1 : i - s.top();\n        s.push(i);\n    }\n    return spans;\n}`
+    },
+    aiHint: 'Monotonic stack storing prior indices with strictly higher values.'
+  },
+  {
+    id: 'p9',
+    title: 'LRU Memory Cache Implementation',
+    type: 'Programming',
+    track: 'programming',
+    topics: ['OOP', 'Design'],
+    difficulty: 'Medium',
+    level: 'intermediate',
+    company: 'Amazon',
+    desc: 'Design and implement a Least Recently Used (LRU) cache supporting get(key) and put(key, value) in O(1) average time complexity.',
+    examples: [
+      { input: 'LRUCache(2); put(1, 1); put(2, 2); get(1); put(3, 3);', output: 'get(2) returns -1', explanation: 'Key 2 was evicted when key 3 was inserted.' }
+    ],
+    starterCode: {
+      Python: `from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n        \n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n        \n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)`,
+      Java: `class LRUCache extends LinkedHashMap<Integer, Integer> {\n    private int capacity;\n    public LRUCache(int capacity) {\n        super(capacity, 0.75f, true);\n        this.capacity = capacity;\n    }\n    public int get(int key) { return super.getOrDefault(key, -1); }\n    public void put(int key, int value) { super.put(key, value); }\n    protected boolean removeEldestEntry(Map.Entry eldest) { return size() > capacity; }\n}`,
+      'C++': `class LRUCache {\n    int cap;\n    list<pair<int, int>> l;\n    unordered_map<int, list<pair<int, int>>::iterator> m;\npublic:\n    LRUCache(int capacity) : cap(capacity) {}\n    int get(int key) {\n        if (!m.count(key)) return -1;\n        l.splice(l.begin(), l, m[key]);\n        return m[key]->second;\n    }\n    void put(int key, int val) {\n        if (m.count(key)) { l.erase(m[key]); }\n        else if (l.size() == cap) { m.erase(l.back().first); l.pop_back(); }\n        l.push_front({key, val});\n        m[key] = l.begin();\n    }\n};`
+    },
+    aiHint: 'Combine a doubly linked list with a hash map to achieve O(1) node eviction and O(1) retrieval.'
+  },
+  {
+    id: 'p10',
+    title: 'Department Top 3 Earners via Dense Rank',
+    type: 'SQL',
+    track: 'sql',
+    topics: ['Window Functions', 'Joins'],
+    difficulty: 'Medium',
+    level: 'intermediate',
+    company: 'LinkedIn',
+    desc: 'Write a SQL query to find employees who earn top 3 unique salaries in each department using window functions.',
+    examples: [
+      { input: 'Employee(id, name, salary, departmentId), Department(id, name)', output: 'Department, Employee, Salary', explanation: 'Ranked with DENSE_RANK() <= 3.' }
+    ],
+    starterCode: {
+      SQL: `WITH RankedSalaries AS (\n    SELECT \n        d.name AS Department,\n        e.name AS Employee,\n        e.salary AS Salary,\n        DENSE_RANK() OVER (PARTITION BY e.departmentId ORDER BY e.salary DESC) as rnk\n    FROM Employee e\n    JOIN Department d ON e.departmentId = d.id\n)\nSELECT Department, Employee, Salary\nFROM RankedSalaries\nWHERE rnk <= 3;`,
+      Python: `# SQL assessment mode\nquery = """\nSELECT d.name AS Department, e.name AS Employee, e.salary\nFROM Employee e JOIN Department d ON e.departmentId = d.id\nWHERE 3 > (SELECT COUNT(DISTINCT e2.salary) FROM Employee e2 WHERE e2.salary > e.salary AND e2.departmentId = e.departmentId);\n"""`
+    },
+    aiHint: 'Use DENSE_RANK() OVER (PARTITION BY departmentId ORDER BY salary DESC) inside a Common Table Expression.'
+  }
+];
+
+/* ─── Mock Interview [AI] Datasets ─── */
+const MOCK_RESUMES = [
+  {
+    id: 'res-1',
+    name: 'Arjun_Verma_SDE_Resume.pdf',
+    size: '342 KB',
+    candidateName: 'Arjun Verma',
+    role: 'Full-Stack SDE',
+    skills: ['React', 'Node.js', 'PostgreSQL', 'Redis', 'Docker'],
+    projects: ['Distributed Order Pipeline', 'Real-Time Collaborative Canvas', 'Microservices Auth Service'],
+    experience: 'Full-Stack Intern @ FinTech Corp (6 mos)'
+  },
+  {
+    id: 'res-2',
+    name: 'Priya_Sharma_Cloud_Backend.pdf',
+    size: '418 KB',
+    candidateName: 'Priya Sharma',
+    role: 'Backend Systems Engineer',
+    skills: ['Go', 'Kubernetes', 'AWS Lambda', 'gRPC', 'PostgreSQL'],
+    projects: ['High-Throughput Gateway', 'Multi-Region Failover Controller'],
+    experience: 'Cloud Engineering Intern @ ScaleOps (8 mos)'
+  },
+  {
+    id: 'res-3',
+    name: 'Rohan_Das_AIML_Resume.pdf',
+    size: '290 KB',
+    candidateName: 'Rohan Das',
+    role: 'AI / ML Engineer',
+    skills: ['Python', 'PyTorch', 'FastAPI', 'LangChain', 'Pinecone'],
+    projects: ['RAG Enterprise Search', 'Agentic Workflow Pipeline'],
+    experience: 'ML Research Associate @ AI Lab (1 yr)'
+  }
+];
+
+const JOB_PROFILES = [
+  {
+    id: 'sde',
+    title: 'Full-Stack SDE-1',
+    companies: 'Amazon, Uber, Swiggy',
+    rigor: 'FAANG Bar Raiser',
+    focus: 'System Architecture, React/Node.js, Concurrency, DSA'
+  },
+  {
+    id: 'backend',
+    title: 'Backend Systems Engineer',
+    companies: 'Google, Stripe, Razorpay',
+    rigor: 'High Concurrency Tier',
+    focus: 'Microservices, Database Sharding, Event Streams, Networking'
+  },
+  {
+    id: 'aiml',
+    title: 'AI / ML Engineer',
+    companies: 'OpenAI, Meta, Microsoft',
+    rigor: 'Production AI Tier',
+    focus: 'LLMs, Vector Embeddings, RAG Architectures, Optimization'
+  }
+];
+
+const INTERVIEW_QUESTIONS = {
+  sde: [
+    {
+      qNum: 1,
+      question: "Arjun, I see on your resume that you built an asynchronous order-processing pipeline at your internship using Redis streams and Node.js. How did you guarantee idempotent event handling during network retries?",
+      ref: "Referenced from Resume: Project #1 (Distributed Order Pipeline)",
+      sampleAnswer: "We enforced idempotency by attaching a cryptographically generated UUIDv7 key at the API gateway. In our Redis streams worker, we used atomic SETNX transactions with a 60-second TTL to lock the event ID before dispatching to our PostgreSQL transactional store.",
+      feedback: "Technical Depth: 95% • Excellent grasp of distributed locking and race conditions."
+    },
+    {
+      qNum: 2,
+      question: "How did you monitor database connection pools and avoid connection starvation when traffic surged 10x during flash sales?",
+      ref: "Referenced from Resume: PostgreSQL & Node.js Backend",
+      sampleAnswer: "We implemented PgBouncer in transaction-pooling mode in front of our database replica cluster, coupled with circuit breakers in our Node.js connection pool (knex/pg) to gracefully shed load with 429 backoff headers.",
+      feedback: "Architecture: 92% • Practical high-scale operational knowledge."
+    },
+    {
+      qNum: 3,
+      question: "Tell me about a time when you and a teammate disagreed on an architectural decision. How did you resolve it?",
+      ref: "Behavioral & Leadership Evaluation (STAR Method)",
+      sampleAnswer: "My peer advocated for GraphQL while I proposed REST with strict OpenAPI contracts. We benchmarked caching overhead and client bundle size for our mobile app, presented the empirical data to our tech lead, and aligned on REST for core order flows and GraphQL for the dynamic dashboard.",
+      feedback: "Communication & Conflict Resolution: 94% • Strong data-driven collaboration."
+    }
+  ],
+  backend: [
+    {
+      qNum: 1,
+      question: "Priya, looking at your Multi-Region Failover project, how did you handle data consistency and replication lag across AWS us-east-1 and eu-west-1?",
+      ref: "Referenced from Resume: Project #2 (Multi-Region Controller)",
+      sampleAnswer: "We deployed Aurora Global Database with asynchronous storage-level replication (typical lag < 1s). For write paths requiring strong consistency, we routed to the primary region and used read-your-own-writes session tokens for secondary regions.",
+      feedback: "System Depth: 94% • Strong understanding of distributed consistency models."
+    },
+    {
+      qNum: 2,
+      question: "When gRPC microservices experience cascading latency degradation, what techniques do you apply to isolate the failure?",
+      ref: "Referenced from Resume: gRPC & Kubernetes Experience",
+      sampleAnswer: "We configure strict client-side deadlines with context propagation, exponential backoff with full jitter, and Envoy circuit breakers to cut traffic to degraded pods before buffers saturate.",
+      feedback: "Resilience: 91% • Comprehensive fault isolation methodology."
+    }
+  ],
+  aiml: [
+    {
+      qNum: 1,
+      question: "Rohan, your RAG Enterprise Search project mentions hybrid search. How did you balance dense semantic retrieval with sparse BM25 keyword matching?",
+      ref: "Referenced from Resume: RAG Enterprise Search (LangChain, Pinecone)",
+      sampleAnswer: "We implemented Reciprocal Rank Fusion (RRF) with a constant k=60 to normalize and merge sparse BM25 scores from Elasticsearch with dense cosine similarity vectors from Pinecone, drastically reducing out-of-domain hallucinations.",
+      feedback: "AI Architecture: 96% • State-of-the-art hybrid retrieval approach."
+    },
+    {
+      qNum: 2,
+      question: "How do you evaluate and safeguard your agentic tool-calling pipelines against prompt injection attacks?",
+      ref: "Referenced from Resume: Agentic Workflow Pipeline",
+      sampleAnswer: "We enforce strict Pydantic schema validation on all tool inputs, execute actions in sandboxed e2b containers with no network egress, and run a secondary discriminator model to verify instruction boundary integrity.",
+      feedback: "Security & Guardrails: 93% • Robust defensive engineering."
+    }
+  ]
+};
+
 const ForUniversities = () => {
   const [step, setStep] = useState('question'); // 'question' | 'result'
   const [selected, setSelected] = useState(null);
@@ -342,7 +733,52 @@ const ForUniversities = () => {
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
   const [selectedSandboxLang, setSelectedSandboxLang] = useState('Python');
-  const [lmsActiveTab, setLmsActiveTab] = useState('home');
+  const [selectedExamTrack, setSelectedExamTrack] = useState('mcq');
+  const [lmsActiveTab, setLmsActiveTab] = useState('request-feature');
+
+  /* Practice Environment State */
+  const [practiceTrack, setPracticeTrack] = useState('all');
+  const [practiceSearch, setPracticeSearch] = useState('');
+  const [practiceLevel, setPracticeLevel] = useState('all');
+  const [practiceDifficulty, setPracticeDifficulty] = useState('all');
+  const [practiceTopic, setPracticeTopic] = useState('all');
+  const [practiceCompany, setPracticeCompany] = useState('all');
+  const [practiceStatusFilter, setPracticeStatusFilter] = useState('all');
+  const [solvedProblems, setSolvedProblems] = useState([]);
+  const [activePracticeProblem, setActivePracticeProblem] = useState(null);
+  const [sandboxLang, setSandboxLang] = useState('CPP');
+  const [sandboxCode, setSandboxCode] = useState('');
+  const [isAiHintOpen, setIsAiHintOpen] = useState(false);
+  const [isRunningSandbox, setIsRunningSandbox] = useState(false);
+  const [sandboxRunResult, setSandboxRunResult] = useState(null);
+  const [isSandboxSubmitted, setIsSandboxSubmitted] = useState(false);
+  const [isSandboxSubmitting, setIsSandboxSubmitting] = useState(false);
+  const [submissionVerdict, setSubmissionVerdict] = useState(null);
+  const [practiceViewTab, setPracticeViewTab] = useState('problem'); // 'problem' | 'submissions'
+  const [showTestCases, setShowTestCases] = useState(false);
+  const [activeTestCaseTab, setActiveTestCaseTab] = useState(0);
+  const [problemSubmissions, setProblemSubmissions] = useState([
+    {
+      id: 'sub-init-1',
+      problemId: 'p1',
+      status: 'Accepted',
+      language: 'CPP',
+      runtime: '4 ms',
+      memory: '18.2 MB',
+      submittedAt: 'Yesterday'
+    }
+  ]);
+
+  /* Mock Interview [AI] State */
+  const [mockInterviewStage, setMockInterviewStage] = useState('resume'); // 'resume' | 'interview' | 'report'
+  const [selectedResumeId, setSelectedResumeId] = useState('res-1');
+  const [selectedJobProfileId, setSelectedJobProfileId] = useState('sde');
+  const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  const [candidateAnswer, setCandidateAnswer] = useState('');
+  const [isVoiceRecording, setIsVoiceRecording] = useState(false);
+  const [isEvaluatingAnswer, setIsEvaluatingAnswer] = useState(false);
+  const [customUploadedFile, setCustomUploadedFile] = useState(null);
+  const [isReportDownloaded, setIsReportDownloaded] = useState(false);
 
   /* scroll-reveal refs */
   const [refHeroText, visHeroText] = useReveal();
@@ -361,8 +797,202 @@ const ForUniversities = () => {
   const [refHelp, visHelp] = useReveal();
   const [refLms, visLms] = useReveal();
   const [refAssessment, visAssessment] = useReveal();
+  const [refPractice, visPractice] = useReveal();
+  const [refMockInterview, visMockInterview] = useReveal();
   const [activeAssessmentTab, setActiveAssessmentTab] = useState('coding');
   const [isAutoRotateAssessment, setIsAutoRotateAssessment] = useState(true);
+
+  /* Practice environment helper functions & metrics */
+  const toggleSolved = (id, e) => {
+    if (e) e.stopPropagation();
+    setSolvedProblems(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const openSandbox = (problem) => {
+    setActivePracticeProblem(problem);
+    const defaultLang = problem.track === 'sql' ? 'SQL' : 'CPP';
+    setSandboxLang(defaultLang);
+    const code = (problem.starterCode && (problem.starterCode[defaultLang] || problem.starterCode['C++'] || problem.starterCode.Python)) || '';
+    setSandboxCode(code);
+    setIsAiHintOpen(false);
+    setSandboxRunResult(null);
+    setIsSandboxSubmitted(false);
+    setIsSandboxSubmitting(false);
+    setSubmissionVerdict(null);
+    setPracticeViewTab('problem');
+    setShowTestCases(false);
+    setActiveTestCaseTab(0);
+  };
+
+  const handleSandboxLangChange = (lang) => {
+    setSandboxLang(lang);
+    if (activePracticeProblem && activePracticeProblem.starterCode) {
+      const code = activePracticeProblem.starterCode[lang] || activePracticeProblem.starterCode['C++'] || '';
+      if (code) setSandboxCode(code);
+    }
+  };
+
+  const handleResetCode = () => {
+    if (activePracticeProblem && activePracticeProblem.starterCode) {
+      const code = activePracticeProblem.starterCode[sandboxLang] || activePracticeProblem.starterCode['C++'] || '';
+      setSandboxCode(code);
+      setSandboxRunResult(null);
+      setSubmissionVerdict(null);
+      setIsSandboxSubmitted(false);
+    }
+  };
+
+  const handleRunSandboxCode = () => {
+    setIsRunningSandbox(true);
+    setShowTestCases(true);
+    setSandboxRunResult(null);
+    setTimeout(() => {
+      setIsRunningSandbox(false);
+      setSandboxRunResult({
+        success: true,
+        casesPassed: 2,
+        totalCases: 2,
+        runtime: '2 ms',
+        memory: '14.2 MB',
+        cases: (activePracticeProblem && activePracticeProblem.testCases) || [
+          {
+            id: 1,
+            input: 'n = 3, magical values = [1, 2, 3], k = 3',
+            expected: '3',
+            actual: '3',
+            time: '2 ms'
+          },
+          {
+            id: 2,
+            input: 'n = 4, magical values = [2, 4, 6, 8], k = 2',
+            expected: '10',
+            actual: '10',
+            time: '3 ms'
+          }
+        ]
+      });
+    }, 450);
+  };
+
+  const handleSubmitSandbox = () => {
+    if (!activePracticeProblem) return;
+    setIsSandboxSubmitting(true);
+    setSubmissionVerdict(null);
+    setTimeout(() => {
+      setIsSandboxSubmitting(false);
+      setIsSandboxSubmitted(true);
+      const newVerdict = {
+        status: 'Accepted',
+        runtime: '4 ms',
+        runtimePercentile: '98.2%',
+        memory: '18.2 MB',
+        memoryPercentile: '94.1%',
+        casesPassed: 45,
+        totalCases: 45
+      };
+      setSubmissionVerdict(newVerdict);
+
+      // Add to submissions list
+      setProblemSubmissions(prev => [
+        {
+          id: 'sub-' + Date.now(),
+          problemId: activePracticeProblem.id,
+          status: 'Accepted',
+          language: sandboxLang,
+          runtime: '4 ms',
+          memory: '18.2 MB',
+          submittedAt: 'Just now'
+        },
+        ...prev
+      ]);
+
+      // Mark problem as solved in table
+      if (!solvedProblems.includes(activePracticeProblem.id)) {
+        setSolvedProblems(prev => [...prev, activePracticeProblem.id]);
+      }
+    }, 750);
+  };
+
+  const totalProgrammingSolved = solvedProblems.filter(id => {
+    const p = PRACTICE_PROBLEMS_DATA.find(item => item.id === id);
+    return p && p.track === 'programming';
+  }).length;
+
+  const totalDsaSolved = solvedProblems.filter(id => {
+    const p = PRACTICE_PROBLEMS_DATA.find(item => item.id === id);
+    return p && p.track === 'dsa';
+  }).length;
+
+  const totalSqlSolved = solvedProblems.filter(id => {
+    const p = PRACTICE_PROBLEMS_DATA.find(item => item.id === id);
+    return p && p.track === 'sql';
+  }).length;
+
+  const filteredProblems = PRACTICE_PROBLEMS_DATA.filter(prob => {
+    if (practiceTrack !== 'all' && prob.track !== practiceTrack) return false;
+    if (practiceSearch.trim()) {
+      const q = practiceSearch.toLowerCase().trim();
+      const matchTitle = prob.title.toLowerCase().includes(q);
+      const matchTopic = prob.topics.some(t => t.toLowerCase().includes(q));
+      const matchCompany = prob.company.toLowerCase().includes(q);
+      if (!matchTitle && !matchTopic && !matchCompany) return false;
+    }
+    if (practiceLevel !== 'all' && prob.level !== practiceLevel) return false;
+    if (practiceDifficulty !== 'all' && prob.difficulty !== practiceDifficulty) return false;
+    if (practiceTopic !== 'all' && !prob.topics.some(t => t.toLowerCase().includes(practiceTopic.toLowerCase()))) return false;
+    if (practiceCompany !== 'all' && prob.company.toLowerCase() !== practiceCompany.toLowerCase()) return false;
+    const isSolved = solvedProblems.includes(prob.id);
+    if (practiceStatusFilter === 'solved' && !isSolved) return false;
+    if (practiceStatusFilter === 'unsolved' && isSolved) return false;
+    return true;
+  });
+
+  /* Mock Interview [AI] Handlers */
+  const activeResume = MOCK_RESUMES.find(r => r.id === selectedResumeId) || MOCK_RESUMES[0];
+  const activeJobProfile = JOB_PROFILES.find(j => j.id === selectedJobProfileId) || JOB_PROFILES[0];
+  const currentInterviewQuestions = INTERVIEW_QUESTIONS[selectedJobProfileId] || INTERVIEW_QUESTIONS.sde;
+  const currentQ = currentInterviewQuestions[currentQuestionIdx] || currentInterviewQuestions[0];
+
+  const handleStartInterview = () => {
+    setCurrentQuestionIdx(0);
+    const questions = INTERVIEW_QUESTIONS[selectedJobProfileId] || INTERVIEW_QUESTIONS.sde;
+    setCandidateAnswer(questions[0]?.sampleAnswer || '');
+    setMockInterviewStage('interview');
+  };
+
+  const handleNextQuestion = () => {
+    const questions = INTERVIEW_QUESTIONS[selectedJobProfileId] || INTERVIEW_QUESTIONS.sde;
+    if (currentQuestionIdx < questions.length - 1) {
+      const nextIdx = currentQuestionIdx + 1;
+      setCurrentQuestionIdx(nextIdx);
+      setCandidateAnswer(questions[nextIdx]?.sampleAnswer || '');
+      setIsVoiceRecording(false);
+    } else {
+      setIsEvaluatingAnswer(true);
+      setTimeout(() => {
+        setIsEvaluatingAnswer(false);
+        setMockInterviewStage('report');
+      }, 700);
+    }
+  };
+
+  const handleResetInterview = () => {
+    setMockInterviewStage('resume');
+    setCurrentQuestionIdx(0);
+    setCandidateAnswer('');
+    setIsVoiceRecording(false);
+    setIsEvaluatingAnswer(false);
+    setIsReportDownloaded(false);
+  };
+
+  const handleDownloadReport = () => {
+    setIsReportDownloaded(true);
+    setTimeout(() => {
+      setIsReportDownloaded(false);
+    }, 3000);
+  };
 
   // Auto-rotate Assessment Tabs every 2.5s until user interacts
   useEffect(() => {
@@ -458,6 +1088,8 @@ const ForUniversities = () => {
       if (id === 'training') targetId = 'training-section';
       if (id === 'lms') targetId = 'lms-section';
       if (id === 'assessment') targetId = 'assessment-section';
+      if (id === 'practice') targetId = 'practice-section';
+      if (id === 'mock-interview') targetId = 'mock-interview-section';
 
       const target = document.getElementById(targetId);
       if (target) {
@@ -528,59 +1160,109 @@ const ForUniversities = () => {
 
             <div className="fu-smart-options-grid">
               <button 
-                className={`fu-smart-option-card ${selected === 'training' ? 'active' : ''}`}
+                className={`fu-smart-option-card fu-training-hero-card ${selected === 'training' ? 'active' : ''}`}
                 onClick={() => handleSelect('training')}
                 aria-selected={selected === 'training'}
               >
                 {selected === 'training' && (
                   <span className="fu-selected-active-badge">Selected ✓</span>
                 )}
-                <div className="fu-smart-card-icon"><BrainCircuit size={22} /></div>
+                <div className="fu-smart-card-icon fu-training-icon"><BrainCircuit size={24} /></div>
                 <div className="fu-smart-card-body">
                   <span className="fu-smart-card-title">Training Support</span>
                   <span className="fu-smart-card-sub">Skilling & Placement Prep</span>
+                  <p className="fu-training-card-desc">
+                    Comprehensive campus placement prep with semester-aligned curriculum and direct recruiter tracks.
+                  </p>
                 </div>
                 <ChevronRight size={18} className="fu-smart-card-arrow" />
               </button>
 
-              <button 
-                className={`fu-smart-option-card ${selected === 'lms' ? 'active' : ''}`}
-                onClick={() => handleSelect('lms')}
-                aria-selected={selected === 'lms'}
-              >
-                {selected === 'lms' && (
-                  <span className="fu-selected-active-badge">Selected ✓</span>
-                )}
-                <div className="fu-smart-card-icon"><Laptop size={22} /></div>
-                <div className="fu-smart-card-body">
-                  <span className="fu-smart-card-title">Campus LMS</span>
-                  <span className="fu-smart-card-sub">White-Labeled Management</span>
+              {/* 2. Smart Border Enclosing CipherLabs (Campus LMS, Assessment Platform, Practice Env, Mock Interview) */}
+              <div className="fu-cipherlabs-smart-group">
+                <div className="fu-cipherlabs-smart-label">
+                  <Cpu size={12} className="fu-cipherlabs-label-icon" />
+                  <span>CipherLabs</span>
                 </div>
-                <ChevronRight size={18} className="fu-smart-card-arrow" />
-              </button>
 
-              <button 
-                className={`fu-smart-option-card ${selected === 'assessment' ? 'active' : ''}`}
-                onClick={() => handleSelect('assessment')}
-                aria-selected={selected === 'assessment'}
-              >
-                {selected === 'assessment' && (
-                  <span className="fu-selected-active-badge">Selected ✓</span>
-                )}
-                <div className="fu-smart-card-icon"><CheckCircle2 size={22} /></div>
-                <div className="fu-smart-card-body">
-                  <span className="fu-smart-card-title">Assessment Platform</span>
-                  <span className="fu-smart-card-sub">AI-Proctored Testing</span>
+                <div className="fu-cipherlabs-cards-grid">
+                  {/* Card 1: Campus LMS */}
+                  <button 
+                    className={`fu-smart-option-card ${selected === 'lms' ? 'active' : ''}`}
+                    onClick={() => handleSelect('lms')}
+                    aria-selected={selected === 'lms'}
+                  >
+                    {selected === 'lms' && (
+                      <span className="fu-selected-active-badge">Selected ✓</span>
+                    )}
+                    <div className="fu-smart-card-icon"><Laptop size={22} /></div>
+                    <div className="fu-smart-card-body">
+                      <span className="fu-smart-card-title">Campus LMS</span>
+                      <span className="fu-smart-card-sub">White-Labeled Management</span>
+                    </div>
+                    <ChevronRight size={18} className="fu-smart-card-arrow" />
+                  </button>
+
+                  {/* Card 2: Assessment Platform */}
+                  <button 
+                    className={`fu-smart-option-card ${selected === 'assessment' ? 'active' : ''}`}
+                    onClick={() => handleSelect('assessment')}
+                    aria-selected={selected === 'assessment'}
+                  >
+                    {selected === 'assessment' && (
+                      <span className="fu-selected-active-badge">Selected ✓</span>
+                    )}
+                    <div className="fu-smart-card-icon"><CheckCircle2 size={22} /></div>
+                    <div className="fu-smart-card-body">
+                      <span className="fu-smart-card-title">Assessment Platform</span>
+                      <span className="fu-smart-card-sub">AI-Proctored Testing</span>
+                    </div>
+                    <ChevronRight size={18} className="fu-smart-card-arrow" />
+                  </button>
+
+                  {/* Card 3: Practice Environment [AI] */}
+                  <button 
+                    className={`fu-smart-option-card ${selected === 'practice' ? 'active' : ''}`}
+                    onClick={() => handleSelect('practice')}
+                    aria-selected={selected === 'practice'}
+                  >
+                    {selected === 'practice' && (
+                      <span className="fu-selected-active-badge">Selected ✓</span>
+                    )}
+                    <div className="fu-smart-card-icon"><Terminal size={22} /></div>
+                    <div className="fu-smart-card-body">
+                      <span className="fu-smart-card-title">
+                        Practice Environment <span className="fu-ai-tag">AI</span>
+                      </span>
+                      <span className="fu-smart-card-sub">In-Browser Coding Sandboxes</span>
+                    </div>
+                    <ChevronRight size={18} className="fu-smart-card-arrow" />
+                  </button>
+
+                  {/* Card 4: Mock Interview [AI] */}
+                  <button 
+                    className={`fu-smart-option-card ${selected === 'mock-interview' ? 'active' : ''}`}
+                    onClick={() => handleSelect('mock-interview')}
+                    aria-selected={selected === 'mock-interview'}
+                  >
+                    {selected === 'mock-interview' && (
+                      <span className="fu-selected-active-badge">Selected ✓</span>
+                    )}
+                    <div className="fu-smart-card-icon"><Bot size={22} /></div>
+                    <div className="fu-smart-card-body">
+                      <span className="fu-smart-card-title">
+                        Mock Interview <span className="fu-ai-tag">AI</span>
+                      </span>
+                      <span className="fu-smart-card-sub">Voice & Technical Evals</span>
+                    </div>
+                    <ChevronRight size={18} className="fu-smart-card-arrow" />
+                  </button>
                 </div>
-                <ChevronRight size={18} className="fu-smart-card-arrow" />
-              </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Trusted By Top Colleges Marquee */}
-      <TrustedBy />
 
       {/* ─── RESULT SCREEN ─── */}
       <div className={`fu-result-page fu-visible`}>
@@ -979,8 +1661,8 @@ const ForUniversities = () => {
                   </div>
                 </div>
 
-                {/* Main Body Grid: Sidebar + Workspace + Right Column */}
-                <div className="lms-replica-body">
+                {/* Main Body Grid: Sidebar + Campus Workflows Canvas / Student Dashboard */}
+                <div className={`lms-replica-body ${lmsActiveTab === 'request-feature' ? 'mode-request-feature' : ''}`}>
                   {/* Left Sidebar */}
                   <div className="lms-replica-sidebar">
                     <div 
@@ -1028,7 +1710,7 @@ const ForUniversities = () => {
                       <span>Online Compiler</span>
                     </div>
 
-                    {/* ── Request Feature in Sidebar (Below Online Compiler, No Custom Word) ── */}
+                    {/* ── Request Feature in Sidebar ── */}
                     <div 
                       className={`lms-menu-item lms-menu-feature-req ${lmsActiveTab === 'request-feature' ? 'active' : ''}`}
                       onClick={() => setLmsActiveTab('request-feature')}
@@ -1044,53 +1726,100 @@ const ForUniversities = () => {
                     </div>
                   </div>
 
-                  {/* Center Workspace */}
-                  <div className="lms-replica-center">
-                    {/* Prominently Highlighted Feature Request Banner when Request Feature is selected */}
-                    {lmsActiveTab === 'request-feature' && (
-                      <div className="lms-fr-highlight-banner">
-                        <div className="lms-fr-badge-row">
-                          <div className="lms-fr-tag">
+                  {/* ── Conditional Center Content ── */}
+                  {lmsActiveTab === 'request-feature' ? (
+                    /* Request Feature Mode: Exclusive Clean CAMPUS WORKFLOWS Section */
+                    <div className="lms-campus-workflows-workspace animate-fade-in">
+                      <div className="lms-cw-card">
+                        <div className="lms-cw-header-row">
+                          <div className="lms-cw-tag">
                             <Sparkles size={13} />
                             <span>CAMPUS WORKFLOWS</span>
                           </div>
-                          <button className="lms-fr-close-btn" onClick={() => setLmsActiveTab('home')} title="Close">✕</button>
+                          <button 
+                            className="lms-cw-close-btn" 
+                            onClick={() => setLmsActiveTab('home')} 
+                            title="Return to Student View"
+                          >
+                            ✕
+                          </button>
                         </div>
-                        <h3 className="lms-fr-main-title">
+
+                        <h3 className="lms-cw-title">
                           Request Any Feature for Your Campus LMS — We’ll Build & Implement It.
                         </h3>
-                        <p className="lms-fr-desc-text">
-                          Have specific requirements for your university? Request any feature for your campus LMS, and our engineering team will build and deploy it for you.
+                        <p className="lms-cw-description">
+                          Have specific requirements for your university? Request any bespoke workflow or custom module for your campus LMS, and our engineering team will build and deploy it directly into your instance.
                         </p>
-                        <div style={{ marginTop: '0.35rem' }}>
-                          <button className="lms-fr-submit-btn" onClick={() => setIsMeetingModalOpen(true)}>
+
+                        {/* Interactive Workflow Capabilities Bento Tiles */}
+                        <div className="lms-cw-capabilities-grid">
+                          <div className="lms-cw-cap-card">
+                            <div className="lms-cw-cap-icon"><CheckCircle2 size={16} /></div>
+                            <div>
+                              <strong>Custom Evaluation & Relative Grading</strong>
+                              <span>Implement university-specific grading rubrics, relative grading curves, and automated grade sheet exports.</span>
+                            </div>
+                          </div>
+
+                          <div className="lms-cw-cap-card">
+                            <div className="lms-cw-cap-icon"><Layers size={16} /></div>
+                            <div>
+                              <strong>Campus ERP & SIS Synchronization</strong>
+                              <span>Bidirectional integration with your existing university database, attendance tracking, and student registries.</span>
+                            </div>
+                          </div>
+
+                          <div className="lms-cw-cap-card">
+                            <div className="lms-cw-cap-icon"><Terminal size={16} /></div>
+                            <div>
+                              <strong>Multi-Stage Timed Lab Assessments</strong>
+                              <span>Automated semester coding sprints with stage locking, anti-cheat AI proctoring, and custom test-case suites.</span>
+                            </div>
+                          </div>
+
+                          <div className="lms-cw-cap-card">
+                            <div className="lms-cw-cap-icon"><GraduationCap size={16} /></div>
+                            <div>
+                              <strong>White-Labeled Institutional Sub-Portals</strong>
+                              <span>Custom campus domain branding, departmental access hierarchy, and dean-level placement analytics.</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="lms-cw-actions-row">
+                          <button className="lms-cw-primary-btn" onClick={() => setIsMeetingModalOpen(true)}>
                             <span>Book a Meeting</span>
                             <ArrowRight size={15} />
                           </button>
+                          <span className="lms-cw-hint">Zero upfront engineering cost for partner campuses</span>
                         </div>
                       </div>
-                    )}
-
-                    <div className="lms-center-header">
-                      <h2>Hey Sanskar,</h2>
-                      <button className="lms-back-btn" onClick={() => setLmsActiveTab('home')}>← Back</button>
                     </div>
+                  ) : (
+                    /* Standard Student Home Dashboard */
+                    <>
+                      <div className="lms-replica-center">
+                        <div className="lms-center-header">
+                          <h2>Hey Sanskar,</h2>
+                          <button className="lms-back-btn" onClick={() => setLmsActiveTab('request-feature')}>Request Feature</button>
+                        </div>
 
-                    <div className="lms-important-label">Important</div>
+                        <div className="lms-important-label">Important</div>
 
-                    <div className="lms-action-buttons-row">
-                      <button className="lms-action-btn whatsapp-btn">Join WhatsApp Group</button>
-                      <button className="lms-action-btn outline-btn">Complete Profile</button>
-                      <button className="lms-action-btn outline-btn">Get Certificate</button>
-                      <button 
-                        className={`lms-action-btn feature-req-btn ${lmsActiveTab === 'request-feature' ? 'active' : ''}`}
-                        onClick={() => setLmsActiveTab(prev => prev === 'request-feature' ? 'home' : 'request-feature')}
-                        title="Request any feature for your LMS"
-                      >
-                        <Sparkles size={13} />
-                        <span>Request Feature</span>
-                      </button>
-                    </div>
+                        <div className="lms-action-buttons-row">
+                          <button className="lms-action-btn whatsapp-btn">Join WhatsApp Group</button>
+                          <button className="lms-action-btn outline-btn">Complete Profile</button>
+                          <button className="lms-action-btn outline-btn">Get Certificate</button>
+                          <button 
+                            className="lms-action-btn feature-req-btn"
+                            onClick={() => setLmsActiveTab('request-feature')}
+                            title="Request any feature for your LMS"
+                          >
+                            <Sparkles size={13} />
+                            <span>Request Feature</span>
+                          </button>
+                        </div>
 
                         {/* Course Announcement Card */}
                         <div className="lms-main-course-card">
@@ -1138,45 +1867,47 @@ const ForUniversities = () => {
                         </div>
                       </div>
 
-                  {/* Right Panel Widgets */}
-                  <div className="lms-replica-right">
-                    {/* Dark Graphic Banner */}
-                    <div className="lms-course-banner-card">
-                      <div className="lms-banner-content">
-                        <span className="lms-live-badge">Recorded + Live Lectures | Online</span>
-                        <h4>Python with OOPs Programming Language</h4>
+                      {/* Right Panel Widgets */}
+                      <div className="lms-replica-right">
+                        {/* Dark Graphic Banner */}
+                        <div className="lms-course-banner-card">
+                          <div className="lms-banner-content">
+                            <span className="lms-live-badge">Recorded + Live Lectures | Online</span>
+                            <h4>Python with OOPs Programming Language</h4>
+                          </div>
+                          <div className="lms-java-logo">🐍</div>
+                        </div>
+
+                        {/* Widget 1: Total Videos Watched */}
+                        <div className="lms-widget-card">
+                          <span className="lms-widget-title">Total Videos Watched</span>
+                          <div className="lms-widget-stat">0/35</div>
+                          <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Watch Now →</a>
+                        </div>
+
+                        {/* Widget 2: Total Questions Solved */}
+                        <div className="lms-widget-card">
+                          <span className="lms-widget-title">Total Questions Solved</span>
+                          <div className="lms-widget-stat">0/67</div>
+                          <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Practice Now →</a>
+                        </div>
+
+                        {/* Widget 3: Total Tests Attempted */}
+                        <div className="lms-widget-card">
+                          <span className="lms-widget-title">Total Tests Attempted</span>
+                          <div className="lms-widget-stat">0/20</div>
+                          <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Take Test →</a>
+                        </div>
+
+                        {/* Widget 4: Total Projects Completed */}
+                        <div className="lms-widget-card">
+                          <span className="lms-widget-title">Total Projects Completed</span>
+                          <div className="lms-widget-stat">0/1</div>
+                          <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>View Projects →</a>
+                        </div>
                       </div>
-                      <div className="lms-java-logo">🐍</div>
-                    </div>
-
-                    {/* Widget 1: Total Videos Watched */}
-                    <div className="lms-widget-card">
-                      <span className="lms-widget-title">Total Videos Watched</span>
-                      <div className="lms-widget-stat">0/35</div>
-                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Watch Now →</a>
-                    </div>
-
-                    {/* Widget 2: Total Questions Solved */}
-                    <div className="lms-widget-card">
-                      <span className="lms-widget-title">Total Questions Solved</span>
-                      <div className="lms-widget-stat">0/67</div>
-                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Practice Now →</a>
-                    </div>
-
-                    {/* Widget 3: Total Tests Attempted */}
-                    <div className="lms-widget-card">
-                      <span className="lms-widget-title">Total Tests Attempted</span>
-                      <div className="lms-widget-stat">0/20</div>
-                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>Take Test →</a>
-                    </div>
-
-                    {/* Widget 4: Total Projects Completed */}
-                    <div className="lms-widget-card">
-                      <span className="lms-widget-title">Total Projects Completed</span>
-                      <div className="lms-widget-stat">0/1</div>
-                      <a href="#" className="lms-widget-link" onClick={(e) => e.preventDefault()}>View Projects →</a>
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -1206,119 +1937,100 @@ const ForUniversities = () => {
                   Measure what matters, <span className="fu-pitch-accent">automatically.</span>
                 </h2>
                 <p className="fu-apple-bento-sub">
-                  AI-powered evaluations, multi-language coding sandboxes, proctored aptitude tests, and real-time candidate analytics.
+                  Multi-language coding sandboxes, proctored aptitude tests, and real-time candidate analytics.
                 </p>
               </div>
 
               {/* Apple-Style Asymmetrical Bento Grid */}
               <div className="fu-apple-bento-grid">
                 
-                {/* ── Tile 1: Multi-Language Coding Sandbox & System Design (Col Span 7) ── */}
+                {/* ── Tile 1: Proctored Test Engine (Col Span 7) ── */}
                 <div className="fu-apple-bento-tile tile-coding-sandbox">
                   <div className="fu-tile-header">
                     <div className="fu-tile-badge-row">
-                      <span className="fu-apple-pill">CODING EVALUATION</span>
-                      <span className="fu-demand-score-pill">14 Testcases Auto-Scored</span>
+                      <span className="fu-apple-pill">PROCTORED TEST</span>
+                      <span className="fu-demand-score-pill">Anti-Cheat Active</span>
                     </div>
                     <h3 className="fu-tile-title">
-                      Multi-Language Compiler & Sandbox.
+                      Comprehensive Proctored Test Engine.
                     </h3>
                     <p className="fu-tile-desc">
-                      Full production compiler and test runner supporting Python, Java, C++, and C with automated testcase evaluation.
+                      Multi-tier evaluation suite supporting standard multi-language assessments and modern generative AI prompt-level testing.
                     </p>
                   </div>
 
                   <div className="fu-mock-as-coding-rich">
+                    {/* Browser Support Strip */}
                     <div className="fme-coding-header">
                       <div className="fme-support-strip">
                         <span className="fme-support-label">SUPPORTS:</span>
                         <span className="fme-support-text">
-                          Programming Problems <span className="fme-dot-sep">•</span> DSA Problems <span className="fme-dot-sep">•</span> SQL Problems <span className="fme-dot-sep">•</span> System Design Problems
+                          Chrome browser or Safe Browser (In-house)
                         </span>
                       </div>
                     </div>
 
-                    <div className="fme-coding-body">
-                      <div className="fme-editor-top">
-                        <div className="fme-editor-lang-tabs-wrapper">
-                          <span className="fme-lang-label">Languages supported:</span>
-                          <div className="fme-editor-lang-tabs">
-                            {['Python', 'JAVA', 'C++', 'C'].map((lang) => (
-                              <button
-                                key={lang}
-                                type="button"
-                                className={`fme-editor-tab ${selectedSandboxLang === lang ? 'active-tab' : ''}`}
-                                onClick={() => setSelectedSandboxLang(lang)}
-                              >
-                                {lang}
-                              </button>
-                            ))}
+                    {/* Test Modes Container */}
+                    <div className="fu-proctor-modes-container">
+                      {/* Mode 1: Standard Proctored Test */}
+                      <div className="fu-proctor-mode-block">
+                        <div className="fu-proctor-mode-header">
+                          <h4 className="fu-proctor-mode-title">Standard Proctored Test</h4>
+                          <span className="fme-mode-tag">Production Engine</span>
+                        </div>
+
+                        <div className="fme-editor-top">
+                          <div className="fme-editor-lang-tabs-wrapper">
+                            <span className="fme-lang-label">Languages supported:</span>
+                            <div className="fme-editor-lang-tabs">
+                              {['Python', 'JAVA', 'C++', 'C'].map((lang) => (
+                                <button
+                                  key={lang}
+                                  type="button"
+                                  className={`fme-editor-tab ${selectedSandboxLang === lang ? 'active-tab' : ''}`}
+                                  onClick={() => setSelectedSandboxLang(lang)}
+                                >
+                                  {lang}
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                        <span className="fme-mode-tag">Production Engine</span>
-                      </div>
-                      <div className="fm-editor-code">
-                        {SANDBOX_LANG_SNIPPETS[selectedSandboxLang]?.code || SANDBOX_LANG_SNIPPETS.Python.code}
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                {/* ── Tile 2: AI Technical & HR Mock Interviews (Col Span 5) ── */}
-                <div className="fu-apple-bento-tile tile-ai-mock">
-                  <div className="fu-tile-header">
-                    <div className="fu-tile-badge-row">
-                      <span className="fu-apple-pill">AI VOICE INTERVIEWS</span>
-                      <span className="fu-confidence-badge">94% Confidence</span>
-                    </div>
-                    <h3 className="fu-tile-title">
-                      AI Mock Interviews.
-                    </h3>
-                    <p className="fu-tile-desc">
-                      Simulated technical & HR voice evaluations with real-time speech and confidence scoring.
-                    </p>
-                  </div>
-
-                  <div className="fu-apple-interview-card">
-                    <div className="fu-ai-call-info">
-                      <div className="fu-ai-avatar-badge">
-                        <Bot size={18} />
-                      </div>
-                      <div>
-                        <h4 className="fu-ai-call-name">AI Technical Interviewer</h4>
-                        <span className="fu-ai-call-sub">System Architecture & Coding Session</span>
-                      </div>
-                    </div>
-
-                    <div className="fu-ai-speech-bubble" style={{ margin: '0.75rem 0' }}>
-                      <span className="fu-speech-author">AI Question:</span>
-                      <p className="fu-speech-text" style={{ fontSize: '0.8rem', margin: '2px 0 0 0' }}>
-                        "How do you handle data consistency vs availability in distributed DBs?"
-                      </p>
-                    </div>
-
-                    <div className="fu-candidate-res-card">
-                      <div className="fu-res-header">
-                        <span className="fu-res-label">Candidate Voice Analysis</span>
-                        <span className="fu-res-score">Confidence 94%</span>
-                      </div>
-                      <div className="fu-res-wave-row">
-                        <div className="fu-mic-icon-box">
-                          <Volume2 size={15} />
+                        <div className="fm-editor-code">
+                          {SANDBOX_LANG_SNIPPETS[selectedSandboxLang]?.code || SANDBOX_LANG_SNIPPETS.Python.code}
                         </div>
-                        <div className="fu-res-wave-bars">
-                          <span className="res-bar"></span>
-                          <span className="res-bar"></span>
-                          <span className="res-bar"></span>
-                          <span className="res-bar"></span>
-                          <span className="res-bar"></span>
+                      </div>
+
+                      {/* Mode 2: Prompt Level Test */}
+                      <div className="fu-proctor-mode-block fu-prompt-level-block">
+                        <div className="fu-proctor-mode-header">
+                          <div className="fu-proctor-title-row">
+                            <h4 className="fu-proctor-mode-title">Prompt Level Test</h4>
+                            <span className="fu-ai-tag">AI</span>
+                          </div>
+                          <span className="fme-mode-tag">Prompt Engineering</span>
+                        </div>
+
+                        <p className="fu-prompt-block-desc">
+                          Modern generative AI and prompt engineering assessments to evaluate AI problem-solving.
+                        </p>
+
+                        <div className="fu-prompt-sample-box">
+                          <div className="fu-prompt-box-top">
+                            <span className="fu-prompt-box-label">Evaluation Task:</span>
+                            <span className="fu-prompt-metric-tag">Guardrails Verified ✓</span>
+                          </div>
+                          <p className="fu-prompt-box-text">
+                            "Design a constrained prompt pipeline to extract structured JSON entities from technical documentation with zero hallucination."
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* ── Tile 3: Proctored Aptitude & Reasoning Tests (Col Span 4) ── */}
+                {/* ── Tile 2: Proctored Aptitude & Reasoning Tests (Col Span 5) ── */}
                 <div className="fu-apple-bento-tile tile-aptitude-test">
                   <div className="fu-tile-header">
                     <span className="fu-apple-pill">PROCTORED EXAMS</span>
@@ -1326,23 +2038,73 @@ const ForUniversities = () => {
                       Aptitude & Reasoning.
                     </h3>
                     <p className="fu-tile-desc">
-                      Timed evaluations with anti-cheat proctoring & automated scoring.
+                      Timed evaluations with anti-cheat proctoring across multiple assessment formats.
                     </p>
                   </div>
 
-                  <div className="fu-mock-as-exam" style={{ marginTop: 'auto' }}>
-                    <div className="fme-header">
-                      <span className="fme-time">12:30 left</span>
-                      <span className="fme-qnum">Logical Reasoning</span>
-                    </div>
-                    <div className="fme-body">
-                      <div className="fme-q" style={{ fontSize: '0.78rem' }}>If all A are B, and some B are C, which statement is true?</div>
-                      <div className="fme-options" style={{ gap: '4px', marginTop: '6px' }}>
-                        <div className="fme-opt" style={{ padding: '4px 8px', fontSize: '0.74rem' }}><div className="fme-radio"></div>All A are C</div>
-                        <div className="fme-opt active" style={{ padding: '4px 8px', fontSize: '0.74rem' }}><div className="fme-radio checked"></div>None of the above</div>
+                  {(() => {
+                    const currentTrack = EXAM_TRACKS.find((t) => t.id === selectedExamTrack) || EXAM_TRACKS[0];
+                    return (
+                      <div className="fu-mock-as-exam" style={{ marginTop: 'auto' }}>
+                        <div className="fme-header">
+                          <span className="fme-time">{currentTrack.time}</span>
+                          <span className="fme-qnum">{currentTrack.category}</span>
+                        </div>
+                        <div className="fme-body">
+                          <div className="fme-q" style={{ fontSize: '0.78rem' }}>
+                            {currentTrack.question}
+                          </div>
+
+                          {currentTrack.options ? (
+                            <div className="fme-options" style={{ gap: '4px', marginTop: '6px' }}>
+                              {currentTrack.options.map((opt, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`fme-opt ${opt.active ? 'active' : ''}`}
+                                  style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                                >
+                                  <div className={`fme-radio ${opt.active ? 'checked' : ''}`} />
+                                  {opt.text}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="fme-specs-list" style={{ gap: '4px', marginTop: '6px' }}>
+                              {currentTrack.specs.map((spec, idx) => (
+                                <div key={idx} className="fme-spec-row">
+                                  {spec}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* 4 Supported Test Formats List */}
+                          <div className="fme-formats-container">
+                            <div className="fme-formats-label">SUPPORTED TEST FORMATS:</div>
+                            <div className="fme-formats-list">
+                              {EXAM_TRACKS.map((track) => {
+                                const isSelected = selectedExamTrack === track.id;
+                                return (
+                                  <button
+                                    key={track.id}
+                                    type="button"
+                                    className={`fme-format-btn ${isSelected ? 'active' : ''}`}
+                                    onClick={() => setSelectedExamTrack(track.id)}
+                                  >
+                                    <div className="fme-format-name-col">
+                                      <span className={`fme-format-dot ${isSelected ? 'active' : ''}`} />
+                                      <span className="fme-format-title">{track.name}</span>
+                                    </div>
+                                    <span className="fme-format-tag">{track.tag}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    );
+                  })()}
                 </div>
 
                 {/* ── Tile 4: Real-Time Performance Analytics & Trajectory (Col Span 8) ── */}
@@ -1381,11 +2143,11 @@ const ForUniversities = () => {
                         <line x1="40" y1="65" x2="470" y2="65" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                         <line x1="40" y1="105" x2="470" y2="105" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                         <path d="M 40 115 Q 150 105 250 75 T 470 20 L 470 130 L 40 130 Z" fill="url(#fmaGradientApple)" />
-                        <path d="M 40 115 Q 150 105 250 75 T 470 20" fill="none" stroke="#f7931e" strokeWidth="3" strokeLinecap="round" />
-                        <circle cx="40" cy="115" r="4.5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
+                        <path d="M 40 115 Q 150 105 250 75 T 470 20" fill="none" stroke="#ffa103" strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="40" cy="115" r="4.5" fill="#ffa103" stroke="#fff" strokeWidth="2" />
                         <text x="40" y="105" fill="#aaa" fontSize="10" textAnchor="middle">32%</text>
                         <text x="40" y="135" fill="#888" fontSize="10" textAnchor="middle">Jan</text>
-                        <circle cx="255" cy="75" r="4.5" fill="#f7931e" stroke="#fff" strokeWidth="2" />
+                        <circle cx="255" cy="75" r="4.5" fill="#ffa103" stroke="#fff" strokeWidth="2" />
                         <text x="255" y="62" fill="#ffa103" fontSize="10" fontWeight="bold" textAnchor="middle">68%</text>
                         <text x="255" y="135" fill="#888" fontSize="10" textAnchor="middle">March</text>
                         <circle cx="470" cy="20" r="5.5" fill="#00c853" stroke="#fff" strokeWidth="2" />
@@ -1395,6 +2157,1147 @@ const ForUniversities = () => {
                     </div>
                   </div>
                 </div>
+
+              </div>
+
+              {/* Section CTA */}
+              <div className="fu-section-action-footer">
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
+              </div>
+
+            </div>
+          </section>
+
+          {/* ── 8. Practice Environment [AI] Section ── */}
+          <section id="practice-section" ref={refPractice} className={`fu-sec fu-practice-apple-section fu-reveal ${visPractice ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              
+              {/* Section Header */}
+              <div className="fu-apple-bento-header">
+                <p className="fu-sec-eyebrow">PRACTICE ENVIRONMENT [AI]</p>
+                <h2 className="fu-apple-bento-title">
+                  Real-world problem solving, <span className="fu-pitch-accent">mastered hands-on.</span>
+                </h2>
+                <p className="fu-apple-bento-sub">
+                  Self-paced sandboxes featuring 340+ curated programming, DSA, and SQL challenges, intelligent AI hints, and instant browser compilation.
+                </p>
+              </div>
+
+              {/* Interactive Practice Card */}
+              <div className="fu-practice-main-card">
+                {activePracticeProblem ? (
+                  <div className="fu-solver-workspace">
+                    {/* 1. Solver Top Navigation Bar */}
+                    <div className="fu-solver-top-bar">
+                      <div className="fu-solver-nav-left">
+                        <button
+                          type="button"
+                          className="fu-solver-back-btn"
+                          onClick={() => setActivePracticeProblem(null)}
+                          title="Back to Problems"
+                        >
+                          <ChevronLeft size={18} />
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`fu-solver-tab-btn ${practiceViewTab === 'problem' ? 'active' : ''}`}
+                          onClick={() => setPracticeViewTab('problem')}
+                        >
+                          <Code size={15} />
+                          <span>Problem</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`fu-solver-tab-btn ${practiceViewTab === 'submissions' ? 'active' : ''}`}
+                          onClick={() => setPracticeViewTab('submissions')}
+                        >
+                          <Clock size={14} />
+                          <span>Submissions</span>
+                          {problemSubmissions.filter(s => s.problemId === activePracticeProblem.id).length > 0 && (
+                            <span className="fu-solver-sub-count">
+                              {problemSubmissions.filter(s => s.problemId === activePracticeProblem.id).length}
+                            </span>
+                          )}
+                        </button>
+                      </div>
+
+                      <div className="fu-solver-nav-right">
+                        {/* Language Selector */}
+                        <div className="fu-solver-lang-wrapper">
+                          <select
+                            value={sandboxLang}
+                            onChange={(e) => handleSandboxLangChange(e.target.value)}
+                            className="fu-solver-lang-select"
+                          >
+                            {(activePracticeProblem.track === 'sql' ? ['SQL'] : ['CPP', 'Python', 'Java']).map(lang => (
+                              <option key={lang} value={lang}>{lang}</option>
+                            ))}
+                          </select>
+                          <ChevronDown size={14} className="fu-solver-lang-chevron" />
+                        </div>
+
+                        {/* Reset Code */}
+                        <button
+                          type="button"
+                          className="fu-solver-icon-btn"
+                          onClick={handleResetCode}
+                          title="Reset to default starter code"
+                        >
+                          <RotateCcw size={15} />
+                        </button>
+
+                        {/* Run Code */}
+                        <button
+                          type="button"
+                          className="fu-solver-run-btn"
+                          onClick={handleRunSandboxCode}
+                          disabled={isRunningSandbox}
+                        >
+                          <Play size={13} fill="currentColor" />
+                          <span>{isRunningSandbox ? 'Running...' : 'Run Code'}</span>
+                        </button>
+
+                        {/* Submit */}
+                        <button
+                          type="button"
+                          className="fu-solver-submit-btn"
+                          onClick={handleSubmitSandbox}
+                          disabled={isSandboxSubmitting}
+                        >
+                          <Check size={14} strokeWidth={2.5} />
+                          <span>{isSandboxSubmitting ? 'Submitting...' : 'Submit'}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 2. Main Workspace Body */}
+                    {practiceViewTab === 'problem' ? (
+                      <div className="fu-solver-split-body">
+                        
+                        {/* Left Pane: Problem Statement */}
+                        <div className="fu-solver-desc-pane">
+                          <div className="fu-solver-breadcrumbs">
+                            <span>Home</span>
+                            <span className="fu-bc-sep">/</span>
+                            <span>CipherLabs</span>
+                            <span className="fu-bc-sep">/</span>
+                            <button
+                              type="button"
+                              className="fu-bc-link"
+                              onClick={() => setActivePracticeProblem(null)}
+                            >
+                              Problems
+                            </button>
+                            <span className="fu-bc-sep">/</span>
+                            <span className="fu-bc-current">{activePracticeProblem.title}</span>
+                          </div>
+
+                          <div className="fu-solver-title-row">
+                            <h3 className="fu-solver-problem-title">{activePracticeProblem.title}</h3>
+                            <span className={`fu-solver-diff-badge diff-${activePracticeProblem.difficulty.toLowerCase()}`}>
+                              {activePracticeProblem.difficulty}
+                            </span>
+                          </div>
+
+                          <div className="fu-solver-narrative">
+                            {activePracticeProblem.desc.split('\n\n').map((para, i) => (
+                              <p key={i}>{para}</p>
+                            ))}
+                          </div>
+
+                          {/* Example 1 Card */}
+                          {activePracticeProblem.examples && activePracticeProblem.examples.length > 0 && (
+                            <div className="fu-solver-example-card">
+                              <div className="fu-solver-ex-heading">Example 1:</div>
+                              <div className="fu-solver-ex-field">
+                                <span className="fu-solver-field-label">Input:</span>
+                                <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].input}</pre>
+                              </div>
+                              <div className="fu-solver-ex-field">
+                                <span className="fu-solver-field-label">Output:</span>
+                                <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].output}</pre>
+                              </div>
+                              {activePracticeProblem.examples[0].explanation && (
+                                <div className="fu-solver-ex-field">
+                                  <span className="fu-solver-field-label">Explanation:</span>
+                                  <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].explanation}</pre>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* AI Tutor Hint Box */}
+                          <div className="fu-solver-hint-box">
+                            <button
+                              type="button"
+                              className="fu-solver-hint-btn"
+                              onClick={() => setIsAiHintOpen(!isAiHintOpen)}
+                            >
+                              <Sparkles size={13} />
+                              <span>{isAiHintOpen ? 'Hide AI Tutor Hint' : '💡 Ask AI Tutor for an Optimization Hint'}</span>
+                            </button>
+                            {isAiHintOpen && (
+                              <div className="fu-solver-hint-content">
+                                <div className="fu-hint-badge">CipherAI Hint</div>
+                                <p>{activePracticeProblem.aiHint}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Center Divider / Drag Handle */}
+                        <div className="fu-solver-divider">
+                          <span className="fu-solver-handle-dots">⋮⋮</span>
+                        </div>
+
+                        {/* Right Pane: Code Editor + Test Console */}
+                        <div className="fu-solver-editor-pane">
+                          <div className="fu-solver-editor-main">
+                            {/* Line Numbers Gutter */}
+                            <div className="fu-solver-gutter">
+                              {Array.from({ length: Math.max((sandboxCode || '').split('\n').length, 8) }, (_, i) => (
+                                <span key={i + 1} className="fu-gutter-num">{i + 1}</span>
+                              ))}
+                            </div>
+
+                            {/* Code Textarea */}
+                            <div className="fu-solver-code-wrap">
+                              <textarea
+                                className="fu-solver-textarea"
+                                value={sandboxCode}
+                                onChange={(e) => setSandboxCode(e.target.value)}
+                                spellCheck="false"
+                                wrap="off"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Submission Verdict Banner */}
+                          {submissionVerdict && (
+                            <div className="fu-solver-verdict-banner">
+                              <div className="fu-verdict-top">
+                                <div className="fu-verdict-title">
+                                  <CheckCircle2 size={18} color="#059669" />
+                                  <span>Accepted</span>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="fu-verdict-close"
+                                  onClick={() => setSubmissionVerdict(null)}
+                                >
+                                  <X size={15} />
+                                </button>
+                              </div>
+                              <div className="fu-verdict-stats">
+                                <div className="fu-verdict-stat">
+                                  <span className="fu-stat-label">Runtime:</span>
+                                  <strong className="fu-stat-val">{submissionVerdict.runtime}</strong>
+                                  <span className="fu-stat-sub">(Beats {submissionVerdict.runtimePercentile})</span>
+                                </div>
+                                <div className="fu-verdict-stat">
+                                  <span className="fu-stat-label">Memory:</span>
+                                  <strong className="fu-stat-val">{submissionVerdict.memory}</strong>
+                                  <span className="fu-stat-sub">(Beats {submissionVerdict.memoryPercentile})</span>
+                                </div>
+                                <div className="fu-verdict-stat">
+                                  <span className="fu-stat-label">Testcases:</span>
+                                  <strong className="fu-stat-val status-green">{submissionVerdict.casesPassed}/{submissionVerdict.totalCases} Passed ✓</strong>
+                                </div>
+                              </div>
+                              <div className="fu-verdict-actions">
+                                <button
+                                  type="button"
+                                  className="fu-verdict-sub-link"
+                                  onClick={() => setPracticeViewTab('submissions')}
+                                >
+                                  View All Submissions →
+                                </button>
+                                <button
+                                  type="button"
+                                  className="fu-verdict-back-link"
+                                  onClick={() => setActivePracticeProblem(null)}
+                                >
+                                  Back to Problems List
+                                </button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Bottom Test Cases Console */}
+                          <div className="fu-solver-testcases-console">
+                            <div className="fu-tc-bar">
+                              <button
+                                type="button"
+                                className={`fu-tc-toggle-btn ${showTestCases ? 'active' : ''}`}
+                                onClick={() => setShowTestCases(!showTestCases)}
+                              >
+                                <span>Test Cases</span>
+                                <ChevronDown size={14} className={`fu-tc-chevron ${showTestCases ? 'rotated' : ''}`} />
+                              </button>
+
+                              {sandboxRunResult && (
+                                <span className="fu-tc-run-status">
+                                  <Check size={13} color="#059669" />
+                                  {sandboxRunResult.casesPassed}/{sandboxRunResult.totalCases} Testcases Passed ({sandboxRunResult.runtime})
+                                </span>
+                              )}
+                            </div>
+
+                            {showTestCases && (
+                              <div className="fu-tc-drawer">
+                                {/* Case Tabs */}
+                                <div className="fu-tc-tabs">
+                                  {((sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || [
+                                    { id: 1, input: 'n = 3, magical values = [1, 2, 3], k = 3', expected: '3', actual: '3', time: '2 ms' },
+                                    { id: 2, input: 'n = 4, magical values = [2, 4, 6, 8], k = 2', expected: '10', actual: '10', time: '3 ms' }
+                                  ]).map((tc, idx) => (
+                                    <button
+                                      key={tc.id || idx}
+                                      type="button"
+                                      className={`fu-tc-case-tab ${activeTestCaseTab === idx ? 'active' : ''}`}
+                                      onClick={() => setActiveTestCaseTab(idx)}
+                                    >
+                                      <span className="fu-tc-dot-green" /> Case {idx + 1}
+                                    </button>
+                                  ))}
+                                </div>
+
+                                {/* Active Case Details */}
+                                {(() => {
+                                  const casesList = (sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || [
+                                    { id: 1, input: 'n = 3, magical values = [1, 2, 3], k = 3', expected: '3', actual: '3', time: '2 ms' },
+                                    { id: 2, input: 'n = 4, magical values = [2, 4, 6, 8], k = 2', expected: '10', actual: '10', time: '3 ms' }
+                                  ];
+                                  const activeCase = casesList[activeTestCaseTab] || casesList[0];
+                                  return (
+                                    <div className="fu-tc-case-body">
+                                      <div className="fu-tc-item">
+                                        <span className="fu-tc-label">Input:</span>
+                                        <div className="fu-tc-box">{activeCase.input}</div>
+                                      </div>
+                                      <div className="fu-tc-split-row">
+                                        <div className="fu-tc-item">
+                                          <span className="fu-tc-label">Output:</span>
+                                          <div className="fu-tc-box output-pass">{activeCase.actual}</div>
+                                        </div>
+                                        <div className="fu-tc-item">
+                                          <span className="fu-tc-label">Expected:</span>
+                                          <div className="fu-tc-box">{activeCase.expected}</div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            )}
+                          </div>
+
+                        </div>
+
+                      </div>
+                    ) : (
+                      /* Submissions View */
+                      <div className="fu-solver-submissions-pane">
+                        <div className="fu-sub-top-header">
+                          <h4>Submission History for {activePracticeProblem.title}</h4>
+                          <button
+                            type="button"
+                            className="fu-sub-back-btn"
+                            onClick={() => setPracticeViewTab('problem')}
+                          >
+                            ← Back to Problem & Code
+                          </button>
+                        </div>
+
+                        <table className="fu-sub-table">
+                          <thead>
+                            <tr>
+                              <th>STATUS</th>
+                              <th>LANGUAGE</th>
+                              <th>RUNTIME</th>
+                              <th>MEMORY</th>
+                              <th>SUBMITTED</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {problemSubmissions
+                              .filter(s => s.problemId === activePracticeProblem.id)
+                              .map((sub, idx) => (
+                                <tr key={sub.id || idx}>
+                                  <td>
+                                    <span className="fu-sub-status-badge accepted">
+                                      <CheckCircle2 size={13} /> {sub.status}
+                                    </span>
+                                  </td>
+                                  <td><span className="fu-sub-lang">{sub.language}</span></td>
+                                  <td>{sub.runtime}</td>
+                                  <td>{sub.memory}</td>
+                                  <td className="fu-sub-date">{sub.submittedAt}</td>
+                                </tr>
+                              ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    {/* 1. Track Bar */}
+                    <div className="fu-practice-track-bar">
+                      <div className="fu-practice-track-left">
+                        <span className="fu-track-label">TRACK:</span>
+                        <button
+                          type="button"
+                          className={`fu-track-tab-btn ${practiceTrack === 'all' ? 'active' : ''}`}
+                          onClick={() => setPracticeTrack('all')}
+                        >
+                          <Sparkles size={13} className="fu-sparkle-icon" />
+                          <span>All (346)</span>
+                        </button>
+                      </div>
+
+                      <div className="fu-practice-track-right">
+                        <button
+                          type="button"
+                          className={`fu-track-tab-btn ${practiceTrack === 'programming' ? 'active' : ''}`}
+                          onClick={() => setPracticeTrack('programming')}
+                        >
+                          <Code size={13} />
+                          <span>Programming {totalProgrammingSolved}/108</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`fu-track-tab-btn ${practiceTrack === 'dsa' ? 'active' : ''}`}
+                          onClick={() => setPracticeTrack('dsa')}
+                        >
+                          <Layers size={13} />
+                          <span>DSA {totalDsaSolved}/190</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`fu-track-tab-btn ${practiceTrack === 'sql' ? 'active' : ''}`}
+                          onClick={() => setPracticeTrack('sql')}
+                        >
+                          <Database size={13} />
+                          <span>SQL {totalSqlSolved}/48</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 2. Search and Filter Bar */}
+                    <div className="fu-practice-filter-bar">
+                      <div className="fu-filter-top-row">
+                        <div className="fu-practice-search-box">
+                          <Search size={15} className="fu-search-icon" />
+                          <input
+                            type="text"
+                            placeholder="Search problems..."
+                            value={practiceSearch}
+                            onChange={(e) => setPracticeSearch(e.target.value)}
+                            className="fu-practice-search-input"
+                          />
+                          {practiceSearch && (
+                            <button 
+                              type="button" 
+                              className="fu-search-clear-btn" 
+                              onClick={() => setPracticeSearch('')}
+                            >
+                              <X size={13} />
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="fu-practice-level-group">
+                          <span className="fu-level-label">LEVEL:</span>
+                          <div className="fu-level-pills">
+                            {['all', 'beginner', 'intermediate', 'advanced'].map((lvl) => (
+                              <button
+                                key={lvl}
+                                type="button"
+                                className={`fu-level-pill ${practiceLevel === lvl ? 'active' : ''}`}
+                                onClick={() => setPracticeLevel(lvl)}
+                              >
+                                {lvl.charAt(0).toUpperCase() + lvl.slice(1)}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Dropdown Filters Row */}
+                      <div className="fu-filter-dropdowns-row">
+                        <div className="fu-select-wrapper">
+                          <select
+                            value={practiceCompany}
+                            onChange={(e) => setPracticeCompany(e.target.value)}
+                            className="fu-filter-select"
+                          >
+                            <option value="all">Company...</option>
+                            <option value="Amazon">Amazon</option>
+                            <option value="Google">Google</option>
+                            <option value="Microsoft">Microsoft</option>
+                            <option value="Adobe">Adobe</option>
+                            <option value="Meta">Meta</option>
+                            <option value="Uber">Uber</option>
+                            <option value="Apple">Apple</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="Goldman Sachs">Goldman Sachs</option>
+                          </select>
+                          <ChevronDown size={14} className="fu-select-arrow" />
+                        </div>
+
+                        <div className="fu-select-wrapper">
+                          <select
+                            value={practiceDifficulty}
+                            onChange={(e) => setPracticeDifficulty(e.target.value)}
+                            className="fu-filter-select"
+                          >
+                            <option value="all">Difficulty</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                          </select>
+                          <ChevronDown size={14} className="fu-select-arrow" />
+                        </div>
+
+                        <div className="fu-select-wrapper">
+                          <select
+                            value={practiceTopic}
+                            onChange={(e) => setPracticeTopic(e.target.value)}
+                            className="fu-filter-select"
+                          >
+                            <option value="all">Topics</option>
+                            <option value="Arrays">Arrays</option>
+                            <option value="Stack">Stack</option>
+                            <option value="Prefix-Sum">Prefix-Sum</option>
+                            <option value="Sliding-Window">Sliding-Window</option>
+                            <option value="Two Pointers">Two Pointers</option>
+                            <option value="Hashing">Hashing</option>
+                            <option value="OOP">OOP / Design</option>
+                            <option value="Window Functions">Window Functions</option>
+                          </select>
+                          <ChevronDown size={14} className="fu-select-arrow" />
+                        </div>
+
+                        <div className="fu-select-wrapper">
+                          <select
+                            value={practiceStatusFilter}
+                            onChange={(e) => setPracticeStatusFilter(e.target.value)}
+                            className="fu-filter-select"
+                          >
+                            <option value="all">Status</option>
+                            <option value="solved">Solved</option>
+                            <option value="unsolved">Unsolved</option>
+                          </select>
+                          <ChevronDown size={14} className="fu-select-arrow" />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 3. Problems Table */}
+                    <div className="fu-practice-table-container">
+                      <table className="fu-practice-table">
+                        <thead>
+                          <tr>
+                            <th className="th-status">STATUS</th>
+                            <th className="th-title">TITLE</th>
+                            <th className="th-type">TYPE</th>
+                            <th className="th-topic">TOPIC</th>
+                            <th className="th-difficulty">DIFFICULTY</th>
+                            <th className="th-action">ACTION</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredProblems.length > 0 ? (
+                            filteredProblems.map((prob) => {
+                              const isSolved = solvedProblems.includes(prob.id);
+                              return (
+                                <tr key={prob.id} className="fu-practice-tr" onClick={() => openSandbox(prob)}>
+                                  <td className="td-status" onClick={(e) => toggleSolved(prob.id, e)}>
+                                    <button
+                                      type="button"
+                                      className={`fu-status-toggle ${isSolved ? 'solved' : ''}`}
+                                      title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
+                                    >
+                                      {isSolved ? <Check size={11} strokeWidth={3} /> : null}
+                                    </button>
+                                  </td>
+                                  <td className="td-title">
+                                    <span className="fu-prob-title">{prob.title}</span>
+                                  </td>
+                                  <td className="td-type">
+                                    <span className="fu-prob-type-badge">{prob.type}</span>
+                                  </td>
+                                  <td className="td-topic">
+                                    <div className="fu-prob-topics-row">
+                                      {prob.topics.map((topic, i) => (
+                                        <span key={i} className="fu-prob-topic-tag">{topic}</span>
+                                      ))}
+                                    </div>
+                                  </td>
+                                  <td className="td-difficulty">
+                                    <span className={`fu-prob-diff-badge diff-${prob.difficulty.toLowerCase()}`}>
+                                      {prob.difficulty}
+                                    </span>
+                                  </td>
+                                  <td className="td-action">
+                                    <button
+                                      type="button"
+                                      className="fu-practice-action-btn"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openSandbox(prob);
+                                      }}
+                                    >
+                                      Practice <ChevronRight size={14} />
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          ) : (
+                            <tr>
+                              <td colSpan={6} className="fu-practice-empty">
+                                No problems match your current filter criteria.
+                                <button 
+                                  type="button" 
+                                  className="fu-reset-filters-btn"
+                                  onClick={() => {
+                                    setPracticeTrack('all');
+                                    setPracticeSearch('');
+                                    setPracticeLevel('all');
+                                    setPracticeDifficulty('all');
+                                    setPracticeTopic('all');
+                                    setPracticeCompany('all');
+                                    setPracticeStatusFilter('all');
+                                  }}
+                                >
+                                  Reset Filters
+                                </button>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Section CTA */}
+              <div className="fu-section-action-footer">
+                <button 
+                  className="fu-section-cta-btn"
+                  onClick={() => setIsMeetingModalOpen(true)}
+                  type="button"
+                >
+                  Book a Meeting <ArrowRight size={18} />
+                </button>
+              </div>
+
+            </div>
+          </section>
+
+          {/* ── 9. Mock Interview [AI] Section ── */}
+          <section id="mock-interview-section" ref={refMockInterview} className={`fu-sec fu-mock-interview-apple-section fu-reveal ${visMockInterview ? 'fu-revealed' : ''}`}>
+            <div className="fu-sec-inner">
+              
+              {/* Section Header */}
+              <div className="fu-apple-bento-header">
+                <p className="fu-sec-eyebrow">MOCK INTERVIEW [AI]</p>
+                <h2 className="fu-apple-bento-title">
+                  Resume-driven technical interviews, <span className="fu-pitch-accent">evaluated end-to-end.</span>
+                </h2>
+                <p className="fu-apple-bento-sub">
+                  Upload a candidate resume, target high-bar company roles, and let AI evaluate personality, system design, and technical depth in one unified report.
+                </p>
+              </div>
+
+              {/* Functional Mockup Card */}
+              <div className="fu-mi-main-card">
+                
+                {/* 1. Step Navigation Tabs */}
+                <div className="fu-mi-steps-bar">
+                  <button
+                    type="button"
+                    className={`fu-mi-step-tab ${mockInterviewStage === 'resume' ? 'active' : ''}`}
+                    onClick={() => setMockInterviewStage('resume')}
+                  >
+                    <span className="fu-mi-step-num">1</span>
+                    <span>Upload Resume & Profile</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`fu-mi-step-tab ${mockInterviewStage === 'interview' ? 'active' : ''}`}
+                    onClick={() => {
+                      if (mockInterviewStage === 'resume') handleStartInterview();
+                      else setMockInterviewStage('interview');
+                    }}
+                  >
+                    <span className="fu-mi-step-num">2</span>
+                    <span>Live AI Interview</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`fu-mi-step-tab ${mockInterviewStage === 'report' ? 'active' : ''}`}
+                    onClick={() => setMockInterviewStage('report')}
+                  >
+                    <span className="fu-mi-step-num">3</span>
+                    <span>360° Evaluation Report</span>
+                  </button>
+                </div>
+
+                {/* ── STAGE 1: RESUME & JOB PROFILE SELECTION ── */}
+                {mockInterviewStage === 'resume' && (
+                  <div className="fu-mi-stage-content fu-mi-stage-resume">
+                    <div className="fu-mi-grid-2col">
+                      
+                      {/* Left: Resume Upload & Samples */}
+                      <div className="fu-mi-col">
+                        <h4 className="fu-mi-col-title">
+                          <FileText size={16} /> Candidate Resume
+                        </h4>
+
+                        {/* Drag and Drop Zone */}
+                        <label className="fu-mi-upload-dropzone">
+                          <input 
+                            type="file" 
+                            accept=".pdf,.docx,.doc" 
+                            className="fu-mi-file-input" 
+                            onChange={(e) => {
+                              const file = e.target.files && e.target.files[0];
+                              if (file) setCustomUploadedFile(file.name);
+                            }}
+                          />
+                          <UploadCloud size={32} className="fu-mi-upload-icon" />
+                          <div className="fu-mi-upload-text">
+                            <strong>Click to upload</strong> or drag & drop student resume
+                          </div>
+                          <span className="fu-mi-upload-sub">PDF, DOCX up to 10MB • AI parses tech stack & projects</span>
+                        </label>
+
+                        {customUploadedFile && (
+                          <div className="fu-mi-uploaded-badge">
+                            <CheckCircle2 size={15} color="#059669" />
+                            <span>Uploaded: <strong>{customUploadedFile}</strong></span>
+                          </div>
+                        )}
+
+                        {/* Sample Resumes Picker */}
+                        <div className="fu-mi-samples-wrap">
+                          <span className="fu-mi-samples-label">OR TEST WITH SAMPLE CANDIDATE RESUMES:</span>
+                          <div className="fu-mi-samples-list">
+                            {MOCK_RESUMES.map(res => (
+                              <button
+                                key={res.id}
+                                type="button"
+                                className={`fu-mi-sample-btn ${selectedResumeId === res.id && !customUploadedFile ? 'active' : ''}`}
+                                onClick={() => {
+                                  setSelectedResumeId(res.id);
+                                  setCustomUploadedFile(null);
+                                }}
+                              >
+                                <div className="fu-mi-sample-top">
+                                  <span className="fu-mi-sample-name">{res.candidateName}</span>
+                                  <span className="fu-mi-sample-role">{res.role}</span>
+                                </div>
+                                <div className="fu-mi-sample-skills">
+                                  {res.skills.slice(0, 4).map((s, idx) => (
+                                    <span key={idx} className="fu-mi-skill-tag">{s}</span>
+                                  ))}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Target Job Profile Selection */}
+                      <div className="fu-mi-col">
+                        <h4 className="fu-mi-col-title">
+                          <Briefcase size={16} /> Target Job Profile
+                        </h4>
+
+                        <div className="fu-mi-profiles-list">
+                          {JOB_PROFILES.map(prof => (
+                            <button
+                              key={prof.id}
+                              type="button"
+                              className={`fu-mi-profile-card ${selectedJobProfileId === prof.id ? 'active' : ''}`}
+                              onClick={() => setSelectedJobProfileId(prof.id)}
+                            >
+                              <div className="fu-mi-profile-header">
+                                <div className="fu-mi-radio-circle">
+                                  {selectedJobProfileId === prof.id && <div className="fu-mi-radio-dot" />}
+                                </div>
+                                <div>
+                                  <h5 className="fu-mi-profile-title">{prof.title}</h5>
+                                  <span className="fu-mi-profile-companies">Hiring standard: {prof.companies}</span>
+                                </div>
+                                <span className="fu-mi-rigor-tag">{prof.rigor}</span>
+                              </div>
+                              <p className="fu-mi-profile-focus">
+                                <strong>Assessment Focus:</strong> {prof.focus}
+                              </p>
+                            </button>
+                          ))}
+                        </div>
+
+                        {/* Interview Configuration Box */}
+                        <div className="fu-mi-config-box">
+                          <div className="fu-mi-config-row">
+                            <span className="fu-mi-config-item">
+                              <Sparkles size={13} /> AI Recruiter: <strong>Sophia (Principal Bar Raiser)</strong>
+                            </span>
+                            <span className="fu-mi-config-item">
+                              <Clock size={13} /> Duration: <strong>~20 Mins</strong>
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Start Action Button */}
+                        <button
+                          type="button"
+                          className="fu-mi-start-btn"
+                          onClick={handleStartInterview}
+                        >
+                          Generate Tailored Questions & Begin Interview <ArrowRight size={16} />
+                        </button>
+                      </div>
+
+                    </div>
+                  </div>
+                )}
+
+                {/* ── STAGE 2: LIVE AI INTERVIEW ── */}
+                {mockInterviewStage === 'interview' && (
+                  <div className="fu-mi-stage-content fu-mi-stage-interview">
+                    
+                    {/* Top Status Strip */}
+                    <div className="fu-mi-interview-top-strip">
+                      <div className="fu-mi-top-left">
+                        <span className="fu-mi-live-indicator">
+                          <span className="fu-mi-live-dot" /> LIVE SESSION
+                        </span>
+                        <span className="fu-mi-active-profile-tag">
+                          {activeJobProfile.title} • {activeJobProfile.companies}
+                        </span>
+                      </div>
+
+                      <div className="fu-mi-top-right">
+                        <span className="fu-mi-proctor-pill">
+                          <UserCheck size={13} /> Anti-Cheat Active
+                        </span>
+                        <span className="fu-mi-timer-pill">
+                          <Clock size={13} /> 18:42 Left
+                        </span>
+                        <span className="fu-mi-q-count">
+                          Question {currentQuestionIdx + 1} of {currentInterviewQuestions.length}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Interview Grid: AI Persona vs Candidate Input */}
+                    <div className="fu-mi-interview-grid">
+                      
+                      {/* Left: AI Interviewer Persona & Question */}
+                      <div className="fu-mi-ai-pane">
+                        <div className="fu-mi-persona-card">
+                          <div className="fu-mi-avatar-wrap">
+                            <div className="fu-mi-avatar">
+                              <Bot size={28} />
+                            </div>
+                            <div className="fu-mi-audio-waves">
+                              <span className="fu-mi-wave" />
+                              <span className="fu-mi-wave" />
+                              <span className="fu-mi-wave" />
+                              <span className="fu-mi-wave" />
+                            </div>
+                          </div>
+                          <div>
+                            <h5 className="fu-mi-interviewer-name">Sophia</h5>
+                            <span className="fu-mi-interviewer-title">Principal AI Engineering Recruiter</span>
+                          </div>
+                        </div>
+
+                        <div className="fu-mi-question-box">
+                          <div className="fu-mi-q-label">QUESTION #{currentQ.qNum}:</div>
+                          <p className="fu-mi-q-text">"{currentQ.question}"</p>
+                          <div className="fu-mi-q-ref">
+                            <Sparkles size={13} /> {currentQ.ref}
+                          </div>
+                        </div>
+
+                        <div className="fu-mi-expected-topics">
+                          <span className="fu-mi-topics-label">Key Topics Assessed:</span>
+                          <div className="fu-mi-topic-chips">
+                            <span>Idempotency Keys</span>
+                            <span>Distributed Locks (SETNX)</span>
+                            <span>TTL & Deadlock Prevention</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Candidate Response Console */}
+                      <div className="fu-mi-candidate-pane">
+                        <div className="fu-mi-response-header">
+                          <span className="fu-mi-cand-name">
+                            Candidate Response ({customUploadedFile ? 'Uploaded Resume' : activeResume.candidateName})
+                          </span>
+
+                          <button
+                            type="button"
+                            className={`fu-mi-voice-toggle ${isVoiceRecording ? 'recording' : ''}`}
+                            onClick={() => setIsVoiceRecording(!isVoiceRecording)}
+                          >
+                            <Mic size={14} />
+                            <span>{isVoiceRecording ? 'Listening (Speaking...)' : 'Speak Answer'}</span>
+                          </button>
+                        </div>
+
+                        <div className="fu-mi-textarea-wrap">
+                          <textarea
+                            className="fu-mi-response-textarea"
+                            value={candidateAnswer}
+                            onChange={(e) => setCandidateAnswer(e.target.value)}
+                            placeholder="Type or dictate your technical response here..."
+                          />
+                        </div>
+
+                        {/* Live AI Analysis Callout */}
+                        <div className="fu-mi-live-critique">
+                          <span className="fu-mi-critique-badge">Live AI Signal:</span>
+                          <span className="fu-mi-critique-text">{currentQ.feedback}</span>
+                        </div>
+
+                        {/* Interview Navigation Controls */}
+                        <div className="fu-mi-interview-actions">
+                          <button
+                            type="button"
+                            className="fu-mi-btn-subtle"
+                            onClick={handleResetInterview}
+                          >
+                            <RotateCcw size={13} /> Change Resume / Profile
+                          </button>
+
+                          <button
+                            type="button"
+                            className="fu-mi-btn-next"
+                            onClick={handleNextQuestion}
+                            disabled={isEvaluatingAnswer}
+                          >
+                            {isEvaluatingAnswer ? (
+                              'Analyzing Answer...'
+                            ) : currentQuestionIdx < currentInterviewQuestions.length - 1 ? (
+                              <>Next Question <ArrowRight size={15} /></>
+                            ) : (
+                              <>Complete Interview & View Report <ArrowRight size={15} /></>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                )}
+
+                {/* ── STAGE 3: DETAILED EVALUATION REPORT ── */}
+                {mockInterviewStage === 'report' && (
+                  <div className="fu-mi-stage-content fu-mi-stage-report">
+                    
+                    {/* Report Banner Header */}
+                    <div className="fu-mi-report-header">
+                      <div className="fu-mi-report-header-left">
+                        <span className="fu-mi-report-eyebrow">CANDIDATE PERFORMANCE DOSSIER</span>
+                        <h3 className="fu-mi-report-candidate">
+                          {customUploadedFile ? 'Candidate Assessment' : activeResume.candidateName}
+                        </h3>
+                        <div className="fu-mi-report-meta">
+                          <span>Target: <strong>{activeJobProfile.title}</strong></span>
+                          <span>•</span>
+                          <span>Benchmark: <strong>{activeJobProfile.companies}</strong></span>
+                          <span>•</span>
+                          <span className="fu-mi-eval-date">Evaluated Today</span>
+                        </div>
+                      </div>
+
+                      <div className="fu-mi-report-header-right">
+                        <div className="fu-mi-hire-badge">
+                          <Award size={18} />
+                          <div>
+                            <span className="fu-mi-hire-status">Strong Hire Recommendation</span>
+                            <span className="fu-mi-hire-percentile">Top 4% Candidate Cohort</span>
+                          </div>
+                        </div>
+
+                        <div className="fu-mi-score-box">
+                          <span className="fu-mi-big-score">91</span>
+                          <span className="fu-mi-score-denom">/ 100</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 4 Multi-Dimensional Evaluation Cards */}
+                    <div className="fu-mi-metrics-grid">
+                      <div className="fu-mi-metric-card">
+                        <div className="fu-mi-metric-top">
+                          <span className="fu-mi-metric-title">Technical Depth & Accuracy</span>
+                          <span className="fu-mi-metric-val score-high">94%</span>
+                        </div>
+                        <div className="fu-mi-bar-track">
+                          <div className="fu-mi-bar-fill fill-high" style={{ width: '94%' }} />
+                        </div>
+                        <p className="fu-mi-metric-sub">
+                          Exceptional understanding of idempotency, atomic Redis SETNX locking, and distributed state.
+                        </p>
+                      </div>
+
+                      <div className="fu-mi-metric-card">
+                        <div className="fu-mi-metric-top">
+                          <span className="fu-mi-metric-title">Problem Solving & DSA</span>
+                          <span className="fu-mi-metric-val score-high">88%</span>
+                        </div>
+                        <div className="fu-mi-bar-track">
+                          <div className="fu-mi-bar-fill fill-high" style={{ width: '88%' }} />
+                        </div>
+                        <p className="fu-mi-metric-sub">
+                          Clean algorithmic complexity justification, quick edge-case validation, and space optimization.
+                        </p>
+                      </div>
+
+                      <div className="fu-mi-metric-card">
+                        <div className="fu-mi-metric-top">
+                          <span className="fu-mi-metric-title">System Architecture</span>
+                          <span className="fu-mi-metric-val score-high">92%</span>
+                        </div>
+                        <div className="fu-mi-bar-track">
+                          <div className="fu-mi-bar-fill fill-high" style={{ width: '92%' }} />
+                        </div>
+                        <p className="fu-mi-metric-sub">
+                          Practical pooling knowledge with PgBouncer, connection starvation mitigation, and circuit breakers.
+                        </p>
+                      </div>
+
+                      <div className="fu-mi-metric-card">
+                        <div className="fu-mi-metric-top">
+                          <span className="fu-mi-metric-title">Communication & Personality</span>
+                          <span className="fu-mi-metric-val score-high">89%</span>
+                        </div>
+                        <div className="fu-mi-bar-track">
+                          <div className="fu-mi-bar-fill fill-high" style={{ width: '89%' }} />
+                        </div>
+                        <p className="fu-mi-metric-sub">
+                          Clear structured STAR framework delivery, articulate confidence, and collaborative tone.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Personality & Behavioral Spectrum */}
+                    <div className="fu-mi-behavioral-section">
+                      <h4 className="fu-mi-section-subtitle">
+                        <Brain size={16} /> Personality & Behavioral Competencies
+                      </h4>
+                      
+                      <div className="fu-mi-behavior-pills">
+                        <div className="fu-mi-bpill">
+                          <span className="fu-mi-bpill-name">Ownership & Accountability</span>
+                          <span className="fu-mi-bpill-score">9.4 / 10</span>
+                          <span className="fu-mi-bpill-desc">Proactively takes ownership of failure states and network retries.</span>
+                        </div>
+
+                        <div className="fu-mi-bpill">
+                          <span className="fu-mi-bpill-name">Critical Thinking Under Stress</span>
+                          <span className="fu-mi-bpill-score">8.9 / 10</span>
+                          <span className="fu-mi-bpill-desc">Maintained composure and data-backed rationale when probed on trade-offs.</span>
+                        </div>
+
+                        <div className="fu-mi-bpill">
+                          <span className="fu-mi-bpill-name">Data-Driven Conflict Resolution</span>
+                          <span className="fu-mi-bpill-score">9.2 / 10</span>
+                          <span className="fu-mi-bpill-desc">Empirical benchmarking of REST vs GraphQL resolved team impasse.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Question-by-Question Evaluation Breakdown */}
+                    <div className="fu-mi-breakdown-section">
+                      <h4 className="fu-mi-section-subtitle">
+                        <ClipboardList size={16} /> Question-by-Question AI Analysis
+                      </h4>
+
+                      <div className="fu-mi-q-analysis-list">
+                        {currentInterviewQuestions.map((q, idx) => (
+                          <div key={idx} className="fu-mi-q-analysis-card">
+                            <div className="fu-mi-q-analysis-top">
+                              <div className="fu-mi-q-num-badge">Q{q.qNum}</div>
+                              <div className="fu-mi-q-analysis-heading">
+                                <strong>{q.ref}</strong>
+                                <p>{q.question}</p>
+                              </div>
+                              <span className="fu-mi-q-score-badge">9.{5 - idx} / 10</span>
+                            </div>
+                            <div className="fu-mi-q-analysis-feedback">
+                              <strong>AI Feedback:</strong> {q.feedback}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Strengths & Growth Areas */}
+                    <div className="fu-mi-feedback-grid">
+                      <div className="fu-mi-fb-box fb-strength">
+                        <h5>✓ Demonstrated Strengths</h5>
+                        <ul>
+                          <li>Authoritative command of distributed locking with atomic Redis SETNX operations.</li>
+                          <li>Clean mitigation strategy against connection pool starvation using connection poolers.</li>
+                          <li>Constructive, data-first communication style when handling architectural disagreements.</li>
+                        </ul>
+                      </div>
+
+                      <div className="fu-mi-fb-box fb-growth">
+                        <h5>△ Areas for Continuous Polish</h5>
+                        <ul>
+                          <li>Could explicitly quantify memory consumption trade-offs when scaling Redis stream keys.</li>
+                          <li>Consider mentioning distributed tracing (e.g. OpenTelemetry) for end-to-end auditability.</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Action Bar */}
+                    <div className="fu-mi-report-actions">
+                      <button
+                        type="button"
+                        className="fu-mi-report-download-btn"
+                        onClick={handleDownloadReport}
+                      >
+                        <Download size={15} />
+                        <span>{isReportDownloaded ? 'Downloaded Report PDF ✓' : 'Download Full Verified Report (PDF)'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        className="fu-mi-report-restart-btn"
+                        onClick={handleResetInterview}
+                      >
+                        <RotateCcw size={15} />
+                        <span>Start New Mock Interview</span>
+                      </button>
+                    </div>
+
+                  </div>
+                )}
 
               </div>
 

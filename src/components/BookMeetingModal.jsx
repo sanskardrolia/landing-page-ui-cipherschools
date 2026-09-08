@@ -247,7 +247,7 @@ const BookMeetingModal = ({ isOpen, onClose }) => {
                     className={`bm-date-chip bm-custom-date-chip ${formData.preferredDate === 'custom' ? 'active' : ''}`}
                     onClick={() => setFormData(prev => ({ ...prev, preferredDate: 'custom', preferredDateLabel: formData.customDate ? new Date(formData.customDate).toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' }) : 'Custom Date' }))}
                   >
-                    <Calendar size={13} className="bm-chip-day" style={{ color: formData.preferredDate === 'custom' ? '#EA580C' : '#6B7280' }} />
+                    <Calendar size={13} className="bm-chip-day" style={{ color: formData.preferredDate === 'custom' ? '#ffa103' : '#6B7280' }} />
                     <span className="bm-chip-num" style={{ fontSize: '0.82rem', marginTop: '1px' }}>Custom</span>
                     <span className="bm-chip-month">Date</span>
                   </button>
