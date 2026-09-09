@@ -250,7 +250,7 @@ const Navbar = () => {
                         </div>
                       </div>
                       <div className="nav-card-content">
-                        <h4 className="nav-card-title">CipherLabs</h4>
+                        <h4 className="nav-card-title">Practice</h4>
                         <p className="nav-card-desc">Instant in-browser coding labs & interactive sandboxes.</p>
                       </div>
                     </div>
@@ -360,32 +360,25 @@ const Navbar = () => {
                     {/* Left: Training Pillar */}
                     <div className="nav-mega-uni-left">
                       <div 
-                        className="nav-mega-card nav-card-training-pillar"
+                        className="nav-card-training-pillar"
                         onClick={() => scrollToSection('training-section')}
                       >
-                        <div className="nav-card-preview nav-preview-training">
-                          <div className="nav-card-mini-window">
-                            <div className="nav-mini-syllabus-bar">
-                              <span className="nav-mini-sem-tag">Semester Adaptive</span>
-                            </div>
-                            <div className="nav-mini-curriculum-steps">
-                              <div className="nav-mini-step active"></div>
-                              <div className="nav-mini-step"></div>
-                              <div className="nav-mini-step"></div>
-                            </div>
+                        <div className="nav-training-top">
+                          <div className="nav-training-icon-box">
+                            <GraduationCap size={18} />
                           </div>
-                          <div className="nav-card-icon-badge">
-                            <GraduationCap size={15} />
-                          </div>
+                          <span className="nav-pillar-tag">FOUNDATION</span>
                         </div>
-                        <div className="nav-card-content">
-                          <div className="nav-card-header-row">
-                            <h4 className="nav-card-title">Training Support</h4>
-                            <span className="nav-pillar-tag">FOUNDATION</span>
-                          </div>
-                          <p className="nav-card-desc">
+                        <div className="nav-training-body">
+                          <h4 className="nav-training-title">Training Support</h4>
+                          <p className="nav-training-desc">
                             Semester-aligned curriculum & placement readiness.
                           </p>
+                        </div>
+                        <div className="nav-training-pills">
+                          <span className="nav-tr-pill">Curriculum</span>
+                          <span className="nav-tr-pill">Placement</span>
+                          <span className="nav-tr-pill">Mentorship</span>
                         </div>
                       </div>
                     </div>
@@ -402,104 +395,67 @@ const Navbar = () => {
                         
                         {/* 1. Campus LMS */}
                         <div 
-                          className="nav-mega-card nav-cl-card"
+                          className="nav-cl-card"
                           onClick={() => scrollToSection('lms-section')}
                         >
-                          <div className="nav-card-preview nav-cl-preview">
-                            <div className="nav-card-mini-window">
-                              <div className="nav-mini-lms-grid">
-                                <div className="nav-mini-lms-sidebar"></div>
-                                <div className="nav-mini-lms-main">
-                                  <div className="nav-mini-line line-brand"></div>
-                                  <div className="nav-mini-stage-badge">Stage Lock</div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="nav-card-icon-badge">
-                              <Laptop size={13} />
-                            </div>
+                          <div className="nav-cl-icon-box">
+                            <Laptop size={16} />
                           </div>
-                          <div className="nav-card-content">
-                            <h4 className="nav-card-title">Campus LMS</h4>
-                            <p className="nav-card-desc">Automated evaluations & stage locks.</p>
+                          <div className="nav-cl-info">
+                            <div className="nav-cl-title-row">
+                              <span className="nav-cl-title">Campus LMS</span>
+                            </div>
+                            <p className="nav-cl-desc">Course tracking & stage locks</p>
                           </div>
                         </div>
 
                         {/* 2. Assessment Platform */}
                         <div 
-                          className="nav-mega-card nav-cl-card"
+                          className="nav-cl-card"
                           onClick={() => scrollToSection('assessment-section')}
                         >
-                          <div className="nav-card-preview nav-cl-preview">
-                            <div className="nav-card-mini-window">
-                              <div className="nav-mini-proctor-view">
-                                <div className="nav-mini-cam-box"></div>
-                                <div className="nav-mini-score-pill">AI Proctored</div>
-                              </div>
-                            </div>
-                            <div className="nav-card-icon-badge">
-                              <CheckCircle2 size={13} />
-                            </div>
+                          <div className="nav-cl-icon-box">
+                            <CheckCircle2 size={16} />
                           </div>
-                          <div className="nav-card-content">
-                            <h4 className="nav-card-title">Assessment Platform</h4>
-                            <p className="nav-card-desc">AI-proctored tests & safe browser.</p>
+                          <div className="nav-cl-info">
+                            <div className="nav-cl-title-row">
+                              <span className="nav-cl-title">Assessment Platform</span>
+                            </div>
+                            <p className="nav-cl-desc">AI-proctored tests & browser lock</p>
                           </div>
                         </div>
 
                         {/* 3. Practice Environment [AI] */}
                         <div 
-                          className="nav-mega-card nav-cl-card"
+                          className="nav-cl-card"
                           onClick={() => scrollToSection('practice-section')}
                         >
-                          <div className="nav-card-preview nav-cl-preview">
-                            <div className="nav-card-mini-window">
-                              <div className="nav-mini-terminal-body">
-                                <span className="nav-mini-term-prompt">&gt;_ fn solve()</span>
-                                <span className="nav-mini-score-tag">340+ Tests</span>
-                              </div>
-                              <div className="nav-mini-line line-brand" style={{ width: '70%', marginTop: '2px' }}></div>
-                            </div>
-                            <div className="nav-card-icon-badge">
-                              <Terminal size={13} />
-                            </div>
+                          <div className="nav-cl-icon-box">
+                            <Terminal size={16} />
                           </div>
-                          <div className="nav-card-content">
-                            <h4 className="nav-card-title">
-                              <span>Practice Environment</span>
+                          <div className="nav-cl-info">
+                            <div className="nav-cl-title-row">
+                              <span className="nav-cl-title">Practice Environment</span>
                               <span className="nav-ai-tag">AI</span>
-                            </h4>
-                            <p className="nav-card-desc">340+ sandboxes & browser compiler.</p>
+                            </div>
+                            <p className="nav-cl-desc">340+ sandboxes & compilers</p>
                           </div>
                         </div>
 
                         {/* 4. Mock Interview [AI] */}
                         <div 
-                          className="nav-mega-card nav-cl-card"
+                          className="nav-cl-card"
                           onClick={() => scrollToSection('mock-interview-section')}
                         >
-                          <div className="nav-card-preview nav-cl-preview">
-                            <div className="nav-card-mini-window">
-                              <div className="nav-mini-interview-body">
-                                <div className="nav-mini-waves">
-                                  <span className="nav-wave-bar"></span>
-                                  <span className="nav-wave-bar h-lg"></span>
-                                  <span className="nav-wave-bar"></span>
-                                </div>
-                                <span className="nav-mini-score-tag">Voice AI</span>
-                              </div>
-                              <div className="nav-mini-line line-brand" style={{ width: '55%', marginTop: '2px' }}></div>
-                            </div>
-                            <div className="nav-card-icon-badge">
-                              <Bot size={13} />
-                            </div>
+                          <div className="nav-cl-icon-box">
+                            <Bot size={16} />
                           </div>
-                          <div className="nav-card-content">
-                            <h4 className="nav-card-title">
-                              <span>Mock Interview</span>
+                          <div className="nav-cl-info">
+                            <div className="nav-cl-title-row">
+                              <span className="nav-cl-title">Mock Interview</span>
                               <span className="nav-ai-tag">AI</span>
-                            </h4>
-                            <p className="nav-card-desc">Live voice & technical evaluations.</p>
+                            </div>
+                            <p className="nav-cl-desc">Live voice & technical roleplay</p>
                           </div>
                         </div>
 
@@ -628,7 +584,7 @@ const Navbar = () => {
                   <div className="mobile-sub-item" onClick={() => scrollToSection('ecosystem')}>
                     <Cpu size={15} className="text-brand" />
                     <div>
-                      <strong>CipherLabs</strong>
+                      <strong>Practice</strong>
                       <small>Live in-browser coding environments</small>
                     </div>
                   </div>

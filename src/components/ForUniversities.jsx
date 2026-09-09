@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { ArrowRight, ArrowLeft, ChevronLeft, Sparkles, Bot, Code2, Code, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, ChevronDown, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal, Layers, UploadCloud, Mic, RotateCcw, Download, UserCheck } from 'lucide-react';
+import { ArrowRight, ArrowLeft, ChevronLeft, Sparkles, Bot, Code2, Code, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, ChevronDown, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal, Layers, UploadCloud, Mic, RotateCcw, Download, UserCheck, MicOff, Video, VideoOff, PhoneOff, Info } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
 import './ForUniversities.css';
 
@@ -384,48 +384,144 @@ const EXAM_TRACKS = [
   }
 ];
 
+/* ─── University Syllabus Dataset ─── */
+const SYLLABUS_MODULES = [
+  {
+    id: 'm1',
+    week: 'Weeks 1–3',
+    title: 'Foundations of Algorithms & Asymptotic Complexity',
+    lectures: 8,
+    labs: 4,
+    status: 'Delivered ✓',
+    statusClass: 'completed',
+    topics: [
+      { name: 'Asymptotic Notations (Big-O, Omega, Theta)', done: true },
+      { name: 'Prefix Sums, Hashing & Frequency Arrays', done: true },
+      { name: 'Two-Pointer & Sliding Window Paradigms', done: true },
+      { name: 'Amortized Analysis & Dynamic Memory in C++', done: true }
+    ],
+    featuredLab: 'Distinct Divisible Subarrays (Hard)',
+    labDifficulty: 'Hard'
+  },
+  {
+    id: 'm2',
+    week: 'Weeks 4–6',
+    title: 'Linear Collections & Monotonic Structures',
+    lectures: 9,
+    labs: 4,
+    status: 'In Progress ⚡',
+    statusClass: 'in-progress',
+    topics: [
+      { name: 'Singly & Doubly Linked List Inversions', done: true },
+      { name: 'Floyd’s Cycle Detection Algorithm', done: true },
+      { name: 'Monotonic Stacks & Next Greater Element', done: false },
+      { name: 'Circular Buffers & Deque Architectures', done: false }
+    ],
+    featuredLab: 'Maximum Frequency Stack & Histogram Area',
+    labDifficulty: 'Medium'
+  },
+  {
+    id: 'm3',
+    week: 'Weeks 7–10',
+    title: 'Hierarchical Trees, Heaps & Graph Traversal',
+    lectures: 12,
+    labs: 5,
+    status: 'Upcoming',
+    statusClass: 'upcoming',
+    topics: [
+      { name: 'Binary Tree Traversals & LCA Queries', done: false },
+      { name: 'Binary Search Tree Balancing & Red-Black Basics', done: false },
+      { name: 'Min/Max Heap Priority Queues', done: false },
+      { name: 'BFS, DFS & Topological Sort on Directed Graphs', done: false }
+    ],
+    featuredLab: 'Network Delay Time & Shortest Path (Dijkstra)',
+    labDifficulty: 'Medium'
+  },
+  {
+    id: 'm4',
+    week: 'Weeks 11–14',
+    title: 'Dynamic Programming & Recruiter Benchmark Sprints',
+    lectures: 13,
+    labs: 5,
+    status: 'Upcoming',
+    statusClass: 'upcoming',
+    topics: [
+      { name: '1D/2D Tabulation vs Memoization', done: false },
+      { name: '0/1 Knapsack & Unbounded Knapsack Variants', done: false },
+      { name: 'Longest Common Subsequence & Edit Distance', done: false },
+      { name: 'Company-Specific Recruiter Benchmark Sprints', done: false }
+    ],
+    featuredLab: 'Optimal Strategy for Game of Coins',
+    labDifficulty: 'Hard'
+  }
+];
+
 /* ─── Practice Environment Problems Dataset ─── */
 const PRACTICE_PROBLEMS_DATA = [
   {
     id: 'p1',
-    title: 'Distinct Divisible Subarrays',
+    title: 'Palindrome Number',
     type: 'DSA',
     track: 'dsa',
-    topics: ['Arrays', 'Prefix-Sum.'],
-    difficulty: 'Hard',
-    level: 'advanced',
-    company: 'Amazon',
-    desc: `In a magical kingdom, a wizard has a scroll containing enchanted numbers arranged in order. The wizard studies different continuous parts of the scroll to find special magical patterns.\n\nA group of numbers is called a divisible magical segment if the sum of all numbers in that segment is divisible by k.\n\nYour task is to help the wizard count how many distinct magical segments exist in the scroll. Two magical segments are considered are considered identical if they have the same length and contain the same values in the same order, regardless of their positions. Identical subarrays should be counted only once.\n• Note: The array magicalValues is sorted in non-decreasing order`,
+    topics: ['Math', 'Two Pointers'],
+    difficulty: 'Easy',
+    level: 'beginner',
+    company: 'Google',
+    desc: `Given an integer x, return true if x is a palindrome, and false otherwise.\n\nAn integer is a palindrome when it reads the same backward as forward.`,
     examples: [
       { 
-        input: 'n = 3\nmagical values = [1, 2, 3]\nk = 3', 
-        output: '3', 
-        explanation: 'The distinct magical segments are:\n- [3] (sum = 3, divisible by 3)\n- [1, 2] (sum = 3, divisible by 3)\n- [1, 2, 3] (sum = 6, divisible by 3)' 
+        id: 1,
+        title: 'Example 1',
+        input: 'x = 121', 
+        output: 'true', 
+        explanation: 'The reverse of 121 is 121 itself.\nSince the number reads the same from left to right and right to left, it is a palindrome.\nTherefore, the answer is true.' 
+      },
+      { 
+        id: 2,
+        title: 'Example 2',
+        input: 'x = -121', 
+        output: 'false', 
+        explanation: 'Reversing -121 gives 121-, which is not the same as the original number.\nAlso, a negative number cannot be a palindrome because of the negative sign.\nTherefore, the answer is false.' 
+      },
+      { 
+        id: 3,
+        title: 'Example 3',
+        input: 'x = 12321', 
+        output: 'true', 
+        explanation: '12321 reads as 12321 from left to right and from right to left.' 
       }
     ],
     starterCode: {
-      CPP: `long long countDistinctDivisibleSubarrays(vector<int>& v, int k) {\n    // add your code here\n    \n}`,
-      'C++': `long long countDistinctDivisibleSubarrays(vector<int>& v, int k) {\n    // add your code here\n    \n}`,
-      Python: `def countDistinctDivisibleSubarrays(v: list[int], k: int) -> int:\n    # add your code here\n    pass`,
-      Java: `class Solution {\n    public long countDistinctDivisibleSubarrays(int[] v, int k) {\n        // add your code here\n        return 0;\n    }\n}`
+      JAVA: `class Solution {\n    public boolean isPalindrome(int x) {\n        // add your code here\n    }\n}`,
+      Java: `class Solution {\n    public boolean isPalindrome(int x) {\n        // add your code here\n    }\n}`,
+      Python: `class Solution:\n    def isPalindrome(self, x: int) -> bool:\n        # add your code here\n        pass`,
+      CPP: `class Solution {\npublic:\n    bool isPalindrome(int x) {\n        // add your code here\n    }\n};`,
+      'C++': `class Solution {\npublic:\n    bool isPalindrome(int x) {\n        // add your code here\n    }\n};`
     },
     testCases: [
       {
         id: 1,
-        input: 'n = 3, magical values = [1, 2, 3], k = 3',
-        expected: '3',
-        actual: '3',
-        time: '2 ms'
+        input: 'x = 121',
+        expected: 'true',
+        actual: 'true',
+        time: '1 ms'
       },
       {
         id: 2,
-        input: 'n = 4, magical values = [2, 4, 6, 8], k = 2',
-        expected: '10',
-        actual: '10',
-        time: '3 ms'
+        input: 'x = -121',
+        expected: 'false',
+        actual: 'false',
+        time: '1 ms'
+      },
+      {
+        id: 3,
+        input: 'x = 12321',
+        expected: 'true',
+        actual: 'true',
+        time: '1 ms'
       }
     ],
-    aiHint: 'Calculate prefix sum remainder modulo k at each index. When two prefix sums share the same modulo, the subarray between them is divisible by k.'
+    aiHint: 'An integer is a palindrome when it reads the same backward as forward. Negative numbers can never be palindromes due to the leading minus sign.'
   },
   {
     id: 'p2',
@@ -670,30 +766,38 @@ const INTERVIEW_QUESTIONS = {
   sde: [
     {
       qNum: 1,
-      question: "Arjun, I see on your resume that you built an asynchronous order-processing pipeline at your internship using Redis streams and Node.js. How did you guarantee idempotent event handling during network retries?",
+      question: "How would you design a rate limiter for a public API?",
+      context: "Think about the data structures you'd reach for, and how the design holds up when requests are spread across several servers.",
+      helperText: "Take your time — speak when you're ready",
+      ref: "Referenced from Resume: Distributed API Gateway & Microservices",
+      sampleAnswer: "I would implement a Sliding Window Counter using Redis with atomic Lua scripts or Token Bucket with Redis hashes. To distribute across multi-region servers without race conditions, Redis cluster with local caching or Envoy proxy ratelimiting gracefully sheds overload with 429 Retry-After headers.",
+      feedback: "Architecture: 96% • Exceptional understanding of Redis concurrency and distributed rate limiting."
+    },
+    {
+      qNum: 2,
+      question: "How did you guarantee idempotent event handling during network retries in your order pipeline?",
+      context: "Consider idempotency keys, Redis SETNX distributed locking, TTLs, and transactional safety.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: Project #1 (Distributed Order Pipeline)",
       sampleAnswer: "We enforced idempotency by attaching a cryptographically generated UUIDv7 key at the API gateway. In our Redis streams worker, we used atomic SETNX transactions with a 60-second TTL to lock the event ID before dispatching to our PostgreSQL transactional store.",
       feedback: "Technical Depth: 95% • Excellent grasp of distributed locking and race conditions."
     },
     {
-      qNum: 2,
+      qNum: 3,
       question: "How did you monitor database connection pools and avoid connection starvation when traffic surged 10x during flash sales?",
+      context: "Evaluate connection pooling (PgBouncer), circuit breaker thresholds, and backoff headers.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: PostgreSQL & Node.js Backend",
       sampleAnswer: "We implemented PgBouncer in transaction-pooling mode in front of our database replica cluster, coupled with circuit breakers in our Node.js connection pool (knex/pg) to gracefully shed load with 429 backoff headers.",
       feedback: "Architecture: 92% • Practical high-scale operational knowledge."
-    },
-    {
-      qNum: 3,
-      question: "Tell me about a time when you and a teammate disagreed on an architectural decision. How did you resolve it?",
-      ref: "Behavioral & Leadership Evaluation (STAR Method)",
-      sampleAnswer: "My peer advocated for GraphQL while I proposed REST with strict OpenAPI contracts. We benchmarked caching overhead and client bundle size for our mobile app, presented the empirical data to our tech lead, and aligned on REST for core order flows and GraphQL for the dynamic dashboard.",
-      feedback: "Communication & Conflict Resolution: 94% • Strong data-driven collaboration."
     }
   ],
   backend: [
     {
       qNum: 1,
-      question: "Priya, looking at your Multi-Region Failover project, how did you handle data consistency and replication lag across AWS us-east-1 and eu-west-1?",
+      question: "How would you handle data consistency and replication lag across AWS multi-region clusters?",
+      context: "Evaluate asynchronous storage-level replication, read-your-own-writes session tokens, and failover latency.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: Project #2 (Multi-Region Controller)",
       sampleAnswer: "We deployed Aurora Global Database with asynchronous storage-level replication (typical lag < 1s). For write paths requiring strong consistency, we routed to the primary region and used read-your-own-writes session tokens for secondary regions.",
       feedback: "System Depth: 94% • Strong understanding of distributed consistency models."
@@ -701,6 +805,8 @@ const INTERVIEW_QUESTIONS = {
     {
       qNum: 2,
       question: "When gRPC microservices experience cascading latency degradation, what techniques do you apply to isolate the failure?",
+      context: "Think about client-side deadlines, context propagation, exponential backoff with full jitter, and Envoy circuit breakers.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: gRPC & Kubernetes Experience",
       sampleAnswer: "We configure strict client-side deadlines with context propagation, exponential backoff with full jitter, and Envoy circuit breakers to cut traffic to degraded pods before buffers saturate.",
       feedback: "Resilience: 91% • Comprehensive fault isolation methodology."
@@ -709,7 +815,9 @@ const INTERVIEW_QUESTIONS = {
   aiml: [
     {
       qNum: 1,
-      question: "Rohan, your RAG Enterprise Search project mentions hybrid search. How did you balance dense semantic retrieval with sparse BM25 keyword matching?",
+      question: "How do you balance dense semantic retrieval with sparse BM25 keyword matching in production RAG systems?",
+      context: "Analyze Reciprocal Rank Fusion (RRF), vector quantization, sparse-dense hybrid weights, and reranking trade-offs.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: RAG Enterprise Search (LangChain, Pinecone)",
       sampleAnswer: "We implemented Reciprocal Rank Fusion (RRF) with a constant k=60 to normalize and merge sparse BM25 scores from Elasticsearch with dense cosine similarity vectors from Pinecone, drastically reducing out-of-domain hallucinations.",
       feedback: "AI Architecture: 96% • State-of-the-art hybrid retrieval approach."
@@ -717,6 +825,8 @@ const INTERVIEW_QUESTIONS = {
     {
       qNum: 2,
       question: "How do you evaluate and safeguard your agentic tool-calling pipelines against prompt injection attacks?",
+      context: "Consider Pydantic schema validation, sandboxed container boundaries, and secondary discriminator models.",
+      helperText: "Take your time — speak when you're ready",
       ref: "Referenced from Resume: Agentic Workflow Pipeline",
       sampleAnswer: "We enforce strict Pydantic schema validation on all tool inputs, execute actions in sandboxed e2b containers with no network egress, and run a secondary discriminator model to verify instruction boundary integrity.",
       feedback: "Security & Guardrails: 93% • Robust defensive engineering."
@@ -734,7 +844,12 @@ const ForUniversities = () => {
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
   const [selectedSandboxLang, setSelectedSandboxLang] = useState('Python');
   const [selectedExamTrack, setSelectedExamTrack] = useState('mcq');
-  const [lmsActiveTab, setLmsActiveTab] = useState('request-feature');
+  const [lmsActiveTab, setLmsActiveTab] = useState('home');
+  const [customWorkflowReq, setCustomWorkflowReq] = useState('');
+  const [showCwExamples, setShowCwExamples] = useState(false);
+  const [hasInteractedWithSyllabus, setHasInteractedWithSyllabus] = useState(false);
+  const [expandedSyllabusModule, setExpandedSyllabusModule] = useState(0);
+  const [hasInteractedWithSandbox, setHasInteractedWithSandbox] = useState(false);
 
   /* Practice Environment State */
   const [practiceTrack, setPracticeTrack] = useState('all');
@@ -745,9 +860,9 @@ const ForUniversities = () => {
   const [practiceCompany, setPracticeCompany] = useState('all');
   const [practiceStatusFilter, setPracticeStatusFilter] = useState('all');
   const [solvedProblems, setSolvedProblems] = useState([]);
-  const [activePracticeProblem, setActivePracticeProblem] = useState(null);
-  const [sandboxLang, setSandboxLang] = useState('CPP');
-  const [sandboxCode, setSandboxCode] = useState('');
+  const [activePracticeProblem, setActivePracticeProblem] = useState(PRACTICE_PROBLEMS_DATA[0]);
+  const [sandboxLang, setSandboxLang] = useState('JAVA');
+  const [sandboxCode, setSandboxCode] = useState(PRACTICE_PROBLEMS_DATA[0].starterCode.JAVA);
   const [isAiHintOpen, setIsAiHintOpen] = useState(false);
   const [isRunningSandbox, setIsRunningSandbox] = useState(false);
   const [sandboxRunResult, setSandboxRunResult] = useState(null);
@@ -757,12 +872,46 @@ const ForUniversities = () => {
   const [practiceViewTab, setPracticeViewTab] = useState('problem'); // 'problem' | 'submissions'
   const [showTestCases, setShowTestCases] = useState(false);
   const [activeTestCaseTab, setActiveTestCaseTab] = useState(0);
+  const [sessionTimer, setSessionTimer] = useState(24); // starts at 00:00:24 matching screenshot
+  const [activeDrawerTab, setActiveDrawerTab] = useState('ai'); // 'testcases' | 'ai'
+  const [aiHintStage, setAiHintStage] = useState(0); // 0 to 3
+  const [advancedToolsUsed, setAdvancedToolsUsed] = useState(0); // 0 to 10
+  const [terminalInput, setTerminalInput] = useState('');
+  const [terminalLogs, setTerminalLogs] = useState([
+    {
+      id: 'init-banner',
+      type: 'welcome',
+      content: `Welcome to CipherSchools Labs AI Assist Terminal\n\nHINTS · 3 stages · 3 uses total\n/hint run      : Request the next hint stage\n/hint 1        : View stage 1, Problem Breakdown\n/hint 2        : View stage 2, Core Logic\n/hint 3        : View stage 3, Full Pseudocode\n\nADVANCED TOOLS · 10 uses shared\n/analyze       : Analyze time & space complexity of your code\n/dry_run       : Trace code execution line by line\n/fix           : Get AI-powered code fix suggestions\n\nTERMINAL\n/status        : Show current usage for all tools\n/help          : Show this help message\n/clear         : Clear all terminal output`
+    }
+  ]);
+  const terminalBottomRef = useRef(null);
+
+  useEffect(() => {
+    const timerInterval = setInterval(() => {
+      setSessionTimer(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(timerInterval);
+  }, []);
+
+  useEffect(() => {
+    if (activeDrawerTab === 'ai') {
+      terminalBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [terminalLogs, activeDrawerTab]);
+
+  const formatTimer = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
+
   const [problemSubmissions, setProblemSubmissions] = useState([
     {
       id: 'sub-init-1',
       problemId: 'p1',
       status: 'Accepted',
-      language: 'CPP',
+      language: 'JAVA',
       runtime: '4 ms',
       memory: '18.2 MB',
       submittedAt: 'Yesterday'
@@ -770,12 +919,13 @@ const ForUniversities = () => {
   ]);
 
   /* Mock Interview [AI] State */
-  const [mockInterviewStage, setMockInterviewStage] = useState('resume'); // 'resume' | 'interview' | 'report'
+  const [mockInterviewStage, setMockInterviewStage] = useState('interview'); // 'interview' | 'report'
   const [selectedResumeId, setSelectedResumeId] = useState('res-1');
   const [selectedJobProfileId, setSelectedJobProfileId] = useState('sde');
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [candidateAnswer, setCandidateAnswer] = useState('');
   const [isVoiceRecording, setIsVoiceRecording] = useState(false);
+  const [isVideoOn, setIsVideoOn] = useState(true);
   const [isEvaluatingAnswer, setIsEvaluatingAnswer] = useState(false);
   const [customUploadedFile, setCustomUploadedFile] = useState(null);
   const [isReportDownloaded, setIsReportDownloaded] = useState(false);
@@ -836,7 +986,7 @@ const ForUniversities = () => {
 
   const handleResetCode = () => {
     if (activePracticeProblem && activePracticeProblem.starterCode) {
-      const code = activePracticeProblem.starterCode[sandboxLang] || activePracticeProblem.starterCode['C++'] || '';
+      const code = activePracticeProblem.starterCode[sandboxLang] || activePracticeProblem.starterCode.JAVA || activePracticeProblem.starterCode['C++'] || '';
       setSandboxCode(code);
       setSandboxRunResult(null);
       setSubmissionVerdict(null);
@@ -850,30 +1000,145 @@ const ForUniversities = () => {
     setSandboxRunResult(null);
     setTimeout(() => {
       setIsRunningSandbox(false);
+      const testCasesList = (activePracticeProblem && activePracticeProblem.testCases) || [
+        { id: 1, input: 'x = 121', expected: 'true', actual: 'true', time: '1 ms' },
+        { id: 2, input: 'x = -121', expected: 'false', actual: 'false', time: '1 ms' },
+        { id: 3, input: 'x = 12321', expected: 'true', actual: 'true', time: '1 ms' }
+      ];
       setSandboxRunResult({
         success: true,
-        casesPassed: 2,
-        totalCases: 2,
-        runtime: '2 ms',
-        memory: '14.2 MB',
-        cases: (activePracticeProblem && activePracticeProblem.testCases) || [
-          {
-            id: 1,
-            input: 'n = 3, magical values = [1, 2, 3], k = 3',
-            expected: '3',
-            actual: '3',
-            time: '2 ms'
-          },
-          {
-            id: 2,
-            input: 'n = 4, magical values = [2, 4, 6, 8], k = 2',
-            expected: '10',
-            actual: '10',
-            time: '3 ms'
-          }
-        ]
+        casesPassed: testCasesList.length,
+        totalCases: testCasesList.length,
+        runtime: '1 ms',
+        memory: '39.8 MB',
+        cases: testCasesList
       });
+      setActiveDrawerTab('testcases');
     }, 450);
+  };
+
+  const handleTerminalCommand = (cmdStr) => {
+    const rawCmd = (cmdStr !== undefined ? cmdStr : terminalInput).trim();
+    if (!rawCmd) return;
+    setTerminalInput('');
+
+    const lowerCmd = rawCmd.toLowerCase();
+
+    if (lowerCmd === '/clear' || lowerCmd === 'clear') {
+      setTerminalLogs([
+        {
+          id: `log-${Date.now()}`,
+          type: 'welcome',
+          content: `Welcome to CipherSchools Labs AI Assist Terminal\n\nHINTS · 3 stages · 3 uses total\n/hint run      : Request the next hint stage\n/hint 1        : View stage 1, Problem Breakdown\n/hint 2        : View stage 2, Core Logic\n/hint 3        : View stage 3, Full Pseudocode\n\nADVANCED TOOLS · 10 uses shared\n/analyze       : Analyze time & space complexity of your code\n/dry_run       : Trace code execution line by line\n/fix           : Get AI-powered code fix suggestions\n\nTERMINAL\n/status        : Show current usage for all tools\n/help          : Show this help message\n/clear         : Clear all terminal output`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === '/help' || lowerCmd === 'help') {
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd,
+          output: `Available Commands:\n  /hint run       Request next algorithmic hint stage (0/3)\n  /hint 1         View Problem Breakdown\n  /hint 2         View Core Logic & Mathematical Invariant\n  /hint 3         View Full Java / Pseudocode Implementation\n  /analyze        Run time & space complexity diagnosis\n  /dry_run        Simulate step-by-step trace for x = 121\n  /fix            Inspect code for edge cases and syntax issues\n  /status         Display token usage and session statistics\n  /clear          Clear terminal window`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === '/status' || lowerCmd === 'status') {
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd,
+          output: `Session Status [CipherSchools Labs]:\n• AI Hints: ${aiHintStage}/3 stages requested\n• Advanced Tools: ${advancedToolsUsed}/10 used\n• Environment: Java 21 (OpenJDK HotSpot)\n• Sandbox: Active & Connected`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === './analyze_complexity' || lowerCmd === '/analyze' || lowerCmd === 'analyze') {
+      setAdvancedToolsUsed(prev => Math.min(10, prev + 1));
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd.startsWith('./') || rawCmd.startsWith('/') ? rawCmd : `./analyze_complexity`,
+          output: `[Complexity Analysis: Palindrome Number]\n• Time Complexity: O(log₁₀(x))\n  Every iteration reduces x by a factor of 10. For an integer with n digits, the loop runs n/2 times.\n• Space Complexity: O(1)\n  Operates in-place with constant memory (only integer variables revertedNumber, x).\n• Best Practice: Reversing half the integer avoids 32-bit Integer.MAX_VALUE overflow.`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === './dry_run' || lowerCmd === '/dry_run' || lowerCmd === 'dry_run') {
+      setAdvancedToolsUsed(prev => Math.min(10, prev + 1));
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd.startsWith('./') || rawCmd.startsWith('/') ? rawCmd : `./dry_run`,
+          output: `[Execution Trace: x = 121]\n  ▶ Step 1: Input x = 121. Check if x < 0 -> false. Proceed.\n  ▶ Step 2: Initialize revertedNumber = 0.\n  ▶ Step 3: Iteration 1 ->\n            digit = 121 % 10 = 1\n            revertedNumber = 0 * 10 + 1 = 1\n            x = 121 / 10 = 12\n  ▶ Step 4: Iteration 2 ->\n            digit = 12 % 10 = 2\n            revertedNumber = 1 * 10 + 2 = 12\n            x = 12 / 10 = 1\n  ▶ Step 5: Stop condition (x <= revertedNumber: 1 <= 12 is true).\n  ▶ Step 6: Odd-digit check: x == revertedNumber / 10 (1 == 12 / 10 = 1) -> Returns true ✓`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === './fix_my_code' || lowerCmd === '/fix' || lowerCmd === 'fix') {
+      setAdvancedToolsUsed(prev => Math.min(10, prev + 1));
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd.startsWith('./') || rawCmd.startsWith('/') ? rawCmd : `./fix_my_code`,
+          output: `[AI Code Inspection & Edge-Case Fix]\nCritical edge cases identified:\n1. Negative Numbers: When x < 0, return false immediately (e.g. -121 -> 121-).\n2. Trailing Zeroes: If x > 0 and x % 10 == 0, the first digit cannot be 0, return false.\n3. Solution Template:\n   public boolean isPalindrome(int x) {\n       if (x < 0 || (x % 10 == 0 && x != 0)) return false;\n       int rev = 0;\n       while (x > rev) {\n           rev = rev * 10 + x % 10;\n           x /= 10;\n       }\n       return x == rev || x == rev / 10;\n   }`
+        }
+      ]);
+      return;
+    }
+
+    if (lowerCmd === '/hint run' || lowerCmd === 'hint run' || lowerCmd.startsWith('/hint')) {
+      let nextStage = aiHintStage + 1;
+      if (lowerCmd === '/hint 1') nextStage = 1;
+      if (lowerCmd === '/hint 2') nextStage = 2;
+      if (lowerCmd === '/hint 3') nextStage = 3;
+      if (nextStage > 3) nextStage = 3;
+      setAiHintStage(nextStage);
+
+      const hintTexts = {
+        1: `[AI Hint Stage 1/3 - Problem Breakdown]\n• A palindrome number reads identically in both directions: forward and reverse.\n• Negative numbers like -121 can NEVER be palindromes because reversing produces '121-', and '-' cannot match a positive trailing digit.\n• If x ends in 0 (e.g., 10, 100), it can only be a palindrome if x == 0.`,
+        2: `[AI Hint Stage 2/3 - Core Logic & Mathematical Shift]\n• Avoid converting to String to keep space complexity O(1).\n• We can reverse the last half of the digits mathematically using '% 10' and '/ 10'.\n• How do we know when we have reversed half? When x <= revertedNumber!`,
+        3: `[AI Hint Stage 3/3 - Full Pseudocode]\n1. if (x < 0 || (x % 10 == 0 && x != 0)) return false;\n2. int rev = 0;\n3. while (x > rev) {\n       rev = rev * 10 + x % 10;\n       x /= 10;\n   }\n4. return x == rev || x == rev / 10;`
+      };
+
+      setTerminalLogs(prev => [
+        ...prev,
+        {
+          id: `cmd-${Date.now()}`,
+          type: 'command',
+          cmd: rawCmd,
+          output: hintTexts[nextStage] || hintTexts[1]
+        }
+      ]);
+      return;
+    }
+
+    // Default fallback
+    setTerminalLogs(prev => [
+      ...prev,
+      {
+        id: `cmd-${Date.now()}`,
+        type: 'command',
+        cmd: rawCmd,
+        output: `zsh: command not found: ${rawCmd}\nType /help to see all available CipherSchools AI commands.`
+      }
+    ]);
   };
 
   const handleSubmitSandbox = () => {
@@ -979,10 +1244,12 @@ const ForUniversities = () => {
   };
 
   const handleResetInterview = () => {
-    setMockInterviewStage('resume');
+    setMockInterviewStage('interview');
     setCurrentQuestionIdx(0);
-    setCandidateAnswer('');
+    const questions = INTERVIEW_QUESTIONS[selectedJobProfileId] || INTERVIEW_QUESTIONS.sde;
+    setCandidateAnswer(questions[0]?.sampleAnswer || '');
     setIsVoiceRecording(false);
+    setIsVideoOn(true);
     setIsEvaluatingAnswer(false);
     setIsReportDownloaded(false);
   };
@@ -1672,9 +1939,32 @@ const ForUniversities = () => {
                       <Home size={18} />
                       <span>Home</span>
                     </div>
-                    <div className="lms-menu-item">
+                    <div 
+                      className={`lms-menu-item lms-menu-syllabus-item ${lmsActiveTab === 'syllabus' ? 'active' : ''}`}
+                      onClick={() => {
+                        setLmsActiveTab('syllabus');
+                        setHasInteractedWithSyllabus(true);
+                      }}
+                      title="Click to view interactive syllabus"
+                    >
                       <Calendar size={18} />
                       <span>Syllabus</span>
+                      <span className="lms-syllabus-live-dot" title="Interactive demo"></span>
+
+                      {/* Animated Mouse Hover / Click Guide */}
+                      {!hasInteractedWithSyllabus && lmsActiveTab !== 'syllabus' && (
+                        <div className="lms-syllabus-guide-cursor">
+                          <div className="lms-cursor-pointer-wrap">
+                            <svg className="lms-cursor-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                              <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#ffa103" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
+                            </svg>
+                            <span className="lms-cursor-click-wave"></span>
+                          </div>
+                          <div className="lms-cursor-callout">
+                            <span>Click here</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="lms-menu-item">
                       <Presentation size={18} />
@@ -1746,53 +2036,169 @@ const ForUniversities = () => {
                         </div>
 
                         <h3 className="lms-cw-title">
-                          Request Any Feature for Your Campus LMS — We’ll Build & Implement It.
+                          Build Exactly What Your Campus Needs.
                         </h3>
                         <p className="lms-cw-description">
-                          Have specific requirements for your university? Request any bespoke workflow or custom module for your campus LMS, and our engineering team will build and deploy it directly into your instance.
+                          Every university has unique academic and operational workflows. Tell us what your institution requires, and our engineering team will build and deploy custom modules directly into your LMS.
                         </p>
 
-                        {/* Interactive Workflow Capabilities Bento Tiles */}
-                        <div className="lms-cw-capabilities-grid">
-                          <div className="lms-cw-cap-card">
-                            <div className="lms-cw-cap-icon"><CheckCircle2 size={16} /></div>
-                            <div>
-                              <strong>Custom Evaluation & Relative Grading</strong>
-                              <span>Implement university-specific grading rubrics, relative grading curves, and automated grade sheet exports.</span>
-                            </div>
-                          </div>
-
-                          <div className="lms-cw-cap-card">
-                            <div className="lms-cw-cap-icon"><Layers size={16} /></div>
-                            <div>
-                              <strong>Campus ERP & SIS Synchronization</strong>
-                              <span>Bidirectional integration with your existing university database, attendance tracking, and student registries.</span>
-                            </div>
-                          </div>
-
-                          <div className="lms-cw-cap-card">
-                            <div className="lms-cw-cap-icon"><Terminal size={16} /></div>
-                            <div>
-                              <strong>Multi-Stage Timed Lab Assessments</strong>
-                              <span>Automated semester coding sprints with stage locking, anti-cheat AI proctoring, and custom test-case suites.</span>
-                            </div>
-                          </div>
-
-                          <div className="lms-cw-cap-card">
-                            <div className="lms-cw-cap-icon"><GraduationCap size={16} /></div>
-                            <div>
-                              <strong>White-Labeled Institutional Sub-Portals</strong>
-                              <span>Custom campus domain branding, departmental access hierarchy, and dean-level placement analytics.</span>
-                            </div>
+                        {/* Interactive Custom Workflow Request Box */}
+                        <div className="lms-cw-request-box">
+                          <div className="lms-cw-input-row">
+                            <input
+                              type="text"
+                              className="lms-cw-input"
+                              placeholder="Describe any custom workflow or module your campus requires..."
+                              value={customWorkflowReq}
+                              onChange={(e) => setCustomWorkflowReq(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') setIsMeetingModalOpen(true);
+                              }}
+                            />
+                            <button
+                              type="button"
+                              className="lms-cw-submit-btn"
+                              onClick={() => setIsMeetingModalOpen(true)}
+                            >
+                              <span>Book a Meeting</span>
+                              <ArrowRight size={14} />
+                            </button>
                           </div>
                         </div>
 
                         <div className="lms-cw-actions-row">
-                          <button className="lms-cw-primary-btn" onClick={() => setIsMeetingModalOpen(true)}>
-                            <span>Book a Meeting</span>
-                            <ArrowRight size={15} />
-                          </button>
-                          <span className="lms-cw-hint">Zero upfront engineering cost for partner campuses</span>
+                          <span className="lms-cw-hint">
+                            <CheckCircle2 size={13} />
+                            <span>Complimentary engineering for partner campuses</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : lmsActiveTab === 'syllabus' ? (
+                    /* Interactive University Syllabus View */
+                    <div className="lms-syllabus-workspace animate-fade-in">
+                      <div className="lms-syl-card">
+                        {/* Header */}
+                        <div className="lms-syl-header">
+                          <div className="lms-syl-header-left">
+                            <div className="lms-syl-tag-row">
+                              <span className="lms-syl-code-badge">CS-402</span>
+                              <span className="lms-syl-sem-badge">Semester IV • 4 Credits</span>
+                              <span className="lms-syl-approved-badge">University Board Approved ✓</span>
+                            </div>
+                            <h3 className="lms-syl-title">Data Structures & Algorithms in C++ & Python</h3>
+                            <p className="lms-syl-desc">
+                              Semester curriculum aligned with tier-1 tech recruiter benchmarks and academic credit guidelines.
+                            </p>
+                          </div>
+
+                          <div className="lms-syl-header-right">
+                            <button 
+                              type="button" 
+                              className="lms-syl-download-btn"
+                              onClick={() => alert("Downloading University Syllabus PDF...")}
+                              title="Download PDF"
+                            >
+                              <Download size={14} />
+                              <span>Download PDF</span>
+                            </button>
+                            <button 
+                              type="button" 
+                              className="lms-cw-close-btn"
+                              onClick={() => setLmsActiveTab('home')}
+                              title="Return to Home Dashboard"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Semester Metrics Bar */}
+                        <div className="lms-syl-stats-bar">
+                          <div className="lms-syl-stat-item">
+                            <span className="lms-syl-stat-num">14</span>
+                            <span className="lms-syl-stat-lbl">Weeks</span>
+                          </div>
+                          <div className="lms-syl-stat-divider"></div>
+                          <div className="lms-syl-stat-item">
+                            <span className="lms-syl-stat-num">42</span>
+                            <span className="lms-syl-stat-lbl">Lectures</span>
+                          </div>
+                          <div className="lms-syl-stat-divider"></div>
+                          <div className="lms-syl-stat-item">
+                            <span className="lms-syl-stat-num">18</span>
+                            <span className="lms-syl-stat-lbl">Coding Labs</span>
+                          </div>
+                          <div className="lms-syl-stat-divider"></div>
+                          <div className="lms-syl-stat-item">
+                            <span className="lms-syl-stat-num">4</span>
+                            <span className="lms-syl-stat-lbl">Recruiter Tests</span>
+                          </div>
+                          <div className="lms-syl-progress-wrap">
+                            <div className="lms-syl-prog-info">
+                              <span>Curriculum Delivery</span>
+                              <strong>65% Delivered</strong>
+                            </div>
+                            <div className="lms-syl-prog-track">
+                              <div className="lms-syl-prog-fill" style={{ width: '65%' }}></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Interactive Module Accordion List */}
+                        <div className="lms-syl-modules-list">
+                          {SYLLABUS_MODULES.map((mod, idx) => {
+                            const isExpanded = expandedSyllabusModule === idx;
+                            return (
+                              <div 
+                                key={mod.id} 
+                                className={`lms-syl-mod-card ${isExpanded ? 'expanded' : ''}`}
+                              >
+                                <div 
+                                  className="lms-syl-mod-header"
+                                  onClick={() => setExpandedSyllabusModule(isExpanded ? null : idx)}
+                                >
+                                  <div className="lms-syl-mod-left">
+                                    <span className={`lms-syl-status-tag tag-${mod.statusClass}`}>
+                                      {mod.status}
+                                    </span>
+                                    <div>
+                                      <h4 className="lms-syl-mod-title">
+                                        {mod.week}: {mod.title}
+                                      </h4>
+                                      <div className="lms-syl-mod-meta">
+                                        <span><Clock size={12} /> {mod.lectures} Lectures</span>
+                                        <span>•</span>
+                                        <span><Code size={12} /> {mod.labs} Coding Labs</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="lms-syl-mod-toggle">
+                                    <span className="lms-syl-toggle-text">{isExpanded ? 'Collapse' : 'Expand Topics'}</span>
+                                    <ChevronDown size={16} className={`lms-syl-chevron ${isExpanded ? 'rotated' : ''}`} />
+                                  </div>
+                                </div>
+
+                                {isExpanded && (
+                                  <div className="lms-syl-mod-body animate-fade-in">
+                                    <div className="lms-syl-topics-grid">
+                                      {mod.topics.map((t, tIdx) => (
+                                        <div key={tIdx} className="lms-syl-topic-item">
+                                          <CheckCircle2 size={14} color={t.done ? "#10B981" : "#9CA3AF"} />
+                                          <span className={t.done ? "topic-done" : ""}>{t.name}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <div className="lms-syl-lab-callout">
+                                      <span className="lms-syl-lab-badge">Featured Lab Sandbox</span>
+                                      <span className="lms-syl-lab-name">{mod.featuredLab}</span>
+                                      <span className={`fu-solver-diff-badge diff-${mod.labDifficulty.toLowerCase()}`}>{mod.labDifficulty}</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -2190,17 +2596,17 @@ const ForUniversities = () => {
               </div>
 
               {/* Interactive Practice Card */}
+              {/* Interactive Practice Card: Dedicated Workspace Mockup */}
               <div className="fu-practice-main-card">
-                {activePracticeProblem ? (
-                  <div className="fu-solver-workspace">
-                    {/* 1. Solver Top Navigation Bar */}
-                    <div className="fu-solver-top-bar">
+                <div className="fu-solver-workspace">
+                  {/* 1. Solver Top Navigation Bar */}
+                  <div className="fu-solver-top-bar">
                       <div className="fu-solver-nav-left">
                         <button
                           type="button"
                           className="fu-solver-back-btn"
-                          onClick={() => setActivePracticeProblem(null)}
-                          title="Back to Problems"
+                          onClick={() => setPracticeViewTab('problem')}
+                          title="Back"
                         >
                           <ChevronLeft size={18} />
                         </button>
@@ -2221,27 +2627,30 @@ const ForUniversities = () => {
                         >
                           <Clock size={14} />
                           <span>Submissions</span>
-                          {problemSubmissions.filter(s => s.problemId === activePracticeProblem.id).length > 0 && (
-                            <span className="fu-solver-sub-count">
-                              {problemSubmissions.filter(s => s.problemId === activePracticeProblem.id).length}
-                            </span>
-                          )}
+                          <span className="fu-solver-sub-count">{problemSubmissions.length}</span>
                         </button>
                       </div>
 
                       <div className="fu-solver-nav-right">
                         {/* Language Selector */}
                         <div className="fu-solver-lang-wrapper">
+                          <Code size={13} className="fu-solver-lang-icon" />
                           <select
                             value={sandboxLang}
                             onChange={(e) => handleSandboxLangChange(e.target.value)}
                             className="fu-solver-lang-select"
                           >
-                            {(activePracticeProblem.track === 'sql' ? ['SQL'] : ['CPP', 'Python', 'Java']).map(lang => (
-                              <option key={lang} value={lang}>{lang}</option>
-                            ))}
+                            <option value="JAVA">JAVA</option>
+                            <option value="Python">Python</option>
+                            <option value="CPP">C++</option>
                           </select>
-                          <ChevronDown size={14} className="fu-solver-lang-chevron" />
+                          <ChevronDown size={13} className="fu-solver-lang-chevron" />
+                        </div>
+
+                        {/* Monospace Timer Pill */}
+                        <div className="fu-solver-timer-pill" title="Elapsed Time">
+                          <Clock size={13} />
+                          <span>{formatTimer(sessionTimer)}</span>
                         </div>
 
                         {/* Reset Code */}
@@ -2255,26 +2664,53 @@ const ForUniversities = () => {
                         </button>
 
                         {/* Run Code */}
-                        <button
-                          type="button"
-                          className="fu-solver-run-btn"
-                          onClick={handleRunSandboxCode}
-                          disabled={isRunningSandbox}
-                        >
-                          <Play size={13} fill="currentColor" />
-                          <span>{isRunningSandbox ? 'Running...' : 'Run Code'}</span>
-                        </button>
+                        <div className="fu-solver-btn-wrap">
+                          <button
+                            type="button"
+                            className="fu-solver-run-btn"
+                            onClick={() => {
+                              setHasInteractedWithSandbox(true);
+                              handleRunSandboxCode();
+                            }}
+                            disabled={isRunningSandbox}
+                            title="Run code against sample test cases"
+                          >
+                            <Play size={13} fill="currentColor" />
+                            <span>{isRunningSandbox ? 'Running...' : 'Run Code'}</span>
+                          </button>
+
+                          {/* Animated Cursor Guide for Run Code */}
+                          {!hasInteractedWithSandbox && (
+                            <div className="fu-run-guide-cursor">
+                              <div className="lms-cursor-pointer-wrap">
+                                <svg className="lms-cursor-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                  <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#2563EB" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
+                                </svg>
+                                <span className="fu-cursor-click-wave"></span>
+                              </div>
+                              <div className="fu-cursor-callout">
+                                <span>Try Run Code</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
                         {/* Submit */}
-                        <button
-                          type="button"
-                          className="fu-solver-submit-btn"
-                          onClick={handleSubmitSandbox}
-                          disabled={isSandboxSubmitting}
-                        >
-                          <Check size={14} strokeWidth={2.5} />
-                          <span>{isSandboxSubmitting ? 'Submitting...' : 'Submit'}</span>
-                        </button>
+                        <div className="fu-solver-btn-wrap">
+                          <button
+                            type="button"
+                            className="fu-solver-submit-btn"
+                            onClick={() => {
+                              setHasInteractedWithSandbox(true);
+                              handleSubmitSandbox();
+                            }}
+                            disabled={isSandboxSubmitting}
+                            title="Submit solution for grading"
+                          >
+                            <Check size={14} strokeWidth={2.5} />
+                            <span>{isSandboxSubmitting ? 'Submitting...' : 'Submit'}</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -2284,26 +2720,10 @@ const ForUniversities = () => {
                         
                         {/* Left Pane: Problem Statement */}
                         <div className="fu-solver-desc-pane">
-                          <div className="fu-solver-breadcrumbs">
-                            <span>Home</span>
-                            <span className="fu-bc-sep">/</span>
-                            <span>CipherLabs</span>
-                            <span className="fu-bc-sep">/</span>
-                            <button
-                              type="button"
-                              className="fu-bc-link"
-                              onClick={() => setActivePracticeProblem(null)}
-                            >
-                              Problems
-                            </button>
-                            <span className="fu-bc-sep">/</span>
-                            <span className="fu-bc-current">{activePracticeProblem.title}</span>
-                          </div>
-
                           <div className="fu-solver-title-row">
                             <h3 className="fu-solver-problem-title">{activePracticeProblem.title}</h3>
                             <span className={`fu-solver-diff-badge diff-${activePracticeProblem.difficulty.toLowerCase()}`}>
-                              {activePracticeProblem.difficulty}
+                              {activePracticeProblem.difficulty.toUpperCase()}
                             </span>
                           </div>
 
@@ -2313,43 +2733,34 @@ const ForUniversities = () => {
                             ))}
                           </div>
 
-                          {/* Example 1 Card */}
-                          {activePracticeProblem.examples && activePracticeProblem.examples.length > 0 && (
-                            <div className="fu-solver-example-card">
-                              <div className="fu-solver-ex-heading">Example 1:</div>
-                              <div className="fu-solver-ex-field">
-                                <span className="fu-solver-field-label">Input:</span>
-                                <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].input}</pre>
-                              </div>
-                              <div className="fu-solver-ex-field">
-                                <span className="fu-solver-field-label">Output:</span>
-                                <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].output}</pre>
-                              </div>
-                              {activePracticeProblem.examples[0].explanation && (
+                          {/* 3 Example Cards matching screenshot */}
+                          <div className="fu-solver-examples-list">
+                            {(activePracticeProblem.examples || []).map((ex, idx) => (
+                              <div key={ex.id || idx} className="fu-solver-example-card">
+                                <div className="fu-solver-ex-heading">{ex.title || `Example ${idx + 1}`}</div>
+                                
                                 <div className="fu-solver-ex-field">
-                                  <span className="fu-solver-field-label">Explanation:</span>
-                                  <pre className="fu-solver-field-val">{activePracticeProblem.examples[0].explanation}</pre>
+                                  <span className="fu-solver-field-label">INPUT:</span>
+                                  <div className="fu-solver-field-box">{ex.input}</div>
                                 </div>
-                              )}
-                            </div>
-                          )}
 
-                          {/* AI Tutor Hint Box */}
-                          <div className="fu-solver-hint-box">
-                            <button
-                              type="button"
-                              className="fu-solver-hint-btn"
-                              onClick={() => setIsAiHintOpen(!isAiHintOpen)}
-                            >
-                              <Sparkles size={13} />
-                              <span>{isAiHintOpen ? 'Hide AI Tutor Hint' : '💡 Ask AI Tutor for an Optimization Hint'}</span>
-                            </button>
-                            {isAiHintOpen && (
-                              <div className="fu-solver-hint-content">
-                                <div className="fu-hint-badge">CipherAI Hint</div>
-                                <p>{activePracticeProblem.aiHint}</p>
+                                <div className="fu-solver-ex-field">
+                                  <span className="fu-solver-field-label">OUTPUT:</span>
+                                  <div className="fu-solver-field-box">{ex.output}</div>
+                                </div>
+
+                                {ex.explanation && (
+                                  <div className="fu-solver-ex-field fu-solver-ex-expl">
+                                    <span className="fu-solver-field-label">EXPLANATION:</span>
+                                    <div className="fu-solver-field-text">
+                                      {ex.explanation.split('\n').map((line, li) => (
+                                        <p key={li}>{line}</p>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            )}
+                            ))}
                           </div>
                         </div>
 
@@ -2358,12 +2769,13 @@ const ForUniversities = () => {
                           <span className="fu-solver-handle-dots">⋮⋮</span>
                         </div>
 
-                        {/* Right Pane: Code Editor + Test Console */}
+                        {/* Right Pane: Code Editor + AI Assistance Drawer */}
                         <div className="fu-solver-editor-pane">
+                          {/* Upper Half: Code Editor */}
                           <div className="fu-solver-editor-main">
                             {/* Line Numbers Gutter */}
                             <div className="fu-solver-gutter">
-                              {Array.from({ length: Math.max((sandboxCode || '').split('\n').length, 8) }, (_, i) => (
+                              {Array.from({ length: Math.max((sandboxCode || '').split('\n').length, 5) }, (_, i) => (
                                 <span key={i + 1} className="fu-gutter-num">{i + 1}</span>
                               ))}
                             </div>
@@ -2412,53 +2824,161 @@ const ForUniversities = () => {
                                   <strong className="fu-stat-val status-green">{submissionVerdict.casesPassed}/{submissionVerdict.totalCases} Passed ✓</strong>
                                 </div>
                               </div>
-                              <div className="fu-verdict-actions">
-                                <button
-                                  type="button"
-                                  className="fu-verdict-sub-link"
-                                  onClick={() => setPracticeViewTab('submissions')}
-                                >
-                                  View All Submissions →
-                                </button>
-                                <button
-                                  type="button"
-                                  className="fu-verdict-back-link"
-                                  onClick={() => setActivePracticeProblem(null)}
-                                >
-                                  Back to Problems List
-                                </button>
-                              </div>
                             </div>
                           )}
 
-                          {/* Bottom Test Cases Console */}
-                          <div className="fu-solver-testcases-console">
-                            <div className="fu-tc-bar">
-                              <button
-                                type="button"
-                                className={`fu-tc-toggle-btn ${showTestCases ? 'active' : ''}`}
-                                onClick={() => setShowTestCases(!showTestCases)}
-                              >
-                                <span>Test Cases</span>
-                                <ChevronDown size={14} className={`fu-tc-chevron ${showTestCases ? 'rotated' : ''}`} />
-                              </button>
-
-                              {sandboxRunResult && (
-                                <span className="fu-tc-run-status">
-                                  <Check size={13} color="#059669" />
-                                  {sandboxRunResult.casesPassed}/{sandboxRunResult.totalCases} Testcases Passed ({sandboxRunResult.runtime})
+                          {/* Lower Half: AI Terminal & Test Cases Console */}
+                          <div className="fu-ai-terminal-console">
+                            {/* Terminal Header Bar */}
+                            <div className="fu-ai-term-header">
+                              <div className="fu-ai-term-title">
+                                <span className="fu-ai-term-badge-icon">
+                                  <Terminal size={12} />
                                 </span>
-                              )}
+                                <span className="fu-ai-term-path">ai_assist@cipherschools_labs ~ zsh</span>
+                              </div>
+
+                              <div className="fu-ai-term-actions">
+                                <div className="fu-ai-term-hint-count" title="Algorithmic Hint Stages">
+                                  <span>AI HINT ({aiHintStage}/3)</span>
+                                  <Info size={13} />
+                                </div>
+
+                                <button
+                                  type="button"
+                                  className="fu-ai-term-run-btn"
+                                  onClick={() => {
+                                    setActiveDrawerTab('ai');
+                                    handleTerminalCommand('/hint run');
+                                  }}
+                                  title="Request Next Hint Stage"
+                                >
+                                  <Play size={11} fill="currentColor" />
+                                  <span>Run AI Assist</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  className="fu-ai-term-text-btn"
+                                  onClick={() => handleTerminalCommand('/clear')}
+                                  title="Clear Terminal Output"
+                                >
+                                  clear
+                                </button>
+
+                                <div className="fu-ai-term-win-controls">
+                                  <button type="button" className="fu-ai-win-ctrl" title="Minimize">
+                                    <span>—</span>
+                                  </button>
+                                  <button type="button" className="fu-ai-win-ctrl" title="Maximize">
+                                    <span>⤢</span>
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    className="fu-ai-win-ctrl" 
+                                    title="Reset Terminal"
+                                    onClick={() => handleTerminalCommand('/clear')}
+                                  >
+                                    <span>✕</span>
+                                  </button>
+                                </div>
+                              </div>
                             </div>
 
-                            {showTestCases && (
-                              <div className="fu-tc-drawer">
-                                {/* Case Tabs */}
+                            {/* Advanced Tools Sub-Bar */}
+                            <div className="fu-ai-term-tools-bar">
+                              <div className="fu-ai-tools-count">
+                                <span>ADVANCED TOOLS ({advancedToolsUsed}/10)</span>
+                                <Info size={12} />
+                              </div>
+
+                              <div className="fu-ai-tool-pills">
+                                <button
+                                  type="button"
+                                  className="fu-ai-tool-pill"
+                                  onClick={() => {
+                                    setActiveDrawerTab('ai');
+                                    handleTerminalCommand('./analyze_complexity');
+                                  }}
+                                  title="Run Complexity Analysis"
+                                >
+                                  ./analyze_complexity
+                                </button>
+                                <button
+                                  type="button"
+                                  className="fu-ai-tool-pill"
+                                  onClick={() => {
+                                    setActiveDrawerTab('ai');
+                                    handleTerminalCommand('./dry_run');
+                                  }}
+                                  title="Trace Code Execution Line by Line"
+                                >
+                                  ./dry_run
+                                </button>
+                                <button
+                                  type="button"
+                                  className="fu-ai-tool-pill"
+                                  onClick={() => {
+                                    setActiveDrawerTab('ai');
+                                    handleTerminalCommand('./fix_my_code');
+                                  }}
+                                  title="Get AI-Powered Code Fix Suggestions"
+                                >
+                                  ./fix_my_code
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Drawer Body: AI Terminal OR Test Cases */}
+                            {activeDrawerTab === 'ai' ? (
+                              <div className="fu-ai-term-body">
+                                <div className="fu-ai-term-logs">
+                                  {terminalLogs.map((log) => (
+                                    <div key={log.id} className={`fu-ai-log-entry log-${log.type}`}>
+                                      {log.type === 'welcome' && (
+                                        <div className="fu-ai-welcome-block">
+                                          <div className="fu-ai-welcome-title">Welcome to CipherSchools Labs AI Assist Terminal</div>
+                                          <pre className="fu-ai-welcome-text">{log.content.replace('Welcome to CipherSchools Labs AI Assist Terminal\n\n', '')}</pre>
+                                        </div>
+                                      )}
+                                      {log.type === 'command' && (
+                                        <div className="fu-ai-cmd-block">
+                                          <div className="fu-ai-cmd-input-line">
+                                            <span className="fu-ai-prompt-symbol">ai_assist@cipherschools_labs:~$</span>
+                                            <span className="fu-ai-cmd-typed">{log.cmd}</span>
+                                          </div>
+                                          <pre className="fu-ai-cmd-output">{log.output}</pre>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                  <div ref={terminalBottomRef} />
+                                </div>
+
+                                {/* Terminal Prompt Form */}
+                                <form
+                                  className="fu-ai-prompt-form"
+                                  onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleTerminalCommand();
+                                  }}
+                                >
+                                  <span className="fu-ai-prompt-symbol">ai_assist@cipherschools_labs:~$</span>
+                                  <input
+                                    type="text"
+                                    className="fu-ai-prompt-input"
+                                    value={terminalInput}
+                                    onChange={(e) => setTerminalInput(e.target.value)}
+                                    placeholder="type /help for commands..."
+                                    spellCheck="false"
+                                  />
+                                </form>
+                              </div>
+                            ) : (
+                              /* Test Cases Console */
+                              <div className="fu-tc-drawer fu-tc-drawer-in-term">
                                 <div className="fu-tc-tabs">
-                                  {((sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || [
-                                    { id: 1, input: 'n = 3, magical values = [1, 2, 3], k = 3', expected: '3', actual: '3', time: '2 ms' },
-                                    { id: 2, input: 'n = 4, magical values = [2, 4, 6, 8], k = 2', expected: '10', actual: '10', time: '3 ms' }
-                                  ]).map((tc, idx) => (
+                                  {((sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || []).map((tc, idx) => (
                                     <button
                                       key={tc.id || idx}
                                       type="button"
@@ -2470,13 +2990,9 @@ const ForUniversities = () => {
                                   ))}
                                 </div>
 
-                                {/* Active Case Details */}
                                 {(() => {
-                                  const casesList = (sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || [
-                                    { id: 1, input: 'n = 3, magical values = [1, 2, 3], k = 3', expected: '3', actual: '3', time: '2 ms' },
-                                    { id: 2, input: 'n = 4, magical values = [2, 4, 6, 8], k = 2', expected: '10', actual: '10', time: '3 ms' }
-                                  ];
-                                  const activeCase = casesList[activeTestCaseTab] || casesList[0];
+                                  const casesList = (sandboxRunResult && sandboxRunResult.cases) || activePracticeProblem.testCases || [];
+                                  const activeCase = casesList[activeTestCaseTab] || casesList[0] || {};
                                   return (
                                     <div className="fu-tc-case-body">
                                       <div className="fu-tc-item">
@@ -2486,7 +3002,7 @@ const ForUniversities = () => {
                                       <div className="fu-tc-split-row">
                                         <div className="fu-tc-item">
                                           <span className="fu-tc-label">Output:</span>
-                                          <div className="fu-tc-box output-pass">{activeCase.actual}</div>
+                                          <div className="fu-tc-box output-pass">{activeCase.actual || activeCase.expected}</div>
                                         </div>
                                         <div className="fu-tc-item">
                                           <span className="fu-tc-label">Expected:</span>
@@ -2498,8 +3014,26 @@ const ForUniversities = () => {
                                 })()}
                               </div>
                             )}
-                          </div>
 
+                            {/* Bottom Tab Bar (Test Cases & AI Assistance) */}
+                            <div className="fu-ai-term-bottom-tabs">
+                              <button
+                                type="button"
+                                className={`fu-ai-bottom-tab-btn ${activeDrawerTab === 'testcases' ? 'active' : ''}`}
+                                onClick={() => setActiveDrawerTab('testcases')}
+                              >
+                                <span>Test Cases</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className={`fu-ai-bottom-tab-btn ${activeDrawerTab === 'ai' ? 'active-brand' : ''}`}
+                                onClick={() => setActiveDrawerTab('ai')}
+                              >
+                                <span>AI Assistance</span>
+                              </button>
+                            </div>
+                          </div>
                         </div>
 
                       </div>
@@ -2528,268 +3062,24 @@ const ForUniversities = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {problemSubmissions
-                              .filter(s => s.problemId === activePracticeProblem.id)
-                              .map((sub, idx) => (
-                                <tr key={sub.id || idx}>
-                                  <td>
-                                    <span className="fu-sub-status-badge accepted">
-                                      <CheckCircle2 size={13} /> {sub.status}
-                                    </span>
-                                  </td>
-                                  <td><span className="fu-sub-lang">{sub.language}</span></td>
-                                  <td>{sub.runtime}</td>
-                                  <td>{sub.memory}</td>
-                                  <td className="fu-sub-date">{sub.submittedAt}</td>
-                                </tr>
-                              ))}
+                            {problemSubmissions.map((sub, idx) => (
+                              <tr key={sub.id || idx}>
+                                <td>
+                                  <span className="fu-sub-status-badge accepted">
+                                    <CheckCircle2 size={13} /> {sub.status}
+                                  </span>
+                                </td>
+                                <td><span className="fu-sub-lang">{sub.language}</span></td>
+                                <td>{sub.runtime}</td>
+                                <td>{sub.memory}</td>
+                                <td className="fu-sub-date">{sub.submittedAt}</td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </div>
                     )}
-                  </div>
-                ) : (
-                  <>
-                    {/* 1. Track Bar */}
-                    <div className="fu-practice-track-bar">
-                      <div className="fu-practice-track-left">
-                        <span className="fu-track-label">TRACK:</span>
-                        <button
-                          type="button"
-                          className={`fu-track-tab-btn ${practiceTrack === 'all' ? 'active' : ''}`}
-                          onClick={() => setPracticeTrack('all')}
-                        >
-                          <Sparkles size={13} className="fu-sparkle-icon" />
-                          <span>All (346)</span>
-                        </button>
-                      </div>
-
-                      <div className="fu-practice-track-right">
-                        <button
-                          type="button"
-                          className={`fu-track-tab-btn ${practiceTrack === 'programming' ? 'active' : ''}`}
-                          onClick={() => setPracticeTrack('programming')}
-                        >
-                          <Code size={13} />
-                          <span>Programming {totalProgrammingSolved}/108</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`fu-track-tab-btn ${practiceTrack === 'dsa' ? 'active' : ''}`}
-                          onClick={() => setPracticeTrack('dsa')}
-                        >
-                          <Layers size={13} />
-                          <span>DSA {totalDsaSolved}/190</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`fu-track-tab-btn ${practiceTrack === 'sql' ? 'active' : ''}`}
-                          onClick={() => setPracticeTrack('sql')}
-                        >
-                          <Database size={13} />
-                          <span>SQL {totalSqlSolved}/48</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* 2. Search and Filter Bar */}
-                    <div className="fu-practice-filter-bar">
-                      <div className="fu-filter-top-row">
-                        <div className="fu-practice-search-box">
-                          <Search size={15} className="fu-search-icon" />
-                          <input
-                            type="text"
-                            placeholder="Search problems..."
-                            value={practiceSearch}
-                            onChange={(e) => setPracticeSearch(e.target.value)}
-                            className="fu-practice-search-input"
-                          />
-                          {practiceSearch && (
-                            <button 
-                              type="button" 
-                              className="fu-search-clear-btn" 
-                              onClick={() => setPracticeSearch('')}
-                            >
-                              <X size={13} />
-                            </button>
-                          )}
-                        </div>
-
-                        <div className="fu-practice-level-group">
-                          <span className="fu-level-label">LEVEL:</span>
-                          <div className="fu-level-pills">
-                            {['all', 'beginner', 'intermediate', 'advanced'].map((lvl) => (
-                              <button
-                                key={lvl}
-                                type="button"
-                                className={`fu-level-pill ${practiceLevel === lvl ? 'active' : ''}`}
-                                onClick={() => setPracticeLevel(lvl)}
-                              >
-                                {lvl.charAt(0).toUpperCase() + lvl.slice(1)}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Dropdown Filters Row */}
-                      <div className="fu-filter-dropdowns-row">
-                        <div className="fu-select-wrapper">
-                          <select
-                            value={practiceCompany}
-                            onChange={(e) => setPracticeCompany(e.target.value)}
-                            className="fu-filter-select"
-                          >
-                            <option value="all">Company...</option>
-                            <option value="Amazon">Amazon</option>
-                            <option value="Google">Google</option>
-                            <option value="Microsoft">Microsoft</option>
-                            <option value="Adobe">Adobe</option>
-                            <option value="Meta">Meta</option>
-                            <option value="Uber">Uber</option>
-                            <option value="Apple">Apple</option>
-                            <option value="LinkedIn">LinkedIn</option>
-                            <option value="Goldman Sachs">Goldman Sachs</option>
-                          </select>
-                          <ChevronDown size={14} className="fu-select-arrow" />
-                        </div>
-
-                        <div className="fu-select-wrapper">
-                          <select
-                            value={practiceDifficulty}
-                            onChange={(e) => setPracticeDifficulty(e.target.value)}
-                            className="fu-filter-select"
-                          >
-                            <option value="all">Difficulty</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                          </select>
-                          <ChevronDown size={14} className="fu-select-arrow" />
-                        </div>
-
-                        <div className="fu-select-wrapper">
-                          <select
-                            value={practiceTopic}
-                            onChange={(e) => setPracticeTopic(e.target.value)}
-                            className="fu-filter-select"
-                          >
-                            <option value="all">Topics</option>
-                            <option value="Arrays">Arrays</option>
-                            <option value="Stack">Stack</option>
-                            <option value="Prefix-Sum">Prefix-Sum</option>
-                            <option value="Sliding-Window">Sliding-Window</option>
-                            <option value="Two Pointers">Two Pointers</option>
-                            <option value="Hashing">Hashing</option>
-                            <option value="OOP">OOP / Design</option>
-                            <option value="Window Functions">Window Functions</option>
-                          </select>
-                          <ChevronDown size={14} className="fu-select-arrow" />
-                        </div>
-
-                        <div className="fu-select-wrapper">
-                          <select
-                            value={practiceStatusFilter}
-                            onChange={(e) => setPracticeStatusFilter(e.target.value)}
-                            className="fu-filter-select"
-                          >
-                            <option value="all">Status</option>
-                            <option value="solved">Solved</option>
-                            <option value="unsolved">Unsolved</option>
-                          </select>
-                          <ChevronDown size={14} className="fu-select-arrow" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* 3. Problems Table */}
-                    <div className="fu-practice-table-container">
-                      <table className="fu-practice-table">
-                        <thead>
-                          <tr>
-                            <th className="th-status">STATUS</th>
-                            <th className="th-title">TITLE</th>
-                            <th className="th-type">TYPE</th>
-                            <th className="th-topic">TOPIC</th>
-                            <th className="th-difficulty">DIFFICULTY</th>
-                            <th className="th-action">ACTION</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredProblems.length > 0 ? (
-                            filteredProblems.map((prob) => {
-                              const isSolved = solvedProblems.includes(prob.id);
-                              return (
-                                <tr key={prob.id} className="fu-practice-tr" onClick={() => openSandbox(prob)}>
-                                  <td className="td-status" onClick={(e) => toggleSolved(prob.id, e)}>
-                                    <button
-                                      type="button"
-                                      className={`fu-status-toggle ${isSolved ? 'solved' : ''}`}
-                                      title={isSolved ? 'Mark as Unsolved' : 'Mark as Solved'}
-                                    >
-                                      {isSolved ? <Check size={11} strokeWidth={3} /> : null}
-                                    </button>
-                                  </td>
-                                  <td className="td-title">
-                                    <span className="fu-prob-title">{prob.title}</span>
-                                  </td>
-                                  <td className="td-type">
-                                    <span className="fu-prob-type-badge">{prob.type}</span>
-                                  </td>
-                                  <td className="td-topic">
-                                    <div className="fu-prob-topics-row">
-                                      {prob.topics.map((topic, i) => (
-                                        <span key={i} className="fu-prob-topic-tag">{topic}</span>
-                                      ))}
-                                    </div>
-                                  </td>
-                                  <td className="td-difficulty">
-                                    <span className={`fu-prob-diff-badge diff-${prob.difficulty.toLowerCase()}`}>
-                                      {prob.difficulty}
-                                    </span>
-                                  </td>
-                                  <td className="td-action">
-                                    <button
-                                      type="button"
-                                      className="fu-practice-action-btn"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        openSandbox(prob);
-                                      }}
-                                    >
-                                      Practice <ChevronRight size={14} />
-                                    </button>
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          ) : (
-                            <tr>
-                              <td colSpan={6} className="fu-practice-empty">
-                                No problems match your current filter criteria.
-                                <button 
-                                  type="button" 
-                                  className="fu-reset-filters-btn"
-                                  onClick={() => {
-                                    setPracticeTrack('all');
-                                    setPracticeSearch('');
-                                    setPracticeLevel('all');
-                                    setPracticeDifficulty('all');
-                                    setPracticeTopic('all');
-                                    setPracticeCompany('all');
-                                    setPracticeStatusFilter('all');
-                                  }}
-                                >
-                                  Reset Filters
-                                </button>
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
-                )}
+                </div>
               </div>
 
               {/* Section CTA */}
@@ -2814,10 +3104,10 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">MOCK INTERVIEW [AI]</p>
                 <h2 className="fu-apple-bento-title">
-                  Resume-driven technical interviews, <span className="fu-pitch-accent">evaluated end-to-end.</span>
+                  Real-time technical interviews, <span className="fu-pitch-accent">evaluated end-to-end.</span>
                 </h2>
                 <p className="fu-apple-bento-sub">
-                  Upload a candidate resume, target high-bar company roles, and let AI evaluate personality, system design, and technical depth in one unified report.
+                  Target high-bar company roles, and let AI evaluate system design, technical depth, and communication rigor in real-time.
                 </p>
               </div>
 
@@ -2828,22 +3118,10 @@ const ForUniversities = () => {
                 <div className="fu-mi-steps-bar">
                   <button
                     type="button"
-                    className={`fu-mi-step-tab ${mockInterviewStage === 'resume' ? 'active' : ''}`}
-                    onClick={() => setMockInterviewStage('resume')}
+                    className={`fu-mi-step-tab ${mockInterviewStage === 'interview' ? 'active' : ''}`}
+                    onClick={() => setMockInterviewStage('interview')}
                   >
                     <span className="fu-mi-step-num">1</span>
-                    <span>Upload Resume & Profile</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className={`fu-mi-step-tab ${mockInterviewStage === 'interview' ? 'active' : ''}`}
-                    onClick={() => {
-                      if (mockInterviewStage === 'resume') handleStartInterview();
-                      else setMockInterviewStage('interview');
-                    }}
-                  >
-                    <span className="fu-mi-step-num">2</span>
                     <span>Live AI Interview</span>
                   </button>
 
@@ -2852,259 +3130,196 @@ const ForUniversities = () => {
                     className={`fu-mi-step-tab ${mockInterviewStage === 'report' ? 'active' : ''}`}
                     onClick={() => setMockInterviewStage('report')}
                   >
-                    <span className="fu-mi-step-num">3</span>
+                    <span className="fu-mi-step-num">2</span>
                     <span>360° Evaluation Report</span>
                   </button>
                 </div>
-
-                {/* ── STAGE 1: RESUME & JOB PROFILE SELECTION ── */}
-                {mockInterviewStage === 'resume' && (
-                  <div className="fu-mi-stage-content fu-mi-stage-resume">
-                    <div className="fu-mi-grid-2col">
-                      
-                      {/* Left: Resume Upload & Samples */}
-                      <div className="fu-mi-col">
-                        <h4 className="fu-mi-col-title">
-                          <FileText size={16} /> Candidate Resume
-                        </h4>
-
-                        {/* Drag and Drop Zone */}
-                        <label className="fu-mi-upload-dropzone">
-                          <input 
-                            type="file" 
-                            accept=".pdf,.docx,.doc" 
-                            className="fu-mi-file-input" 
-                            onChange={(e) => {
-                              const file = e.target.files && e.target.files[0];
-                              if (file) setCustomUploadedFile(file.name);
-                            }}
-                          />
-                          <UploadCloud size={32} className="fu-mi-upload-icon" />
-                          <div className="fu-mi-upload-text">
-                            <strong>Click to upload</strong> or drag & drop student resume
-                          </div>
-                          <span className="fu-mi-upload-sub">PDF, DOCX up to 10MB • AI parses tech stack & projects</span>
-                        </label>
-
-                        {customUploadedFile && (
-                          <div className="fu-mi-uploaded-badge">
-                            <CheckCircle2 size={15} color="#059669" />
-                            <span>Uploaded: <strong>{customUploadedFile}</strong></span>
-                          </div>
-                        )}
-
-                        {/* Sample Resumes Picker */}
-                        <div className="fu-mi-samples-wrap">
-                          <span className="fu-mi-samples-label">OR TEST WITH SAMPLE CANDIDATE RESUMES:</span>
-                          <div className="fu-mi-samples-list">
-                            {MOCK_RESUMES.map(res => (
-                              <button
-                                key={res.id}
-                                type="button"
-                                className={`fu-mi-sample-btn ${selectedResumeId === res.id && !customUploadedFile ? 'active' : ''}`}
-                                onClick={() => {
-                                  setSelectedResumeId(res.id);
-                                  setCustomUploadedFile(null);
-                                }}
-                              >
-                                <div className="fu-mi-sample-top">
-                                  <span className="fu-mi-sample-name">{res.candidateName}</span>
-                                  <span className="fu-mi-sample-role">{res.role}</span>
-                                </div>
-                                <div className="fu-mi-sample-skills">
-                                  {res.skills.slice(0, 4).map((s, idx) => (
-                                    <span key={idx} className="fu-mi-skill-tag">{s}</span>
-                                  ))}
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Target Job Profile Selection */}
-                      <div className="fu-mi-col">
-                        <h4 className="fu-mi-col-title">
-                          <Briefcase size={16} /> Target Job Profile
-                        </h4>
-
-                        <div className="fu-mi-profiles-list">
-                          {JOB_PROFILES.map(prof => (
-                            <button
-                              key={prof.id}
-                              type="button"
-                              className={`fu-mi-profile-card ${selectedJobProfileId === prof.id ? 'active' : ''}`}
-                              onClick={() => setSelectedJobProfileId(prof.id)}
-                            >
-                              <div className="fu-mi-profile-header">
-                                <div className="fu-mi-radio-circle">
-                                  {selectedJobProfileId === prof.id && <div className="fu-mi-radio-dot" />}
-                                </div>
-                                <div>
-                                  <h5 className="fu-mi-profile-title">{prof.title}</h5>
-                                  <span className="fu-mi-profile-companies">Hiring standard: {prof.companies}</span>
-                                </div>
-                                <span className="fu-mi-rigor-tag">{prof.rigor}</span>
-                              </div>
-                              <p className="fu-mi-profile-focus">
-                                <strong>Assessment Focus:</strong> {prof.focus}
-                              </p>
-                            </button>
-                          ))}
-                        </div>
-
-                        {/* Interview Configuration Box */}
-                        <div className="fu-mi-config-box">
-                          <div className="fu-mi-config-row">
-                            <span className="fu-mi-config-item">
-                              <Sparkles size={13} /> AI Recruiter: <strong>Sophia (Principal Bar Raiser)</strong>
-                            </span>
-                            <span className="fu-mi-config-item">
-                              <Clock size={13} /> Duration: <strong>~20 Mins</strong>
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Start Action Button */}
-                        <button
-                          type="button"
-                          className="fu-mi-start-btn"
-                          onClick={handleStartInterview}
-                        >
-                          Generate Tailored Questions & Begin Interview <ArrowRight size={16} />
-                        </button>
-                      </div>
-
-                    </div>
-                  </div>
-                )}
 
                 {/* ── STAGE 2: LIVE AI INTERVIEW ── */}
                 {mockInterviewStage === 'interview' && (
                   <div className="fu-mi-stage-content fu-mi-stage-interview">
                     
-                    {/* Top Status Strip */}
-                    <div className="fu-mi-interview-top-strip">
-                      <div className="fu-mi-top-left">
-                        <span className="fu-mi-live-indicator">
-                          <span className="fu-mi-live-dot" /> LIVE SESSION
-                        </span>
-                        <span className="fu-mi-active-profile-tag">
-                          {activeJobProfile.title} • {activeJobProfile.companies}
-                        </span>
-                      </div>
-
-                      <div className="fu-mi-top-right">
-                        <span className="fu-mi-proctor-pill">
-                          <UserCheck size={13} /> Anti-Cheat Active
-                        </span>
-                        <span className="fu-mi-timer-pill">
-                          <Clock size={13} /> 18:42 Left
-                        </span>
-                        <span className="fu-mi-q-count">
-                          Question {currentQuestionIdx + 1} of {currentInterviewQuestions.length}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Interview Grid: AI Persona vs Candidate Input */}
-                    <div className="fu-mi-interview-grid">
+                    {/* Live Room Frame */}
+                    <div className="fu-mi-live-room-frame">
                       
-                      {/* Left: AI Interviewer Persona & Question */}
-                      <div className="fu-mi-ai-pane">
-                        <div className="fu-mi-persona-card">
-                          <div className="fu-mi-avatar-wrap">
-                            <div className="fu-mi-avatar">
-                              <Bot size={28} />
-                            </div>
-                            <div className="fu-mi-audio-waves">
-                              <span className="fu-mi-wave" />
-                              <span className="fu-mi-wave" />
-                              <span className="fu-mi-wave" />
-                              <span className="fu-mi-wave" />
-                            </div>
-                          </div>
-                          <div>
-                            <h5 className="fu-mi-interviewer-name">Sophia</h5>
-                            <span className="fu-mi-interviewer-title">Principal AI Engineering Recruiter</span>
-                          </div>
+                      {/* Top Status Header */}
+                      <div className="fu-mi-live-header">
+                        <div className="fu-mi-live-q-meta">
+                          <span className="fu-mi-q-step">
+                            Q{currentQuestionIdx + 1} / {currentInterviewQuestions.length}
+                          </span>
+                          <span className="fu-mi-meta-bullet">·</span>
+                          <span className="fu-mi-asking-tag">
+                            <span className="fu-mi-asking-dot" /> interviewer asking
+                          </span>
                         </div>
 
-                        <div className="fu-mi-question-box">
-                          <div className="fu-mi-q-label">QUESTION #{currentQ.qNum}:</div>
-                          <p className="fu-mi-q-text">"{currentQ.question}"</p>
-                          <div className="fu-mi-q-ref">
-                            <Sparkles size={13} /> {currentQ.ref}
+                        <div className="fu-mi-live-header-right">
+                          <div className="fu-mi-live-pill pill-timer">
+                            <span className="fu-mi-rec-dot" />
+                            <span>18:42</span>
                           </div>
-                        </div>
-
-                        <div className="fu-mi-expected-topics">
-                          <span className="fu-mi-topics-label">Key Topics Assessed:</span>
-                          <div className="fu-mi-topic-chips">
-                            <span>Idempotency Keys</span>
-                            <span>Distributed Locks (SETNX)</span>
-                            <span>TTL & Deadlock Prevention</span>
+                          <div className="fu-mi-live-pill pill-conn">
+                            <span className="fu-mi-conn-dot" />
+                            <span>Good connection</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Candidate Response Console */}
-                      <div className="fu-mi-candidate-pane">
-                        <div className="fu-mi-response-header">
-                          <span className="fu-mi-cand-name">
-                            Candidate Response ({customUploadedFile ? 'Uploaded Resume' : activeResume.candidateName})
-                          </span>
+                      {/* Main Workspace: Left Question Area + Right Participant Video Feeds */}
+                      <div className="fu-mi-live-body">
+                        
+                        {/* Left Column: Interviewer Question & Context */}
+                        <div className="fu-mi-live-question-pane">
+                          <h2 className="fu-mi-live-q-heading">
+                            {currentQ.question}
+                          </h2>
 
+                          {(currentQ.context || currentQ.ref) && (
+                            <div className="fu-mi-live-q-context">
+                              <p>{currentQ.context || currentQ.ref}</p>
+                            </div>
+                          )}
+
+                          <div className="fu-mi-live-q-prompt">
+                            {currentQ.helperText || "Take your time — speak when you're ready"}
+                          </div>
+
+                          {/* Live Speech Recognition & Candidate Transcription Preview */}
+                          {(isVoiceRecording || candidateAnswer) && (
+                            <div className="fu-mi-live-transcription-box">
+                              <div className="fu-mi-transcription-status">
+                                <span className="fu-mi-listening-pulse" />
+                                <span>{isVoiceRecording ? 'Transcribing your audio...' : 'Candidate Response:'}</span>
+                              </div>
+                              <p className="fu-mi-transcription-text">
+                                "{candidateAnswer || currentQ.sampleAnswer}"
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Right Column: AI Interviewer Persona + Candidate Video Tile */}
+                        <div className="fu-mi-live-video-pane">
+                          
+                          {/* Top Tile: AI Interviewer */}
+                          <div className="fu-mi-ai-video-card">
+                            <div className="fu-mi-ai-aura">
+                              <div className="fu-mi-concentric-ring ring-3" />
+                              <div className="fu-mi-concentric-ring ring-2" />
+                              <div className="fu-mi-concentric-ring ring-1">
+                                <Bot size={28} className="fu-mi-bot-svg" />
+                              </div>
+                            </div>
+                            <h4 className="fu-mi-ai-card-name">AI Interviewer</h4>
+                            <div className="fu-mi-ai-speaking-badge">
+                              <div className="fu-mi-audio-bars">
+                                <span className="fu-mi-bar bar-1" />
+                                <span className="fu-mi-bar bar-2" />
+                                <span className="fu-mi-bar bar-3" />
+                                <span className="fu-mi-bar bar-4" />
+                              </div>
+                              <span>Speaking</span>
+                            </div>
+                          </div>
+
+                          {/* Bottom Tile: Candidate Stream ("You") */}
+                          <div className={`fu-mi-user-video-tile ${!isVideoOn ? 'video-off' : ''}`}>
+                            <div className="fu-mi-silhouette-center">
+                              <div className="fu-mi-silhouette-head" />
+                              <div className="fu-mi-silhouette-torso" />
+                            </div>
+
+                            {/* Top-Right Mic Status */}
+                            <button
+                              type="button"
+                              className={`fu-mi-stream-mic-badge ${!isVoiceRecording ? 'is-muted' : 'is-live'}`}
+                              onClick={() => setIsVoiceRecording(!isVoiceRecording)}
+                              title={isVoiceRecording ? "Microphone active - click to mute" : "Microphone muted - click to speak"}
+                            >
+                              {!isVoiceRecording ? <MicOff size={13} /> : <Mic size={13} />}
+                            </button>
+
+                            {/* Bottom-Left Frosted You Tag */}
+                            <div className="fu-mi-stream-status-pill">
+                              <span className="fu-mi-stream-name">
+                                {customUploadedFile ? 'You' : `You (${activeResume.candidateName.split(' ')[0]})`}
+                              </span>
+                              <span className="fu-mi-face-detection">
+                                <span className="fu-mi-face-dot" /> Face detected
+                              </span>
+                            </div>
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      {/* Bottom Floating Control Dock */}
+                      <div className="fu-mi-live-bottom-bar">
+                        <div className="fu-mi-controls-dock">
+                          
+                          {/* Mic Button */}
                           <button
                             type="button"
-                            className={`fu-mi-voice-toggle ${isVoiceRecording ? 'recording' : ''}`}
+                            className={`fu-mi-ctrl-btn ${!isVoiceRecording ? 'btn-mic-muted' : 'btn-mic-live'}`}
                             onClick={() => setIsVoiceRecording(!isVoiceRecording)}
+                            title={isVoiceRecording ? "Mute Microphone" : "Unmute Microphone"}
                           >
-                            <Mic size={14} />
-                            <span>{isVoiceRecording ? 'Listening (Speaking...)' : 'Speak Answer'}</span>
+                            {!isVoiceRecording ? <MicOff size={18} /> : <Mic size={18} />}
                           </button>
-                        </div>
 
-                        <div className="fu-mi-textarea-wrap">
-                          <textarea
-                            className="fu-mi-response-textarea"
-                            value={candidateAnswer}
-                            onChange={(e) => setCandidateAnswer(e.target.value)}
-                            placeholder="Type or dictate your technical response here..."
-                          />
-                        </div>
-
-                        {/* Live AI Analysis Callout */}
-                        <div className="fu-mi-live-critique">
-                          <span className="fu-mi-critique-badge">Live AI Signal:</span>
-                          <span className="fu-mi-critique-text">{currentQ.feedback}</span>
-                        </div>
-
-                        {/* Interview Navigation Controls */}
-                        <div className="fu-mi-interview-actions">
+                          {/* Camera Button */}
                           <button
                             type="button"
-                            className="fu-mi-btn-subtle"
-                            onClick={handleResetInterview}
+                            className={`fu-mi-ctrl-btn ${isVideoOn ? 'btn-cam-on' : 'btn-cam-off'}`}
+                            onClick={() => setIsVideoOn(!isVideoOn)}
+                            title={isVideoOn ? "Turn off camera" : "Turn on camera"}
                           >
-                            <RotateCcw size={13} /> Change Resume / Profile
+                            {isVideoOn ? <Video size={18} /> : <VideoOff size={18} />}
                           </button>
 
+                          {/* Next Question Button */}
+                          {currentQuestionIdx < currentInterviewQuestions.length - 1 && (
+                            <button
+                              type="button"
+                              className="fu-mi-ctrl-btn btn-next-q"
+                              onClick={handleNextQuestion}
+                              title="Next Interview Question"
+                            >
+                              <span>Next Question</span>
+                              <ArrowRight size={15} />
+                            </button>
+                          )}
+
+                          {/* End Interview Button */}
                           <button
                             type="button"
-                            className="fu-mi-btn-next"
-                            onClick={handleNextQuestion}
-                            disabled={isEvaluatingAnswer}
+                            className="fu-mi-ctrl-btn btn-end"
+                            onClick={() => {
+                              setIsEvaluatingAnswer(true);
+                              setTimeout(() => {
+                                setIsEvaluatingAnswer(false);
+                                setMockInterviewStage('report');
+                              }, 600);
+                            }}
+                            title="End Interview & View Detailed Report"
                           >
-                            {isEvaluatingAnswer ? (
-                              'Analyzing Answer...'
-                            ) : currentQuestionIdx < currentInterviewQuestions.length - 1 ? (
-                              <>Next Question <ArrowRight size={15} /></>
-                            ) : (
-                              <>Complete Interview & View Report <ArrowRight size={15} /></>
-                            )}
+                            <PhoneOff size={16} />
+                            <span>End</span>
                           </button>
+
                         </div>
+
+                        {/* Info Button in Bottom-Right Corner */}
+                        <button
+                          type="button"
+                          className="fu-mi-info-btn"
+                          onClick={() => alert(`CipherSchools AI Interview Room\n• Batch: B.Tech CSE 2025\n• Candidate: ${customUploadedFile ? 'Custom Resume' : activeResume.candidateName}\n• Question ${currentQuestionIdx + 1} of ${currentInterviewQuestions.length}\n• Status: 18:42 Left • Good connection`)}
+                          title="Interview details"
+                        >
+                          <Info size={16} />
+                        </button>
                       </div>
 
                     </div>
@@ -3112,14 +3327,14 @@ const ForUniversities = () => {
                   </div>
                 )}
 
-                {/* ── STAGE 3: DETAILED EVALUATION REPORT ── */}
+                {/* ── STAGE 2: 360° EVALUATION REPORT (Executive Glimpse) ── */}
                 {mockInterviewStage === 'report' && (
                   <div className="fu-mi-stage-content fu-mi-stage-report">
                     
                     {/* Report Banner Header */}
                     <div className="fu-mi-report-header">
                       <div className="fu-mi-report-header-left">
-                        <span className="fu-mi-report-eyebrow">CANDIDATE PERFORMANCE DOSSIER</span>
+                        <span className="fu-mi-report-eyebrow">EXECUTIVE EVALUATION GLIMPSE</span>
                         <h3 className="fu-mi-report-candidate">
                           {customUploadedFile ? 'Candidate Assessment' : activeResume.candidateName}
                         </h3>
@@ -3148,19 +3363,16 @@ const ForUniversities = () => {
                       </div>
                     </div>
 
-                    {/* 4 Multi-Dimensional Evaluation Cards */}
-                    <div className="fu-mi-metrics-grid">
+                    {/* 4 Core Competency Progress Bars (Compact Snapshot) */}
+                    <div className="fu-mi-metrics-grid fu-mi-metrics-glimpse">
                       <div className="fu-mi-metric-card">
                         <div className="fu-mi-metric-top">
-                          <span className="fu-mi-metric-title">Technical Depth & Accuracy</span>
+                          <span className="fu-mi-metric-title">Technical Depth</span>
                           <span className="fu-mi-metric-val score-high">94%</span>
                         </div>
                         <div className="fu-mi-bar-track">
                           <div className="fu-mi-bar-fill fill-high" style={{ width: '94%' }} />
                         </div>
-                        <p className="fu-mi-metric-sub">
-                          Exceptional understanding of idempotency, atomic Redis SETNX locking, and distributed state.
-                        </p>
                       </div>
 
                       <div className="fu-mi-metric-card">
@@ -3171,9 +3383,6 @@ const ForUniversities = () => {
                         <div className="fu-mi-bar-track">
                           <div className="fu-mi-bar-fill fill-high" style={{ width: '88%' }} />
                         </div>
-                        <p className="fu-mi-metric-sub">
-                          Clean algorithmic complexity justification, quick edge-case validation, and space optimization.
-                        </p>
                       </div>
 
                       <div className="fu-mi-metric-card">
@@ -3184,93 +3393,34 @@ const ForUniversities = () => {
                         <div className="fu-mi-bar-track">
                           <div className="fu-mi-bar-fill fill-high" style={{ width: '92%' }} />
                         </div>
-                        <p className="fu-mi-metric-sub">
-                          Practical pooling knowledge with PgBouncer, connection starvation mitigation, and circuit breakers.
-                        </p>
                       </div>
 
                       <div className="fu-mi-metric-card">
                         <div className="fu-mi-metric-top">
-                          <span className="fu-mi-metric-title">Communication & Personality</span>
+                          <span className="fu-mi-metric-title">Communication</span>
                           <span className="fu-mi-metric-val score-high">89%</span>
                         </div>
                         <div className="fu-mi-bar-track">
                           <div className="fu-mi-bar-fill fill-high" style={{ width: '89%' }} />
                         </div>
-                        <p className="fu-mi-metric-sub">
-                          Clear structured STAR framework delivery, articulate confidence, and collaborative tone.
-                        </p>
                       </div>
                     </div>
 
-                    {/* Personality & Behavioral Spectrum */}
-                    <div className="fu-mi-behavioral-section">
-                      <h4 className="fu-mi-section-subtitle">
-                        <Brain size={16} /> Personality & Behavioral Competencies
-                      </h4>
-                      
-                      <div className="fu-mi-behavior-pills">
-                        <div className="fu-mi-bpill">
-                          <span className="fu-mi-bpill-name">Ownership & Accountability</span>
-                          <span className="fu-mi-bpill-score">9.4 / 10</span>
-                          <span className="fu-mi-bpill-desc">Proactively takes ownership of failure states and network retries.</span>
-                        </div>
-
-                        <div className="fu-mi-bpill">
-                          <span className="fu-mi-bpill-name">Critical Thinking Under Stress</span>
-                          <span className="fu-mi-bpill-score">8.9 / 10</span>
-                          <span className="fu-mi-bpill-desc">Maintained composure and data-backed rationale when probed on trade-offs.</span>
-                        </div>
-
-                        <div className="fu-mi-bpill">
-                          <span className="fu-mi-bpill-name">Data-Driven Conflict Resolution</span>
-                          <span className="fu-mi-bpill-score">9.2 / 10</span>
-                          <span className="fu-mi-bpill-desc">Empirical benchmarking of REST vs GraphQL resolved team impasse.</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Question-by-Question Evaluation Breakdown */}
-                    <div className="fu-mi-breakdown-section">
-                      <h4 className="fu-mi-section-subtitle">
-                        <ClipboardList size={16} /> Question-by-Question AI Analysis
-                      </h4>
-
-                      <div className="fu-mi-q-analysis-list">
-                        {currentInterviewQuestions.map((q, idx) => (
-                          <div key={idx} className="fu-mi-q-analysis-card">
-                            <div className="fu-mi-q-analysis-top">
-                              <div className="fu-mi-q-num-badge">Q{q.qNum}</div>
-                              <div className="fu-mi-q-analysis-heading">
-                                <strong>{q.ref}</strong>
-                                <p>{q.question}</p>
-                              </div>
-                              <span className="fu-mi-q-score-badge">9.{5 - idx} / 10</span>
-                            </div>
-                            <div className="fu-mi-q-analysis-feedback">
-                              <strong>AI Feedback:</strong> {q.feedback}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Strengths & Growth Areas */}
-                    <div className="fu-mi-feedback-grid">
+                    {/* Key Strengths & Growth Areas (Concise Glimpse) */}
+                    <div className="fu-mi-feedback-grid fu-mi-feedback-glimpse">
                       <div className="fu-mi-fb-box fb-strength">
-                        <h5>✓ Demonstrated Strengths</h5>
+                        <h5>✓ Key Strengths</h5>
                         <ul>
-                          <li>Authoritative command of distributed locking with atomic Redis SETNX operations.</li>
-                          <li>Clean mitigation strategy against connection pool starvation using connection poolers.</li>
-                          <li>Constructive, data-first communication style when handling architectural disagreements.</li>
+                          <li>Mastery of distributed locking with atomic Redis primitives.</li>
+                          <li>Structured communication with STAR framework delivery.</li>
                         </ul>
                       </div>
 
                       <div className="fu-mi-fb-box fb-growth">
-                        <h5>△ Areas for Continuous Polish</h5>
+                        <h5>△ Areas for Polish</h5>
                         <ul>
-                          <li>Could explicitly quantify memory consumption trade-offs when scaling Redis stream keys.</li>
-                          <li>Consider mentioning distributed tracing (e.g. OpenTelemetry) for end-to-end auditability.</li>
+                          <li>Quantify memory trade-offs when scaling stream keys.</li>
+                          <li>Incorporate distributed tracing for end-to-end auditability.</li>
                         </ul>
                       </div>
                     </div>

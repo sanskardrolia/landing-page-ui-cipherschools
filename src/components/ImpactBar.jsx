@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp } from 'lucide-react';
+import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame } from 'lucide-react';
 import PlacementMarquee from './PlacementMarquee';
 import './ImpactBar.css';
 
@@ -407,7 +407,7 @@ const ImpactBar = () => {
                 <div className="pipeline-step-item">
                   <div className="pipeline-step-tag">HANDS-ON</div>
                   <h4 className="pipeline-step-title">PRACTICE</h4>
-                  <p className="pipeline-step-desc">CipherLabs & Resume Builder</p>
+                  <p className="pipeline-step-desc">Practice & Problem Sets</p>
                 </div>
               </div>
             </div>
@@ -453,7 +453,7 @@ const ImpactBar = () => {
                   onClick={() => setActiveMockupIndex(2)}
                   type="button"
                 >
-                  <span className="ind-dot"></span> CipherLabs
+                  <span className="ind-dot"></span> Practice
                 </button>
               </div>
 
@@ -486,16 +486,16 @@ const ImpactBar = () => {
                   </div>
                 </div>
 
-                {/* Card 3: CipherLabs */}
+                {/* Card 3: Practice */}
                 <div 
                   className={`stacked-mockup-card card-resume ${activeMockupIndex === 2 ? 'card-active' : (activeMockupIndex === 1 ? 'card-next' : 'card-deep')}`}
                   onClick={() => setActiveMockupIndex(2)}
                 >
                   <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - CipherLabs Practice & Problem Set</span>
+                    <span className="window-title">CipherSchools - Practice & Problem Set</span>
                   </div>
                   <div className="mockup-window-body">
-                    <img src="/hero-mockup-cipherlabs.png" alt="CipherSchools CipherLabs Practice Platform Mockup" className="mockup-img" />
+                    <img src="/hero-mockup-cipherlabs.png" alt="CipherSchools Practice Platform Mockup" className="mockup-img" />
                   </div>
                 </div>
 
@@ -614,91 +614,191 @@ const ImpactBar = () => {
             
             {/* Bento Cell 1: 50k+ Active Learners */}
             <div className="bento-cell cell-learners">
-              <div className="bento-cell-tag"><Brain size={14} /> ACTIVE LEARNERS</div>
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag"><Brain size={14} /> ACTIVE COMMUNITY</div>
+                <span className="bento-status-pill pill-green">
+                  <span className="bento-live-dot"></span> ACTIVELY GROWING
+                </span>
+              </div>
               <div className="bento-stat-num">
                 <CountUp end={50} suffix="k+" />
               </div>
               <div className="bento-cell-body">
-                <h4>Active Learners</h4>
-                <p>Actively upskilling beyond their comfort zone every single day.</p>
+                <h4 className="bento-stat-label">Daily Active Coders</h4>
+                <p className="bento-stat-caption">Building verified code streaks every day.</p>
+              </div>
+              <div className="bento-avatar-stack-wrap">
+                <div className="bento-avatar-stack">
+                  <div className="bento-avatar-circle bento-avatar-1">AK</div>
+                  <div className="bento-avatar-circle bento-avatar-2">PR</div>
+                  <div className="bento-avatar-circle bento-avatar-3">ST</div>
+                  <div className="bento-avatar-circle bento-avatar-4">VM</div>
+                  <div className="bento-avatar-circle bento-avatar-more">+48k</div>
+                </div>
+                <span className="bento-mini-pulse-chip">
+                  <Zap size={11} /> 1.2M+ Submissions
+                </span>
               </div>
             </div>
 
             {/* Bento Cell 2: Starts @ ₹0 */}
             <div className="bento-cell cell-zero">
-              <div className="bento-cell-tag tag-orange">ZERO FRICTION</div>
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag tag-orange"><Sparkles size={14} /> ZERO FRICTION</div>
+                <span className="bento-status-pill">FREE ACCESS</span>
+              </div>
               <div className="bento-stat-num text-brand-orange">
                 Starts @ ₹0
               </div>
               <div className="bento-cell-body">
-                <h4>Only Procrastination Stops You</h4>
-                <p>100% free learning pathways with verified digital skill badges.</p>
+                <h4 className="bento-stat-label">No Paywalls. No Cards.</h4>
+                <p className="bento-stat-caption">Start building without financial friction.</p>
+              </div>
+              <div className="bento-check-list">
+                <div className="bento-check-item">
+                  <Check size={13} className="bento-check-icon" />
+                  <span>100% Free Guided Pathways</span>
+                </div>
+                <div className="bento-check-item">
+                  <Check size={13} className="bento-check-icon" />
+                  <span>Interactive In-Browser Labs</span>
+                </div>
+                <div className="bento-check-item">
+                  <Check size={13} className="bento-check-icon" />
+                  <span>Recognized Skill Credentials</span>
+                </div>
               </div>
             </div>
 
             {/* Bento Cell 3: 30k+ Badges & Certificates */}
             <div className="bento-cell cell-badges">
-              <div className="bento-cell-tag"><Layers size={14} /> VERIFIED SKILLS</div>
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag"><Layers size={14} /> VERIFIED SKILLS</div>
+                <span className="bento-status-pill"><Award size={11} /> ACCREDITED</span>
+              </div>
               <div className="bento-stat-num">
                 <CountUp end={30} suffix="k+" />
               </div>
               <div className="bento-cell-body">
-                <h4>Badges & Certificates Created</h4>
-                <p>Earned by students & ambitious working professionals.</p>
+                <h4 className="bento-stat-label">Certificates Issued</h4>
+                <p className="bento-stat-caption">Proof of competence recruiters trust.</p>
+              </div>
+              <div className="bento-cert-badges-row">
+                <span className="bento-cert-chip highlight">
+                  <Star size={11} /> Full-Stack Web
+                </span>
+                <span className="bento-cert-chip">
+                  <Code2 size={11} /> DSA Mastery
+                </span>
+                <span className="bento-cert-chip">
+                  <ShieldCheck size={11} /> System Design
+                </span>
               </div>
             </div>
 
             {/* Bento Cell 4: 20k+ Proctored Tests Conducted */}
             <div className="bento-cell cell-proctored">
-              <div className="bento-cell-tag"><ShieldCheck size={14} /> PROCTORED ASSESSMENTS</div>
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag"><ShieldCheck size={14} /> PROCTORED ASSESSMENTS</div>
+                <span className="bento-status-pill">AI MONITORED</span>
+              </div>
               <div className="bento-stat-num">
                 <CountUp end={20} suffix="k+" />
               </div>
               <div className="bento-cell-body">
-                <h4>Proctored Tests Conducted</h4>
-                <p>Across campuses nationwide with AI anti-cheat, automated code scoring, and live proctoring.</p>
+                <h4 className="bento-stat-label">Campus Tests Conducted</h4>
+                <p className="bento-stat-caption">Secure evaluations across universities.</p>
               </div>
-              <div className="bento-pill-tags" style={{ marginTop: '0.65rem', marginBottom: 0 }}>
-                <span>AI Anti-Cheat</span>
-                <span className="pill-orange">Automated Scoring</span>
-                <span>Campus-Wide</span>
+              <div className="bento-proctor-row">
+                <span className="bento-integrity-pill">
+                  <ShieldCheck size={12} /> 99.8% Integrity
+                </span>
+                <span className="bento-campus-pill">
+                  120+ Campuses
+                </span>
+                <span className="bento-campus-pill">
+                  Auto Scoring
+                </span>
               </div>
             </div>
 
             {/* Bento Cell 5: Service-Based to Product-Based Transition */}
             <div className="bento-cell cell-transition">
-              <div className="bento-cell-tag"><TrendingUp size={14} /> CAREER TRANSITION</div>
-              <div className="bento-stat-num text-brand-dark" style={{ fontSize: '1.75rem', lineHeight: 1.15, marginTop: '0.25rem', marginBottom: '0.35rem' }}>
-                Service <span style={{ color: '#F3912E' }}>➔</span> Product
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag"><TrendingUp size={14} /> CAREER TRANSITION</div>
+                <span className="bento-transition-hike-badge">
+                  <Flame size={12} /> 3.2x Avg Hike
+                </span>
+              </div>
+              <div className="bento-stat-num text-brand-dark" style={{ fontSize: '1.85rem', lineHeight: 1.1, margin: '0.2rem 0 0.4rem 0' }}>
+                Service <span style={{ color: '#ffa103' }}>➔</span> Product
               </div>
               <div className="bento-cell-body">
-                <h4>Prepare for Top Product Companies</h4>
-                <p>Curriculum and real-world project rigor built to help you transition from service-based to high-growth product companies.</p>
+                <h4 className="bento-stat-label">Tier-1 Company Readiness</h4>
+                <p className="bento-stat-caption">Targeted interview sprints & architecture rigor.</p>
               </div>
-              <div className="bento-pill-tags" style={{ marginTop: '0.65rem', marginBottom: 0 }}>
-                <span className="pill-orange">System Design</span>
-                <span>DSA Mastery</span>
-                <span>Live Projects</span>
-                <span>Mock Interviews</span>
+              <div className="bento-roadmap-pills">
+                <span className="bento-roadmap-pill orange">System Design</span>
+                <span className="bento-roadmap-pill">1:1 Mock Interviews</span>
               </div>
             </div>
 
             {/* Bento Cell 6: 300+ Industry Mentors */}
             <div className="bento-cell cell-mentors">
-              <div className="bento-cell-tag"><Users size={14} /> INDUSTRY EXPERTS</div>
+              <div className="bento-cell-top-row">
+                <div className="bento-cell-tag"><Users size={14} /> INDUSTRY EXPERTS</div>
+                <span className="bento-rating-tag">
+                  <Star size={11} className="bento-star-icon" /> 4.9/5 Rating
+                </span>
+              </div>
               <div className="bento-stat-num text-brand-orange">
                 <CountUp end={300} suffix="+" />
               </div>
               <div className="bento-cell-body">
-                <h4>Industry Mentors & Leaders</h4>
-                <p>Learn directly from senior engineers & tech leads at top tier product companies.</p>
+                <h4 className="bento-stat-label">Senior Tech Mentors</h4>
+                <p className="bento-stat-caption">Direct guidance from top-tier engineers.</p>
               </div>
-              <div className="bento-company-badges-row" style={{ marginTop: '0.65rem' }}>
-                <span className="bento-company-badge">Google</span>
-                <span className="bento-company-badge">Microsoft</span>
-                <span className="bento-company-badge">Adobe</span>
-                <span className="bento-company-badge">Intuit</span>
-                <span className="bento-company-badge">& More</span>
+              <div className="bento-logos-row">
+                <div className="bento-logo-chip" title="Google">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip" title="Microsoft">
+                  <svg width="16" height="16" viewBox="0 0 23 23">
+                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip" title="Amazon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#FF9900">
+                    <path d="M13.96 12.33c-.08-.6-.35-1.07-.82-1.42s-1.12-.53-1.96-.53c-.63 0-1.22.12-1.77.36-.55.24-.96.59-1.23 1.05l1.32.9c.14-.24.34-.43.6-.57.26-.14.54-.21.84-.21.43 0 .76.1.98.29.22.19.33.45.33.78v.37c-.37.04-.84.09-1.41.15s-1.1.18-1.59.36c-.49.18-.88.44-1.17.78-.29.34-.44.78-.44 1.32 0 .54.18.98.54 1.32.36.34.84.51 1.44.51.53 0 1-.12 1.41-.36.41-.24.73-.57.96-1.01v1.17h1.67V12.33zm-1.84 2.82c-.2.32-.47.56-.8.72-.33.16-.69.24-1.08.24-.34 0-.62-.09-.84-.27-.22-.18-.33-.42-.33-.72 0-.35.14-.64.42-.87.28-.23.75-.41 1.41-.54.66-.13 1.15-.22 1.47-.27v.29c0 .54-.08.99-.25 1.42z"/>
+                    <path d="M19.16 16.73c-2.8 2.06-6.87 3.15-10.37 3.15-4.89 0-9.3-1.83-12.63-4.9.26.24.8.46 1.32.46 2.94 0 7.37-1.62 9.94-3.15.22-.13.46.12.26.31-1.08.98-3.08 2.29-6.3 2.29-1.03 0-2.02-.15-2.92-.47 3.01 2.37 6.87 3.79 11.08 3.79 3.16 0 6.64-.86 9.42-2.61.34-.21.57.17.2.13z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip" title="Meta">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#0081FB">
+                    <path d="M12 11.217C10.63 8.358 8.442 6.5 6.07 6.5 2.717 6.5 0 9.388 0 12.946c0 3.42 2.57 6.35 6.07 6.35 2.213 0 4.195-1.18 5.93-3.606 1.735 2.426 3.717 3.606 5.93 3.606 3.5 0 6.07-2.93 6.07-6.35 0-3.558-2.717-6.446-6.07-6.446-2.372 0-4.56 1.858-5.93 4.717zm0 2.66c-1.428 2.528-3.082 3.87-4.887 3.87-2.43 0-4.22-2.146-4.22-4.801 0-2.607 1.83-4.897 4.22-4.897 1.855 0 3.486 1.417 4.887 3.996v1.832zm4.887 3.87c-1.805 0-3.46-1.342-4.887-3.87v-1.832c1.4-2.58 3.032-3.996 4.887-3.996 2.39 0 4.22 2.29 4.22 4.897 0 2.655-1.79 4.801-4.22 4.801z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip" title="Adobe">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="#FA0F00">
+                    <path d="M13.966 22h6.034L20 2H13.966v20zM4 2v20h6.034L4 2zm5.017 11.207l2.983-7.207 4.966 12h-3.414l-1.552-3.828H9.017z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip" title="Netflix">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#E50914">
+                    <path d="M5.398 0v24c1.196-.18 2.417-.378 3.673-.594V0H5.398zm9.531 0v19.467c1.23-.238 2.45-.478 3.673-.718V0h-3.673zm-4.757 0l4.084 21.055c-1.25.216-2.47.414-3.693.606L6.478 0h3.694z"/>
+                  </svg>
+                </div>
+                <div className="bento-logo-chip bento-logo-more" title="25+ more product companies">
+                  <span>+25</span>
+                </div>
               </div>
             </div>
 

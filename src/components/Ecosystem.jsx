@@ -48,7 +48,7 @@ const Ecosystem = () => {
     { 
       id: 'labs',
       icon: <TerminalSquare size={24} />, 
-      title: 'CipherLabs', 
+      title: 'Practice', 
       desc: 'Coding practice platform',
       ctaText: 'PRACTICE NOW',
       mockup: (
