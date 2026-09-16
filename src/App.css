@@ -4,6 +4,12 @@
   min-height: 100vh;
 }
 
+@media (min-width: 1024px) {
+  .app-container.with-sidebar {
+    padding-left: 64px;
+  }
+}
+
 main {
   flex: 1;
 }

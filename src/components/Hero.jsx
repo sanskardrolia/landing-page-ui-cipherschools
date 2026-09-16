@@ -34,11 +34,15 @@ const Hero = ({ onReplay }) => {
       <InteractiveParticles />
       <div className="hero-bg-isometric-grid"></div>
       <div className="hero-bg-grain"></div>
-
       <div className="hero-grid">
-        {/* Left — Copy */}
         <div className="hero-left">
-          <div className="hero-badge">FREE To Start</div>
+          <div className="hero-badge hero-badge-revamped">
+            <span className="hero-revamped-live-dot"></span>
+            <span className="hero-revamped-prefix">We got </span>
+            <span className="hero-revamped-highlight">Revamped</span>
+            <span className="hero-badge-sep">•</span>
+            <span className="hero-badge-freetag">FREE To Start</span>
+          </div>
 
           <h1 className="hero-h1">
             <span className="hero-h1-accent">Growth</span> is the destination.

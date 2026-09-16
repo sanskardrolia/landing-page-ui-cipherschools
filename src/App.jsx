@@ -5,11 +5,14 @@ import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';
 import BackToTop from './components/BackToTop';
+import AppSidebar from './components/AppSidebar';
+import SplashScreen from './components/SplashScreen';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
 
 function App() {
   const location = useLocation();
+  const [showSplash, setShowSplash] = useState(true);
   useSmoothScroll();
 
   const isLoginPage = location.pathname === '/login';
@@ -41,13 +44,22 @@ function App() {
     };
   }, [location.pathname, isLoginPage]);
 
+  // Allow replaying splash screen on demand
+  useEffect(() => {
+    const handleReplay = () => setShowSplash(true);
+    window.addEventListener('replay-splash', handleReplay);
+    return () => window.removeEventListener('replay-splash', handleReplay);
+  }, []);
+
   if (isLoginPage) {
     return <LoginPage />;
   }
 
   return (
     <>
-      <div className="app-container">
+      {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+      <AppSidebar />
+      <div className="app-container with-sidebar">
         <Navbar />
         <main>
           <Routes>

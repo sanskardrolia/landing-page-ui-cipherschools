@@ -1667,15 +1667,44 @@ const ForUniversities = () => {
 
               </div>
 
-              {/* Section CTA */}
-              <div className="fu-section-action-footer">
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
+              {/* ── Training Support Ecosystem Rectangular Action Card ── */}
+              <div className="fu-ecosystem-banner-card">
+                <div className="fu-ecosystem-card-left">
+                  <div className="fu-ecosystem-card-pill">
+                    <Layers size={13} />
+                    <span>TRAINING SUPPORT ECOSYSTEM</span>
+                  </div>
+                  <h3 className="fu-ecosystem-card-title">
+                    Tailored Training for Your Campus
+                  </h3>
+                  <p className="fu-ecosystem-card-desc">
+                    Programs, mentorship, and tracking built around your academic calendar.
+                  </p>
+                  <div className="fu-ecosystem-card-tags">
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Placement Support
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Industry Mentorship
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Outcome Analytics
+                    </span>
+                  </div>
+                </div>
+
+                <div className="fu-ecosystem-card-right">
+                  <button 
+                    className="fu-ecosystem-cta-btn"
+                    onClick={() => setIsMeetingModalOpen(true)}
+                    type="button"
+                  >
+                    Book a Meeting <ArrowRight size={18} />
+                  </button>
+                  <span className="fu-ecosystem-cta-subtext">
+                    Custom roadmap in 24h
+                  </span>
+                </div>
               </div>
 
             </div>
@@ -1698,17 +1727,6 @@ const ForUniversities = () => {
                 <div className="fu-photo-card">
                   <img src="/company-look-3.jpg" alt="CipherSchools Classroom Workshop 3" className="fu-photo-img" />
                 </div>
-              </div>
-
-              {/* Section CTA */}
-              <div className="fu-section-action-footer" style={{ marginTop: '2.5rem' }}>
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
               </div>
             </div>
           </section>
@@ -2317,15 +2335,44 @@ const ForUniversities = () => {
                 </div>
               </div>
 
-              {/* Section CTA */}
-              <div className="fu-section-action-footer">
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
+              {/* ── Campus LMS Platform Rectangular Action Card ── */}
+              <div className="fu-ecosystem-banner-card">
+                <div className="fu-ecosystem-card-left">
+                  <div className="fu-ecosystem-card-pill">
+                    <Laptop size={13} />
+                    <span>CAMPUS LMS PLATFORM</span>
+                  </div>
+                  <h3 className="fu-ecosystem-card-title">
+                    Unified LMS for Your Institution
+                  </h3>
+                  <p className="fu-ecosystem-card-desc">
+                    White-labeled portal, course delivery, and real-time student tracking.
+                  </p>
+                  <div className="fu-ecosystem-card-tags">
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> White-Labeled Portal
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Automated Grading
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Dean Analytics
+                    </span>
+                  </div>
+                </div>
+
+                <div className="fu-ecosystem-card-right">
+                  <button 
+                    className="fu-ecosystem-cta-btn"
+                    onClick={() => setIsMeetingModalOpen(true)}
+                    type="button"
+                  >
+                    Book a Meeting <ArrowRight size={18} />
+                  </button>
+                  <span className="fu-ecosystem-cta-subtext">
+                    Live platform demo in 24h
+                  </span>
+                </div>
               </div>
 
             </div>
@@ -2566,15 +2613,44 @@ const ForUniversities = () => {
 
               </div>
 
-              {/* Section CTA */}
-              <div className="fu-section-action-footer">
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
+              {/* ── Assessment Platform Rectangular Action Card ── */}
+              <div className="fu-ecosystem-banner-card">
+                <div className="fu-ecosystem-card-left">
+                  <div className="fu-ecosystem-card-pill">
+                    <Target size={13} />
+                    <span>ASSESSMENT PLATFORM</span>
+                  </div>
+                  <h3 className="fu-ecosystem-card-title">
+                    Industry-Grade Campus Assessments
+                  </h3>
+                  <p className="fu-ecosystem-card-desc">
+                    Automated coding tests, proctored exams, and placement benchmarks.
+                  </p>
+                  <div className="fu-ecosystem-card-tags">
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Proctored Tests
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Prompt Level Test
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Plagiarism Detection
+                    </span>
+                  </div>
+                </div>
+
+                <div className="fu-ecosystem-card-right">
+                  <button 
+                    className="fu-ecosystem-cta-btn"
+                    onClick={() => setIsMeetingModalOpen(true)}
+                    type="button"
+                  >
+                    Book a Meeting <ArrowRight size={18} />
+                  </button>
+                  <span className="fu-ecosystem-cta-subtext">
+                    Custom test pilot in 24h
+                  </span>
+                </div>
               </div>
 
             </div>
@@ -3082,15 +3158,44 @@ const ForUniversities = () => {
                 </div>
               </div>
 
-              {/* Section CTA */}
-              <div className="fu-section-action-footer">
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
+              {/* ── Practice Environment [AI] Rectangular Action Card ── */}
+              <div className="fu-ecosystem-banner-card">
+                <div className="fu-ecosystem-card-left">
+                  <div className="fu-ecosystem-card-pill">
+                    <Code2 size={13} />
+                    <span>PRACTICE ENVIRONMENT [AI]</span>
+                  </div>
+                  <h3 className="fu-ecosystem-card-title">
+                    Hands-On Coding for Your Students
+                  </h3>
+                  <p className="fu-ecosystem-card-desc">
+                    340+ curated problems with intelligent AI hints and live execution.
+                  </p>
+                  <div className="fu-ecosystem-card-tags">
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> 340+ Challenges
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Intelligent AI Hints
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Multi-Language Sandbox
+                    </span>
+                  </div>
+                </div>
+
+                <div className="fu-ecosystem-card-right">
+                  <button 
+                    className="fu-ecosystem-cta-btn"
+                    onClick={() => setIsMeetingModalOpen(true)}
+                    type="button"
+                  >
+                    Book a Meeting <ArrowRight size={18} />
+                  </button>
+                  <span className="fu-ecosystem-cta-subtext">
+                    Hands-on sandbox demo in 24h
+                  </span>
+                </div>
               </div>
 
             </div>
@@ -3451,15 +3556,44 @@ const ForUniversities = () => {
 
               </div>
 
-              {/* Section CTA */}
-              <div className="fu-section-action-footer">
-                <button 
-                  className="fu-section-cta-btn"
-                  onClick={() => setIsMeetingModalOpen(true)}
-                  type="button"
-                >
-                  Book a Meeting <ArrowRight size={18} />
-                </button>
+              {/* ── Mock Interview [AI] Rectangular Action Card ── */}
+              <div className="fu-ecosystem-banner-card">
+                <div className="fu-ecosystem-card-left">
+                  <div className="fu-ecosystem-card-pill">
+                    <Bot size={13} />
+                    <span>MOCK INTERVIEW [AI]</span>
+                  </div>
+                  <h3 className="fu-ecosystem-card-title">
+                    AI-Powered Technical Mock Interviews
+                  </h3>
+                  <p className="fu-ecosystem-card-desc">
+                    Role-specific mock interviews with real-time feedback and rubric scoring.
+                  </p>
+                  <div className="fu-ecosystem-card-tags">
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Role-Targeted Tracks
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Real-time Feedback
+                    </span>
+                    <span className="fu-ecosystem-tag">
+                      <Check size={12} className="fu-tag-check" /> Rubric Scorecards
+                    </span>
+                  </div>
+                </div>
+
+                <div className="fu-ecosystem-card-right">
+                  <button 
+                    className="fu-ecosystem-cta-btn"
+                    onClick={() => setIsMeetingModalOpen(true)}
+                    type="button"
+                  >
+                    Book a Meeting <ArrowRight size={18} />
+                  </button>
+                  <span className="fu-ecosystem-cta-subtext">
+                    Schedule student trial in 24h
+                  </span>
+                </div>
               </div>
 
             </div>

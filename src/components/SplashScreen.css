@@ -1,0 +1,664 @@
+/* ═══════════════════════════════════════════
+   CIPHERSCHOOLS FUNKY SCRATCHPAD SPLASH SCREEN
+   Off-white, grey & brand color with scribbles
+   ═══════════════════════════════════════════ */
+
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #FAF8F5; /* Off-white ivory paper */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Smooth Exit Peel / Scratch Away ── */
+.splash-overlay.splash-exit-peel {
+  animation: pagePeelExit 0.65s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes pagePeelExit {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+  40% {
+    transform: translateY(-20px) rotate(-1.5deg) scale(0.98);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-110%) rotate(-4deg) scale(0.92);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+
+/* ── Scratchpad Canvas ── */
+.splash-scratch-canvas {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+/* Paper Grain Texture */
+.splash-paper-grain {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#E2DFD6 0.85px, transparent 0.85px);
+  background-size: 20px 20px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Subtle Notebook Grid Lines */
+.splash-notebook-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(220, 218, 210, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(220, 218, 210, 0.4) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+/* ── Washi Tape Corners ── */
+.splash-washi-tape {
+  position: absolute;
+  width: 110px;
+  height: 32px;
+  background: rgba(243, 145, 46, 0.22);
+  border: 1px dashed rgba(243, 145, 46, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tape-tl {
+  top: 24px;
+  left: -20px;
+  transform: rotate(-35deg);
+}
+
+.tape-tr {
+  top: 20px;
+  right: -20px;
+  transform: rotate(38deg);
+  background: rgba(113, 113, 122, 0.18);
+  border-color: rgba(113, 113, 122, 0.35);
+}
+
+.tape-br {
+  bottom: 24px;
+  right: -15px;
+  transform: rotate(-28deg);
+}
+
+/* ── Floating Background Doodles SVG ── */
+.splash-floating-doodles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Animated Doodle Strokes */
+.splash-draw-path {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawDoodle 2s ease forwards;
+}
+
+@keyframes drawDoodle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.doodle-star {
+  animation-delay: 0.3s;
+}
+
+.doodle-arrow {
+  animation-delay: 0.5s;
+}
+
+.doodle-sparkle {
+  animation-delay: 0.7s;
+}
+
+/* ── Center Scratchpad Sheet ── */
+.splash-center-sheet {
+  position: relative;
+  z-index: 10;
+  background: #FFFFFF;
+  border: 2px solid #18181B;
+  border-radius: 14px;
+  box-shadow: 8px 8px 0px #18181B, 0 20px 40px rgba(0, 0, 0, 0.06);
+  width: 100%;
+  max-width: 580px;
+  padding: 2.25rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  animation: sheetPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes sheetPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px) rotate(-1deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+/* Topbar Note Annotation */
+.splash-sheet-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1.5px dashed #E4E4E7;
+}
+
+.splash-badge-scribble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #18181B;
+  background: #F4F4F5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid #D4D4D8;
+  letter-spacing: 0.5px;
+}
+
+.splash-badge-revamped {
+  background: #FFFDF9;
+  border-color: #18181B;
+  box-shadow: 2px 2px 0px #18181B;
+}
+
+.splash-topbar-mark {
+  background: #F3912E;
+  color: #000000;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+
+.scribble-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #F3912E;
+  animation: blinkPulse 1s infinite alternate;
+}
+
+@keyframes blinkPulse {
+  from { opacity: 0.3; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+.splash-stamp-date {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #71717A;
+  letter-spacing: 0.8px;
+}
+
+/* ── NO NONSENSE: PRIORITY 'WE GOT REVAMPED' HERO STAGE ── */
+.splash-revamped-hero-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.35rem 0 0.85rem;
+}
+
+.splash-eyebrow-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F4F4F5;
+  border: 1px solid #D4D4D8;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #71717A;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.65rem;
+  box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.06);
+  animation: popIn 0.3s ease-out forwards;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9) translateY(-6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.eyebrow-sparkle {
+  color: #F3912E;
+  font-size: 0.75rem;
+}
+
+/* ── The Prioritized Headline: WE GOT REVAMPED ── */
+.splash-priority-headline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 0 0 0.4rem 0;
+  line-height: 1;
+}
+
+.splash-we-got {
+  font-size: clamp(2rem, 5.5vw, 3.2rem);
+  font-weight: 900;
+  color: #18181B;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  animation: slamWeGot 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes slamWeGot {
+  0% { opacity: 0; transform: translateY(-16px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.splash-revamped-highlight-box {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #F3912E;
+  color: #000000;
+  padding: 0.12em 0.55em 0.22em;
+  border-radius: 8px 14px 6px 13px;
+  border: 3px solid #18181B;
+  box-shadow: 5px 5px 0px #18181B;
+  transform: rotate(-2.5deg);
+  animation: slamHighlight 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+@keyframes slamHighlight {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(6deg);
+    box-shadow: 0px 0px 0px #18181B;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-2.5deg);
+    box-shadow: 5px 5px 0px #18181B;
+  }
+}
+
+.splash-revamped-text {
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  font-weight: 950;
+  letter-spacing: -0.02em;
+  color: #000000;
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+.splash-brush-underline {
+  position: absolute;
+  bottom: -13px;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  pointer-events: none;
+}
+
+.splash-brush-underline path {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: drawUnderlineStroke 0.4s ease-out 0.3s forwards;
+}
+
+@keyframes drawUnderlineStroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.splash-highlight-star {
+  position: absolute;
+  font-size: 1.1rem;
+  pointer-events: none;
+  animation: starPulse 1.2s infinite alternate;
+}
+
+.star-tl {
+  top: -12px;
+  left: -12px;
+  color: #18181B;
+  transform: rotate(-15deg);
+}
+
+.star-br {
+  bottom: -10px;
+  right: -14px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 0px #18181B, -1px -1px 0px #18181B;
+  transform: rotate(18deg);
+}
+
+@keyframes starPulse {
+  from { transform: scale(0.9); }
+  to { transform: scale(1.15); }
+}
+
+/* ── Subnote ── */
+.splash-revamped-subnote {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #52525B;
+  background: rgba(244, 244, 245, 0.9);
+  border: 1px dashed #A1A1AA;
+  padding: 3px 12px;
+  border-radius: 999px;
+  transform: rotate(0.8deg);
+  animation: fadeInSubnote 0.3s ease-out 0.25s both;
+}
+
+@keyframes fadeInSubnote {
+  from { opacity: 0; transform: translateY(6px) rotate(0.8deg); }
+  to { opacity: 1; transform: translateY(0) rotate(0.8deg); }
+}
+
+.subnote-arrow {
+  color: #F3912E;
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+
+/* ── Brand Showcase (Reveals at 0.6s) ── */
+.splash-brand-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 1.15rem;
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.splash-brand-showcase.brand-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.splash-brand-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.splash-c-logo-box {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: #F3912E;
+  color: #FFFFFF;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.4);
+}
+
+.splash-c-letter {
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+}
+
+.splash-logo-circle-scratch {
+  position: absolute;
+  inset: -8px;
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+  animation: spinSlow 8s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.splash-brand-text-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.splash-brand-name {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #18181B;
+  letter-spacing: -0.03em;
+  margin: 0;
+  line-height: 1;
+}
+
+.splash-brand-orange {
+  color: #F3912E;
+}
+
+.splash-brand-tagline {
+  font-size: 0.76rem;
+  color: #71717A;
+  font-weight: 600;
+  margin: 2px 0 0 0;
+}
+
+/* Funky Stickers Row */
+.splash-stickers-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.splash-funky-sticker {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #18181B;
+  box-shadow: 2px 2px 0px #18181B;
+}
+
+.sticker-highlight-revamped {
+  background: #F3912E;
+  color: #000000;
+  border: 1.5px solid #18181B;
+  font-weight: 900;
+  transform: rotate(-3deg);
+  box-shadow: 2.5px 2.5px 0px #18181B;
+  letter-spacing: 0.4px;
+}
+
+.sticker-orange {
+  background: #F3912E;
+  color: #FFFFFF;
+  transform: rotate(-2deg);
+}
+
+.sticker-grey {
+  background: #F4F4F5;
+  color: #18181B;
+  transform: rotate(2deg);
+}
+
+.sticker-dark {
+  background: #18181B;
+  color: #FAF8F5;
+  transform: rotate(-1deg);
+}
+
+/* ── Bottom Progress & Scratchpad Meter ── */
+.splash-bottom-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 0.75rem;
+  border-top: 1.5px dashed #E4E4E7;
+}
+
+.splash-progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.splash-progress-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #52525B;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.splash-progress-number {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #18181B;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Sketchy Progress Track */
+.splash-progress-track {
+  width: 100%;
+  height: 12px;
+  background: #F4F4F5;
+  border: 1.5px solid #18181B;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.splash-progress-fill {
+  height: 100%;
+  background: #F3912E;
+  transition: width 0.06s linear;
+  position: relative;
+  overflow: hidden;
+}
+
+.splash-fill-stripes {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.3) 8px,
+    rgba(255, 255, 255, 0.3) 16px
+  );
+  animation: stripeMove 1s linear infinite;
+}
+
+@keyframes stripeMove {
+  from { background-position: 0 0; }
+  to { background-position: 24px 0; }
+}
+
+/* ── Quick Skip Button ── */
+.splash-skip-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 28px;
+  z-index: 20;
+  background: #FFFFFF;
+  border: 1.5px solid #18181B;
+  color: #18181B;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0px #18181B;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.splash-skip-btn:hover {
+  background: #18181B;
+  color: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #F3912E;
+}
+
+.splash-skip-btn span {
+  font-size: 0.95rem;
+  transition: transform 0.15s ease;
+}
+
+.splash-skip-btn:hover span {
+  transform: translateX(3px);
+}
+
+/* ── Mobile Responsiveness ── */
+@media (max-width: 640px) {
+  .splash-center-sheet {
+    padding: 1.75rem 1.25rem 1.5rem;
+    box-shadow: 5px 5px 0px #18181B;
+  }
+
+  .splash-scribble-word {
+    font-size: 2.2rem;
+  }
+
+  .splash-brand-title {
+    font-size: 2rem;
+  }
+
+  .splash-marker-stroke {
+    margin-left: 50px;
+  }
+}

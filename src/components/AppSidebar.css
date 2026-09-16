@@ -1,0 +1,429 @@
+/* ═══════════════════════════════════════════
+   SHADCN-STYLE MINIMIZED SIDEBAR RAIL
+   Clean, uniform icons with faded-out color
+   ═══════════════════════════════════════════ */
+
+.app-min-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 100vh;
+  background: #FFFFFF;
+  border-right: 1px solid #E4E4E7;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1050;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ── Top Header with Hamburger ── */
+.app-sb-top {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #E4E4E7;
+  flex-shrink: 0;
+}
+
+.app-sb-hamburger-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #18181B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.app-sb-hamburger-btn:hover {
+  background: #F4F4F5;
+  color: #09090B;
+}
+
+/* ── Navigation Rail ── */
+.app-sb-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 4px;
+  scrollbar-width: none;
+}
+
+.app-sb-nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Consistent Shadcn Menu Button ── */
+.app-sb-item {
+  width: 52px;
+  height: 50px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px 2px;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Consistent Icon Wrapper ── */
+.app-sb-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.app-sb-icon {
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+/* ── Typography Label ── */
+.app-sb-label {
+  font-size: 0.625rem; /* 10px */
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+/* ── Active Home State (Sharp, high-contrast) ── */
+.app-sb-item.item-home {
+  color: #18181B;
+}
+
+.app-sb-item.item-home .app-sb-icon {
+  color: #18181B;
+}
+
+.app-sb-item.item-home .app-sb-label {
+  color: #18181B;
+  font-weight: 600;
+}
+
+.app-sb-item.item-home:hover {
+  background: #F4F4F5;
+  color: #F3912E;
+}
+
+.app-sb-item.item-home:hover .app-sb-icon,
+.app-sb-item.item-home:hover .app-sb-label {
+  color: #F3912E;
+}
+
+.app-sb-item.item-home.active {
+  background: #F4F4F5;
+}
+
+.app-sb-item.item-home.active .app-sb-icon {
+  color: #F3912E;
+}
+
+.app-sb-item.item-home.active .app-sb-label {
+  color: #F3912E;
+  font-weight: 600;
+}
+
+/* ── Faded-Out Color for Locked Items ── */
+.app-sb-item.item-locked {
+  color: #A1A1AA;
+  opacity: 0.46;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.15s ease, transform 0.15s ease;
+}
+
+.app-sb-item.item-locked .app-sb-icon {
+  color: #A1A1AA;
+}
+
+.app-sb-item.item-locked .app-sb-label {
+  color: #A1A1AA;
+}
+
+/* Mini Shadcn Lock Badge */
+.app-sb-lock-badge {
+  position: absolute;
+  top: -2px;
+  right: -5px;
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  color: #71717A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+/* Hover state on Faded-Out Items */
+.app-sb-item.item-locked:hover {
+  opacity: 0.95;
+  color: #18181B;
+  background: #F4F4F5;
+  transform: translateY(-1px);
+}
+
+.app-sb-item.item-locked:hover .app-sb-icon {
+  color: #18181B;
+}
+
+.app-sb-item.item-locked:hover .app-sb-label {
+  color: #18181B;
+  font-weight: 600;
+}
+
+.app-sb-item.item-locked:hover .app-sb-lock-badge {
+  background: #F3912E;
+  border-color: #F3912E;
+  color: #FFFFFF;
+}
+
+/* ── Bottom Signin Item ── */
+.app-sb-bottom {
+  padding: 8px 4px 12px;
+  border-top: 1px solid #E4E4E7;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.item-signin {
+  width: 52px;
+  height: 48px;
+}
+
+/* ═══════════════════════════════════════════
+   SHADCN DIALOG STYLED LOGIN MODAL
+   ═══════════════════════════════════════════ */
+
+.app-login-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: modalFadeIn 0.15s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.app-login-modal-card {
+  background: #FFFFFF;
+  border-radius: 12px;
+  border: 1px solid #E4E4E7;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 440px;
+  padding: 1.75rem;
+  position: relative;
+  animation: modalCardScale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalCardScale {
+  from { transform: scale(0.96) translateY(6px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.app-login-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #71717A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.app-login-modal-close:hover {
+  background: #F4F4F5;
+  color: #09090B;
+}
+
+.app-login-modal-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.app-login-modal-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(243, 145, 46, 0.1);
+  border: 1px solid rgba(243, 145, 46, 0.2);
+  color: #F3912E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+
+.app-login-modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #09090B;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem 0;
+}
+
+.app-login-modal-desc {
+  font-size: 0.85rem;
+  color: #71717A;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Login Types List */
+.app-login-types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.app-login-type-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #E4E4E7;
+  background: #FAFAFA;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.app-login-type-btn:hover {
+  background: #FFFFFF;
+  border-color: #F3912E;
+  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.08);
+  transform: translateY(-1px);
+}
+
+.app-login-type-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-student {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.icon-university {
+  background: #F5F3FF;
+  color: #7C3AED;
+}
+
+.icon-creator {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.app-login-type-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-login-type-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #09090B;
+}
+
+.app-login-type-sub {
+  font-size: 0.74rem;
+  color: #71717A;
+  line-height: 1.3;
+}
+
+.app-login-type-arrow {
+  color: #A1A1AA;
+  transition: transform 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.app-login-type-btn:hover .app-login-type-arrow {
+  color: #F3912E;
+  transform: translateX(2px);
+}
+
+.app-login-modal-footer {
+  border-top: 1px solid #F4F4F5;
+  padding-top: 1rem;
+}
+
+.app-login-direct-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #18181B;
+  color: #FAFAFA;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.app-login-direct-btn:hover {
+  background: #27272A;
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVENESS: DESKTOP VS MOBILE
+   ═══════════════════════════════════════════ */
+@media (max-width: 1023px) {
+  .app-min-sidebar {
+    display: none;
+  }
+}

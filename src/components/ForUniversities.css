@@ -2060,6 +2060,174 @@
 }
 
 /* ═══════════════════════════════════════════
+   TRAINING SUPPORT ECOSYSTEM RECTANGULAR ACTION CARD
+   ═══════════════════════════════════════════ */
+.fu-ecosystem-banner-card {
+  max-width: 1160px;
+  margin: 1.5rem auto 0;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 2.25rem 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.fu-ecosystem-banner-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #F3912E 0%, #E07D1B 100%);
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.fu-ecosystem-banner-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(243, 145, 46, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.fu-ecosystem-card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.fu-ecosystem-card-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #F3912E;
+  background: rgba(243, 145, 46, 0.08);
+  border: 1px solid rgba(243, 145, 46, 0.22);
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.fu-ecosystem-card-title {
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.fu-ecosystem-card-desc {
+  font-size: 0.92rem;
+  color: #6B7280;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 680px;
+}
+
+.fu-ecosystem-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.fu-ecosystem-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.fu-ecosystem-tag .fu-tag-check {
+  color: #10B981;
+}
+
+.fu-ecosystem-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.fu-ecosystem-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 13px 28px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(243, 145, 46, 0.28);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.fu-ecosystem-cta-btn:hover {
+  background: #E07D1B;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.4);
+}
+
+.fu-ecosystem-cta-btn:active {
+  transform: translateY(0);
+}
+
+.fu-ecosystem-cta-subtext {
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .fu-ecosystem-banner-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .fu-ecosystem-card-right {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .fu-ecosystem-cta-btn {
+    width: 100%;
+  }
+
+  .fu-ecosystem-cta-subtext {
+    text-align: left;
+  }
+}
+
+/* ═══════════════════════════════════════════
    APPLE-STYLE LMS BENTO GRID
    ═══════════════════════════════════════════ */
 .fu-lms-apple-bento-section {
