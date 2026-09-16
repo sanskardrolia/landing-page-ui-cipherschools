@@ -51,18 +51,12 @@
 /* ── Navigation Rail ── */
 .app-sb-nav {
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   padding: 8px 4px;
-  scrollbar-width: none;
-}
-
-.app-sb-nav::-webkit-scrollbar {
-  display: none;
 }
 
 /* ── Consistent Shadcn Menu Button ── */
@@ -123,8 +117,9 @@
 }
 
 .app-sb-item.item-home:hover {
-  background: #F4F4F5;
+  background: #FAF8F5;
   color: #F3912E;
+  border-color: rgba(243, 145, 46, 0.4);
 }
 
 .app-sb-item.item-home:hover .app-sb-icon,
@@ -133,7 +128,8 @@
 }
 
 .app-sb-item.item-home.active {
-  background: #F4F4F5;
+  background: #FAF8F5;
+  border-color: rgba(243, 145, 46, 0.25);
 }
 
 .app-sb-item.item-home.active .app-sb-icon {
@@ -149,7 +145,8 @@
 .app-sb-item.item-locked {
   color: #A1A1AA;
   opacity: 0.46;
-  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.15s ease, transform 0.15s ease;
+  border: 1px solid transparent;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
 }
 
 .app-sb-item.item-locked .app-sb-icon {
@@ -177,16 +174,18 @@
   transition: all 0.15s ease;
 }
 
-/* Hover state on Faded-Out Items */
+/* Hover state on Faded-Out Items — Off-white & Brand color */
 .app-sb-item.item-locked:hover {
-  opacity: 0.95;
+  opacity: 1;
   color: #18181B;
-  background: #F4F4F5;
+  background: #FAF8F5; /* Off-white */
+  border-color: rgba(243, 145, 46, 0.45); /* Brand color border */
   transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(243, 145, 46, 0.12);
 }
 
 .app-sb-item.item-locked:hover .app-sb-icon {
-  color: #18181B;
+  color: #F3912E; /* Brand color */
 }
 
 .app-sb-item.item-locked:hover .app-sb-label {
@@ -195,228 +194,103 @@
 }
 
 .app-sb-item.item-locked:hover .app-sb-lock-badge {
-  background: #F3912E;
+  background: #F3912E; /* Brand color */
   border-color: #F3912E;
   color: #FFFFFF;
 }
 
-/* ── Bottom Signin Item ── */
-.app-sb-bottom {
-  padding: 8px 4px 12px;
-  border-top: 1px solid #E4E4E7;
-  display: flex;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.item-signin {
-  width: 52px;
-  height: 48px;
-}
-
 /* ═══════════════════════════════════════════
-   SHADCN DIALOG STYLED LOGIN MODAL
+   OFF-WHITE & BRAND COLOR FLYOUT TOOLTIP
    ═══════════════════════════════════════════ */
 
-.app-login-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  animation: modalFadeIn 0.15s ease-out forwards;
-}
-
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.app-login-modal-card {
-  background: #FFFFFF;
-  border-radius: 12px;
-  border: 1px solid #E4E4E7;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
-  width: 100%;
-  max-width: 440px;
-  padding: 1.75rem;
-  position: relative;
-  animation: modalCardScale 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes modalCardScale {
-  from { transform: scale(0.96) translateY(6px); opacity: 0; }
-  to { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.app-login-modal-close {
+.app-sb-tooltip {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  width: 28px;
-  height: 28px;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  background: #FAF8F5; /* Off-white surface */
+  color: #18181B;
+  padding: 6px 12px;
   border-radius: 6px;
-  background: transparent;
-  border: none;
-  color: #71717A;
+  border: 1.5px solid #F3912E; /* Brand color border */
+  box-shadow: 0 4px 18px rgba(243, 145, 46, 0.18), 0 2px 6px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  gap: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1200;
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.15s;
 }
 
-.app-login-modal-close:hover {
-  background: #F4F4F5;
-  color: #09090B;
+/* Left pointer arrow with Brand border and Off-white fill */
+.app-sb-tooltip::before {
+  content: '';
+  position: absolute;
+  left: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 7px solid #F3912E; /* Brand color border */
 }
 
-.app-login-modal-header {
-  text-align: center;
-  margin-bottom: 1.5rem;
+.app-sb-tooltip::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 6px solid #FAF8F5; /* Off-white fill */
 }
 
-.app-login-modal-badge {
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
-  background: rgba(243, 145, 46, 0.1);
-  border: 1px solid rgba(243, 145, 46, 0.2);
-  color: #F3912E;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 0.75rem;
+/* Trigger on hover */
+.app-sb-item:hover .app-sb-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
 }
 
-.app-login-modal-title {
-  font-size: 1.2rem;
+.app-sb-tooltip-title {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #09090B;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.35rem 0;
+  color: #18181B; /* Graphite */
+  letter-spacing: -0.01em;
 }
 
-.app-login-modal-desc {
-  font-size: 0.85rem;
-  color: #71717A;
-  line-height: 1.45;
-  margin: 0;
+.app-sb-tooltip-divider {
+  color: #D4D4D8;
+  font-size: 0.75rem;
 }
 
-/* Login Types List */
-.app-login-types-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1.25rem;
-}
-
-.app-login-type-btn {
-  display: flex;
+/* ── Highlighted 'Login to access' Badge — Brand Color ── */
+.app-sb-tooltip-highlight {
+  display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.75rem 0.85rem;
-  border-radius: 8px;
-  border: 1px solid #E4E4E7;
-  background: #FAFAFA;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.15s ease;
-  width: 100%;
+  gap: 4px;
+  background: #F3912E; /* Brand color */
+  color: #FFFFFF;      /* High contrast white */
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2.5px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(243, 145, 46, 0.45);
 }
 
-.app-login-type-btn:hover {
-  background: #FFFFFF;
-  border-color: #F3912E;
-  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.08);
-  transform: translateY(-1px);
-}
-
-.app-login-type-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.icon-student {
-  background: #EFF6FF;
-  color: #2563EB;
-}
-
-.icon-university {
-  background: #F5F3FF;
-  color: #7C3AED;
-}
-
-.icon-creator {
-  background: #ECFDF5;
-  color: #059669;
-}
-
-.app-login-type-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.app-login-type-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #09090B;
-}
-
-.app-login-type-sub {
-  font-size: 0.74rem;
-  color: #71717A;
-  line-height: 1.3;
-}
-
-.app-login-type-arrow {
-  color: #A1A1AA;
-  transition: transform 0.15s ease, color 0.15s ease;
-  flex-shrink: 0;
-}
-
-.app-login-type-btn:hover .app-login-type-arrow {
-  color: #F3912E;
-  transform: translateX(2px);
-}
-
-.app-login-modal-footer {
-  border-top: 1px solid #F4F4F5;
-  padding-top: 1rem;
-}
-
-.app-login-direct-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: #18181B;
-  color: #FAFAFA;
-  font-weight: 600;
-  font-size: 0.88rem;
-  padding: 10px 16px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.app-login-direct-btn:hover {
-  background: #27272A;
+.tooltip-lock-icon {
+  font-size: 0.68rem;
+  color: #FFFFFF;
 }
 
 /* ═══════════════════════════════════════════

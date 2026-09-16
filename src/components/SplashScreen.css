@@ -406,100 +406,21 @@
   font-size: 0.95rem;
 }
 
-/* ── Brand Showcase (Reveals at 0.6s) ── */
-.splash-brand-showcase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 1.15rem;
-  opacity: 0;
-  transform: translateY(12px) scale(0.96);
-  pointer-events: none;
-  transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.splash-brand-showcase.brand-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-.splash-brand-logo-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.splash-c-logo-box {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  background: #F3912E;
-  color: #FFFFFF;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  font-size: 1.5rem;
-  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.4);
-}
-
-.splash-c-letter {
-  position: relative;
-  z-index: 2;
-  line-height: 1;
-}
-
-.splash-logo-circle-scratch {
-  position: absolute;
-  inset: -8px;
-  width: 60px;
-  height: 60px;
-  pointer-events: none;
-  animation: spinSlow 8s linear infinite;
-}
-
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.splash-brand-text-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-}
-
-.splash-brand-name {
-  font-size: 1.45rem;
-  font-weight: 900;
-  color: #18181B;
-  letter-spacing: -0.03em;
-  margin: 0;
-  line-height: 1;
-}
-
-.splash-brand-orange {
-  color: #F3912E;
-}
-
-.splash-brand-tagline {
-  font-size: 0.76rem;
-  color: #71717A;
-  font-weight: 600;
-  margin: 2px 0 0 0;
-}
-
 /* Funky Stickers Row */
 .splash-stickers-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 1.25rem;
+  margin-bottom: 0.25rem;
+  animation: popInStickers 0.35s ease-out 0.2s both;
+}
+
+@keyframes popInStickers {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .splash-funky-sticker {

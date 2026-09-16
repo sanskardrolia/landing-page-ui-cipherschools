@@ -4,15 +4,9 @@ import './SplashScreen.css';
 const SplashScreen = ({ onFinish }) => {
   const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
-  const [showBrand, setShowBrand] = useState(false);
 
   useEffect(() => {
-    // 1. Reveal brand lockup at 0.6s (keeping 'WE GOT REVAMPED' as the main headline)
-    const brandTimer = setTimeout(() => {
-      setShowBrand(true);
-    }, 600);
-
-    // 2. Smooth, snappy progress counter (0 -> 100% in 2.2 seconds)
+    // 1. Smooth, snappy progress counter (0 -> 100% in 2.2 seconds)
     const startTime = Date.now();
     const duration = 2200;
 
@@ -26,18 +20,17 @@ const SplashScreen = ({ onFinish }) => {
       }
     }, 25);
 
-    // 3. Trigger smooth exit peel at 2.45s
+    // 2. Trigger smooth exit peel at 2.45s
     const exitTimer = setTimeout(() => {
       setIsExiting(true);
     }, 2450);
 
-    // 4. Complete and unmount at 2.95s
+    // 3. Complete and unmount at 2.95s
     const finishTimer = setTimeout(() => {
       if (onFinish) onFinish();
     }, 2950);
 
     return () => {
-      clearTimeout(brandTimer);
       clearInterval(progressInterval);
       clearTimeout(exitTimer);
       clearTimeout(finishTimer);
@@ -110,12 +103,12 @@ const SplashScreen = ({ onFinish }) => {
           <div className="splash-sheet-topbar">
             <span className="splash-badge-scribble splash-badge-revamped">
               <span className="scribble-dot"></span>
-              CIPHER_CORE // 2026
+              CORE_V2 // 2026
             </span>
             <span className="splash-stamp-date">OFFICIAL RELEASE</span>
           </div>
 
-          {/* ── NO NONSENSE: PRIORITY 'WE GOT REVAMPED' HERO STAGE ── */}
+          {/* ── PRIORITY 'WE GOT REVAMPED' HERO STAGE ── */}
           <div className="splash-revamped-hero-stage">
             
             <div className="splash-eyebrow-pill animate-pop-in">
@@ -144,29 +137,11 @@ const SplashScreen = ({ onFinish }) => {
               <span className="subnote-text">Next-Gen AI Compilers • Modern UI • Real-time Labs</span>
             </div>
 
-            {/* Brand Reveal Seamlessly Integrated */}
-            <div className={`splash-brand-showcase ${showBrand ? 'brand-visible' : ''}`}>
-              <div className="splash-brand-logo-row">
-                <div className="splash-c-logo-box">
-                  <span className="splash-c-letter">C</span>
-                  <svg className="splash-logo-circle-scratch" viewBox="0 0 70 70">
-                    <circle cx="35" cy="35" r="30" stroke="#F3912E" strokeWidth="4" fill="none" strokeDasharray="190" strokeDashoffset="0" />
-                  </svg>
-                </div>
-                <div className="splash-brand-text-col">
-                  <h2 className="splash-brand-name">
-                    Cipher<span className="splash-brand-orange">Schools</span>
-                  </h2>
-                  <p className="splash-brand-tagline">Where Education Meets Real-World Engineering</p>
-                </div>
-              </div>
-
-              {/* Hand-drawn Stickers Row */}
-              <div className="splash-stickers-row">
-                <span className="splash-funky-sticker sticker-highlight-revamped">★ 100% REVAMPED</span>
-                <span className="splash-funky-sticker sticker-orange">AI COMPILERS</span>
-                <span className="splash-funky-sticker sticker-dark">CAMPUS ECOSYSTEM</span>
-              </div>
+            {/* Funky Stickers Row */}
+            <div className="splash-stickers-row">
+              <span className="splash-funky-sticker sticker-highlight-revamped">★ 100% REVAMPED</span>
+              <span className="splash-funky-sticker sticker-orange">AI COMPILERS</span>
+              <span className="splash-funky-sticker sticker-dark">CAMPUS ECOSYSTEM</span>
             </div>
 
           </div>
@@ -177,7 +152,7 @@ const SplashScreen = ({ onFinish }) => {
               <span className="splash-progress-status">
                 {progress < 40 && '⚡ Loading revamped architecture...'}
                 {progress >= 40 && progress < 85 && '🚀 Syncing new AI practice tracks...'}
-                {progress >= 85 && '✨ Welcome to the new CipherSchools!'}
+                {progress >= 85 && '✨ All set! Ready to explore!'}
               </span>
               <span className="splash-progress-number">{progress}%</span>
             </div>
