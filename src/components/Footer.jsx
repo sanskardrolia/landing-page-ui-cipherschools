@@ -14,7 +14,7 @@ const Footer = () => {
           <div className="footer-grid">
             
             <div className="footer-brand">
-              <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+              <span className="logo-text">CipherSchools</span>
               <p className="brand-desc">
                 Helping students become industry-ready builders through structured learning, practice, and real-world experiences.
               </p>

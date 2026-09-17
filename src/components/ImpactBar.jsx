@@ -1,7 +1,53 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame } from 'lucide-react';
+import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame, GraduationCap, Building2, ArrowRight, Laptop, CheckSquare } from 'lucide-react';
 import PlacementMarquee from './PlacementMarquee';
 import './ImpactBar.css';
+
+/* ── Floating Orbital Highlights (from Choose How You Want To Experience The Platform) ── */
+const HERO_ORBITAL_HIGHLIGHTS = [
+  {
+    id: 'dsa',
+    label: 'DSA Practice',
+    icon: Code2,
+    targetSection: 'practice-section',
+    mockupIndex: 2,
+  },
+  {
+    id: 'lms',
+    label: 'Campus LMS',
+    icon: Laptop,
+    targetSection: 'lms-section',
+    mockupIndex: 1,
+  },
+  {
+    id: 'training',
+    label: 'Training Support',
+    icon: Award,
+    targetSection: 'training-section',
+    mockupIndex: null,
+  },
+  {
+    id: 'assessment',
+    label: 'Assessment Platform',
+    icon: CheckSquare,
+    targetSection: 'assessment-section',
+    mockupIndex: 0,
+  },
+  {
+    id: 'compiler',
+    label: 'Online Compiler',
+    icon: Terminal,
+    targetSection: 'practice-section',
+    mockupIndex: 2,
+  },
+  {
+    id: 'placement',
+    label: 'Placements',
+    icon: Briefcase,
+    targetSection: 'university-section',
+    mockupIndex: null,
+  },
+];
 
 /* ── CountUp Component ── */
 const CountUp = ({ end, suffix = "", duration = 2200 }) => {
@@ -256,9 +302,27 @@ const ImpactBar = () => {
   }, [isMockupHovered]);
 
   const scrollToSection = (id) => {
+    if (id === 'university-section') {
+      window.isNavigatingToUniversity = true;
+      setTimeout(() => { window.isNavigatingToUniversity = false; }, 1600);
+    } else {
+      window.isNavigatingToUniversity = false;
+    }
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleOrbitalNodeClick = (item) => {
+    if (item.mockupIndex !== null && item.mockupIndex !== undefined) {
+      if (activeMockupIndex === item.mockupIndex && item.targetSection) {
+        scrollToSection(item.targetSection);
+      } else {
+        setActiveMockupIndex(item.mockupIndex);
+      }
+    } else if (item.targetSection) {
+      scrollToSection(item.targetSection);
     }
   };
 
@@ -412,13 +476,23 @@ const ImpactBar = () => {
               </div>
             </div>
 
-            {/* Single CTA */}
-            <div className="notion-cta-group">
+            {/* Dual Hero CTAs: Student & University */}
+            <div className="notion-cta-group hero-dual-cta-group">
               <button 
-                className="impact-start-journey-btn notion-primary-btn"
-                onClick={() => scrollToSection('welcome-section')}
+                className="hero-cta-btn hero-cta-student"
+                onClick={() => scrollToSection('student-section')}
               >
-                Explore the Platform <ArrowDown size={18} />
+                <GraduationCap size={18} />
+                <span>I'm Student</span>
+                <ArrowRight size={15} className="hero-btn-arrow" />
+              </button>
+              <button 
+                className="hero-cta-btn hero-cta-university"
+                onClick={() => scrollToSection('university-section')}
+              >
+                <Building2 size={18} />
+                <span>I'm University</span>
+                <ArrowRight size={15} className="hero-btn-arrow" />
               </button>
             </div>
 
@@ -430,33 +504,87 @@ const ImpactBar = () => {
             onMouseEnter={() => setIsMockupHovered(true)}
             onMouseLeave={() => setIsMockupHovered(false)}
           >
-            <div ref={mockupContainerRef} className="hero-stacked-mockup-showcase">
-              
-              {/* Interactive Stage Indicator Switcher */}
-              <div className="mockup-stage-indicators">
-                <button 
-                  className={`mockup-indicator-pill ${activeMockupIndex === 0 ? 'active' : ''}`}
-                  onClick={() => setActiveMockupIndex(0)}
-                  type="button"
-                >
-                  <span className="ind-dot"></span> Assessment Platform
-                </button>
-                <button 
-                  className={`mockup-indicator-pill ${activeMockupIndex === 1 ? 'active' : ''}`}
-                  onClick={() => setActiveMockupIndex(1)}
-                  type="button"
-                >
-                  <span className="ind-dot"></span> LMS
-                </button>
-                <button 
-                  className={`mockup-indicator-pill ${activeMockupIndex === 2 ? 'active' : ''}`}
-                  onClick={() => setActiveMockupIndex(2)}
-                  type="button"
-                >
-                  <span className="ind-dot"></span> Practice
-                </button>
-              </div>
+            {/* ── Minimalist Ambient Spiral & Orbital System ── */}
+            <div className="hero-orbital-spiral-wrap" aria-hidden="true">
+              {/* Soft radial background aura */}
+              <div className="hero-orbital-spiral-aura" />
 
+              {/* Main rotating orbital system */}
+              <svg className="hero-orbital-spiral-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="heroSpiralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#F3912E" stopOpacity="0" />
+                    <stop offset="35%" stopColor="#F3912E" stopOpacity="0.25" />
+                    <stop offset="75%" stopColor="#F3912E" stopOpacity="0.75" />
+                    <stop offset="100%" stopColor="#F3912E" stopOpacity="1" />
+                  </linearGradient>
+                  <filter id="heroBeaconGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3" result="glow" />
+                    <feMerge>
+                      <feMergeNode in="glow" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+
+                {/* Concentric hairline precision rings */}
+                <circle cx="400" cy="400" r="230" stroke="rgba(243, 145, 46, 0.12)" strokeWidth="1" strokeDasharray="3 6" />
+                <circle cx="400" cy="400" r="360" stroke="rgba(243, 145, 46, 0.16)" strokeWidth="1" />
+                <circle cx="400" cy="400" r="440" stroke="rgba(0, 0, 0, 0.04)" strokeWidth="1" strokeDasharray="4 8" />
+                <circle cx="400" cy="400" r="490" stroke="rgba(243, 145, 46, 0.05)" strokeWidth="1" strokeDasharray="2 10" />
+
+                {/* Cardinal precision tick marks on core orbit */}
+                <line x1="400" y1="36" x2="400" y2="44" stroke="rgba(243, 145, 46, 0.28)" strokeWidth="1" />
+                <line x1="400" y1="756" x2="400" y2="764" stroke="rgba(243, 145, 46, 0.28)" strokeWidth="1" />
+                <line x1="36" y1="400" x2="44" y2="400" stroke="rgba(243, 145, 46, 0.28)" strokeWidth="1" />
+                <line x1="756" y1="400" x2="764" y2="400" stroke="rgba(243, 145, 46, 0.28)" strokeWidth="1" />
+
+                {/* Sweeping brand-orange gradient spiral arc (Radius 360) */}
+                <path 
+                  d="M 400 40 A 360 360 0 0 1 760 400 A 360 360 0 0 1 400 760" 
+                  stroke="url(#heroSpiralGrad)" 
+                  strokeWidth="2" 
+                  strokeLinecap="round"
+                />
+
+                {/* Glowing beacon satellite node at the leading tip */}
+                <circle cx="400" cy="760" r="6" fill="rgba(243, 145, 46, 0.2)" />
+                <circle cx="400" cy="760" r="2.5" fill="#F3912E" filter="url(#heroBeaconGlow)" />
+              </svg>
+
+              {/* Counter-rotating inner micro-accent ring */}
+              <svg className="hero-orbital-spiral-svg-inner" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="400" cy="400" r="160" stroke="rgba(243, 145, 46, 0.08)" strokeWidth="1" strokeDasharray="2 12" />
+                <path d="M 400 240 A 160 160 0 0 1 560 400" stroke="rgba(243, 145, 46, 0.22)" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            {/* ── Interactive Floating Orbital Nodes (from Welcome Gateway) ── */}
+            <div className="hero-orbital-nodes-wrap" aria-label="Interactive Platform Features">
+              {HERO_ORBITAL_HIGHLIGHTS.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`hero-orbital-node-track track-pos-${idx}`}
+                  >
+                    <button
+                      type="button"
+                      className="hero-orbital-node-pill"
+                      onClick={() => handleOrbitalNodeClick(item)}
+                      title={`Click to explore ${item.label}`}
+                    >
+                      <span className="hero-orbital-node-icon">
+                        <Icon size={12} />
+                      </span>
+                      <span className="hero-orbital-node-label">{item.label}</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div ref={mockupContainerRef} className="hero-stacked-mockup-showcase">
               {/* 3D Stacked Mockup Inner Deck */}
               <div className="stacked-mockup-inner">
                 
@@ -624,8 +752,8 @@ const ImpactBar = () => {
                 <CountUp end={50} suffix="k+" />
               </div>
               <div className="bento-cell-body">
-                <h4 className="bento-stat-label">Daily Active Coders</h4>
-                <p className="bento-stat-caption">Building verified code streaks every day.</p>
+                <h4 className="bento-stat-label">Active Learners</h4>
+                <p className="bento-stat-caption">Building consistent learning streaks.</p>
               </div>
               <div className="bento-avatar-stack-wrap">
                 <div className="bento-avatar-stack">
@@ -644,10 +772,10 @@ const ImpactBar = () => {
             {/* Bento Cell 2: Starts @ ₹0 */}
             <div className="bento-cell cell-zero">
               <div className="bento-cell-top-row">
-                <div className="bento-cell-tag tag-orange"><Sparkles size={14} /> ZERO FRICTION</div>
+                <div className="bento-cell-tag"><Sparkles size={14} /> ZERO FRICTION</div>
                 <span className="bento-status-pill">FREE ACCESS</span>
               </div>
-              <div className="bento-stat-num text-brand-orange">
+              <div className="bento-stat-num">
                 Starts @ ₹0
               </div>
               <div className="bento-cell-body">
@@ -684,7 +812,7 @@ const ImpactBar = () => {
                 <p className="bento-stat-caption">Proof of competence recruiters trust.</p>
               </div>
               <div className="bento-cert-badges-row">
-                <span className="bento-cert-chip highlight">
+                <span className="bento-cert-chip">
                   <Star size={11} /> Full-Stack Web
                 </span>
                 <span className="bento-cert-chip">
@@ -731,14 +859,14 @@ const ImpactBar = () => {
                 </span>
               </div>
               <div className="bento-stat-num text-brand-dark" style={{ fontSize: '1.85rem', lineHeight: 1.1, margin: '0.2rem 0 0.4rem 0' }}>
-                Service <span style={{ color: '#ffa103' }}>➔</span> Product
+                Service <span className="bento-transition-arrow">➔</span> Product
               </div>
               <div className="bento-cell-body">
                 <h4 className="bento-stat-label">Tier-1 Company Readiness</h4>
                 <p className="bento-stat-caption">Targeted interview sprints & architecture rigor.</p>
               </div>
               <div className="bento-roadmap-pills">
-                <span className="bento-roadmap-pill orange">System Design</span>
+                <span className="bento-roadmap-pill">System Design</span>
                 <span className="bento-roadmap-pill">1:1 Mock Interviews</span>
               </div>
             </div>
@@ -751,7 +879,7 @@ const ImpactBar = () => {
                   <Star size={11} className="bento-star-icon" /> 4.9/5 Rating
                 </span>
               </div>
-              <div className="bento-stat-num text-brand-orange">
+              <div className="bento-stat-num">
                 <CountUp end={300} suffix="+" />
               </div>
               <div className="bento-cell-body">

@@ -1542,7 +1542,7 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">TRAINING SUPPORT ECOSYSTEM</p>
                 <h2 className="fu-apple-bento-title">
-                  Everything Campuses Need. <span className="fu-pitch-accent">Built into One System.</span>
+                  Everything Campuses Need. Built into One System.
                 </h2>
                 <p className="fu-apple-bento-sub">
                   From multi-skill recruiter mandates to semester-aligned program delivery and agile beyond-syllabus tracks.
@@ -1743,7 +1743,7 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">CAMPUS LMS PLATFORM</p>
                 <h2 className="fu-apple-bento-title">
-                  A platform built for effortless <span className="fu-pitch-accent">learning management.</span>
+                  A platform built for effortless learning management.
                 </h2>
                 <p className="fu-apple-bento-sub">
                   White-labeled campus ecosystem providing seamless course delivery, real-time analytics, automated stage locking, and student progress tracking.
@@ -1974,7 +1974,7 @@ const ForUniversities = () => {
                         <div className="lms-syllabus-guide-cursor">
                           <div className="lms-cursor-pointer-wrap">
                             <svg className="lms-cursor-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#ffa103" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
+                              <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#18181B" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
                             </svg>
                             <span className="lms-cursor-click-wave"></span>
                           </div>
@@ -2387,7 +2387,7 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">ASSESSMENT PLATFORM</p>
                 <h2 className="fu-apple-bento-title">
-                  Measure what matters, <span className="fu-pitch-accent">automatically.</span>
+                  Measure what matters, automatically.
                 </h2>
                 <p className="fu-apple-bento-sub">
                   Multi-language coding sandboxes, proctored aptitude tests, and real-time candidate analytics.
@@ -2588,24 +2588,24 @@ const ForUniversities = () => {
                       <svg viewBox="0 0 500 140" className="fma-svg-chart">
                         <defs>
                           <linearGradient id="fmaGradientApple" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#f7931e" stopOpacity="0.3"/>
-                            <stop offset="100%" stopColor="#f7931e" stopOpacity="0.0"/>
+                            <stop offset="0%" stopColor="#18181B" stopOpacity="0.12"/>
+                            <stop offset="100%" stopColor="#18181B" stopOpacity="0.0"/>
                           </linearGradient>
                         </defs>
                         <line x1="40" y1="25" x2="470" y2="25" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                         <line x1="40" y1="65" x2="470" y2="65" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                         <line x1="40" y1="105" x2="470" y2="105" stroke="rgba(0,0,0,0.06)" strokeDasharray="4 4" />
                         <path d="M 40 115 Q 150 105 250 75 T 470 20 L 470 130 L 40 130 Z" fill="url(#fmaGradientApple)" />
-                        <path d="M 40 115 Q 150 105 250 75 T 470 20" fill="none" stroke="#ffa103" strokeWidth="3" strokeLinecap="round" />
-                        <circle cx="40" cy="115" r="4.5" fill="#ffa103" stroke="#fff" strokeWidth="2" />
+                        <path d="M 40 115 Q 150 105 250 75 T 470 20" fill="none" stroke="#18181B" strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="40" cy="115" r="4.5" fill="#18181B" stroke="#fff" strokeWidth="2" />
                         <text x="40" y="105" fill="#aaa" fontSize="10" textAnchor="middle">32%</text>
                         <text x="40" y="135" fill="#888" fontSize="10" textAnchor="middle">Jan</text>
-                        <circle cx="255" cy="75" r="4.5" fill="#ffa103" stroke="#fff" strokeWidth="2" />
-                        <text x="255" y="62" fill="#ffa103" fontSize="10" fontWeight="bold" textAnchor="middle">68%</text>
+                        <circle cx="255" cy="75" r="4.5" fill="#18181B" stroke="#fff" strokeWidth="2" />
+                        <text x="255" y="62" fill="#18181B" fontSize="10" fontWeight="bold" textAnchor="middle">68%</text>
                         <text x="255" y="135" fill="#888" fontSize="10" textAnchor="middle">March</text>
-                        <circle cx="470" cy="20" r="5.5" fill="#00c853" stroke="#fff" strokeWidth="2" />
-                        <text x="470" y="11" fill="#00c853" fontSize="10" fontWeight="900" textAnchor="middle">96% 🔥</text>
-                        <text x="470" y="135" fill="#00c853" fontSize="10" fontWeight="bold" textAnchor="middle">May</text>
+                        <circle cx="470" cy="20" r="5.5" fill="#18181B" stroke="#fff" strokeWidth="2" />
+                        <text x="470" y="11" fill="#18181B" fontSize="10" fontWeight="900" textAnchor="middle">96%</text>
+                        <text x="470" y="135" fill="#18181B" fontSize="10" fontWeight="bold" textAnchor="middle">May</text>
                       </svg>
                     </div>
                   </div>
@@ -2664,10 +2664,10 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">PRACTICE ENVIRONMENT [AI]</p>
                 <h2 className="fu-apple-bento-title">
-                  Real-world problem solving, <span className="fu-pitch-accent">mastered hands-on.</span>
+                  Real-world problem solving, mastered hands-on.
                 </h2>
                 <p className="fu-apple-bento-sub">
-                  Self-paced sandboxes featuring 340+ curated programming, DSA, and SQL challenges, intelligent AI hints, and instant browser compilation.
+                  Self-paced sandboxes featuring 100000+ question bank across programming, DSA, and SQL challenges, intelligent AI hints, and instant browser compilation.
                 </p>
               </div>
 
@@ -2760,7 +2760,7 @@ const ForUniversities = () => {
                             <div className="fu-run-guide-cursor">
                               <div className="lms-cursor-pointer-wrap">
                                 <svg className="lms-cursor-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                  <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#2563EB" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
+                                  <path d="M4 4l7.07 17 2.51-7.39L21 11.07 4 4z" fill="#111827" stroke="#ffffff" strokeWidth="2" strokeLinejoin="round"/>
                                 </svg>
                                 <span className="fu-cursor-click-wave"></span>
                               </div>
@@ -2873,7 +2873,7 @@ const ForUniversities = () => {
                             <div className="fu-solver-verdict-banner">
                               <div className="fu-verdict-top">
                                 <div className="fu-verdict-title">
-                                  <CheckCircle2 size={18} color="#059669" />
+                                  <CheckCircle2 size={18} color="#111827" />
                                   <span>Accepted</span>
                                 </div>
                                 <button
@@ -3169,11 +3169,11 @@ const ForUniversities = () => {
                     Hands-On Coding for Your Students
                   </h3>
                   <p className="fu-ecosystem-card-desc">
-                    340+ curated problems with intelligent AI hints and live execution.
+                    100000+ question bank with intelligent AI hints and live execution.
                   </p>
                   <div className="fu-ecosystem-card-tags">
                     <span className="fu-ecosystem-tag">
-                      <Check size={12} className="fu-tag-check" /> 340+ Challenges
+                      <Check size={12} className="fu-tag-check" /> 100000+ Question Bank
                     </span>
                     <span className="fu-ecosystem-tag">
                       <Check size={12} className="fu-tag-check" /> Intelligent AI Hints
@@ -3209,7 +3209,7 @@ const ForUniversities = () => {
               <div className="fu-apple-bento-header">
                 <p className="fu-sec-eyebrow">MOCK INTERVIEW [AI]</p>
                 <h2 className="fu-apple-bento-title">
-                  Real-time technical interviews, <span className="fu-pitch-accent">evaluated end-to-end.</span>
+                  Real-time technical interviews, evaluated end-to-end.
                 </h2>
                 <p className="fu-apple-bento-sub">
                   Target high-bar company roles, and let AI evaluate system design, technical depth, and communication rigor in real-time.
@@ -3610,7 +3610,7 @@ const ForUniversities = () => {
                 <GraduationCap size={28} />
               </div>
               <h2 className="fu-cta-final-title">
-                Tailored Integration for Your Campus Ecosystem.
+                Tailored Integration for <span className="fu-cta-brand-accent">Your Campus</span> Ecosystem.
               </h2>
               <p className="fu-cta-final-sub">
                 Explore credit-aligned curriculum modules, white-labeled LMS infrastructure, and turnkey placement sprints designed to integrate seamlessly into your university.

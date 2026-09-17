@@ -42,7 +42,7 @@ const LoginPage = () => {
         </Link>
         <Link to="/" className="login-brand-logo">
           <img src="/cipherschools-logo.png" alt="CipherSchools" />
-          <span className="logo-text">Cipher<span className="text-brand">Schools</span></span>
+          <span className="logo-text">CipherSchools</span>
         </Link>
       </div>
 
@@ -131,7 +131,7 @@ const LoginPage = () => {
             <div className="login-header-group">
               <Link to="/" className="login-logo-desktop">
                 <img src="/cipherschools-logo.png" alt="CipherSchools Logo" />
-                <span className="logo-title">Cipher<span className="text-brand">Schools</span></span>
+                <span className="logo-title">CipherSchools</span>
               </Link>
               
               <h1 className="login-main-title">

@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import WelcomeGateway from '../components/WelcomeGateway';
 import ImpactBar from '../components/ImpactBar';
 import Ecosystem from '../components/Ecosystem';
 import Testimonials from '../components/Testimonials';
@@ -12,10 +11,6 @@ const MainPage = () => {
     <>
       <div id="hero-impact-section">
         <ImpactBar />
-      </div>
-
-      <div id="welcome-section">
-        <WelcomeGateway />
       </div>
 
       <div id="student-section">

@@ -109,7 +109,7 @@ const Navbar = () => {
             </button>
             <Link to="/" className="navbar-logo cs-exact-logo" style={{ textDecoration: 'none' }}>
               <span className="cs-c-logo-circle">C</span>
-              <span className="logo-text cs-logo-title">Cipher<span className="text-white-bold">Schools</span></span>
+              <span className="logo-text cs-logo-title">CipherSchools</span>
             </Link>
             <button className="cs-guide-me-pill">
               Guide Me
@@ -164,9 +164,9 @@ const Navbar = () => {
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''} navbar-theme-notion`}>
         <div className="container navbar-container">
           <div className="navbar-logo-wrap">
-            <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('welcome-section')}>
+            <div className="navbar-logo" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }} onClick={() => scrollToSection('hero-impact-section')}>
               <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
-              <span className="logo-text">Cipher<span className="text-primary">Schools</span></span>
+              <span className="logo-text">CipherSchools</span>
             </div>
           </div>
           
@@ -438,7 +438,7 @@ const Navbar = () => {
                               <span className="nav-cl-title">Practice Environment</span>
                               <span className="nav-ai-tag">AI</span>
                             </div>
-                            <p className="nav-cl-desc">340+ sandboxes & compilers</p>
+                            <p className="nav-cl-desc">100000+ question bank</p>
                           </div>
                         </div>
 
@@ -482,71 +482,6 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* ── Smart What's New Button & Dropdown ── */}
-            <div 
-              className="nav-dropdown-item-wrap whats-new-wrap"
-              onMouseEnter={() => handleMouseEnter('whats-new')}
-              onMouseLeave={handleMouseLeave}
-            >
-              <button 
-                onClick={() => setActiveDropdown(activeDropdown === 'whats-new' ? null : 'whats-new')}
-                className={`notion-nav-link whats-new-nav-btn ${activeDropdown === 'whats-new' ? 'dropdown-open' : ''}`}
-              >
-                <span className="whats-new-sparkle-dot"></span>
-                <span>What's New</span>
-                <span className="whats-new-pill-badge">Revamped</span>
-              </button>
-
-              {/* What's New Dropdown Popover */}
-              {activeDropdown === 'whats-new' && (
-                <div 
-                  className="nav-mega-dropdown-popup whats-new-popup animate-fade-in"
-                  onMouseEnter={() => handleMouseEnter('whats-new')}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <div className="whats-new-card-inner">
-                    <div className="whats-new-header">
-                      <div className="whats-new-title-row">
-                        <span className="whats-new-tag">✨ PLATFORM UPDATE</span>
-                      </div>
-                      <h4 className="whats-new-headline">We Just Revamped!</h4>
-                    </div>
-
-                    <p className="whats-new-desc">
-                      As we grow and evolve, we've upgraded the CipherSchools platform.
-                    </p>
-
-                    <div className="whats-new-batch-box">
-                      <div className="batch-box-icon">
-                        <User size={16} />
-                      </div>
-                      <div className="batch-box-text">
-                        <strong>Returning to CipherSchools?</strong>
-                        <span>All your account details, certificates, and learning progress are safe. Simply log in to continue right where you left off.</span>
-                      </div>
-                    </div>
-
-                    <div className="whats-new-action-row">
-                      <Link 
-                        to="/login" 
-                        className="whats-new-login-btn"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        <span>Login Here</span>
-                        <ArrowRight size={14} />
-                      </Link>
-                      <button 
-                        type="button" 
-                        className="whats-new-dismiss-btn"
-                        onClick={() => setActiveDropdown(null)}
-                      >
-                        Dismiss
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
           
           <div className="navbar-actions desktop-only">
@@ -647,7 +582,7 @@ const Navbar = () => {
                     <Terminal size={15} style={{ color: '#ffa103' }} />
                     <div>
                       <strong>Practice Environment <span className="nav-ai-tag">AI</span></strong>
-                      <small>340+ in-browser coding sandboxes</small>
+                      <small>100000+ question bank</small>
                     </div>
                   </div>
                   <div className="mobile-sub-item" onClick={() => scrollToSection('mock-interview-section')}>
@@ -661,16 +596,7 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile What's New Notification */}
-            <div className="mobile-whats-new-card">
-              <div className="mobile-whats-new-badge">✨ What's New — Revamped!</div>
-              <strong>Returning to CipherSchools?</strong>
-              <p>All your account details, certificates, and learning progress are safe. Simply log in to continue right where you left off.</p>
-              <Link to="/login" className="mobile-whats-new-btn" onClick={() => setMobileMenuOpen(false)}>
-                <span>Login to your account</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
+
             
             <Link to="/login" className="notion-cta-btn-mobile" onClick={() => setMobileMenuOpen(false)}>Login</Link>
           </div>

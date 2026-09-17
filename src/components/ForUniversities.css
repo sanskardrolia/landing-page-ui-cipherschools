@@ -576,8 +576,8 @@
 /* ── Smart Border Wrapper for CipherLabs (4 Technology Modules) ── */
 .fu-cipherlabs-smart-group {
   position: relative;
-  border: 1px solid rgba(243, 145, 46, 0.22);
-  background: rgba(254, 243, 199, 0.05);
+  border: 1px solid #E5E7EB;
+  background: #FAFAFB;
   border-radius: 10px;
   padding: 8px;
   display: flex;
@@ -586,8 +586,10 @@
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
-.fu-cipherlabs-smart-group:hover {
+.fu-cipherlabs-smart-group:hover,
+.fu-cipherlabs-smart-group:has(.active) {
   border-color: rgba(243, 145, 46, 0.35);
+  background: rgba(254, 243, 199, 0.05);
 }
 
 .fu-cipherlabs-smart-label {
@@ -595,8 +597,8 @@
   top: -10px;
   left: 18px;
   background: #FFFFFF;
-  border: 1px solid rgba(243, 145, 46, 0.25);
-  color: #78350F;
+  border: 1px solid #E5E7EB;
+  color: #64748B;
   padding: 1px 8px;
   border-radius: 4px;
   font-size: 0.68rem;
@@ -609,11 +611,24 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   z-index: 2;
   pointer-events: none;
+  transition: border-color 0.25s ease, color 0.25s ease;
 }
 
 .fu-cipherlabs-label-icon {
-  color: #ffa103;
+  color: #94A3B8;
   opacity: 0.85;
+  transition: color 0.25s ease;
+}
+
+.fu-cipherlabs-smart-group:hover .fu-cipherlabs-smart-label,
+.fu-cipherlabs-smart-group:has(.active) .fu-cipherlabs-smart-label {
+  border-color: rgba(243, 145, 46, 0.35);
+  color: #78350F;
+}
+
+.fu-cipherlabs-smart-group:hover .fu-cipherlabs-label-icon,
+.fu-cipherlabs-smart-group:has(.active) .fu-cipherlabs-label-icon {
+  color: #ffa103;
 }
 
 .fu-cipherlabs-cards-grid {
@@ -640,10 +655,28 @@
   line-height: 1.2;
 }
 
+.fu-smart-option-card .fu-ai-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748B;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.fu-smart-option-card:hover .fu-ai-tag,
+.fu-smart-option-card.active .fu-ai-tag {
+  color: #4F46E5;
+  background: #EEF2FF;
+  border-color: #C7D2FE;
+}
+
 .fu-smart-option-card {
   position: relative;
   background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -651,7 +684,7 @@
   gap: 1rem;
   cursor: pointer;
   opacity: 1;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               box-shadow 0.25s ease, 
               border-color 0.25s ease, 
@@ -661,17 +694,17 @@
 }
 
 .fu-smart-option-card:hover {
-  background: #FFFDFB;
-  border-color: rgba(243, 145, 46, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.12);
+  background: #FFFFFF;
+  border-color: rgba(243, 145, 46, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.1);
 }
 
 .fu-smart-option-card.active {
   background: #FFFBF5;
   border-color: #F3912E;
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 0 20px rgba(243, 145, 46, 0.2), 0 8px 25px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 0 20px rgba(243, 145, 46, 0.15), 0 8px 25px rgba(0, 0, 0, 0.05);
 }
 
 .fu-selected-active-badge {
@@ -691,8 +724,8 @@
 
 /* Tactile Spring Press Compression Animation */
 .fu-smart-option-card:active {
-  transform: scale(0.97) translateY(1px) !important;
-  box-shadow: 0 4px 15px rgba(243, 145, 46, 0.3) !important;
+  transform: scale(0.98) translateY(1px) !important;
+  box-shadow: 0 4px 15px rgba(243, 145, 46, 0.2) !important;
   border-color: #F3912E !important;
 }
 
@@ -700,21 +733,28 @@
   width: 44px;
   height: 44px;
   border-radius: 6px;
-  background: rgba(243, 145, 46, 0.1);
-  border: 1px solid rgba(243, 145, 46, 0.25);
-  color: #F3912E;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, color 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .fu-smart-option-card:hover .fu-smart-card-icon {
+  background: #FFF7ED;
+  color: #F3912E;
+  border-color: #FED7AA;
+  transform: scale(1.06);
+}
+
+.fu-smart-option-card.active .fu-smart-card-icon {
   background: #F3912E;
   color: #FFFFFF;
   border-color: #F3912E;
-  transform: scale(1.08) rotate(4deg);
+  transform: scale(1.06);
 }
 
 .fu-smart-card-body {
@@ -737,7 +777,7 @@
 }
 
 .fu-smart-card-arrow {
-  color: #9CA3AF;
+  color: #CBD5E1;
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
@@ -920,7 +960,7 @@
 }
 
 .fu-shift-header .fu-sec-eyebrow {
-  color: #F3912E;
+  color: #71717A;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
@@ -1611,6 +1651,15 @@
   margin-bottom: 2.75rem;
 }
 
+.fu-apple-bento-header .fu-sec-eyebrow {
+  color: #71717A;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  margin: 0 0 0.75rem 0;
+}
+
 .fu-apple-bento-title {
   font-size: clamp(2.1rem, 3.5vw, 3rem);
   font-weight: 800;
@@ -1618,6 +1667,10 @@
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin: 0.5rem 0 0.75rem 0;
+}
+
+.fu-apple-bento-title .fu-pitch-accent {
+  color: inherit;
 }
 
 .fu-apple-bento-sub {
@@ -1654,7 +1707,7 @@
 
 .fu-apple-bento-tile:hover {
   transform: translateY(-2px);
-  border-color: rgba(243, 145, 46, 0.4);
+  border-color: #D1D5DB;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
 }
 
@@ -1881,8 +1934,8 @@
 }
 
 .fu-apple-program-row.featured-row {
-  background: #FFFDF9;
-  border-color: #FED7AA;
+  background: #F9FAFB;
+  border-color: #E5E7EB;
 }
 
 .fu-program-icon-box {
@@ -1929,10 +1982,10 @@
 }
 
 .fu-program-tag.tag-featured {
-  color: #ffa103;
-  border-color: #FDBA74;
-  background: #FFF7ED;
-  font-weight: 800;
+  color: #111827;
+  border-color: #D1D5DB;
+  background: #E5E7EB;
+  font-weight: 700;
 }
 
 /* Tile 3: Calendar Stat Spotlight */
@@ -1940,7 +1993,7 @@
   font-size: 3.8rem;
   font-weight: 900;
   line-height: 1;
-  color: #F3912E;
+  color: #111827;
   letter-spacing: -2px;
   margin: 0.25rem 0;
   text-align: left;
@@ -2024,8 +2077,18 @@
   margin-bottom: 0.25rem;
 }
 
-.fu-beyond-icon {
-  color: #4B5563;
+.fu-beyond-icon,
+.fu-apple-beyond-card .fu-beyond-icon {
+  width: 34px !important;
+  height: 34px !important;
+  background: #F3F4F6 !important;
+  color: #374151 !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0 !important;
 }
 
 .fu-beyond-chip {
@@ -2039,9 +2102,9 @@
 }
 
 .fu-beyond-chip.chip-accent {
-  color: #ffa103;
-  background: #FFF7ED;
-  border-color: #FDBA74;
+  color: #374151;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
 }
 
 .fu-beyond-card-title {
@@ -2086,14 +2149,14 @@
   left: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(180deg, #F3912E 0%, #E07D1B 100%);
+  background: #18181B;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
 }
 
 .fu-ecosystem-banner-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(243, 145, 46, 0.4);
+  border-color: #D1D5DB;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 
@@ -2110,9 +2173,9 @@
   gap: 6px;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #F3912E;
-  background: rgba(243, 145, 46, 0.08);
-  border: 1px solid rgba(243, 145, 46, 0.22);
+  color: #4B5563;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 3px 10px;
   border-radius: 4px;
   letter-spacing: 0.6px;
@@ -2330,7 +2393,7 @@
 .fu-lms-course-tag {
   font-size: 0.62rem;
   font-weight: 800;
-  color: #ffa103;
+  color: #4B5563;
   letter-spacing: 0.5px;
 }
 
@@ -2372,7 +2435,7 @@
 
 .fu-lms-progress-bar {
   height: 100%;
-  background: #F3912E;
+  background: #111827;
   border-radius: 4px;
 }
 
@@ -2421,8 +2484,8 @@
   width: 26px;
   height: 26px;
   border-radius: 4px;
-  background: #FFF7ED;
-  color: #ffa103;
+  background: #F3F4F6;
+  color: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2472,9 +2535,9 @@
 }
 
 .fu-stage-status-chip.chip-active {
-  color: #ffa103;
-  background: #FFF7ED;
-  border: 1px solid #FDBA74;
+  color: #111827;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
 }
 
 .fu-stage-status-chip.chip-locked {
@@ -2594,6 +2657,90 @@
   border: 1px solid rgba(16, 185, 129, 0.2);
   padding: 3px 8px;
   border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   GREYSCALE ASSESSMENT PLATFORM BENTO GRID
+   Strictly monochrome/greyscale palette
+   Only primary CTA button retains brand orange
+   ═══════════════════════════════════════════ */
+
+/* Section Header Brand Accent */
+.fu-assessment-apple-bento-section .fu-sec-eyebrow {
+  color: #71717A;
+}
+
+.fu-assessment-apple-bento-section .fu-pitch-accent {
+  color: #F3912E;
+}
+
+/* Tile 1: Coding Sandbox / Proctor Engine */
+.fu-assessment-apple-bento-section .fu-demand-score-pill {
+  color: #374151;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+}
+
+.fu-assessment-apple-bento-section .fu-ai-tag {
+  color: #111827;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+}
+
+.fu-assessment-apple-bento-section .fu-prompt-metric-tag {
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+}
+
+/* Code Editor Syntax in Assessment Bento Scoped to Greyscale */
+.fu-assessment-apple-bento-section .fm-kwd {
+  color: #111827;
+  font-weight: 700;
+}
+
+.fu-assessment-apple-bento-section .fm-func {
+  color: #374151;
+  font-weight: 700;
+}
+
+.fu-assessment-apple-bento-section .fm-comment {
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+.fu-assessment-apple-bento-section .fm-str {
+  color: #4B5563;
+}
+
+.fu-assessment-apple-bento-section .fm-num {
+  color: #1F2937;
+  font-weight: 600;
+}
+
+/* Tile 2: Aptitude & Reasoning */
+.fu-assessment-apple-bento-section .fme-time {
+  color: #111827;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+}
+
+/* Tile 4: Analytics & Trajectories */
+.fu-assessment-apple-bento-section .fma-badge {
+  color: #111827;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+}
+
+.fu-assessment-apple-bento-section .fu-growth-tag {
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+}
+
+/* Card Tags Checkmark */
+.fu-assessment-apple-bento-section .fu-tag-check {
+  color: #4B5563;
 }
 
 /* ── Section Action Footers (Book a Meeting CTAs) ── */
@@ -2742,7 +2889,7 @@
 }
 
 .fu-outcome-hero-card:hover {
-  border-color: rgba(243, 145, 46, 0.4);
+  border-color: #D1D5DB;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
 }
 
@@ -2795,9 +2942,9 @@
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.8px;
-  color: #D97706;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  color: #4B5563;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 5px 12px;
   border-radius: 4px;
   text-transform: uppercase;
@@ -2868,7 +3015,7 @@
 }
 
 .fu-flow-skill-pill:hover {
-  border-color: #F3912E;
+  border-color: #9CA3AF;
   transform: translateY(-1px);
 }
 
@@ -2880,7 +3027,7 @@
 }
 
 .fu-flow-plus {
-  color: #F3912E;
+  color: #9CA3AF;
   font-weight: 800;
   font-size: 1.1rem;
 }
@@ -3900,8 +4047,8 @@
   text-transform: uppercase;
   letter-spacing: 3px;
   font-size: 0.8rem;
-  font-weight: 600;
-  color: #ffa103;
+  font-weight: 700;
+  color: #71717A;
   margin: 0 0 0.75rem 0;
 }
 
@@ -3981,7 +4128,7 @@
 }
 
 .fu-sec-training .fu-sec-eyebrow {
-  color: #ffa103;
+  color: #71717A;
 }
 
 .fu-sec-training .fu-sec-heading {
@@ -4243,7 +4390,7 @@
 }
 
 .fu-sec-lms .fu-sec-eyebrow {
-  color: #ffa103;
+  color: #71717A;
 }
 
 .fu-sec-lms .fu-sec-heading-split,
@@ -4258,13 +4405,13 @@
 }
 
 .fu-sec-lms .lms-cap-card:hover {
-  border-color: rgba(255,161,3,0.4);
+  border-color: #4B5563;
   box-shadow: 0 16px 40px rgba(0,0,0,0.5);
 }
 
 .fu-sec-lms .lms-cap-card.highlight-cap {
-  border: 1.5px solid #ffa103;
-  background: linear-gradient(135deg, rgba(255,161,3,0.12) 0%, #111827 100%);
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #111827;
 }
 
 .fu-sec-lms .lms-cap-info h4 {
@@ -5084,14 +5231,14 @@
 }
 .fu-beyond-card:hover {
   transform: translateY(-4px);
-  border-color: #ffa103;
-  box-shadow: 0 12px 30px rgba(255,161,3,0.14);
+  border-color: #D1D5DB;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
 }
 
 .fu-beyond-icon {
   width: 56px; height: 56px;
-  background: rgba(255,161,3,0.08);
-  color: #ffa103;
+  background: #F3F4F6;
+  color: #374151;
   border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 1.5rem;
@@ -5201,6 +5348,10 @@
   letter-spacing: -0.03em;
   line-height: 1.15;
   margin: 0 0 1rem 0;
+}
+
+.fu-cta-final-title .fu-cta-brand-accent {
+  color: #F3912E;
 }
 
 .fu-cta-final-sub {
@@ -5954,8 +6105,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #F3912E;
-  box-shadow: 0 0 8px rgba(243, 145, 46, 0.4);
+  background: #18181B;
+  box-shadow: none;
 }
 
 .fma-svg-container {
@@ -6076,24 +6227,24 @@
 }
 
 .fme-editor-tab:hover {
-  border-color: #F3912E;
-  color: #F3912E;
+  border-color: #111827;
+  color: #111827;
   transform: translateY(-1px);
 }
 
 .fme-editor-tab.active-tab {
-  background: #FFF7ED;
-  color: #ffa103;
-  border-color: #FDBA74;
+  background: #111827;
+  color: #FFFFFF;
+  border-color: #111827;
   font-weight: 800;
-  box-shadow: 0 2px 6px rgba(243, 145, 46, 0.12);
+  box-shadow: none;
 }
 
 .fme-file-tab {
   font-family: monospace;
   font-size: 0.75rem;
-  color: #F3912E;
-  background: rgba(243, 145, 46, 0.12);
+  color: #374151;
+  background: #F3F4F6;
   padding: 2px 7px;
   border-radius: 4px;
   font-weight: 700;
@@ -6312,11 +6463,11 @@
 }
 .fme-opt:hover {
   background: #F9FAFB;
-  border-color: rgba(243, 145, 46, 0.4);
+  border-color: #CBD5E1;
 }
 .fme-opt.active {
-  border-color: #F3912E;
-  background: rgba(243, 145, 46, 0.08);
+  border-color: #111827;
+  background: #F3F4F6;
   color: #111827;
   font-weight: 700;
 }
@@ -6327,8 +6478,8 @@
   border: 2px solid #D1D5DB;
 }
 .fme-radio.checked {
-  border-color: #F3912E;
-  background: #F3912E;
+  border-color: #111827;
+  background: #111827;
   box-shadow: inset 0 0 0 3px #FFFFFF;
 }
 
@@ -6394,9 +6545,9 @@
 }
 
 .fme-format-btn.active {
-  background: #FFF7ED;
-  border-color: #FDBA74;
-  color: #ffa103;
+  background: #F3F4F6;
+  border-color: #D1D5DB;
+  color: #111827;
 }
 
 .fme-format-name-col {
@@ -6415,7 +6566,7 @@
 }
 
 .fme-format-dot.active {
-  background: #ffa103;
+  background: #111827;
 }
 
 .fme-format-title {
@@ -6425,7 +6576,7 @@
 }
 
 .fme-format-btn.active .fme-format-title {
-  color: #e69002;
+  color: #111827;
   font-weight: 700;
 }
 
@@ -6436,7 +6587,7 @@
 }
 
 .fme-format-btn.active .fme-format-tag {
-  color: #ffa103;
+  color: #4B5563;
   font-weight: 600;
 }
 
@@ -6558,7 +6709,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #f7931e;
+  background: #111827;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -6568,8 +6719,8 @@
 }
 
 .lms-guide-me-btn {
-  border: 1.5px solid #f7931e;
-  color: #333;
+  border: 1.5px solid #D1D5DB;
+  color: #374151;
   padding: 3px 12px;
   border-radius: 4px;
   font-size: 0.74rem;
@@ -6636,7 +6787,7 @@
   position: absolute;
   top: -5px;
   right: -6px;
-  background: #f7931e;
+  background: #111827;
   color: #fff;
   font-size: 0.6rem;
   border-radius: 50%;
@@ -6683,7 +6834,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #f7931e;
+  background: #111827;
   color: #fff;
   font-size: 0.6rem;
   font-weight: 900;
@@ -6728,11 +6879,11 @@
 }
 
 .lms-cw-card {
-  background: linear-gradient(135deg, #FFFDF9 0%, #FFF7ED 50%, #FFFFFF 100%);
-  border: 1.5px solid #FDBA74;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
   padding: 2.25rem 2.5rem;
-  box-shadow: 0 8px 30px rgba(243, 145, 46, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 1.35rem;
@@ -6750,9 +6901,9 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(243, 145, 46, 0.12);
-  border: 1px solid rgba(243, 145, 46, 0.3);
-  color: #ffa103;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.6px;
@@ -6797,17 +6948,17 @@
 /* Interactive Request Box */
 .lms-cw-request-box {
   background: #FFFFFF;
-  border: 1.5px solid #FED7AA;
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
   padding: 6px 8px 6px 16px;
-  box-shadow: 0 4px 16px rgba(243, 145, 46, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   margin: 0.25rem 0;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .lms-cw-request-box:focus-within {
-  border-color: #ffa103;
-  box-shadow: 0 4px 18px rgba(243, 145, 46, 0.15);
+  border-color: #111827;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 .lms-cw-input-row {
@@ -6832,7 +6983,7 @@
 }
 
 .lms-cw-submit-btn {
-  background: #ffa103;
+  background: #F3912E;
   color: #FFFFFF;
   border: none;
   font-size: 0.82rem;
@@ -6848,7 +6999,7 @@
 }
 
 .lms-cw-submit-btn:hover {
-  background: #e69002;
+  background: #E07D1B;
   transform: translateY(-1px);
 }
 
@@ -6861,7 +7012,7 @@
 }
 
 .lms-cw-primary-btn {
-  background: #ffa103;
+  background: #F3912E;
   color: #FFFFFF;
   border: none;
   font-size: 0.86rem;
@@ -6877,7 +7028,7 @@
 }
 
 .lms-cw-primary-btn:hover {
-  background: #e69002;
+  background: #E07D1B;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(243, 145, 46, 0.35);
 }
@@ -6923,7 +7074,7 @@
 }
 
 .lms-menu-item.active {
-  background: #f7931e;
+  background: #111827;
   color: #ffffff;
   font-weight: 700;
   border-radius: 4px;
@@ -6937,9 +7088,9 @@
 
 .lms-custom-tag {
   margin-left: auto;
-  background: rgba(243, 145, 46, 0.15);
-  color: #ffa103;
-  border: 1px solid rgba(243, 145, 46, 0.35);
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #E5E7EB;
   font-size: 0.62rem;
   font-weight: 800;
   padding: 1px 5px;
@@ -6949,9 +7100,9 @@
 }
 
 .lms-menu-item.active .lms-custom-tag {
-  background: #FFFFFF;
-  color: #F7931E;
-  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .lms-updates-badge {
@@ -6985,22 +7136,22 @@
     background: transparent;
   }
   50% {
-    background: rgba(255, 161, 3, 0.08);
+    background: rgba(0, 0, 0, 0.04);
   }
 }
 
 .lms-menu-syllabus-item:hover {
-  background: #FFF7ED !important;
-  color: #ffa103 !important;
+  background: #F3F4F6 !important;
+  color: #111827 !important;
 }
 
 .lms-syllabus-live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #ffa103;
+  background: #111827;
   margin-left: auto;
-  box-shadow: 0 0 0 0 rgba(255, 161, 3, 0.7);
+  box-shadow: 0 0 0 0 rgba(17, 24, 39, 0.5);
   animation: lmsDotPulse 1.8s infinite;
 }
 
@@ -7013,15 +7164,15 @@
 @keyframes lmsDotPulse {
   0% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 161, 3, 0.7);
+    box-shadow: 0 0 0 0 rgba(17, 24, 39, 0.5);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(255, 161, 3, 0);
+    box-shadow: 0 0 0 6px rgba(17, 24, 39, 0);
   }
   100% {
     transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 161, 3, 0);
+    box-shadow: 0 0 0 0 rgba(17, 24, 39, 0);
   }
 }
 
@@ -7078,7 +7229,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: rgba(255, 161, 3, 0.45);
+  background: rgba(17, 24, 39, 0.35);
   transform: translate(-50%, -50%) scale(0);
   animation: lmsClickRipple 2.2s ease-out infinite;
 }
@@ -7276,7 +7427,7 @@
 }
 
 .lms-syl-prog-info strong {
-  color: #ffa103;
+  color: #111827;
 }
 
 .lms-syl-prog-track {
@@ -7288,7 +7439,7 @@
 
 .lms-syl-prog-fill {
   height: 100%;
-  background: #ffa103;
+  background: #111827;
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
@@ -7309,8 +7460,8 @@
 }
 
 .lms-syl-mod-card.expanded {
-  border-color: #ffa103;
-  box-shadow: 0 2px 10px rgba(255, 161, 3, 0.08);
+  border-color: #D1D5DB;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
 .lms-syl-mod-header {
@@ -7347,8 +7498,8 @@
 }
 
 .lms-syl-status-tag.tag-in-progress {
-  background: #FFF7ED;
-  color: #D97706;
+  background: #F3F4F6;
+  color: #374151;
 }
 
 .lms-syl-status-tag.tag-upcoming {
@@ -7436,7 +7587,7 @@
 .lms-syl-lab-badge {
   font-size: 0.65rem;
   font-weight: 800;
-  color: #ffa103;
+  color: #4B5563;
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -7513,17 +7664,17 @@
 }
 
 .lms-action-btn.feature-req-btn {
-  background: #FFF7ED;
-  border: 1px solid #FDBA74;
-  color: #e69002;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #111827;
   display: inline-flex;
   align-items: center;
   gap: 5px;
 }
 
 .lms-action-btn.feature-req-btn:hover {
-  background: #FFEDD5;
-  border-color: #FB923C;
+  background: #E5E7EB;
+  border-color: #D1D5DB;
 }
 
 /* Feature Request Dedicated Highlight View */
@@ -7538,9 +7689,9 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: rgba(243, 145, 46, 0.1);
-  border: 1px solid rgba(243, 145, 46, 0.3);
-  color: #ffa103;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.6px;
@@ -7559,14 +7710,14 @@
 
 /* Highlight Banner */
 .lms-fr-highlight-banner {
-  background: linear-gradient(135deg, #FFFDF9 0%, #FFF7ED 100%);
-  border: 1.5px solid #FDBA74;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: 4px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  box-shadow: 0 4px 20px rgba(243, 145, 46, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .lms-fr-badge-row {
@@ -7593,7 +7744,7 @@
 }
 
 .lms-fr-badge {
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
   font-size: 0.68rem;
   font-weight: 800;
@@ -7603,9 +7754,9 @@
 }
 
 .lms-fr-pill {
-  background: #FFFFFF;
-  border: 1px solid #FED7AA;
-  color: #9A3412;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #374151;
   font-size: 0.72rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -7656,11 +7807,11 @@
 }
 
 .lms-fr-input:focus {
-  border-color: #ffa103;
+  border-color: #111827;
 }
 
 .lms-fr-submit-btn {
-  background: #F7931E;
+  background: #F3912E;
   color: #FFFFFF;
   border: none;
   padding: 8px 16px;
@@ -7676,7 +7827,7 @@
 }
 
 .lms-fr-submit-btn:hover {
-  background: #ffa103;
+  background: #E07D1B;
   transform: translateY(-1px);
 }
 
@@ -7710,8 +7861,8 @@
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  background: #FFF7ED;
-  color: #ffa103;
+  background: #F3F4F6;
+  color: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7766,7 +7917,7 @@
 }
 
 .lms-readmore-link {
-  color: #f7931e;
+  color: #4B5563;
   font-size: 0.78rem;
   font-weight: 700;
   text-decoration: none;
@@ -7774,6 +7925,11 @@
   align-items: center;
   gap: 4px;
   width: fit-content;
+  transition: color 0.15s ease;
+}
+
+.lms-readmore-link:hover {
+  color: #111827;
 }
 
 .lms-card-divider {
@@ -7875,9 +8031,9 @@
 }
 
 .lms-continue-btn {
-  border: 1.5px solid #F3912E;
+  border: 1px solid #111827;
   background: #ffffff;
-  color: #F3912E;
+  color: #111827;
   font-size: 0.74rem;
   font-weight: 700;
   padding: 3px 10px;
@@ -7887,7 +8043,7 @@
 }
 
 .lms-continue-btn:hover {
-  background: #F3912E;
+  background: #111827;
   color: #ffffff;
 }
 
@@ -7913,7 +8069,7 @@
 
 .lms-live-badge {
   background: rgba(255,255,255,0.12);
-  color: #f7931e;
+  color: #E5E7EB;
   font-size: 0.6rem;
   font-weight: 800;
   padding: 2px 6px;
@@ -7969,9 +8125,10 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  transition: color 0.15s ease;
 }
 .lms-widget-link:hover {
-  color: #f7931e;
+  color: #111827;
 }
 
 .upcoming-test-widget .lms-widget-header {
@@ -7992,8 +8149,8 @@
 }
 
 .lms-upcoming-box {
-  background: #fffbf5;
-  border: 1px solid #ffe8cf;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
   border-radius: 4px;
   padding: 12px;
   display: flex;
@@ -8002,8 +8159,8 @@
 }
 
 .lms-code-badge {
-  background: #ffebd4;
-  color: #f7931e;
+  background: #F3F4F6;
+  color: #111827;
   font-family: monospace;
   font-size: 0.85rem;
   font-weight: 900;
@@ -8025,8 +8182,8 @@
 }
 
 .lms-tag-coding {
-  background: #ffe8cf;
-  color: #e67e22;
+  background: #E5E7EB;
+  color: #374151;
   font-size: 0.65rem;
   font-weight: 900;
   padding: 2px 6px;
@@ -8061,20 +8218,20 @@
 .lms-cap-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 30px rgba(0,0,0,0.06);
-  border-color: rgba(255,161,3,0.3);
+  border-color: #D1D5DB;
 }
 
 .lms-cap-card.highlight-cap {
-  border: 1.5px solid #ffa103;
-  background: linear-gradient(135deg, rgba(255,161,3,0.04) 0%, #ffffff 100%);
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
 }
 
 .lms-cap-icon {
   width: 44px;
   height: 44px;
   border-radius: 4px;
-  background: rgba(255,161,3,0.1);
-  color: #ffa103;
+  background: #F3F4F6;
+  color: #374151;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8082,9 +8239,9 @@
 }
 
 .lms-cap-icon.star {
-  background: #ffa103;
+  background: #111827;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(255,161,3,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .lms-cap-info h4 {
@@ -8511,10 +8668,14 @@
 }
 
 .fu-practice-apple-section .fu-sec-eyebrow {
-  color: #ffa103;
+  color: #71717A;
   font-weight: 700;
   font-size: 0.8rem;
   letter-spacing: 2px;
+}
+
+.fu-practice-apple-section .fu-pitch-accent {
+  color: #F3912E;
 }
 
 .fu-practice-apple-section .fu-apple-bento-title {
@@ -8597,15 +8758,15 @@
 }
 
 .fu-track-tab-btn.active {
-  background: #FFF7ED;
-  border-color: #ffa103;
-  color: #ffa103;
+  background: #F3F4F6;
+  border-color: #111827;
+  color: #111827;
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(255, 161, 3, 0.08);
+  box-shadow: none;
 }
 
 .fu-sparkle-icon {
-  color: #ffa103;
+  color: #4B5563;
 }
 
 /* 2. Filter & Search Controls Bar */
@@ -8656,8 +8817,8 @@
 
 .fu-practice-search-input:focus {
   background: #FFFFFF;
-  border-color: #ffa103;
-  box-shadow: 0 0 0 2px rgba(255, 161, 3, 0.1);
+  border-color: #111827;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08);
 }
 
 .fu-search-clear-btn {
@@ -8709,9 +8870,9 @@
 }
 
 .fu-level-pill.active {
-  color: #ffa103;
+  color: #111827;
   font-weight: 700;
-  background: #FFF7ED;
+  background: #E5E7EB;
 }
 
 .fu-filter-dropdowns-row {
@@ -8748,7 +8909,7 @@
 }
 
 .fu-filter-select:focus {
-  border-color: #ffa103;
+  border-color: #111827;
   background: #FFFFFF;
 }
 
@@ -8821,12 +8982,12 @@
 }
 
 .fu-status-toggle:hover {
-  border-color: #10B981;
+  border-color: #111827;
 }
 
 .fu-status-toggle.solved {
-  background: #10B981;
-  border-color: #10B981;
+  background: #111827;
+  border-color: #111827;
   color: #FFFFFF;
 }
 
@@ -8838,17 +8999,17 @@
 }
 
 .fu-practice-tr:hover .fu-prob-title {
-  color: #ffa103;
+  color: #111827;
 }
 
 .fu-prob-type-badge {
-  background: #EFF6FF;
-  color: #2563EB;
+  background: #F3F4F6;
+  color: #374151;
   font-size: 0.68rem;
   font-weight: 600;
   padding: 2px 7px;
   border-radius: 4px;
-  border: 1px solid #DBEAFE;
+  border: 1px solid #E5E7EB;
   letter-spacing: 0.3px;
   display: inline-block;
 }
@@ -8878,27 +9039,27 @@
 }
 
 .fu-prob-diff-badge.diff-easy {
-  background: #ECFDF5;
-  color: #059669;
-  border: 1px solid #A7F3D0;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #E5E7EB;
 }
 
 .fu-prob-diff-badge.diff-medium {
-  background: #FFF7ED;
-  color: #D97706;
-  border: 1px solid #FDBA74;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #E5E7EB;
 }
 
 .fu-prob-diff-badge.diff-hard {
-  background: #FEF2F2;
-  color: #DC2626;
-  border: 1px solid #FECACA;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #E5E7EB;
 }
 
 .fu-practice-action-btn {
   background: none;
   border: none;
-  color: #ffa103;
+  color: #111827;
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
@@ -8911,7 +9072,7 @@
 }
 
 .fu-practice-action-btn:hover {
-  background: #FFF7ED;
+  background: #F3F4F6;
   transform: translateX(2px);
 }
 
@@ -9006,19 +9167,19 @@
 }
 
 .fu-solver-tab-btn.active {
-  color: #ffa103;
+  color: #111827;
   font-weight: 700;
-  border-bottom-color: #ffa103;
+  border-bottom-color: #111827;
 }
 
 .fu-solver-tab-btn.active svg {
-  color: #ffa103;
+  color: #111827;
 }
 
 .fu-solver-sub-count {
   font-size: 0.68rem;
-  background: #EFF6FF;
-  color: #3B82F6;
+  background: #F3F4F6;
+  color: #111827;
   padding: 1px 6px;
   border-radius: 9999px;
   font-weight: 700;
@@ -9130,10 +9291,10 @@
 
 .fu-solver-run-btn:hover:not(:disabled) {
   background: #F8FAFC;
-  border-color: #3B82F6;
-  color: #2563EB;
+  border-color: #111827;
+  color: #111827;
   transform: translateY(-1.5px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .fu-solver-run-btn:disabled {
@@ -9142,8 +9303,8 @@
 }
 
 .fu-solver-submit-btn {
-  background: #ffa103;
-  border: 1px solid #ffa103;
+  background: #111827;
+  border: 1px solid #111827;
   color: #FFFFFF;
   font-size: 0.78rem;
   font-weight: 700;
@@ -9158,10 +9319,10 @@
 }
 
 .fu-solver-submit-btn:hover:not(:disabled) {
-  background: #e69002;
-  border-color: #e69002;
+  background: #27272A;
+  border-color: #27272A;
   transform: translateY(-1.5px);
-  box-shadow: 0 4px 14px rgba(255, 161, 3, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 .fu-solver-submit-btn:disabled {
@@ -9211,7 +9372,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: rgba(37, 99, 235, 0.45);
+  background: rgba(17, 24, 39, 0.25);
   transform: translate(-50%, -50%) scale(0);
   animation: fuClickRipple 2.4s ease-out infinite;
 }
@@ -9287,9 +9448,9 @@
 }
 
 .fu-solver-diff-badge.diff-easy {
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
-  color: #059669;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #374151;
 }
 
 .fu-solver-narrative {
@@ -9443,9 +9604,9 @@
 
 /* Submission Verdict Banner */
 .fu-solver-verdict-banner {
-  background: #ECFDF5;
-  border-top: 1px solid #A7F3D0;
-  border-bottom: 1px solid #A7F3D0;
+  background: #F8FAFC;
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
   padding: 12px 18px;
   animation: fuVerdictSlide 0.25s ease-out;
 }
@@ -9468,13 +9629,13 @@
   gap: 6px;
   font-size: 1rem;
   font-weight: 800;
-  color: #065F46;
+  color: #111827;
 }
 
 .fu-verdict-close {
   background: none;
   border: none;
-  color: #047857;
+  color: #64748B;
   cursor: pointer;
   padding: 2px;
 }
@@ -9485,7 +9646,7 @@
   gap: 18px;
   flex-wrap: wrap;
   font-size: 0.78rem;
-  color: #065F46;
+  color: #334155;
 }
 
 .fu-verdict-stat {
@@ -9495,21 +9656,21 @@
 }
 
 .fu-stat-label {
-  color: #047857;
+  color: #64748B;
 }
 
 .fu-stat-val {
-  color: #064E3B;
+  color: #111827;
   font-weight: 700;
 }
 
 .fu-stat-sub {
-  color: #059669;
+  color: #64748B;
   font-size: 0.72rem;
 }
 
 .fu-stat-val.status-green {
-  color: #059669;
+  color: #111827;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -9546,7 +9707,7 @@
   width: 18px;
   height: 18px;
   border-radius: 3px;
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
   display: inline-flex;
   align-items: center;
@@ -9582,8 +9743,8 @@
 
 .fu-ai-term-run-btn {
   background: #FFFFFF;
-  border: 1px solid #ffa103;
-  color: #ffa103;
+  border: 1px solid #111827;
+  color: #111827;
   font-size: 0.72rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -9596,7 +9757,7 @@
 }
 
 .fu-ai-term-run-btn:hover {
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
 }
 
@@ -9682,9 +9843,9 @@
 }
 
 .fu-ai-tool-pill:hover {
-  border-color: #ffa103;
-  color: #ffa103;
-  background: #FFFBF5;
+  border-color: #111827;
+  color: #111827;
+  background: #F1F5F9;
   transform: translateY(-1px);
 }
 
@@ -9735,7 +9896,7 @@
 
 .fu-ai-cmd-block {
   background: #F8FAFC;
-  border-left: 3px solid #ffa103;
+  border-left: 3px solid #111827;
   border-radius: 0 6px 6px 0;
   padding: 8px 12px;
 }
@@ -9752,7 +9913,7 @@
   font-family: 'Fira Code', monospace;
   font-size: 0.74rem;
   font-weight: 800;
-  color: #ffa103;
+  color: #64748B;
   white-space: nowrap;
 }
 
@@ -9804,6 +9965,79 @@
   background: #FFFFFF;
 }
 
+.fu-tc-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 8px;
+}
+
+.fu-tc-case-tab {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fu-tc-case-tab.active {
+  background: #111827;
+  border-color: #111827;
+  color: #FFFFFF;
+}
+
+.fu-tc-dot-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #64748B;
+}
+
+.fu-tc-case-tab.active .fu-tc-dot-green {
+  background: #94A3B8;
+}
+
+.fu-tc-item {
+  margin-bottom: 10px;
+}
+
+.fu-tc-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748B;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.fu-tc-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.76rem;
+  color: #1E293B;
+}
+
+.fu-tc-box.output-pass {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #111827;
+}
+
+.fu-tc-split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
 /* 4. Bottom Tab Bar */
 .fu-ai-term-bottom-tabs {
   display: flex;
@@ -9839,11 +10073,11 @@
 }
 
 .fu-ai-bottom-tab-btn.active-brand {
-  background: #ffa103;
-  border-color: #ffa103;
+  background: #111827;
+  border-color: #111827;
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(255, 161, 3, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 /* Responsive adjustments */
@@ -9927,14 +10161,14 @@
 }
 
 .fu-sub-status-badge.accepted {
-  background: #ECFDF5;
-  color: #059669;
-  border: 1px solid #A7F3D0;
+  background: #F3F4F6;
+  color: #111827;
+  border: 1px solid #E5E7EB;
 }
 
 .fu-sub-lang {
-  background: #EFF6FF;
-  color: #2563EB;
+  background: #F3F4F6;
+  color: #374151;
   padding: 2px 7px;
   border-radius: 4px;
   font-weight: 600;
@@ -9943,6 +10177,10 @@
 
 .fu-sub-date {
   color: #6B7280;
+}
+
+.fu-practice-apple-section .fu-tag-check {
+  color: #4B5563;
 }
 
 @media (max-width: 900px) {
@@ -9976,10 +10214,14 @@
 }
 
 .fu-mock-interview-apple-section .fu-sec-eyebrow {
-  color: #ffa103;
+  color: #71717A;
   font-weight: 700;
   font-size: 0.8rem;
   letter-spacing: 2px;
+}
+
+.fu-mock-interview-apple-section .fu-pitch-accent {
+  color: #F3912E;
 }
 
 .fu-mock-interview-apple-section .fu-apple-bento-title {
@@ -10045,7 +10287,7 @@
 
 .fu-mi-step-tab.active {
   background: #FFFFFF;
-  color: #ffa103;
+  color: #111827;
   font-weight: 700;
 }
 
@@ -10056,7 +10298,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #ffa103;
+  background: #111827;
 }
 
 .fu-mi-step-num {
@@ -10073,7 +10315,7 @@
 }
 
 .fu-mi-step-tab.active .fu-mi-step-num {
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
 }
 
@@ -10120,8 +10362,8 @@
 }
 
 .fu-mi-upload-dropzone:hover {
-  background: #FFF7ED;
-  border-color: #ffa103;
+  background: #F8FAFC;
+  border-color: #94A3B8;
 }
 
 .fu-mi-file-input {
@@ -10140,7 +10382,7 @@
 }
 
 .fu-mi-upload-dropzone:hover .fu-mi-upload-icon {
-  color: #ffa103;
+  color: #111827;
 }
 
 .fu-mi-upload-text {
@@ -10150,7 +10392,7 @@
 }
 
 .fu-mi-upload-text strong {
-  color: #ffa103;
+  color: #111827;
 }
 
 .fu-mi-upload-sub {
@@ -10163,9 +10405,9 @@
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
-  color: #065F46;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  color: #111827;
   font-size: 0.78rem;
   padding: 6px 12px;
   border-radius: 5px;
@@ -10206,9 +10448,9 @@
 }
 
 .fu-mi-sample-btn.active {
-  border-color: #ffa103;
-  background: #FFF7ED;
-  box-shadow: 0 1px 3px rgba(255, 161, 3, 0.08);
+  border-color: #111827;
+  background: #F8FAFC;
+  box-shadow: none;
 }
 
 .fu-mi-sample-top {
@@ -10246,8 +10488,8 @@
 }
 
 .fu-mi-sample-btn.active .fu-mi-skill-tag {
-  background: #FED7AA;
-  color: #9A3412;
+  background: #E5E7EB;
+  color: #111827;
 }
 
 /* Right Col: Job Profiles */
@@ -10274,9 +10516,9 @@
 }
 
 .fu-mi-profile-card.active {
-  border-color: #ffa103;
-  background: #FFF7ED;
-  box-shadow: 0 1px 3px rgba(255, 161, 3, 0.08);
+  border-color: #111827;
+  background: #F8FAFC;
+  box-shadow: none;
 }
 
 .fu-mi-profile-header {
@@ -10298,14 +10540,14 @@
 }
 
 .fu-mi-profile-card.active .fu-mi-radio-circle {
-  border-color: #ffa103;
+  border-color: #111827;
 }
 
 .fu-mi-radio-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #ffa103;
+  background: #111827;
 }
 
 .fu-mi-profile-title {
@@ -10325,9 +10567,9 @@
   margin-left: auto;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #059669;
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 2px 8px;
   border-radius: 4px;
   flex-shrink: 0;
@@ -10370,8 +10612,8 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  background: #ffa103;
-  border: 1px solid #e69002;
+  background: #111827;
+  border: 1px solid #111827;
   color: #FFFFFF;
   font-size: 0.88rem;
   font-weight: 700;
@@ -10379,11 +10621,12 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
-  box-shadow: 0 2px 4px rgba(255, 161, 3, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .fu-mi-start-btn:hover {
-  background: #e69002;
+  background: #27272A;
+  border-color: #27272A;
   transform: translateY(-1px);
 }
 
@@ -10482,7 +10725,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #10B981;
+  background: #475569;
 }
 
 /* Main Workspace (Ample White Space & Generous Breathing Room) */
@@ -10513,7 +10756,7 @@
 }
 
 .fu-mi-live-q-context {
-  border-left: 3.5px solid #ffa103;
+  border-left: 3.5px solid #111827;
   padding: 4px 0 4px 20px;
   margin-bottom: 2rem;
 }
@@ -10536,10 +10779,10 @@
 .fu-mi-live-transcription-box {
   margin-top: 2rem;
   background: #FFFFFF;
-  border: 1px solid #FED7AA;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
   padding: 16px 22px;
-  box-shadow: 0 4px 14px rgba(255, 161, 3, 0.07);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
 .fu-mi-transcription-status {
@@ -10548,7 +10791,7 @@
   gap: 7px;
   font-size: 0.78rem;
   font-weight: 700;
-  color: #ffa103;
+  color: #111827;
   margin-bottom: 6px;
 }
 
@@ -10556,7 +10799,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ffa103;
+  background: #111827;
   animation: fuPulseDot 1.2s infinite ease-in-out;
 }
 
@@ -10577,8 +10820,8 @@
 
 /* AI Interviewer Video Tile */
 .fu-mi-ai-video-card {
-  background: linear-gradient(180deg, #FFF9F2 0%, #FFFFFF 100%);
-  border: 1px solid #FED7AA;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
   padding: 2.5rem 2rem 2.25rem 2rem;
   display: flex;
@@ -10586,7 +10829,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 4px 18px rgba(255, 161, 3, 0.08);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
 }
 
 .fu-mi-ai-aura {
@@ -10603,7 +10846,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(255, 161, 3, 0.22);
+  border: 1px solid rgba(17, 24, 39, 0.08);
   animation: fuAuraPulse 3s infinite ease-in-out;
 }
 
@@ -10611,7 +10854,7 @@
   position: absolute;
   inset: 11px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 161, 3, 0.42);
+  border: 1px solid rgba(17, 24, 39, 0.16);
 }
 
 .fu-mi-concentric-ring.ring-1 {
@@ -10619,8 +10862,8 @@
   inset: 22px;
   border-radius: 50%;
   background: #FFFFFF;
-  border: 1px solid rgba(255, 161, 3, 0.7);
-  box-shadow: 0 4px 14px rgba(255, 161, 3, 0.18);
+  border: 1px solid rgba(17, 24, 39, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10629,7 +10872,7 @@
 .fu-mi-bot-svg {
   width: 24px;
   height: 24px;
-  color: #ffa103;
+  color: #111827;
 }
 
 @keyframes fuAuraPulse {
@@ -10648,13 +10891,13 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: #FFF7ED;
-  border: 1px solid #FFEDD5;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
   border-radius: 9999px;
   padding: 5px 14px;
   font-size: 0.78rem;
   font-weight: 600;
-  color: #EA580C;
+  color: #334155;
 }
 
 .fu-mi-audio-bars {
@@ -10666,7 +10909,7 @@
 
 .fu-mi-bar {
   width: 2.5px;
-  background: #ffa103;
+  background: #475569;
   border-radius: 2px;
   animation: fuBarWave 1.1s infinite ease-in-out alternate;
 }
@@ -10747,7 +10990,7 @@
 }
 
 .fu-mi-stream-mic-badge.is-live {
-  background: #10B981;
+  background: #334155;
   color: #FFFFFF;
 }
 
@@ -10824,9 +11067,9 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: #FFF7ED;
-  border: 1px solid #FED7AA;
-  color: #ffa103;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  color: #111827;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10860,18 +11103,18 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
   border: none;
   border-radius: 9999px;
   padding: 12px 24px;
   font-size: 0.88rem;
   font-weight: 700;
-  box-shadow: 0 4px 14px rgba(255, 161, 3, 0.25);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .fu-mi-ctrl-btn.btn-next-q:hover {
-  background: #ea9100;
+  background: #27272A;
   transform: translateY(-1px);
 }
 
@@ -10995,11 +11238,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
   padding: 8px 14px;
   border-radius: 8px;
-  color: #047857;
+  color: #111827;
 }
 
 .fu-mi-hire-status {
@@ -11011,7 +11254,7 @@
 .fu-mi-hire-percentile {
   display: block;
   font-size: 0.68rem;
-  color: #065F46;
+  color: #475569;
 }
 
 .fu-mi-score-box {
@@ -11025,7 +11268,7 @@
 .fu-mi-big-score {
   font-size: 1.65rem;
   font-weight: 900;
-  color: #ffa103;
+  color: #111827;
   line-height: 1;
 }
 
@@ -11080,7 +11323,7 @@
 }
 
 .fu-mi-metric-val.score-high {
-  color: #059669;
+  color: #111827;
 }
 
 .fu-mi-bar-track {
@@ -11094,11 +11337,11 @@
 .fu-mi-bar-fill {
   height: 100%;
   border-radius: 9999px;
-  background: #ffa103;
+  background: #111827;
 }
 
 .fu-mi-bar-fill.fill-high {
-  background: #10B981;
+  background: #111827;
 }
 
 /* Key Strengths & Growth Areas (Concise Glimpse) */
@@ -11115,13 +11358,13 @@
 }
 
 .fu-mi-fb-box.fb-strength {
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
 }
 
 .fu-mi-fb-box.fb-growth {
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
 }
 
 .fu-mi-fb-box h5 {
@@ -11131,11 +11374,11 @@
 }
 
 .fu-mi-fb-box.fb-strength h5 {
-  color: #166534;
+  color: #111827;
 }
 
 .fu-mi-fb-box.fb-growth h5 {
-  color: #92400E;
+  color: #111827;
 }
 
 .fu-mi-fb-box ul {
@@ -11146,11 +11389,11 @@
 }
 
 .fu-mi-fb-box.fb-strength ul {
-  color: #15803D;
+  color: #475569;
 }
 
 .fu-mi-fb-box.fb-growth ul {
-  color: #B45309;
+  color: #475569;
 }
 
 .fu-mi-fb-box li {
@@ -11159,6 +11402,10 @@
 
 .fu-mi-fb-box li:last-child {
   margin-bottom: 0;
+}
+
+.fu-mock-interview-apple-section .fu-tag-check {
+  color: #4B5563;
 }
 
 /* Report Action Bar */

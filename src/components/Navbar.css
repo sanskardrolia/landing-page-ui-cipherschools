@@ -13,8 +13,8 @@
 
 @media (min-width: 1024px) {
   .with-sidebar .navbar {
-    left: 64px;
-    width: calc(100% - 64px);
+    left: 68px;
+    width: calc(100% - 68px);
   }
 }
 
@@ -36,7 +36,14 @@
 }
 
 .logo-text {
+  color: #111827;
   transition: color 0.35s ease;
+}
+
+.logo-text span,
+.logo-text .text-primary,
+.logo-text .text-brand {
+  color: inherit !important;
 }
 
 .navbar-links {

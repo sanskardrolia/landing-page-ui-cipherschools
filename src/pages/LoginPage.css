@@ -52,6 +52,13 @@
   object-fit: contain;
 }
 
+.login-brand-logo .logo-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
 /* Split Layout 2-Column Container */
 .login-split-layout {
   display: grid;

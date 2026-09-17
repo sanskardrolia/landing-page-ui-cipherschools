@@ -190,6 +190,17 @@
     gap: 2.75rem;
     margin-bottom: 2.5rem;
   }
+
+  .hero-orbital-spiral-wrap {
+    width: 600px;
+    height: 600px;
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+
+  .hero-orbital-nodes-wrap {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
 }
 
 .hero-left-column {
@@ -209,6 +220,177 @@
   width: 100%;
 }
 
+/* ── Minimalist Hero Orbital Spiral System ── */
+.hero-orbital-spiral-wrap {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 40%);
+  transform: translate(-50%, -50%);
+  width: 760px;
+  height: 760px;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-orbital-spiral-aura {
+  position: absolute;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(243, 145, 46, 0.08) 0%, rgba(243, 145, 46, 0.015) 52%, transparent 72%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.hero-orbital-spiral-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: heroSpinSpiralMain 46s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+.hero-orbital-spiral-svg-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: heroSpinSpiralReverse 64s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes heroSpinSpiralMain {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes heroSpinSpiralReverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+/* ── Hero Orbital Floating Nodes (from Welcome Gateway) ── */
+.hero-orbital-nodes-wrap {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 40%);
+  transform: translate(-50%, -50%);
+  width: 760px;
+  height: 760px;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.hero-orbital-node-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.hero-orbital-node-track:hover {
+  animation-play-state: paused !important;
+}
+
+.hero-orbital-node-pill {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 5px 12px 5px 7px;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.02);
+  pointer-events: auto;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+  user-select: none;
+}
+
+.hero-orbital-node-pill:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: #FFFFFF;
+  border-color: #F3912E;
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.22), 0 2px 8px rgba(0, 0, 0, 0.06);
+  z-index: 30;
+}
+
+.hero-orbital-node-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(243, 145, 46, 0.12);
+  color: #F3912E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hero-orbital-node-pill:hover .hero-orbital-node-icon {
+  background: #F3912E;
+  color: #FFFFFF;
+}
+
+.hero-orbital-node-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: -0.01em;
+}
+
+/* 6-Node Circular Orbit Keyframes (Radius = 360px, 60° Spacing) */
+.hero-orbital-node-track.track-pos-0 { animation: heroOrbit0 52s linear infinite; }
+.hero-orbital-node-track.track-pos-1 { animation: heroOrbit60 52s linear infinite; }
+.hero-orbital-node-track.track-pos-2 { animation: heroOrbit120 52s linear infinite; }
+.hero-orbital-node-track.track-pos-3 { animation: heroOrbit180 52s linear infinite; }
+.hero-orbital-node-track.track-pos-4 { animation: heroOrbit240 52s linear infinite; }
+.hero-orbital-node-track.track-pos-5 { animation: heroOrbit300 52s linear infinite; }
+
+@keyframes heroOrbit0 {
+  0%   { transform: rotate(0deg) translateX(360px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(360px) rotate(-360deg); }
+}
+
+@keyframes heroOrbit60 {
+  0%   { transform: rotate(60deg) translateX(360px) rotate(-60deg); }
+  100% { transform: rotate(420deg) translateX(360px) rotate(-420deg); }
+}
+
+@keyframes heroOrbit120 {
+  0%   { transform: rotate(120deg) translateX(360px) rotate(-120deg); }
+  100% { transform: rotate(480deg) translateX(360px) rotate(-480deg); }
+}
+
+@keyframes heroOrbit180 {
+  0%   { transform: rotate(180deg) translateX(360px) rotate(-180deg); }
+  100% { transform: rotate(540deg) translateX(360px) rotate(-540deg); }
+}
+
+@keyframes heroOrbit240 {
+  0%   { transform: rotate(240deg) translateX(360px) rotate(-240deg); }
+  100% { transform: rotate(600deg) translateX(360px) rotate(-600deg); }
+}
+
+@keyframes heroOrbit300 {
+  0%   { transform: rotate(300deg) translateX(360px) rotate(-300deg); }
+  100% { transform: rotate(660deg) translateX(360px) rotate(-660deg); }
+}
+
 /* ── 3D Interactive & Auto-Changing Mockup Deck ── */
 .hero-stacked-mockup-showcase {
   width: 100%;
@@ -219,6 +401,7 @@
   flex-direction: column;
   align-items: center;
   perspective: 1400px;
+  z-index: 10;
 }
 
 .mockup-stage-indicators {
@@ -819,6 +1002,23 @@
     width: 100%;
   }
 
+  .hero-dual-cta-group {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .hero-dual-cta-group .hero-cta-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.4rem;
+  }
+
+  .hero-orbital-spiral-wrap,
+  .hero-orbital-nodes-wrap {
+    display: none;
+  }
+
   .impact-start-journey-btn {
     width: 100%;
     max-width: 100%;
@@ -956,6 +1156,66 @@
   background: #E07B19;
   transform: translateY(-2px);
   box-shadow: 0 12px 32px rgba(243, 145, 46, 0.5);
+}
+
+/* ── Hero Dual Persona CTAs (Student & University) ── */
+.hero-dual-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+.hero-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.82rem 1.6rem;
+  border-radius: 8px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hero-cta-btn .hero-btn-arrow {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-cta-btn:hover .hero-btn-arrow {
+  transform: translateX(3px);
+}
+
+.hero-cta-student {
+  background: #F3912E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.22);
+}
+
+.hero-cta-student:hover {
+  background: #E07B19;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px rgba(243, 145, 46, 0.35);
+}
+
+.hero-cta-university {
+  background: #18181B;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.hero-cta-university:hover {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
 
 /* ── Founder Story Narrative (YC Editorial Drop-Cap & Clean Newspaper Style) ── */
@@ -1401,8 +1661,8 @@
 
 .bento-cell:hover {
   transform: translateY(-3px);
-  border-color: rgba(255, 161, 3, 0.45);
-  box-shadow: 0 12px 28px rgba(255, 161, 3, 0.08);
+  border-color: #D1D5DB;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
 }
 
 .bento-cell-top-row {
@@ -1426,15 +1686,15 @@
 }
 
 .bento-cell-tag.tag-orange {
-  color: #ffa103;
+  color: #64748B;
 }
 
 .bento-status-pill {
   font-size: 0.62rem;
   font-weight: 800;
-  color: #ffa103;
-  background: rgba(255, 161, 3, 0.1);
-  border: 1px solid rgba(255, 161, 3, 0.25);
+  color: #111827;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 2px 7px;
   border-radius: 4px;
   display: inline-flex;
@@ -1445,23 +1705,23 @@
 }
 
 .bento-status-pill.pill-green {
-  color: #16A34A;
-  background: #F0FDF4;
-  border-color: #BBF7D0;
+  color: #374151;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
 }
 
 .bento-live-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #16A34A;
-  box-shadow: 0 0 6px rgba(22, 163, 74, 0.6);
-  animation: pulseDotGreen 1.4s infinite;
+  background: #111827;
+  box-shadow: 0 0 4px rgba(17, 24, 39, 0.4);
+  animation: pulseDotGrey 1.4s infinite;
 }
 
-@keyframes pulseDotGreen {
+@keyframes pulseDotGrey {
   0% { transform: scale(0.9); opacity: 0.7; }
-  50% { transform: scale(1.3); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 1; }
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
@@ -1494,10 +1754,10 @@
 }
 
 .cell-zero {
-  border-top: 3px solid #ffa103;
+  border-top: 3px solid #18181B;
 }
 
-/* Avatar Stack for Card 1 */
+/* Avatar Stack for Card 1 (Greyscale Palette) */
 .bento-avatar-stack-wrap {
   display: flex;
   align-items: center;
@@ -1532,14 +1792,14 @@
   margin-left: 0;
 }
 
-.bento-avatar-1 { background: linear-gradient(135deg, #ffa103, #d97706); }
-.bento-avatar-2 { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
-.bento-avatar-3 { background: linear-gradient(135deg, #10B981, #047857); }
-.bento-avatar-4 { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+.bento-avatar-1 { background: linear-gradient(135deg, #18181B, #27272A); }
+.bento-avatar-2 { background: linear-gradient(135deg, #27272A, #3F3F46); }
+.bento-avatar-3 { background: linear-gradient(135deg, #3F3F46, #52525B); }
+.bento-avatar-4 { background: linear-gradient(135deg, #52525B, #71717A); }
 
 .bento-avatar-more {
-  background: #E2E8F0;
-  color: #334155;
+  background: #F3F4F6;
+  color: #18181B;
   font-size: 0.58rem;
   font-weight: 800;
 }
@@ -1547,9 +1807,9 @@
 .bento-mini-pulse-chip {
   font-size: 0.68rem;
   font-weight: 700;
-  color: #d97706;
-  background: #FFFBEB;
-  border: 1px solid #FEF3C7;
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 2.5px 7px;
   border-radius: 4px;
   display: inline-flex;
@@ -1578,7 +1838,7 @@
 }
 
 .bento-check-icon {
-  color: #ffa103;
+  color: #111827;
   flex-shrink: 0;
 }
 
@@ -1606,9 +1866,9 @@
 }
 
 .bento-cert-chip.highlight {
-  background: #FFF7ED;
-  border-color: #FED7AA;
-  color: #ffa103;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+  color: #111827;
 }
 
 /* Proctor Stats for Card 4 */
@@ -1625,9 +1885,9 @@
 .bento-integrity-pill {
   font-size: 0.68rem;
   font-weight: 700;
-  color: #16A34A;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
+  color: #374151;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 3px 8px;
   border-radius: 4px;
   display: inline-flex;
@@ -1652,12 +1912,16 @@
   gap: 4px;
   font-size: 0.65rem;
   font-weight: 800;
-  color: #d97706;
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
+  color: #111827;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 2px 7px;
   border-radius: 4px;
   letter-spacing: 0.2px;
+}
+
+.bento-transition-arrow {
+  color: #111827;
 }
 
 .bento-roadmap-pills {
@@ -1680,9 +1944,9 @@
 }
 
 .bento-roadmap-pill.orange {
-  background: #FFF7ED;
-  border-color: #FED7AA;
-  color: #ffa103;
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  color: #334155;
 }
 
 /* Mentor Logos & Rating for Card 6 */
@@ -1690,8 +1954,8 @@
   font-size: 0.65rem;
   font-weight: 800;
   color: #0F172A;
-  background: #FFFBEB;
-  border: 1px solid #FEF3C7;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
   padding: 2px 7px;
   border-radius: 4px;
   display: inline-flex;
@@ -1700,8 +1964,8 @@
 }
 
 .bento-star-icon {
-  color: #ffa103;
-  fill: #ffa103;
+  color: #111827;
+  fill: #111827;
 }
 
 .bento-logos-row {
@@ -1730,28 +1994,36 @@
 
 .bento-logo-chip:hover {
   background: #FFFFFF;
-  border-color: #ffa103;
+  border-color: #111827;
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(255, 161, 3, 0.15);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .bento-logo-chip svg {
   display: block;
+  filter: grayscale(100%);
+  opacity: 0.85;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.bento-logo-chip:hover svg {
+  filter: grayscale(0%);
+  opacity: 1;
 }
 
 .bento-logo-chip.bento-logo-more {
-  background: #FFF7ED;
-  border-color: #FED7AA;
-  color: #ffa103;
+  background: #F3F4F6;
+  border-color: #E5E7EB;
+  color: #111827;
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.2px;
 }
 
 .bento-logo-chip.bento-logo-more:hover {
-  background: #ffa103;
+  background: #111827;
   color: #FFFFFF;
-  border-color: #ffa103;
+  border-color: #111827;
 }
 
 .bento-whatsapp-btn:hover {
