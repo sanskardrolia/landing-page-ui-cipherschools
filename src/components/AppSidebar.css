@@ -1,8 +1,12 @@
 /* ═════════════════════════════════════════════════════════
-   CIPHERSCHOOLS ICON NAVIGATION RAIL (Matching User Screenshot)
-   - Active: Filled icon in brand color (#F3912E), brand label
-   - Inactive: Clean grey (#71717A), dark on hover
-   - Pinned Top Hamburger, Scrollable Items Rail, Bottom Logout
+   CIPHERSCHOOLS ICON NAVIGATION RAIL (Matching User Requirements)
+   - Items Sequence: Home, Courses, Practice, Resume, Compiler, 
+     Reward, Premium, Dashboard, Creator, Feedback, Logout
+   - Badges: "FREE" on courses, practice, resume, compiler
+     "PAID" on premium
+   - Active: Filled icon in brand color (#F3912E)
+   - Inactive: Clean grey (#71717A)
+   - Hover Card: Smooth fade, greyscale palette, zero emojis
    ═════════════════════════════════════════════════════════ */
 
 .app-min-sidebar {
@@ -25,7 +29,7 @@
 
 /* ── Top Header with Hamburger Menu Toggle ── */
 .app-sb-top-header {
-  height: 58px;
+  height: 56px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -36,7 +40,7 @@
 
 .app-sb-menu-btn {
   width: 44px;
-  height: 40px;
+  height: 38px;
   border-radius: 6px;
   background: transparent;
   border: none;
@@ -65,7 +69,7 @@
   flex-direction: column;
   align-items: center;
   padding: 8px 0;
-  gap: 5px;
+  gap: 4px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none; /* Firefox */
@@ -78,12 +82,13 @@
 
 /* ── Individual Nav Item Button ── */
 .app-sb-nav-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  width: 56px;
+  gap: 2.5px;
+  width: 58px;
   min-height: 48px;
   padding: 5px 2px 4px;
   border-radius: 8px;
@@ -115,6 +120,47 @@
   background: rgba(243, 145, 46, 0.14);
 }
 
+/* ── Micro-Badges for FREE / PAID (Ultra-Compact) ── */
+.app-sb-item-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 6px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 1px 2.5px;
+  border-radius: 2.5px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  pointer-events: none;
+  transition: all 0.15s ease;
+}
+
+/* FREE Badge: Clean Greyscale Slate */
+.app-sb-item-badge.badge-free {
+  background: #F4F4F5;
+  color: #52525B;
+  border: 1px solid #E4E4E7;
+}
+
+.app-sb-nav-item:hover .app-sb-item-badge.badge-free {
+  background: #18181B;
+  color: #FFFFFF;
+  border-color: #18181B;
+}
+
+/* PAID Badge: Obsidian Dark */
+.app-sb-item-badge.badge-paid {
+  background: #18181B;
+  color: #FFFFFF;
+  border: 1px solid #27272A;
+}
+
+.app-sb-nav-item:hover .app-sb-item-badge.badge-paid {
+  background: #09090B;
+  border-color: #000000;
+}
+
 /* ── Icon & Label Elements ── */
 .app-sb-item-icon {
   display: flex;
@@ -135,7 +181,7 @@
 }
 
 .app-sb-item-label {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 600;
   line-height: 1.15;
   color: inherit;
@@ -155,7 +201,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 0 12px;
+  padding: 8px 0 10px;
   border-top: 1px solid #E5E7EB;
   flex-shrink: 0;
   background: #FFFFFF;
@@ -171,9 +217,161 @@
   border-color: #FECACA;
 }
 
+/* ═════════════════════════════════════════════════════════
+   HOVER CARD (FLYOUT TOOLTIP)
+   - Greyscale Palette, Zero Emojis, Subtle Shadow & Pointer
+   - Smooth Fade-in & Scale Transition
+   ═════════════════════════════════════════════════════════ */
+
+.app-sb-flyout-card {
+  position: fixed;
+  left: 76px;
+  width: 275px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.09), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  padding: 12px 15px;
+  z-index: 1250;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-50%) translateX(-6px);
+  transition: opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.16s;
+  text-align: left;
+}
+
+/* Visible State with smooth fade-in */
+.app-sb-flyout-card.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* Minimal Greyscale Pointer Arrow */
+.app-sb-flyout-card::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #E4E4E7;
+}
+
+.app-sb-flyout-card::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #FFFFFF;
+}
+
+.app-sb-flyout-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.app-sb-flyout-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+/* Greyscale Category Badge */
+.app-sb-flyout-card-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #F4F4F5;
+  border: 1px solid #E4E4E7;
+  color: #52525B;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 1.5px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+/* Greyscale Pricing Pill (FREE vs PAID) */
+.app-sb-flyout-pricing-pill {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.app-sb-flyout-pricing-pill.pricing-free {
+  background: #F4F4F5;
+  color: #27272A;
+  border: 1px solid #D4D4D8;
+}
+
+.app-sb-flyout-pricing-pill.pricing-paid {
+  background: #18181B;
+  color: #FFFFFF;
+  border: 1px solid #27272A;
+}
+
+/* Title & Description */
+.app-sb-flyout-card-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #18181B;
+  line-height: 1.25;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.app-sb-flyout-card-desc {
+  font-size: 0.72rem;
+  color: #52525B;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Greyscale Feature Tags (No emojis) */
+.app-sb-flyout-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 5px;
+  border-top: 1px solid #F4F4F5;
+}
+
+.app-sb-flyout-card-tag {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #71717A;
+  background: #FAFAFA;
+  border: 1px solid #E4E4E7;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+  letter-spacing: 0.1px;
+}
+
 /* ── Responsive Behavior ── */
 @media (max-width: 1023px) {
   .app-min-sidebar {
+    display: none;
+  }
+  .app-sb-flyout-card {
     display: none;
   }
 }

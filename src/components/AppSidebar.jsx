@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   RiHome5Fill, 
-  RiGraduationCapFill,
   RiVipCrown2Fill,
   RiGiftFill,
   RiDashboardFill,
@@ -11,7 +10,7 @@ import {
 } from 'react-icons/ri';
 import './AppSidebar.css';
 
-// ── Hamburger Menu Icon matching media_1789649182682.png ──
+// ── Hamburger Menu Icon matching reference ──
 const MenuIcon = () => (
   <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
     <line x1="1.5" y1="2.5" x2="20.5" y2="2.5" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" />
@@ -20,7 +19,7 @@ const MenuIcon = () => (
   </svg>
 );
 
-// ── Courses Books Icon (3 books, 1 tilted) matching screenshot ──
+// ── Courses Books Icon (3 books, 1 tilted) ──
 const CoursesIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <rect x="3.5" y="4" width="4.2" height="16" rx="0.8" />
@@ -29,7 +28,7 @@ const CoursesIcon = ({ size = 20 }) => (
   </svg>
 );
 
-// ── Practice </> Icon matching screenshot ──
+// ── Practice </> Icon ──
 const PracticeIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="7 8 3 12 7 16" />
@@ -38,7 +37,7 @@ const PracticeIcon = ({ size = 20 }) => (
   </svg>
 );
 
-// ── Compiler Badge with </> inside matching screenshot ──
+// ── Compiler Badge with </> inside ──
 const CompilerIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <rect x="2.5" y="3.5" width="19" height="17" rx="4" />
@@ -48,7 +47,7 @@ const CompilerIcon = ({ size = 20 }) => (
   </svg>
 );
 
-// ── Feedback User + Speech Bubble Icon matching screenshot ──
+// ── Feedback User + Speech Bubble Icon ──
 const FeedbackIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
     <circle cx="9" cy="8" r="3.5" />
@@ -57,7 +56,7 @@ const FeedbackIcon = ({ size = 20 }) => (
   </svg>
 );
 
-// ── Circular Logout Icon matching screenshot ──
+// ── Circular Logout Icon ──
 const LogoutIcon = ({ size = 22 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12.5 3.5A9.5 9.5 0 1 0 12.5 20.5" />
@@ -66,27 +65,135 @@ const LogoutIcon = ({ size = 22 }) => (
   </svg>
 );
 
-// ── Navigation Items Rail ──
+// ── Navigation Items in User's Exact Sequence with FREE/PAID Badges & Greyscale Card Info ──
 const NAV_ITEMS = [
-  { id: 'home', label: 'Home', Icon: RiHome5Fill, path: '/' },
-  { id: 'courses', label: 'Courses', Icon: CoursesIcon, targetSection: 'student-section' },
-  { id: 'batches', label: 'Batches', Icon: RiGraduationCapFill, targetSection: 'student-section' },
-  { id: 'premium', label: 'Premium', Icon: RiVipCrown2Fill, targetSection: 'university-section' },
-  { id: 'practice', label: 'Practice', Icon: PracticeIcon, targetSection: 'student-section' },
-  { id: 'rewards', label: 'Rewards', Icon: RiGiftFill, targetSection: 'student-section' },
-  { id: 'dashboard', label: 'Dashboard', Icon: RiDashboardFill, path: '/login' },
-  { id: 'compiler', label: 'Compiler', Icon: CompilerIcon, targetSection: 'student-section' },
-  { id: 'resume', label: 'Resume', Icon: RiFileUserFill, targetSection: 'student-section' },
-  { id: 'creator', label: 'Creator', Icon: RiPresentationFill, targetSection: 'university-section' },
-  { id: 'feedback', label: 'Feedback', Icon: FeedbackIcon, targetSection: 'student-section' },
+  { 
+    id: 'home', 
+    label: 'Home', 
+    Icon: RiHome5Fill, 
+    path: '/',
+    cardBadge: 'PLATFORM',
+    cardTitle: 'Home Overview',
+    cardDesc: 'Return to the landing portal, exploration gateway, and platform highlights.',
+    cardTags: ['Overview', 'Ecosystem', 'Updates']
+  },
+  { 
+    id: 'courses', 
+    label: 'Courses', 
+    badge: 'FREE',
+    Icon: CoursesIcon, 
+    targetSection: 'student-section',
+    cardBadge: 'FREE ACCESS',
+    cardTitle: 'Structured Courses',
+    cardDesc: 'Comprehensive self-paced video masterclasses covering web dev, cloud, DSA, and modern tech.',
+    cardTags: ['Video Lessons', 'Projects', 'Certificates']
+  },
+  { 
+    id: 'practice', 
+    label: 'Practice', 
+    badge: 'FREE',
+    Icon: PracticeIcon, 
+    targetSection: 'student-section',
+    cardBadge: 'FREE ACCESS',
+    cardTitle: 'Coding Practice Sandbox',
+    cardDesc: 'Solve 100,000+ interactive challenges across DSA, algorithms, and system design.',
+    cardTags: ['100K+ Questions', 'AI Hints', 'Test Cases']
+  },
+  { 
+    id: 'resume', 
+    label: 'Resume', 
+    badge: 'FREE',
+    Icon: RiFileUserFill, 
+    targetSection: 'student-section',
+    cardBadge: 'FREE ACCESS',
+    cardTitle: 'Interactive Resume Builder',
+    cardDesc: 'Craft ATS-compliant developer resumes with live PDF preview and real-time formatting guidance.',
+    cardTags: ['ATS Templates', 'PDF Export', 'Live Preview']
+  },
+  { 
+    id: 'compiler', 
+    label: 'Compiler', 
+    badge: 'FREE',
+    Icon: CompilerIcon, 
+    targetSection: 'student-section',
+    cardBadge: 'FREE ACCESS',
+    cardTitle: 'Cloud Online Compiler',
+    cardDesc: 'Instant zero-setup in-browser code editor supporting 35+ languages with live input/output console.',
+    cardTags: ['35+ Languages', 'Instant Run', 'I/O Console']
+  },
+  { 
+    id: 'reward', 
+    label: 'Reward', 
+    Icon: RiGiftFill, 
+    targetSection: 'student-section',
+    cardBadge: 'ACHIEVEMENTS',
+    cardTitle: 'Milestones & Rewards',
+    cardDesc: 'Track daily learning streaks, earn skill badges, unlock certificates, and redeem reward coins.',
+    cardTags: ['Daily Streaks', 'Skill Badges', 'Certificates']
+  },
+  { 
+    id: 'premium', 
+    label: 'Premium', 
+    badge: 'PAID',
+    Icon: RiVipCrown2Fill, 
+    targetSection: 'university-section',
+    cardBadge: 'PAID TIER',
+    cardTitle: 'Premium & Campus Pro',
+    cardDesc: 'Institutional LMS, proctored campus assessments, 1-on-1 industry mentorship, and placements.',
+    cardTags: ['Proctored Exams', '1:1 Mentorship', 'Placements']
+  },
+  { 
+    id: 'dashboard', 
+    label: 'Dashboard', 
+    Icon: RiDashboardFill, 
+    path: '/login',
+    cardBadge: 'LEARNER ANALYTICS',
+    cardTitle: 'Student Dashboard',
+    cardDesc: 'Unified analytics of your active courses, problem completion stats, and performance metrics.',
+    cardTags: ['Learning Stats', 'Course Progress', 'Activity Heatmap']
+  },
+  { 
+    id: 'creator', 
+    label: 'Creator', 
+    Icon: RiPresentationFill, 
+    targetSection: 'university-section',
+    cardBadge: 'INSTRUCTOR PORTAL',
+    cardTitle: 'CipherSchools Creator',
+    cardDesc: 'Publish technical courses, mentor the developer community, and monetize high-impact content.',
+    cardTags: ['Course Publishing', 'Analytics', 'Monetization']
+  },
+  { 
+    id: 'feedback', 
+    label: 'Feedback', 
+    Icon: FeedbackIcon, 
+    targetSection: 'student-section',
+    cardBadge: 'COMMUNITY & SUPPORT',
+    cardTitle: 'Feedback & Suggestions',
+    cardDesc: 'Submit feedback, report platform issues, or propose new features to our engineering team.',
+    cardTags: ['Bug Reports', 'Feature Requests', 'Direct Feedback']
+  },
 ];
+
+const LOGOUT_ITEM = {
+  id: 'logout',
+  label: 'Logout',
+  cardBadge: 'SESSION',
+  cardTitle: 'Sign Out',
+  cardDesc: 'Safely terminate your active session or log in with another account profile.',
+  cardTags: ['Secure Session', 'Switch Profile']
+};
 
 const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeId, setActiveId] = useState('home');
 
-  // Keep Home active when on the landing page '/'
+  // Hover card state
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [hoverPos, setHoverPos] = useState({ top: 0 });
+  const closeTimeoutRef = useRef(null);
+
+  // Keep Home active when on landing page '/'
   useEffect(() => {
     if (location.pathname === '/') {
       setActiveId('home');
@@ -121,6 +228,39 @@ const AppSidebar = () => {
     navigate('/login');
   };
 
+  // Hover handlers for smooth fade cards
+  const handleMouseEnter = (e, item) => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const targetY = rect.top + rect.height / 2;
+    // Clamp so the flyout doesn't overflow viewport edges
+    const clampedY = Math.max(90, Math.min(window.innerHeight - 120, targetY));
+    setHoverPos({ top: clampedY });
+    setHoveredItem(item);
+  };
+
+  const handleMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredItem(null);
+    }, 120);
+  };
+
+  const handleCardMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  const handleCardMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setHoveredItem(null);
+    }, 120);
+  };
+
   return (
     <aside className="app-min-sidebar" aria-label="Sidebar Navigation Rail">
       {/* ── Top Header: Hamburger Menu Toggle ── */}
@@ -151,10 +291,18 @@ const AppSidebar = () => {
               type="button"
               className={`app-sb-nav-item ${isActive ? 'active' : ''}`}
               onClick={() => handleItemClick(item)}
+              onMouseEnter={(e) => handleMouseEnter(e, item)}
+              onMouseLeave={handleMouseLeave}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
-              title={item.label}
             >
+              {/* Micro-badge for FREE or PAID */}
+              {item.badge && (
+                <span className={`app-sb-item-badge badge-${item.badge.toLowerCase()}`}>
+                  {item.badge}
+                </span>
+              )}
+              
               <span className="app-sb-item-icon" aria-hidden="true">
                 <IconComponent size={20} />
               </span>
@@ -170,14 +318,58 @@ const AppSidebar = () => {
           type="button"
           className="app-sb-nav-item app-sb-logout-btn"
           onClick={handleLogout}
+          onMouseEnter={(e) => handleMouseEnter(e, LOGOUT_ITEM)}
+          onMouseLeave={handleMouseLeave}
           aria-label="Logout"
-          title="Logout"
         >
           <span className="app-sb-item-icon" aria-hidden="true">
             <LogoutIcon size={22} />
           </span>
           <span className="app-sb-item-label">Logout</span>
         </button>
+      </div>
+
+      {/* ── Greyscale Hover Card Flyout (Fade In, Outside Scroll Boundary) ── */}
+      <div 
+        className={`app-sb-flyout-card ${hoveredItem ? 'visible' : ''}`}
+        style={{ top: `${hoverPos.top}px` }}
+        role="tooltip"
+        aria-hidden={!hoveredItem}
+        onMouseEnter={handleCardMouseEnter}
+        onMouseLeave={handleCardMouseLeave}
+      >
+        {hoveredItem && (
+          <div className="app-sb-flyout-card-inner">
+            <div className="app-sb-flyout-card-header">
+              <span className="app-sb-flyout-card-badge">
+                {hoveredItem.cardBadge}
+              </span>
+              {hoveredItem.badge && (
+                <span className={`app-sb-flyout-pricing-pill pricing-${hoveredItem.badge.toLowerCase()}`}>
+                  {hoveredItem.badge}
+                </span>
+              )}
+            </div>
+
+            <h4 className="app-sb-flyout-card-title">
+              {hoveredItem.cardTitle}
+            </h4>
+
+            <p className="app-sb-flyout-card-desc">
+              {hoveredItem.cardDesc}
+            </p>
+
+            {hoveredItem.cardTags && hoveredItem.cardTags.length > 0 && (
+              <div className="app-sb-flyout-card-tags">
+                {hoveredItem.cardTags.map((tag, idx) => (
+                  <span key={idx} className="app-sb-flyout-card-tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );
