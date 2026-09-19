@@ -65,7 +65,7 @@ const LogoutIcon = ({ size = 22 }) => (
   </svg>
 );
 
-// ── Navigation Items in User's Exact Sequence with FREE/PAID Badges & Greyscale Card Info ──
+// ── Navigation Items Rail (Desktop Sequence) ──
 const NAV_ITEMS = [
   { 
     id: 'home', 
@@ -174,6 +174,10 @@ const NAV_ITEMS = [
   },
 ];
 
+// ── Mobile 5-Icon Navigation Sequence: Home, Courses, Practice, Premium, Dashboard ──
+const MOBILE_NAV_KEYS = ['home', 'courses', 'practice', 'premium', 'dashboard'];
+const MOBILE_NAV_ITEMS = MOBILE_NAV_KEYS.map(id => NAV_ITEMS.find(item => item.id === id)).filter(Boolean);
+
 const LOGOUT_ITEM = {
   id: 'logout',
   label: 'Logout',
@@ -188,7 +192,7 @@ const AppSidebar = () => {
   const location = useLocation();
   const [activeId, setActiveId] = useState('home');
 
-  // Hover card state
+  // Hover card state (desktop only)
   const [hoveredItem, setHoveredItem] = useState(null);
   const [hoverPos, setHoverPos] = useState({ top: 0 });
   const closeTimeoutRef = useRef(null);
@@ -228,7 +232,7 @@ const AppSidebar = () => {
     navigate('/login');
   };
 
-  // Hover handlers for smooth fade cards
+  // Hover handlers for smooth fade cards (desktop only)
   const handleMouseEnter = (e, item) => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
@@ -236,7 +240,6 @@ const AppSidebar = () => {
     }
     const rect = e.currentTarget.getBoundingClientRect();
     const targetY = rect.top + rect.height / 2;
-    // Clamp so the flyout doesn't overflow viewport edges
     const clampedY = Math.max(90, Math.min(window.innerHeight - 120, targetY));
     setHoverPos({ top: clampedY });
     setHoveredItem(item);
@@ -262,116 +265,153 @@ const AppSidebar = () => {
   };
 
   return (
-    <aside className="app-min-sidebar" aria-label="Sidebar Navigation Rail">
-      {/* ── Top Header: Hamburger Menu Toggle ── */}
-      <div className="app-sb-top-header">
-        <button 
-          className="app-sb-menu-btn" 
-          aria-label="Toggle Menu"
-          title="Menu"
-          onClick={() => {
-            if (location.pathname === '/') {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-          }}
-        >
-          <MenuIcon />
-        </button>
-      </div>
+    <>
+      {/* ── Desktop UI: Left Fixed Sidebar Navigation Rail (>= 1024px) ── */}
+      <aside className="app-min-sidebar" aria-label="Sidebar Navigation Rail">
+        {/* ── Top Header: Hamburger Menu Toggle ── */}
+        <div className="app-sb-top-header">
+          <button 
+            className="app-sb-menu-btn" 
+            aria-label="Toggle Menu"
+            title="Menu"
+            onClick={() => {
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+          >
+            <MenuIcon />
+          </button>
+        </div>
 
-      {/* ── Center: Vertical Navigation Rail Items ── */}
-      <nav className="app-sb-nav-list" aria-label="Main Navigation">
-        {NAV_ITEMS.map((item) => {
+        {/* ── Center: Vertical Navigation Rail Items ── */}
+        <nav className="app-sb-nav-list" aria-label="Main Navigation">
+          {NAV_ITEMS.map((item) => {
+            const isActive = activeId === item.id;
+            const IconComponent = item.Icon;
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`app-sb-nav-item ${isActive ? 'active' : ''}`}
+                onClick={() => handleItemClick(item)}
+                onMouseEnter={(e) => handleMouseEnter(e, item)}
+                onMouseLeave={handleMouseLeave}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {/* Micro-badge for FREE or PAID */}
+                {item.badge && (
+                  <span className={`app-sb-item-badge badge-${item.badge.toLowerCase()}`}>
+                    {item.badge}
+                  </span>
+                )}
+                
+                <span className="app-sb-item-icon" aria-hidden="true">
+                  <IconComponent size={20} />
+                </span>
+                <span className="app-sb-item-label">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* ── Bottom: Logout Action ── */}
+        <div className="app-sb-bottom">
+          <button
+            type="button"
+            className="app-sb-nav-item app-sb-logout-btn"
+            onClick={handleLogout}
+            onMouseEnter={(e) => handleMouseEnter(e, LOGOUT_ITEM)}
+            onMouseLeave={handleMouseLeave}
+            aria-label="Logout"
+          >
+            <span className="app-sb-item-icon" aria-hidden="true">
+              <LogoutIcon size={22} />
+            </span>
+            <span className="app-sb-item-label">Logout</span>
+          </button>
+        </div>
+
+        {/* ── Greyscale Hover Card Flyout (Fade In, Desktop only) ── */}
+        <div 
+          className={`app-sb-flyout-card ${hoveredItem ? 'visible' : ''}`}
+          style={{ top: `${hoverPos.top}px` }}
+          role="tooltip"
+          aria-hidden={!hoveredItem}
+          onMouseEnter={handleCardMouseEnter}
+          onMouseLeave={handleCardMouseLeave}
+        >
+          {hoveredItem && (
+            <div className="app-sb-flyout-card-inner">
+              <div className="app-sb-flyout-card-header">
+                <span className="app-sb-flyout-card-badge">
+                  {hoveredItem.cardBadge}
+                </span>
+                {hoveredItem.badge && (
+                  <span className={`app-sb-flyout-pricing-pill pricing-${hoveredItem.badge.toLowerCase()}`}>
+                    {hoveredItem.badge}
+                  </span>
+                )}
+              </div>
+
+              <h4 className="app-sb-flyout-card-title">
+                {hoveredItem.cardTitle}
+              </h4>
+
+              <p className="app-sb-flyout-card-desc">
+                {hoveredItem.cardDesc}
+              </p>
+
+              {hoveredItem.cardTags && hoveredItem.cardTags.length > 0 && (
+                <div className="app-sb-flyout-card-tags">
+                  {hoveredItem.cardTags.map((tag, idx) => (
+                    <span key={idx} className="app-sb-flyout-card-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* ── Mobile UI: Bottom Sticky Navigation Bar (< 1024px) with 5 Icons ── */}
+      <nav className="app-mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+        {MOBILE_NAV_ITEMS.map((item) => {
           const isActive = activeId === item.id;
           const IconComponent = item.Icon;
 
           return (
             <button
-              key={item.id}
+              key={`mobile-${item.id}`}
               type="button"
-              className={`app-sb-nav-item ${isActive ? 'active' : ''}`}
+              className={`app-mobile-nav-item ${isActive ? 'active' : ''}`}
               onClick={() => handleItemClick(item)}
-              onMouseEnter={(e) => handleMouseEnter(e, item)}
-              onMouseLeave={handleMouseLeave}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
             >
-              {/* Micro-badge for FREE or PAID */}
+              {/* Active Indicator Bar on Top */}
+              {isActive && <span className="app-mobile-active-bar" aria-hidden="true" />}
+
+              {/* Mobile Micro-badge for FREE / PAID */}
               {item.badge && (
-                <span className={`app-sb-item-badge badge-${item.badge.toLowerCase()}`}>
+                <span className={`app-mobile-badge badge-${item.badge.toLowerCase()}`}>
                   {item.badge}
                 </span>
               )}
-              
-              <span className="app-sb-item-icon" aria-hidden="true">
-                <IconComponent size={20} />
+
+              <span className="app-mobile-icon-wrap" aria-hidden="true">
+                <IconComponent size={21} />
               </span>
-              <span className="app-sb-item-label">{item.label}</span>
+              <span className="app-mobile-label">{item.label}</span>
             </button>
           );
         })}
       </nav>
-
-      {/* ── Bottom: Logout Action ── */}
-      <div className="app-sb-bottom">
-        <button
-          type="button"
-          className="app-sb-nav-item app-sb-logout-btn"
-          onClick={handleLogout}
-          onMouseEnter={(e) => handleMouseEnter(e, LOGOUT_ITEM)}
-          onMouseLeave={handleMouseLeave}
-          aria-label="Logout"
-        >
-          <span className="app-sb-item-icon" aria-hidden="true">
-            <LogoutIcon size={22} />
-          </span>
-          <span className="app-sb-item-label">Logout</span>
-        </button>
-      </div>
-
-      {/* ── Greyscale Hover Card Flyout (Fade In, Outside Scroll Boundary) ── */}
-      <div 
-        className={`app-sb-flyout-card ${hoveredItem ? 'visible' : ''}`}
-        style={{ top: `${hoverPos.top}px` }}
-        role="tooltip"
-        aria-hidden={!hoveredItem}
-        onMouseEnter={handleCardMouseEnter}
-        onMouseLeave={handleCardMouseLeave}
-      >
-        {hoveredItem && (
-          <div className="app-sb-flyout-card-inner">
-            <div className="app-sb-flyout-card-header">
-              <span className="app-sb-flyout-card-badge">
-                {hoveredItem.cardBadge}
-              </span>
-              {hoveredItem.badge && (
-                <span className={`app-sb-flyout-pricing-pill pricing-${hoveredItem.badge.toLowerCase()}`}>
-                  {hoveredItem.badge}
-                </span>
-              )}
-            </div>
-
-            <h4 className="app-sb-flyout-card-title">
-              {hoveredItem.cardTitle}
-            </h4>
-
-            <p className="app-sb-flyout-card-desc">
-              {hoveredItem.cardDesc}
-            </p>
-
-            {hoveredItem.cardTags && hoveredItem.cardTags.length > 0 && (
-              <div className="app-sb-flyout-card-tags">
-                {hoveredItem.cardTags.map((tag, idx) => (
-                  <span key={idx} className="app-sb-flyout-card-tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </aside>
+    </>
   );
 };
 
