@@ -1702,7 +1702,7 @@ const ForUniversities = () => {
                     Book a Meeting <ArrowRight size={18} />
                   </button>
                   <span className="fu-ecosystem-cta-subtext">
-                    Custom roadmap in 24h
+                    Custom roadmap demo in 1-2 hours
                   </span>
                 </div>
               </div>
@@ -2370,7 +2370,7 @@ const ForUniversities = () => {
                     Book a Meeting <ArrowRight size={18} />
                   </button>
                   <span className="fu-ecosystem-cta-subtext">
-                    Live platform demo in 24h
+                    Live platform demo in 1-2 hours
                   </span>
                 </div>
               </div>
@@ -2648,7 +2648,7 @@ const ForUniversities = () => {
                     Book a Meeting <ArrowRight size={18} />
                   </button>
                   <span className="fu-ecosystem-cta-subtext">
-                    Custom test pilot in 24h
+                    Custom test pilot demo in 1-2 hours
                   </span>
                 </div>
               </div>
@@ -3193,7 +3193,7 @@ const ForUniversities = () => {
                     Book a Meeting <ArrowRight size={18} />
                   </button>
                   <span className="fu-ecosystem-cta-subtext">
-                    Hands-on sandbox demo in 24h
+                    Hands-on sandbox demo in 1-2 hours
                   </span>
                 </div>
               </div>
@@ -3591,7 +3591,7 @@ const ForUniversities = () => {
                     Book a Meeting <ArrowRight size={18} />
                   </button>
                   <span className="fu-ecosystem-cta-subtext">
-                    Schedule student trial in 24h
+                    Student trial demo in 1-2 hours
                   </span>
                 </div>
               </div>

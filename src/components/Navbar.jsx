@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   Menu, X, Search, Bell, Sun, Moon, User, 
   BookOpen, Code2, Terminal, FileText, Sparkles, 
@@ -19,6 +19,7 @@ const Navbar = () => {
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
   const dropdownTimeoutRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +34,7 @@ const Navbar = () => {
 
   /* Track Active Section On Scroll */
   useEffect(() => {
-    if (location.pathname === '/courses') return;
+    if (location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/guide-me' || location.pathname === '/guide') return;
 
     const checkActiveSection = () => {
       const secStudent = document.getElementById('student-section');
@@ -84,6 +85,16 @@ const Navbar = () => {
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const target = document.getElementById(id);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return;
+    }
     if (id === 'university-section') {
       window.isNavigatingToUniversity = true;
       setTimeout(() => { window.isNavigatingToUniversity = false; }, 1600);
@@ -96,69 +107,6 @@ const Navbar = () => {
     }
   };
 
-  /* ── Dedicated Navigation Bar for Course / Explore Page (/courses) ── */
-  if (isCoursePage) {
-    return (
-      <nav className={`navbar navbar-course-page scrolled ${darkMode ? 'courses-nav-dark' : 'courses-nav-light'}`}>
-        <div className="container navbar-container cs-exact-header">
-          
-          {/* Left: Hamburger + Logo + Guide Me */}
-          <div className="cs-header-left">
-            <button className="cs-menu-hamburger-btn" aria-label="Toggle Navigation">
-              <Menu size={20} />
-            </button>
-            <Link to="/" className="navbar-logo cs-exact-logo" style={{ textDecoration: 'none' }}>
-              <span className="cs-c-logo-circle">C</span>
-              <span className="logo-text cs-logo-title">CipherSchools</span>
-            </Link>
-            <button className="cs-guide-me-pill">
-              Guide Me
-            </button>
-          </div>
-
-          {/* Center: Search and Learn Input with Right Search Icon */}
-          <div className="cs-header-search-wrap desktop-only">
-            <input type="text" placeholder="Search and Learn" readOnly />
-            <Search size={18} className="cs-nav-search-right-icon" />
-          </div>
-
-          {/* Right: Actions (Bell 0, Hey Profile, Coin 0, Moon/Sun) */}
-          <div className="cs-header-right-actions">
-            
-            {/* Notification Bell with 0 Badge */}
-            <div className="cs-nav-bell-box" title="Notifications">
-              <Bell size={18} />
-              <span className="cs-bell-badge">0</span>
-            </div>
-
-            {/* Profile User Chip */}
-            <div className="cs-nav-user-chip">
-              <User size={18} className="cs-user-icon-gray" />
-              <span className="cs-user-hey-text">Hey</span>
-            </div>
-
-            {/* Cipher Coin Balance Pill */}
-            <div className="cs-nav-coin-pill">
-              <span className="cs-coin-circle-icon">C</span>
-              <span className="cs-coin-val">0</span>
-            </div>
-
-            {/* Theme Change Icon */}
-            <button 
-              className="cs-nav-theme-btn" 
-              title={darkMode ? "Switch to Light Theme" : "Switch to Dark Theme"}
-              onClick={toggleTheme}
-            >
-              {darkMode ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-
-          </div>
-
-        </div>
-      </nav>
-    );
-  }
-
   return (
     <>
       <nav className={`navbar ${isScrolled ? 'scrolled' : ''} navbar-theme-notion`}>
@@ -168,6 +116,20 @@ const Navbar = () => {
               <img src="/cipherschools-logo.png" alt="CipherSchools Logo" style={{ height: '26px', width: '26px', objectFit: 'contain' }} />
               <span className="logo-text">CipherSchools</span>
             </div>
+
+            {/* Guide Me Button (Page Navigation to /guide-me) */}
+            <Link 
+              to="/guide-me"
+              className="navbar-guide-me-btn" 
+              title="Let us help you choose your Learning Path"
+              aria-label="Guide Me"
+            >
+              <img 
+                src="/guide-me-btn-transparent.png" 
+                alt="Guide Me" 
+                className="guide-me-exact-img" 
+              />
+            </Link>
           </div>
           
           <div className="navbar-links desktop-only">
@@ -203,7 +165,7 @@ const Navbar = () => {
                     {/* 1. Courses */}
                     <div 
                       className="nav-mega-card card-courses"
-                      onClick={() => { setActiveDropdown(null); window.location.href = '/courses'; }}
+                      onClick={() => { setActiveDropdown(null); navigate('/courses'); }}
                     >
                       <div className="nav-card-preview">
                         <div className="nav-card-mini-window">

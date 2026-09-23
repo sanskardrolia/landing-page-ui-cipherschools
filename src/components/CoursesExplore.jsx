@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, ChevronLeft, ChevronRight, PlayCircle, Clock, Video, 
   User, ShieldCheck, Sparkles, Code2, ArrowRight, Star, Filter, 
@@ -285,6 +286,7 @@ const ALL_COURSES = [
 ];
 
 const CoursesExplore = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
@@ -544,7 +546,10 @@ const CoursesExplore = () => {
             <h2>Unlock 1:1 FAANG Mentorship & Live Placement Sprint</h2>
             <p>Get personalized resume reviews, mock interviews, system design drills, and referral access.</p>
           </div>
-          <button className="banner-cta-btn btn-premium">
+          <button 
+            className="banner-cta-btn btn-premium"
+            onClick={() => navigate('/premium')}
+          >
             Upgrade to Premium <ArrowRight size={16} />
           </button>
         </div>

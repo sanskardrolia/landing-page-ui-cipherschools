@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Home, BookOpen, Crown, Code2, Gift, Terminal, FileText, 
   UserCheck, MessageSquare, LogOut 
@@ -18,6 +19,20 @@ const SIDEBAR_RAIL_ITEMS = [
 ];
 
 const CourseSidebar = ({ activeItem = 'courses', setActiveItem }) => {
+  const navigate = useNavigate();
+
+  const handleSidebarClick = (item) => {
+    if (item.id === 'premium') {
+      navigate('/premium');
+    } else if (item.id === 'home') {
+      navigate('/');
+    } else if (item.id === 'courses') {
+      navigate('/courses');
+    } else if (setActiveItem) {
+      setActiveItem(item.id);
+    }
+  };
+
   return (
     <aside className="cs-exact-sidebar">
       <div className="cs-sidebar-stack">
@@ -29,7 +44,7 @@ const CourseSidebar = ({ activeItem = 'courses', setActiveItem }) => {
             <button
               key={item.id}
               className={`cs-sidebar-item ${isActive ? 'active' : ''}`}
-              onClick={() => setActiveItem && setActiveItem(item.id)}
+              onClick={() => handleSidebarClick(item)}
             >
               <div className="cs-sidebar-icon-wrap">
                 <Icon size={20} className={item.isCrown ? 'icon-gold-crown' : ''} />

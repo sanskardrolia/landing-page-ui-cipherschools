@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Play, TrendingDown, Crown, CheckCircle2, Lock, Layers, Code2, UserCheck, X } from 'lucide-react';
 import LearningPaths from './LearningPaths';
 import './PremiumExperience.css';
 
 const PremiumExperience = () => {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const sectionRef = useRef(null);
@@ -105,7 +107,12 @@ const PremiumExperience = () => {
                 </div>
               </div>
               
-              <button className="btn btn-primary premium-btn">Explore Premium Access</button>
+              <button 
+                className="btn btn-primary premium-btn"
+                onClick={() => navigate('/premium')}
+              >
+                Explore Premium Access
+              </button>
             </div>
           </div>
 

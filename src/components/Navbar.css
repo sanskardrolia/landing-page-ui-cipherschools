@@ -1982,3 +1982,72 @@
     cursor: pointer;
   }
 }
+
+/* ═══════════════════════════════════════════
+   NAVBAR "GUIDE ME" BUTTON
+   ═══════════════════════════════════════════ */
+.navbar-guide-me-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  height: 28px;
+  outline: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.navbar-guide-me-btn:hover {
+  transform: translateY(-1.5px) scale(1.02);
+  filter: drop-shadow(0 4px 10px rgba(243, 145, 46, 0.4));
+}
+
+.navbar-guide-me-btn:active {
+  transform: translateY(0.5px) scale(0.99);
+}
+
+.guide-me-exact-img {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.cs-guide-me-override {
+  margin-left: 12px;
+}
+
+.courses-nav-dark .navbar-guide-me-btn {
+  filter: brightness(1.1);
+}
+.courses-nav-dark .navbar-guide-me-btn:hover {
+  filter: brightness(1.2) drop-shadow(0 4px 12px rgba(243, 145, 46, 0.5));
+}
+
+@media (max-width: 640px) {
+  .navbar-guide-me-btn {
+    margin-left: 6px;
+    height: 24px;
+  }
+  .guide-me-exact-img {
+    height: 24px;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar-guide-me-btn {
+    margin-left: 4px;
+    height: 22px;
+  }
+  .guide-me-exact-img {
+    height: 22px;
+  }
+}
+

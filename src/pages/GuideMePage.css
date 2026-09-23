@@ -1,0 +1,458 @@
+/* ══════════════════════════════════════════════════════════════
+   GUIDE ME / LEARNING PATHS DEDICATED PAGE
+   LIGHT THEME • CIPHERSCHOOLS DESIGN PHILOSOPHY
+   ══════════════════════════════════════════════════════════════ */
+
+.guide-me-page-root {
+  background-color: #FAFAFA;
+  min-height: 100vh;
+  padding-top: 68px;
+  padding-bottom: 80px;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+}
+
+.guide-page-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HERO SECTION (CLEAN LIGHT BACKGROUND)
+   ───────────────────────────────────────────────────────────── */
+.guide-page-hero {
+  position: relative;
+  background: #FFFFFF;
+  border-top: 1px solid #F1F1F4;
+  border-bottom: 1px solid #EFEFF3;
+  padding: 56px 0 52px 0;
+  overflow: hidden;
+}
+
+.hero-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Soft Ambient Radial Glow (Orange Tint on Light Surface) */
+.guide-light-hero-glow {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: 600px;
+  height: 280px;
+  background: radial-gradient(ellipse, rgba(243, 145, 46, 0.12) 0%, rgba(243, 145, 46, 0.02) 60%, transparent 75%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 4 Floating Tech Badges (Elevated Light Surface Cards) */
+.guide-page-float-badge {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: #FFFFFF;
+  border: 1.5px solid #F1F1F4;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.guide-page-float-badge:hover {
+  transform: translateY(-5px) scale(1.06);
+  border-color: #F3912E;
+  box-shadow: 0 16px 32px -4px rgba(243, 145, 46, 0.22);
+}
+
+.float-top-left {
+  top: 10px;
+  left: 20px;
+  animation: floatAnimA 5.5s ease-in-out infinite;
+}
+
+.float-bottom-left {
+  bottom: 8px;
+  left: 36px;
+  animation: floatAnimB 6s ease-in-out infinite;
+}
+
+.float-top-right {
+  top: 10px;
+  right: 20px;
+  animation: floatAnimB 5.8s ease-in-out infinite;
+}
+
+.float-bottom-right {
+  bottom: 8px;
+  right: 36px;
+  animation: floatAnimA 6.2s ease-in-out infinite;
+}
+
+@keyframes floatAnimA {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes floatAnimB {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Hero Content */
+.guide-page-hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.guide-hero-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  background: rgba(243, 145, 46, 0.09);
+  border: 1px solid rgba(243, 145, 46, 0.28);
+  color: #D97706;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 18px;
+}
+
+.guide-hero-pill-badge .sparkle-accent {
+  color: #F3912E;
+}
+
+.guide-page-title {
+  font-size: 2.35rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.22;
+  margin-bottom: 16px;
+  letter-spacing: -0.6px;
+}
+
+.guide-page-title-gradient {
+  color: #F3912E;
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.guide-page-subtitle {
+  font-size: 1.05rem;
+  color: #4B5563;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.guide-kw-bold {
+  color: #F3912E;
+  font-weight: 700;
+}
+
+.guide-page-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.96rem;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(243, 145, 46, 0.35);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-page-explore-btn:hover {
+  background: #E27E1D;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.45);
+}
+
+.guide-page-explore-btn:active {
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PATHWAYS CARDS SECTION
+   ───────────────────────────────────────────────────────────── */
+.guide-pathways-section {
+  padding: 60px 0 40px 0;
+}
+
+.guide-section-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.guide-section-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.4px;
+  margin-bottom: 8px;
+}
+
+.guide-section-desc {
+  font-size: 0.95rem;
+  color: #64748B;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.guide-cards-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.guide-card-surface {
+  background: #FFFFFF;
+  border: 1.5px solid #F1F1F4;
+  border-radius: 4px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-card-surface:hover {
+  transform: translateY(-4px);
+  border-color: rgba(243, 145, 46, 0.4);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.09);
+}
+
+/* Card Header */
+.card-top-header {
+  margin-bottom: 24px;
+}
+
+.track-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.service-tag {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+
+.product-tag {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
+}
+
+.card-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.card-summary {
+  font-size: 0.88rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* Modules Section inside Card */
+.card-modules-container {
+  margin-bottom: 28px;
+}
+
+.modules-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.7px;
+  margin-bottom: 12px;
+}
+
+.modules-pill-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.modules-pill-row::-webkit-scrollbar {
+  height: 4px;
+}
+.modules-pill-row::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 4px;
+}
+
+.module-chip {
+  flex: 1;
+  min-width: 78px;
+  background: #FAFAFC;
+  border: 1.5px solid #F1F1F4;
+  border-radius: 4px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.module-chip:hover {
+  transform: translateY(-3px);
+  border-color: #F3912E;
+  background: #FFFDF8;
+  box-shadow: 0 6px 14px -3px rgba(243, 145, 46, 0.16);
+}
+
+.chip-icon {
+  margin-bottom: 8px;
+}
+
+.chip-title {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #334155;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* Product Card (5 modules) slightly tighter padding */
+.product-pill-row .module-chip {
+  min-width: 66px;
+  padding: 10px 6px;
+}
+.product-pill-row .chip-title {
+  font-size: 0.7rem;
+}
+
+/* Bottom Actions */
+.card-bottom-action {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 11px 24px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 10px rgba(243, 145, 46, 0.28);
+}
+
+.card-cta-btn:hover {
+  background: #E27E1D;
+  transform: translateX(3px);
+  box-shadow: 0 6px 18px rgba(243, 145, 46, 0.4);
+}
+
+.card-roles-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+.card-roles-ribbon .green-check {
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE DESIGN (TABLETS & MOBILE)
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 960px) {
+  .guide-cards-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .float-top-left,
+  .float-top-right,
+  .float-bottom-left,
+  .float-bottom-right {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
+}
+
+@media (max-width: 680px) {
+  .guide-me-page-root {
+    padding-top: 66px;
+    padding-bottom: 96px;
+  }
+
+  .guide-page-hero {
+    padding: 38px 0 34px 0;
+  }
+
+  .guide-page-title {
+    font-size: 1.7rem;
+  }
+
+  .guide-page-subtitle {
+    font-size: 0.92rem;
+    margin-bottom: 22px;
+  }
+
+  .hidden-mobile {
+    display: none;
+  }
+
+  .float-top-left,
+  .float-bottom-left,
+  .float-top-right,
+  .float-bottom-right {
+    display: none; /* Hide floating badges on narrow screens */
+  }
+
+  .guide-card-surface {
+    padding: 22px 18px;
+  }
+
+  .modules-pill-row {
+    justify-content: flex-start;
+  }
+}

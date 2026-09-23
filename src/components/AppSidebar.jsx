@@ -82,7 +82,7 @@ const NAV_ITEMS = [
     label: 'Courses', 
     badge: 'FREE',
     Icon: CoursesIcon, 
-    targetSection: 'student-section',
+    path: '/courses',
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Structured Courses',
     cardDesc: 'Comprehensive self-paced video masterclasses covering web dev, cloud, DSA, and modern tech.',
@@ -136,11 +136,11 @@ const NAV_ITEMS = [
     label: 'Premium', 
     badge: 'PAID',
     Icon: RiVipCrown2Fill, 
-    targetSection: 'university-section',
-    cardBadge: 'PAID TIER',
-    cardTitle: 'Premium & Campus Pro',
-    cardDesc: 'Institutional LMS, proctored campus assessments, 1-on-1 industry mentorship, and placements.',
-    cardTags: ['Proctored Exams', '1:1 Mentorship', 'Placements']
+    path: '/premium',
+    cardBadge: 'PAID PLANS',
+    cardTitle: 'CipherSchools Premium',
+    cardDesc: 'Starter, Plus & Compete plans with 2,000+ DSA, 10 AI Mock Interviews & System Design from ~₹22/day.',
+    cardTags: ['Starter (₹3,999)', 'Plus (₹4,599)', 'Compete (₹6,999)']
   },
   { 
     id: 'dashboard', 
@@ -203,6 +203,10 @@ const AppSidebar = () => {
       setActiveId('home');
     } else if (location.pathname === '/login') {
       setActiveId('dashboard');
+    } else if (location.pathname === '/courses') {
+      setActiveId('courses');
+    } else if (location.pathname === '/premium') {
+      setActiveId('premium');
     }
   }, [location.pathname]);
 
@@ -221,9 +225,19 @@ const AppSidebar = () => {
       return;
     }
     if (item.targetSection) {
-      const el = document.getElementById(item.targetSection);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const el = document.getElementById(item.targetSection);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 120);
+      } else {
+        const el = document.getElementById(item.targetSection);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     }
   };
