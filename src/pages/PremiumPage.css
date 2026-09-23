@@ -401,6 +401,366 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
+   4B. PLAN COMPARISON TABLE SECTION (CROSS & TICK FORMAT)
+   ───────────────────────────────────────────────────────────── */
+.plan-comparison-section {
+  margin: 68px 0 76px 0;
+  position: relative;
+}
+
+.comparison-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 36px auto;
+}
+
+.comparison-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFF7ED;
+  color: #F3912E;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid #FFEDD5;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.comparison-title {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.comparison-sub {
+  font-size: 0.98rem;
+  color: #64748B;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.comparison-table-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 20px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.comparison-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.comparison-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.comparison-table-wrapper::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 820px;
+  text-align: left;
+}
+
+/* Header Columns */
+.comparison-table thead tr th {
+  padding: 24px 20px;
+  vertical-align: top;
+  border-bottom: 2px solid #E2E8F0;
+}
+
+.th-feature-col {
+  width: 34%;
+  background: #F8FAFC;
+  border-right: 1.5px solid #E2E8F0;
+}
+
+.th-feature-heading {
+  display: block;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.th-feature-sub {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.th-plan-col {
+  width: 22%;
+  text-align: center;
+  border-right: 1px solid #E2E8F0;
+  background: #FFFFFF;
+}
+
+.th-plan-col:last-child {
+  border-right: none;
+}
+
+.th-plus-highlight {
+  background: #FFFDF9 !important;
+  border-left: 2px solid #F3912E !important;
+  border-right: 2px solid #F3912E !important;
+  position: relative;
+}
+
+.th-plan-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.th-plan-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+
+.badge-starter {
+  background: #EFF6FF;
+  color: #1E40AF;
+  border: 1px solid #DBEAFE;
+}
+
+.badge-plus {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.badge-compete {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.th-plan-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.015em;
+}
+
+.th-plan-price {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  letter-spacing: -0.02em;
+}
+
+.th-plan-period {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+  margin-left: 4px;
+}
+
+.th-plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 160px;
+  padding: 9px 14px;
+  border-radius: 9px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+}
+
+.btn-starter {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1.5px solid #CBD5E1;
+}
+
+.btn-starter:hover {
+  background: #E2E8F0;
+  color: #0F172A;
+}
+
+.btn-plus {
+  background: #F3912E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.35);
+}
+
+.btn-plus:hover {
+  background: #E07D1C;
+  transform: translateY(-1px);
+}
+
+.btn-compete {
+  background: #0F172A;
+  color: #FFFFFF;
+}
+
+.btn-compete:hover {
+  background: #1E293B;
+  transform: translateY(-1px);
+}
+
+/* Category Row */
+.tr-category-row .td-category-cell {
+  background: #F8FAFC;
+  padding: 12px 20px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #475569;
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Feature Row */
+.tr-feature-row {
+  transition: background 0.15s ease;
+}
+
+.tr-feature-row:hover {
+  background: #FAFAFC;
+}
+
+.td-feature-info {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F1F5F9;
+  border-right: 1.5px solid #E2E8F0;
+}
+
+.feature-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 2px;
+}
+
+.feature-desc {
+  display: block;
+  font-size: 0.76rem;
+  color: #64748B;
+  line-height: 1.35;
+}
+
+.td-plan-val {
+  padding: 16px 14px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid #F1F5F9;
+  border-right: 1px solid #E2E8F0;
+}
+
+.td-plan-val:last-child {
+  border-right: none;
+}
+
+.td-plus-cell-highlight {
+  background: #FFFDF9;
+  border-left: 2px solid #F3912E;
+  border-right: 2px solid #F3912E;
+}
+
+/* Cross & Tick Badges */
+.table-check-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pill-check-icon {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.table-cross-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pill-cross-icon {
+  color: #DC2626;
+  flex-shrink: 0;
+}
+
+.table-value-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.table-value-pill.pill-highlight {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
+}
+
+.table-value-pill.pill-neutral {
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #E2E8F0;
+}
+
+.pill-mini-check {
+  color: currentColor;
+}
+
+.table-plain-text {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+/* ─────────────────────────────────────────────────────────────
    5. PLACEMENT PROOF SECTION
    ───────────────────────────────────────────────────────────── */
 .placement-proof-section {
@@ -1108,6 +1468,48 @@
   line-height: 1.45;
   color: #64748B;
   margin: 0;
+}
+
+.picker-lectures-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 10px;
+  width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.picker-lectures-icon {
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.picker-card.selected .picker-lectures-badge {
+  background: #DCFCE7;
+  color: #15803D;
+  border-color: #86EFAC;
+}
+
+.summary-lectures-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.summary-lectures-status {
+  background: #DCFCE7;
+  color: #15803D;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .picker-upsell-strip {

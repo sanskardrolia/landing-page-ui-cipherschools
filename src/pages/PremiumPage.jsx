@@ -237,23 +237,224 @@ const PROGRAM_OPTIONS = [
     title: 'FSD - Next.js',
     subtitle: 'Full-Stack Next.js 15, PostgreSQL & Microservices',
     tag: 'Web & Cloud',
-    icon: Laptop
+    icon: Laptop,
+    lectures: 'Lectures Access Included'
   },
   {
     id: 'dsa',
     title: 'DSA',
     subtitle: '500+ Unique Challenges & Algorithm Patterns',
     tag: 'Core Coding',
-    icon: Code2
+    icon: Code2,
+    lectures: 'Lectures Access Included'
   },
   {
     id: 'genai',
     title: 'GenAI',
     subtitle: 'Generative AI, Prompt Engineering & RAG',
     tag: 'AI Track',
-    icon: Bot
+    icon: Bot,
+    lectures: 'Lectures Access Included'
   }
 ];
+
+/* ── Side-by-Side Comparison Matrix with Ticks & Crosses ── */
+const COMPARISON_GROUPS = [
+  {
+    category: 'Core Curriculum & Programs',
+    features: [
+      {
+        name: 'Access to Premium Programs',
+        desc: 'Choose between FSD - Next.js, DSA, and GenAI',
+        starter: 'Any 2 Programs',
+        plus: 'Any 2 Programs',
+        compete: 'Any 2 Programs',
+        type: 'text'
+      },
+      {
+        name: 'Complete Video Lectures Access',
+        desc: 'Unrestricted HD video lectures for chosen programs',
+        starter: true,
+        plus: true,
+        compete: true,
+        type: 'boolean'
+      },
+      {
+        name: 'Interactive Cloud Sandbox',
+        desc: 'Multi-language compiler environment in browser',
+        starter: true,
+        plus: true,
+        compete: true,
+        type: 'boolean'
+      },
+      {
+        name: 'Verifiable Course Certificates',
+        desc: 'Verified completion certificates with unique ID',
+        starter: true,
+        plus: true,
+        compete: true,
+        type: 'boolean'
+      }
+    ]
+  },
+  {
+    category: 'DSA & Coding Practice',
+    features: [
+      {
+        name: 'Unique DSA Challenges',
+        desc: 'Curated problem sets across arrays, trees, graphs, DP',
+        starter: '500+ Unique Challenges',
+        plus: '1,000+ Unique Challenges',
+        compete: '2,000+ Unique Challenges',
+        starterType: 'badge',
+        plusType: 'badge-highlight',
+        competeType: 'badge-highlight'
+      },
+      {
+        name: 'SQL & Database Problems',
+        desc: 'Real schema queries, window functions & joins',
+        starter: '200+ Problems',
+        plus: '400+ Problems',
+        compete: '400+ Problems',
+        type: 'text'
+      }
+    ]
+  },
+  {
+    category: 'Interviews & Proctored Assessments',
+    features: [
+      {
+        name: 'AI Mock Interviews',
+        desc: 'Real-time voice & coding interview simulator with rubric feedback',
+        starter: '3 AI Mocks',
+        plus: '5 AI Mocks',
+        compete: '10 AI Mocks',
+        starterType: 'badge',
+        plusType: 'badge-highlight',
+        competeType: 'badge-highlight'
+      },
+      {
+        name: 'Weekly Proctored Tests (Product Company Based)',
+        desc: 'Timed online assessments modeling top tech company hiring tests',
+        starter: false,
+        plus: '2 Tests / week',
+        compete: '4 Tests / week',
+        starterType: 'cross',
+        plusType: 'badge-highlight',
+        competeType: 'badge-highlight'
+      },
+      {
+        name: 'System Design Proctored Test',
+        desc: 'High-level architecture, scalability, caching & DB design',
+        starter: false,
+        plus: true,
+        compete: 'Full Curriculum Included',
+        starterType: 'cross',
+        plusType: 'check',
+        competeType: 'badge-highlight'
+      },
+      {
+        name: 'Aptitude, Verbal & Psychometric Tests',
+        desc: 'Full campus placement test suite for screening rounds',
+        starter: false,
+        plus: false,
+        compete: true,
+        starterType: 'cross',
+        plusType: 'cross',
+        competeType: 'check'
+      }
+    ]
+  },
+  {
+    category: 'Post-Plan Retention & Extensions',
+    features: [
+      {
+        name: 'Post-Plan Video Lectures Access',
+        desc: 'Permanent lifetime access kept forever after validity ends',
+        starter: true,
+        plus: true,
+        compete: true,
+        type: 'boolean'
+      },
+      {
+        name: 'Unlocked Practice Questions Kept',
+        desc: 'Keep all solved challenges and sandbox solutions permanently',
+        starter: true,
+        plus: true,
+        compete: true,
+        type: 'boolean'
+      },
+      {
+        name: 'Subscription Extension Rate (~40% of Cost)',
+        desc: 'Extend active subscription anytime at near 40% of paid rate',
+        starter: '₹959/mon',
+        plus: '₹1,100/mon',
+        compete: '₹1,679/mon',
+        type: 'text'
+      }
+    ]
+  }
+];
+
+const renderComparisonCell = (feat, planKey) => {
+  const cellType = feat[`${planKey}Type`] || feat.type;
+  const val = feat[planKey];
+
+  if (cellType === 'boolean' || typeof val === 'boolean') {
+    if (val) {
+      return (
+        <span className="table-check-pill">
+          <Check size={14} strokeWidth={3} className="pill-check-icon" />
+          <span>Included</span>
+        </span>
+      );
+    }
+    return (
+      <span className="table-cross-pill">
+        <X size={13} strokeWidth={2.6} className="pill-cross-icon" />
+        <span>Not Included</span>
+      </span>
+    );
+  }
+
+  if (cellType === 'cross') {
+    return (
+      <span className="table-cross-pill">
+        <X size={13} strokeWidth={2.6} className="pill-cross-icon" />
+        <span>Not Included</span>
+      </span>
+    );
+  }
+
+  if (cellType === 'check') {
+    return (
+      <span className="table-check-pill">
+        <Check size={14} strokeWidth={3} className="pill-check-icon" />
+        <span>Included</span>
+      </span>
+    );
+  }
+
+  if (cellType === 'badge-highlight') {
+    return (
+      <span className="table-value-pill pill-highlight">
+        <Check size={12} strokeWidth={3} className="pill-mini-check" />
+        <span>{val}</span>
+      </span>
+    );
+  }
+
+  if (cellType === 'badge') {
+    return (
+      <span className="table-value-pill pill-neutral">
+        <Check size={12} strokeWidth={3} className="pill-mini-check" />
+        <span>{val}</span>
+      </span>
+    );
+  }
+
+  return <span className="table-plain-text">{val}</span>;
+};
 
 const PremiumPage = () => {
   const [activeFaq, setActiveFaq] = useState(null);
@@ -488,6 +689,111 @@ const PremiumPage = () => {
           </div>
         </div>
 
+        {/* ── Feature Comparison Table Section (Cross & Tick Format) ── */}
+        <div className="plan-comparison-section" id="compare-plans">
+          <div className="comparison-header">
+            <span className="comparison-kicker">DETAILED BREAKDOWN</span>
+            <h2 className="comparison-title">Compare All Features Side-by-Side</h2>
+            <p className="comparison-sub">
+              A transparent look at what is included and what is not included across Starter, Plus, and Compete.
+            </p>
+          </div>
+
+          <div className="comparison-table-card">
+            <div className="comparison-table-wrapper">
+              <table className="comparison-table">
+                <thead>
+                  <tr>
+                    <th className="th-feature-col">
+                      <span className="th-feature-heading">Features & Deliverables</span>
+                      <span className="th-feature-sub">Everything included in your enrollment</span>
+                    </th>
+                    <th className="th-plan-col">
+                      <div className="th-plan-box">
+                        <span className="th-plan-badge badge-starter">FOUNDATION</span>
+                        <h4 className="th-plan-name">Starter</h4>
+                        <div className="th-plan-price">
+                          {activePlans.find(p => p.id === 'starter')?.priceFormatted}
+                          <span className="th-plan-period">/ {activePlans.find(p => p.id === 'starter')?.period}</span>
+                        </div>
+                        <button 
+                          type="button" 
+                          className="th-plan-cta btn-starter"
+                          onClick={() => handleOpenCheckout('starter')}
+                        >
+                          Choose Starter
+                        </button>
+                      </div>
+                    </th>
+                    <th className="th-plan-col th-plus-highlight">
+                      <div className="th-plan-box">
+                        <span className="th-plan-badge badge-plus">🔥 MOST POPULAR</span>
+                        <h4 className="th-plan-name">Plus</h4>
+                        <div className="th-plan-price">
+                          {activePlans.find(p => p.id === 'plus')?.priceFormatted}
+                          <span className="th-plan-period">/ {activePlans.find(p => p.id === 'plus')?.period}</span>
+                        </div>
+                        <button 
+                          type="button" 
+                          className="th-plan-cta btn-plus"
+                          onClick={() => handleOpenCheckout('plus')}
+                        >
+                          Claim Plus Access
+                        </button>
+                      </div>
+                    </th>
+                    <th className="th-plan-col">
+                      <div className="th-plan-box">
+                        <span className="th-plan-badge badge-compete">👑 ALL-IN-ONE</span>
+                        <h4 className="th-plan-name">Compete</h4>
+                        <div className="th-plan-price">
+                          {activePlans.find(p => p.id === 'compete')?.priceFormatted}
+                          <span className="th-plan-period">/ {activePlans.find(p => p.id === 'compete')?.period}</span>
+                        </div>
+                        <button 
+                          type="button" 
+                          className="th-plan-cta btn-compete"
+                          onClick={() => handleOpenCheckout('compete')}
+                        >
+                          Go Compete
+                        </button>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {COMPARISON_GROUPS.map((group, gIdx) => (
+                    <React.Fragment key={gIdx}>
+                      <tr className="tr-category-row">
+                        <td colSpan={4} className="td-category-cell">
+                          <span>{group.category}</span>
+                        </td>
+                      </tr>
+                      {group.features.map((feat, fIdx) => (
+                        <tr key={fIdx} className="tr-feature-row">
+                          <td className="td-feature-info">
+                            <span className="feature-name">{feat.name}</span>
+                            {feat.desc && <span className="feature-desc">{feat.desc}</span>}
+                          </td>
+                          <td className="td-plan-val td-val-starter">
+                            {renderComparisonCell(feat, 'starter')}
+                          </td>
+                          <td className="td-plan-val td-val-plus td-plus-cell-highlight">
+                            {renderComparisonCell(feat, 'plus')}
+                          </td>
+                          <td className="td-plan-val td-val-compete">
+                            {renderComparisonCell(feat, 'compete')}
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         {/* ── Placement Proof & Student Testimonials ── */}
         <div className="placement-proof-section">
           <div className="proof-header">
@@ -711,6 +1017,14 @@ const PremiumPage = () => {
                         </span>
                       </div>
 
+                      <div className="summary-row text-emerald-600 font-semibold">
+                        <span className="summary-lectures-label">
+                          <PlayCircle size={13} className="text-emerald-600" />
+                          <span>Lectures Access</span>
+                        </span>
+                        <span className="summary-lectures-status">Included</span>
+                      </div>
+
                       {extraProgramFee > 0 && (
                         <div className="summary-row text-amber-600 font-semibold">
                           <span>Extra 3rd Program Access</span>
@@ -811,6 +1125,10 @@ const PremiumPage = () => {
                                   <span className="picker-card-name">{prog.title}</span>
                                 </div>
                                 <p className="picker-card-desc">{prog.subtitle}</p>
+                                <div className="picker-lectures-badge">
+                                  <PlayCircle size={12} className="picker-lectures-icon" />
+                                  <span>{prog.lectures}</span>
+                                </div>
                               </div>
                             );
                           })}
