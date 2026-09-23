@@ -478,7 +478,11 @@ const PremiumPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const handleOpenCheckout = (plan) => {
+  const handleOpenCheckout = (planOrId) => {
+    let plan = planOrId;
+    if (typeof planOrId === 'string') {
+      plan = activePlans.find(p => p.id === planOrId) || PLANS_6M_DATA.find(p => p.id === planOrId);
+    }
     setSelectedPlanForModal(plan);
     setSelectedPrograms(['fsd', 'dsa']);
     setCouponCode('');

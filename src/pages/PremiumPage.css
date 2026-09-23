@@ -7,9 +7,8 @@
   background-color: #FAFAFA;
   min-height: 100vh;
   padding: 96px 0 80px 0; /* Clear fixed top navbar with zero overlap */
-  color: #111827;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip; /* Cleanly clip horizontal overflows without breaking position: sticky */
 }
 
 .premium-page-container {
@@ -450,17 +449,18 @@
   border: 1.5px solid #E2E8F0;
   border-radius: 20px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.03);
-  overflow: hidden;
+  position: relative;
+  overflow: visible;
 }
 
 .comparison-table-wrapper {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
 }
 
 .comparison-table-wrapper::-webkit-scrollbar {
   height: 6px;
+  width: 6px;
 }
 
 .comparison-table-wrapper::-webkit-scrollbar-thumb {
@@ -472,20 +472,41 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  min-width: 820px;
+  min-width: 780px;
   text-align: left;
 }
 
-/* Header Columns */
+/* Header Columns - Sticky on Scroll */
 .comparison-table thead tr th {
-  padding: 24px 20px;
+  position: sticky;
+  top: 64px;
+  z-index: 45;
+  padding: 24px 20px 20px 20px;
   vertical-align: top;
   border-bottom: 2px solid #E2E8F0;
+  background: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.comparison-table thead tr th:first-child {
+  border-top-left-radius: 19px;
+}
+
+.comparison-table thead tr th:last-child {
+  border-top-right-radius: 19px;
+}
+
+.comparison-table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 19px;
+}
+
+.comparison-table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 19px;
 }
 
 .th-feature-col {
   width: 34%;
-  background: #F8FAFC;
+  background: #F8FAFC !important;
   border-right: 1.5px solid #E2E8F0;
 }
 
@@ -509,7 +530,7 @@
   width: 22%;
   text-align: center;
   border-right: 1px solid #E2E8F0;
-  background: #FFFFFF;
+  background: #FFFFFF !important;
 }
 
 .th-plan-col:last-child {
@@ -520,7 +541,26 @@
   background: #FFFDF9 !important;
   border-left: 2px solid #F3912E !important;
   border-right: 2px solid #F3912E !important;
-  position: relative;
+  position: sticky !important;
+  top: 64px;
+  z-index: 46;
+}
+
+@media (max-width: 859px) {
+  .comparison-table-card {
+    overflow: hidden;
+  }
+  .comparison-table-wrapper {
+    overflow: auto;
+    max-height: 580px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .comparison-table thead tr th {
+    top: 0;
+  }
+  .th-plus-highlight {
+    top: 0 !important;
+  }
 }
 
 .th-plan-box {
