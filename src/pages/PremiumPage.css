@@ -219,6 +219,29 @@
   color: #64748B;
 }
 
+.price-commitment-line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: -2px;
+  margin-bottom: 8px;
+}
+
+.price-commitment-badge {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1E293B;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.price-total-billed {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
 .price-sub-line {
   display: flex;
   align-items: center;
@@ -609,7 +632,7 @@
   font-size: 1.45rem;
   font-weight: 900;
   color: #0F172A;
-  margin-bottom: 14px;
+  margin-bottom: 4px;
   display: flex;
   align-items: baseline;
   justify-content: center;
@@ -621,6 +644,16 @@
   font-weight: 600;
   color: #64748B;
   margin-left: 4px;
+}
+
+.th-plan-commitment {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748B;
+  margin-bottom: 12px;
+  line-height: 1.35;
+  text-align: center;
+  max-width: 170px;
 }
 
 .th-plan-cta {
@@ -1884,79 +1917,139 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   8B. DURATION SELECTOR (6 MONTHS VS 3 MONTHS COMMITMENT)
+   8B. PILL-SHAPED DURATION SELECTOR WITH UPON BADGES
    ───────────────────────────────────────────────────────────── */
 .duration-selector-wrap {
   display: flex;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 26px;
+  padding-top: 18px; /* Headroom so floating upon-badges are never clipped */
+  padding-bottom: 4px;
+  position: relative;
+  width: 100%;
 }
 
 .duration-toggle-pillbox {
   display: inline-flex;
+  align-items: center;
   background: #F1F5F9;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 9999px; /* True pill shape */
   padding: 5px;
-  gap: 6px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+  gap: 5px;
+  box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.04), 0 2px 8px rgba(15, 23, 42, 0.02);
+  position: relative;
+  max-width: 100%;
 }
 
 .duration-tab-btn {
+  position: relative;
   background: transparent;
   border: none;
-  border-radius: 10px;
-  padding: 10px 22px;
+  border-radius: 9999px; /* Pure pill button shape */
+  padding: 10px 24px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
-  transition: all 0.22s ease;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   color: #64748B;
+  white-space: nowrap;
+  outline: none;
+  user-select: none;
 }
 
 .duration-tab-btn:hover {
   color: #0F172A;
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .duration-tab-btn.active {
   background: #FFFFFF;
   color: #0F172A;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-}
-
-.duration-tab-title-row {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .duration-tab-title {
-  font-size: 0.95rem;
+  font-size: 0.94rem;
   font-weight: 800;
   letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 .duration-tab-tag {
   font-size: 0.72rem;
   font-weight: 600;
   color: #94A3B8;
+  line-height: 1.2;
+  transition: color 0.2s ease;
 }
 
 .duration-tab-btn.active .duration-tab-tag {
-  color: #64748B;
+  color: #475569;
 }
 
-.duration-discount-badge {
+/* ── Floating "Upon" Discount Badges Sitting on Top Border Edge ── */
+.duration-upon-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 9px;
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  line-height: 1.1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.duration-tab-btn:hover .duration-upon-badge {
+  transform: translateX(-50%) translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+.duration-tab-btn.active .duration-upon-badge {
+  transform: translateX(-50%) scale(1.05);
+}
+
+.badge-upon-green {
   background: #DCFCE7;
   color: #15803D;
-  border: 1px solid #BBF7D0;
-  font-size: 0.68rem;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 999px;
-  letter-spacing: 0.02em;
+  border: 1px solid #86EFAC;
+}
+
+.badge-upon-orange {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FCD34D;
+}
+
+.duration-tab-btn.active .badge-upon-orange {
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  color: #FFFFFF;
+  border: 1px solid #F97316;
+  box-shadow: 0 2px 8px rgba(243, 145, 46, 0.4);
+}
+
+.badge-upon-purple {
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #C4B5FD;
+}
+
+.duration-tab-btn.active .badge-upon-purple {
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: #FFFFFF;
+  border: 1px solid #7C3AED;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
 }
 
 .duration-active-alert {
@@ -1976,7 +2069,7 @@
   line-height: 1.4;
 }
 
-/* Modal Duration Toggle & 3M Guarantees */
+/* Modal Duration Toggle & Pills */
 .checkout-header-top-row {
   display: flex;
   justify-content: space-between;
@@ -1990,9 +2083,9 @@
   display: inline-flex;
   background: #F1F5F9;
   border: 1px solid #CBD5E1;
-  border-radius: 9px;
-  padding: 2px;
-  gap: 3px;
+  border-radius: 9999px; /* Pill shape for modal */
+  padding: 3px;
+  gap: 4px;
 }
 
 .modal-duration-pill {
@@ -2001,8 +2094,8 @@
   font-size: 0.74rem;
   font-weight: 700;
   color: #64748B;
-  padding: 5px 11px;
-  border-radius: 7px;
+  padding: 5px 12px;
+  border-radius: 9999px; /* Pill shape */
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -2021,8 +2114,18 @@
   color: #15803D;
   font-size: 0.65rem;
   font-weight: 800;
-  padding: 1px 5px;
-  border-radius: 4px;
+  padding: 1px 6px;
+  border-radius: 9999px;
+}
+
+.modal-pill-orange {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.modal-pill-purple {
+  background: #EDE9FE;
+  color: #6D28D9;
 }
 
 .modal-3m-guarantee-box {
@@ -2134,12 +2237,41 @@
     font-size: 0.95rem;
   }
 
+  .duration-selector-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    justify-content: flex-start;
+    scrollbar-width: none;
+  }
+
+  .duration-selector-wrap::-webkit-scrollbar {
+    display: none;
+  }
+
+  .duration-toggle-pillbox {
+    flex-wrap: nowrap;
+    margin: 0 auto;
+  }
+
   .duration-tab-btn {
-    padding: 8px 14px;
+    padding: 8px 16px;
+    flex-shrink: 0;
   }
 
   .duration-tab-title {
-    font-size: 0.85rem;
+    font-size: 0.84rem;
+  }
+
+  .duration-tab-tag {
+    font-size: 0.66rem;
+  }
+
+  .duration-upon-badge {
+    font-size: 0.58rem;
+    padding: 1.5px 7px;
+    top: -10px;
   }
 
   .picker-cards-grid {
