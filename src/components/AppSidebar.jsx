@@ -104,7 +104,7 @@ const NAV_ITEMS = [
     label: 'Resume', 
     badge: 'FREE',
     Icon: RiFileUserFill, 
-    targetSection: 'student-section',
+    path: '/resume',
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Interactive Resume Builder',
     cardDesc: 'Craft ATS-compliant developer resumes with live PDF preview and real-time formatting guidance.',
@@ -166,7 +166,7 @@ const NAV_ITEMS = [
     id: 'feedback', 
     label: 'Feedback', 
     Icon: FeedbackIcon, 
-    targetSection: 'student-section',
+    path: '/feedback',
     cardBadge: 'COMMUNITY & SUPPORT',
     cardTitle: 'Feedback & Suggestions',
     cardDesc: 'Submit feedback, report platform issues, or propose new features to our engineering team.',
@@ -207,6 +207,10 @@ const AppSidebar = () => {
       setActiveId('courses');
     } else if (location.pathname === '/premium') {
       setActiveId('premium');
+    } else if (location.pathname === '/feedback') {
+      setActiveId('feedback');
+    } else if (location.pathname === '/resume') {
+      setActiveId('resume');
     }
   }, [location.pathname]);
 

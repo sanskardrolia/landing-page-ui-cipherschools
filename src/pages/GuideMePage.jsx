@@ -183,7 +183,7 @@ const GuideMePage = () => {
               className="compact-cta-btn product-btn"
               onClick={() => handleStartRoadmap('product')}
             >
-              <span>Explore Product Roadmap</span>
+              <span>Enrol For Free</span>
               <ArrowRight size={15} />
             </button>
           </div>
@@ -258,7 +258,7 @@ const GuideMePage = () => {
               className="compact-cta-btn service-btn"
               onClick={() => handleStartRoadmap('service')}
             >
-              <span>Explore Service Roadmap</span>
+              <span>Enrol For Free</span>
               <ArrowRight size={15} />
             </button>
           </div>

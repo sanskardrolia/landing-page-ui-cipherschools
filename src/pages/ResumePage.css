@@ -1,0 +1,1371 @@
+/* ─────────────────────────────────────────────────────────────
+   RESUME PAGE STYLES - CIPHERSCHOOLS DESIGN SYSTEM
+   Modern, crisp, responsive, matching landing page philosophy
+   ───────────────────────────────────────────────────────────── */
+
+.resume-page-root {
+  min-height: 100vh;
+  background-color: #F8FAFC;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(243, 145, 46, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 10%, rgba(37, 99, 235, 0.03) 0px, transparent 50%);
+  padding-top: 88px;
+  padding-bottom: 72px;
+  color: #0F172A;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.resume-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SHARED HEADINGS & BADGES
+   ───────────────────────────────────────────────────────────── */
+.headline-gradient {
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-title-large {
+  font-size: 2.1rem;
+  font-weight: 850;
+  color: #0F172A;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin: 0 0 12px 0;
+}
+
+.section-subtitle {
+  font-size: 0.95rem;
+  color: #64748B;
+  line-height: 1.55;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION 1: HERO SECTION
+   ───────────────────────────────────────────────────────────── */
+.resume-hero-section {
+  padding: 24px 0 60px 0;
+}
+
+.resume-hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.resume-hero-title {
+  font-size: 2.85rem;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #0F172A;
+  letter-spacing: -0.035em;
+  margin: 0 0 18px 0;
+}
+
+.resume-hero-subtitle {
+  font-size: 1.08rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 32px 0;
+  max-width: 520px;
+}
+
+.resume-hero-cta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.resume-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 13px 28px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(243, 145, 46, 0.32);
+  transition: all 0.2s ease;
+}
+
+.resume-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(243, 145, 46, 0.42);
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%);
+}
+
+.resume-primary-btn:active {
+  transform: scale(0.98);
+}
+
+.resume-secondary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: #EA580C;
+  font-size: 0.95rem;
+  font-weight: 750;
+  padding: 13px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resume-secondary-link:hover {
+  color: #C2410C;
+  transform: translateX(3px);
+}
+
+.resume-trust-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-top: 24px;
+  border-top: 1px solid #E2E8F0;
+}
+
+.trust-stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.trust-stat-item strong {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+}
+
+.trust-stat-item span {
+  font-size: 0.75rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.trust-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: #E2E8F0;
+}
+
+/* Hero Visual: Minimal, Clean ATS Resume Sheet Preview */
+.resume-hero-visual-wrap {
+  position: relative;
+}
+
+.hero-clean-resume-wrapper {
+  position: relative;
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  box-shadow: 
+    0 16px 40px -12px rgba(15, 23, 42, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  overflow: visible;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-clean-resume-wrapper:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 22px 48px -12px rgba(243, 145, 46, 0.12),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.resume-sheet-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #F8FAFC;
+  border-bottom: 1.5px solid #E2E8F0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.sheet-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sheet-bar-filename {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.sheet-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.clean-ats-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  font-size: 0.7rem;
+  font-weight: 750;
+  color: #047857;
+}
+
+.hero-clean-paper {
+  padding: 26px 30px 30px 30px;
+  background: #FFFFFF;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  color: #0F172A;
+}
+
+.clean-paper-header {
+  text-align: center;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1.5px solid #F1F5F9;
+}
+
+.clean-paper-name {
+  font-size: 1.3rem;
+  font-weight: 850;
+  color: #0F172A;
+  margin: 0 0 2px 0;
+  letter-spacing: -0.02em;
+}
+
+.clean-paper-role {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #EA580C;
+  margin: 0 0 5px 0;
+}
+
+.clean-paper-contacts,
+.clean-paper-links {
+  font-size: 0.66rem;
+  color: #64748B;
+  margin: 0 0 2px 0;
+  line-height: 1.35;
+}
+
+.clean-paper-section {
+  margin-bottom: 12px;
+}
+
+.clean-sec-title {
+  font-size: 0.7rem;
+  font-weight: 850;
+  color: #0F172A;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.clean-sec-divider {
+  height: 1.5px;
+  background: #E2E8F0;
+  margin: 3px 0 6px 0;
+}
+
+.clean-sec-body,
+.clean-skills-line {
+  font-size: 0.7rem;
+  color: #334155;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.clean-exp-block {
+  margin-bottom: 4px;
+}
+
+.clean-exp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  margin-bottom: 3px;
+}
+
+.clean-exp-head strong {
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.clean-exp-date {
+  font-size: 0.66rem;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.clean-exp-list {
+  margin: 0;
+  padding-left: 15px;
+  color: #475569;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.clean-exp-list li {
+  margin-bottom: 2px;
+}
+
+.clean-edu-sub {
+  font-size: 0.66rem;
+  color: #64748B;
+  margin: 2px 0 0 0;
+}
+
+/* Tasteful Minimal Floating ATS Pill */
+.clean-floating-ats-pill {
+  position: absolute;
+  bottom: -12px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  color: #FFFFFF;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(243, 145, 46, 0.35);
+  border: 2px solid #FFFFFF;
+  z-index: 5;
+}
+
+.ats-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION 2: SELECT THE TEMPLATE TO CREATE YOUR RESUME (Screenshot 2)
+   ───────────────────────────────────────────────────────────── */
+.resume-templates-section {
+  padding: 60px 0;
+  border-top: 1px solid #E2E8F0;
+}
+
+.template-picker-title {
+  font-size: 1.95rem;
+  font-weight: 850;
+  color: #0F172A;
+  margin: 0 0 24px 0;
+  letter-spacing: -0.02em;
+}
+
+.template-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.template-picker-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.template-desc-banner {
+  background: #FFF8F1;
+  border: 1.5px solid #FED7AA;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.45;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.banner-prefix {
+  font-weight: 800;
+  color: #0F172A;
+  white-space: nowrap;
+}
+
+.banner-desc {
+  font-weight: 500;
+  color: #334155;
+}
+
+.template-sheet-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 16px 14px 18px 14px;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.template-sheet-card:hover,
+.template-sheet-card.card-selected {
+  border-color: #F3912E;
+  box-shadow: 0 8px 24px rgba(243, 145, 46, 0.14);
+}
+
+.template-sheet-viewport {
+  height: 480px;
+  overflow-y: hidden;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 16px 14px;
+  font-size: 6.8px;
+  line-height: 1.34;
+  color: #0F172A;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  user-select: none;
+}
+
+/* Template 1: Beginner Sheet (Anurag Mishra - Serif Traditional) */
+.sheet-beginner {
+  font-family: "Times New Roman", Times, Georgia, serif;
+}
+
+.anurag-sheet-head {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.anurag-title {
+  font-size: 12px;
+  font-weight: 850;
+  margin: 0 0 2px 0;
+  color: #000000;
+  letter-spacing: -0.01em;
+}
+
+.anurag-sub {
+  font-size: 6.2px;
+  color: #475569;
+  margin: 0;
+}
+
+.anurag-section {
+  margin-bottom: 7px;
+}
+
+.anurag-bar-title {
+  font-size: 6.8px;
+  font-weight: 850;
+  background: #F1F5F9;
+  border-bottom: 1px solid #94A3B8;
+  padding: 2px 4px;
+  margin-bottom: 3px;
+  letter-spacing: 0.04em;
+  color: #0F172A;
+}
+
+.anurag-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 6px;
+  margin-bottom: 2px;
+}
+
+.anurag-data-table th,
+.anurag-data-table td {
+  border: 1px solid #CBD5E1;
+  padding: 2px 3px;
+  text-align: left;
+}
+
+.anurag-data-table th {
+  background: #F8FAFC;
+  font-weight: 750;
+}
+
+.anurag-bullet-p {
+  font-size: 6.2px;
+  margin: 1px 0;
+  line-height: 1.3;
+  color: #334155;
+}
+
+.anurag-proj-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 6.3px;
+  margin-top: 2px;
+}
+
+.anurag-proj-row .proj-title {
+  font-weight: 800;
+  color: #000000;
+}
+
+.anurag-proj-row .proj-guide {
+  font-size: 5.8px;
+  color: #64748B;
+}
+
+.anurag-proj-bullets {
+  margin: 1px 0;
+  padding-left: 11px;
+  font-size: 6px;
+  line-height: 1.3;
+  color: #475569;
+}
+
+/* Template 2: Experienced Sheet (Cipher Schools / GSoC) */
+.sheet-experienced {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.cs-sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1.5px solid #000000;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.cs-brand-name {
+  font-size: 12px;
+  font-weight: 850;
+  margin: 0;
+  color: #000000;
+}
+
+.cs-brand-sub {
+  font-size: 6.2px;
+  color: #475569;
+}
+
+.cs-contact-side {
+  text-align: right;
+  font-size: 6.2px;
+  color: #334155;
+  line-height: 1.25;
+}
+
+.cs-section {
+  margin-bottom: 6px;
+}
+
+.cs-heading-underlined {
+  font-size: 6.8px;
+  font-weight: 850;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 1px;
+  margin-bottom: 3px;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.cs-split-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 6.2px;
+  font-weight: 750;
+  color: #000000;
+}
+
+.cs-italics {
+  font-style: italic;
+  font-weight: 500;
+  color: #475569;
+  font-size: 6px;
+  margin-bottom: 1px;
+}
+
+.cs-coursework-text {
+  font-size: 6px;
+  color: #334155;
+  margin: 1px 0 2px 0;
+  line-height: 1.25;
+}
+
+.cs-skill-row {
+  font-size: 6.2px;
+  margin: 1px 0;
+  line-height: 1.3;
+  color: #334155;
+}
+
+.cs-bullet-list {
+  margin: 1px 0;
+  padding-left: 11px;
+  font-size: 6px;
+  line-height: 1.3;
+  color: #475569;
+}
+
+.cs-proj-p {
+  font-size: 6.2px;
+  margin: 1px 0;
+  line-height: 1.3;
+  color: #334155;
+}
+
+/* Template 3: Modern Sheet (John Doe - 2 Column Clean) */
+.sheet-modern {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.modern-title-wrap {
+  text-align: center;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #CBD5E1;
+  padding-bottom: 4px;
+}
+
+.modern-candidate-name {
+  font-size: 13px;
+  font-weight: 850;
+  margin: 0 0 1px 0;
+  color: #0F172A;
+}
+
+.modern-candidate-sub {
+  font-size: 6.2px;
+  color: #64748B;
+  margin: 0;
+}
+
+.modern-two-columns {
+  display: grid;
+  grid-template-columns: 36% 64%;
+  gap: 10px;
+}
+
+.modern-group {
+  margin-bottom: 6px;
+}
+
+.modern-head-label {
+  font-size: 6.8px;
+  font-weight: 850;
+  color: #EA580C;
+  border-bottom: 1px solid #FED7AA;
+  padding-bottom: 1px;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.modern-school-name,
+.modern-role-title {
+  font-size: 6.4px;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.modern-degree-text,
+.modern-company-text {
+  font-size: 6px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.modern-date-tag {
+  font-size: 5.8px;
+  color: #64748B;
+}
+
+.modern-bullet-list {
+  margin: 1px 0;
+  padding-left: 9px;
+  font-size: 5.8px;
+  line-height: 1.3;
+  color: #475569;
+}
+
+.modern-link-line,
+.modern-sub-item {
+  font-size: 5.8px;
+  color: #334155;
+  line-height: 1.3;
+}
+
+.modern-sub-tier {
+  font-size: 5.6px;
+  font-weight: 750;
+  color: #64748B;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* Solid Orange Action Button (Matching Screenshot 2) */
+.template-select-solid-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 18px;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(243, 145, 46, 0.28);
+  transition: all 0.2s ease;
+}
+
+.template-select-solid-btn:hover {
+  background: #EA580C;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.38);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION 3: HOW IT WORKS (3 Simple Steps)
+   ───────────────────────────────────────────────────────────── */
+.resume-how-it-works-section {
+  padding: 60px 0;
+  border-top: 1px solid #E2E8F0;
+}
+
+.how-it-works-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.how-it-works-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  position: relative;
+}
+
+.step-card {
+  background: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.step-graphic-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+  margin-bottom: 16px;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.step-title {
+  font-size: 1.18rem;
+  font-weight: 850;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-num {
+  color: #F3912E;
+  font-weight: 900;
+}
+
+.step-desc {
+  font-size: 0.85rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.step-action-btn {
+  margin-top: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3912E;
+  color: #FFFFFF;
+  font-size: 0.86rem;
+  font-weight: 750;
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(243, 145, 46, 0.3);
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.step-action-btn:hover {
+  background: #EA580C;
+  transform: translateY(-1.5px);
+}
+
+.step-directional-arrow {
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #CBD5E1;
+  font-weight: 900;
+  font-size: 1.2rem;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION 4: SKILL LEVEL-UP BANNER
+   ───────────────────────────────────────────────────────────── */
+.resume-level-up-banner {
+  margin: 40px 0 60px 0;
+  background: linear-gradient(135deg, #DC2626 0%, #EA580C 50%, #C2410C 100%);
+  border-radius: 18px;
+  padding: 36px 42px;
+  color: #FFFFFF;
+  box-shadow: 0 12px 30px -4px rgba(234, 88, 12, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.level-up-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 36px;
+  position: relative;
+  z-index: 2;
+}
+
+.level-up-text-side {
+  max-width: 650px;
+}
+
+.level-up-title {
+  font-size: 1.55rem;
+  font-weight: 850;
+  color: #FFFFFF;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.02em;
+}
+
+.level-up-desc {
+  font-size: 0.95rem;
+  color: #FFEDD5;
+  line-height: 1.55;
+  margin: 0 0 20px 0;
+}
+
+.level-up-courses-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  color: #C2410C;
+  font-size: 0.88rem;
+  font-weight: 800;
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.level-up-courses-btn:hover {
+  background: #FFF7ED;
+  transform: translateY(-1.5px);
+  color: #EA580C;
+}
+
+.level-up-graphic-side {
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION 5: WHY CHOOSE CIPHERSCHOOLS RESUME BUILDER?
+   ───────────────────────────────────────────────────────────── */
+.resume-why-choose-section {
+  padding: 60px 0;
+  border-top: 1px solid #E2E8F0;
+}
+
+.why-choose-header {
+  text-align: center;
+  margin-bottom: 44px;
+}
+
+.why-choose-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.why-feature-card {
+  background: #FFFBF7;
+  border: 1.5px solid #FED7AA;
+  border-radius: 16px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.why-feature-card:hover {
+  transform: translateY(-3px);
+  border-color: #F3912E;
+  box-shadow: 0 8px 22px rgba(243, 145, 46, 0.12);
+  background: #FFFFFF;
+}
+
+.feature-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #FFF7ED;
+  border: 1px solid #FDBA74;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.feature-card-title {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: #0F172A;
+  margin: 0 0 10px 0;
+}
+
+.feature-card-desc {
+  font-size: 0.86rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   INTERACTIVE LIVE BUILDER MODAL
+   ───────────────────────────────────────────────────────────── */
+.builder-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(5px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.builder-modal-container {
+  background: #FFFFFF;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 1100px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.builder-modal-header {
+  padding: 16px 24px;
+  background: #0F172A;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+}
+
+.builder-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.builder-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: #1E293B;
+  border: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.builder-header-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0;
+  color: #F8FAFC;
+}
+
+.builder-header-sub {
+  font-size: 0.72rem;
+  color: #94A3B8;
+}
+
+.builder-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.builder-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #F3912E 0%, #EA580C 100%);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 750;
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.builder-download-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(243, 145, 46, 0.4);
+}
+
+.builder-close-btn {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.builder-close-btn:hover {
+  color: #FFFFFF;
+  background: #1E293B;
+}
+
+.builder-modal-body {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+/* Modal Form Pane */
+.builder-form-pane {
+  background: #F8FAFC;
+  border-right: 1.5px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.form-pane-intro {
+  padding: 18px 22px 14px 22px;
+  border-bottom: 1px solid #E2E8F0;
+  background: #FFFFFF;
+}
+
+.pane-tag {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #EA580C;
+  letter-spacing: 0.06em;
+}
+
+.form-pane-intro h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 2px 0 0 0;
+}
+
+.builder-fields-scroll {
+  padding: 20px 22px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.builder-field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.builder-field-wrap label {
+  font-size: 0.75rem;
+  font-weight: 750;
+  color: #334155;
+}
+
+.builder-input, .builder-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: #FFFFFF;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: #0F172A;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.builder-input:focus, .builder-textarea:focus {
+  border-color: #F3912E;
+  box-shadow: 0 0 0 3px rgba(243, 145, 46, 0.12);
+}
+
+.builder-row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Modal Live Preview Pane */
+.builder-preview-pane {
+  background: #E2E8F0;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-pane-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #475569;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.ats-compliance-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #059669;
+  font-weight: 750;
+}
+
+/* A4 Sheet Presentation inside modal */
+.a4-resume-sheet {
+  background: #FFFFFF;
+  width: 100%;
+  max-width: 600px;
+  min-height: 750px;
+  border-radius: 6px;
+  padding: 36px 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  color: #0F172A;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.sheet-header {
+  text-align: center;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.sheet-name {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0F172A;
+  margin: 0 0 4px 0;
+  letter-spacing: -0.02em;
+}
+
+.sheet-role {
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: #EA580C;
+  margin-bottom: 6px;
+}
+
+.sheet-contacts, .sheet-links {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: #64748B;
+  flex-wrap: wrap;
+}
+
+.sheet-section {
+  margin-bottom: 14px;
+}
+
+.sheet-sec-title {
+  font-size: 0.82rem;
+  font-weight: 850;
+  color: #0F172A;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.sheet-sec-line {
+  height: 1.5px;
+  background: #CBD5E1;
+  margin: 4px 0 8px 0;
+}
+
+.sheet-text {
+  font-size: 0.76rem;
+  color: #334155;
+  margin: 0;
+}
+
+.sheet-exp-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+
+.sheet-exp-date {
+  color: #64748B;
+  font-size: 0.72rem;
+}
+
+.sheet-bullets {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+  color: #334155;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.sheet-school {
+  font-size: 0.74rem;
+  color: #64748B;
+  margin: 2px 0 0 0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE MEDIA QUERIES
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .resume-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .template-picker-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-it-works-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-directional-arrow {
+    display: none;
+  }
+
+  .why-choose-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .builder-modal-body {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .builder-form-pane {
+    border-right: none;
+    border-bottom: 1.5px solid #E2E8F0;
+  }
+}
+
+@media (max-width: 640px) {
+  .resume-page-root {
+    padding-top: 76px;
+  }
+
+  .resume-hero-title {
+    font-size: 2.1rem;
+  }
+
+  .section-title-large {
+    font-size: 1.65rem;
+  }
+
+  .editor-split-canvas {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-controls-pane {
+    display: none;
+  }
+
+  .level-up-banner-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .level-up-courses-btn {
+    align-self: center;
+  }
+
+  .floating-ats-badge {
+    right: 18px;
+    bottom: -12px;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+  }
+}

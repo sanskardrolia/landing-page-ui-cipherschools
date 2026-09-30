@@ -339,29 +339,33 @@
 .roadmap-modules-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px 14px;
   background: #F8FAFC;
   border: 1px solid #F1F5F9;
   border-radius: 12px;
-  padding: 10px;
+  padding: 12px 14px;
+  cursor: default;
 }
 
 .module-grid-card {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  padding: 8px 11px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 2px 0;
+  cursor: default;
+  pointer-events: none;
+  user-select: default;
+  box-shadow: none;
+  transition: none;
 }
 
 .module-grid-card:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transform: translateY(-1px);
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
 }
 
 .module-card-full {
@@ -383,13 +387,13 @@
 .orange-badge {
   background: #FFF7ED;
   color: #EA580C;
-  border: 1px solid #FDBA74;
+  border: 1px solid #FFEDD5;
 }
 
 .blue-badge {
   background: #EFF6FF;
   color: #2563EB;
-  border: 1px solid #93C5FD;
+  border: 1px solid #DBEAFE;
 }
 
 .module-topic-icon {
