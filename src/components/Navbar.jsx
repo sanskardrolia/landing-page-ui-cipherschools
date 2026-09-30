@@ -117,18 +117,19 @@ const Navbar = () => {
               <span className="logo-text">CipherSchools</span>
             </div>
 
-            {/* Guide Me Button (Page Navigation to /guide-me) */}
+            {/* Interactive Guide Me Button with Revolving Orange Border */}
             <Link 
               to="/guide-me"
-              className="navbar-guide-me-btn" 
+              className={`navbar-guide-me-btn ${location.pathname === '/guide-me' ? 'active' : ''}`}
               title="Let us help you choose your Learning Path"
               aria-label="Guide Me"
             >
-              <img 
-                src="/guide-me-btn-transparent.png" 
-                alt="Guide Me" 
-                className="guide-me-exact-img" 
-              />
+              <span className="guide-me-beam-track" aria-hidden="true" />
+              <span className="guide-me-beam-glow" aria-hidden="true" />
+              <span className="guide-me-beam" aria-hidden="true" />
+              <span className="guide-me-inner">
+                <span className="guide-me-text">Guide Me</span>
+              </span>
             </Link>
           </div>
           

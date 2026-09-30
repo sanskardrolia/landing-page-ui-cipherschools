@@ -1,353 +1,271 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  ArrowRight, Sparkles, CheckCircle2, 
-  BookOpen, Target, Award, Code2, Cpu, Zap 
+  ArrowRight, 
+  Compass, 
+  Binary, 
+  Globe, 
+  Cpu, 
+  Network, 
+  GitBranch, 
+  Code2, 
+  Database 
 } from 'lucide-react';
 import './GuideMePage.css';
 
-/* ── Custom High-Fidelity Tech Badges (Light-Adapted) ── */
-
-// 1. C++ Tech Badge
-const CppLogo = () => (
-  <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="20" cy="20" r="19" fill="#00599C" stroke="rgba(0,89,156,0.15)" strokeWidth="1.5" />
-    <path d="M19 13.5C15.4 13.5 12.5 16.4 12.5 20C12.5 23.6 15.4 26.5 19 26.5C21.2 26.5 23.1 25.4 24.3 23.7L21.8 22.3C21.2 23.1 20.2 23.6 19 23.6C17 23.6 15.4 22 15.4 20C15.4 18 17 16.4 19 16.4C20.2 16.4 21.2 16.9 21.8 17.7L24.3 16.3C23.1 14.6 21.2 13.5 19 13.5Z" fill="white" />
-    <path d="M26 18.5H27.2V17H28.2V18.5H29.5V19.5H28.2V21H27.2V19.5H26V18.5Z" fill="#00D8FF" />
-    <path d="M30.5 18.5H31.7V17H32.7V18.5H34V19.5H32.7V21H31.7V19.5H30.5V18.5Z" fill="#00D8FF" />
-  </svg>
-);
-
-// 2. Python Tech Badge
-const PythonLogo = () => (
-  <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="40" height="40" rx="10" fill="#F8FAFC" />
-    <path d="M20 9C15.5 9 15.8 11 15.8 11L15.8 13.2H20.2V14.5H13.6C11.3 14.5 9.5 16.2 9.5 18.9C9.5 22 11.5 22.2 11.5 22.2H13.2V20.2C13.2 17.9 15.2 17.9 15.2 17.9H20.2C22.2 17.9 22.5 16.1 22.5 16.1V11.2C22.5 11.2 22.6 9 20 9ZM17.6 10.7C18.2 10.7 18.7 11.2 18.7 11.8C18.7 12.4 18.2 12.9 17.6 12.9C17 12.9 16.5 12.4 16.5 11.8C16.5 11.2 17 10.7 17.6 10.7Z" fill="#3776AB" />
-    <path d="M20 31C24.5 31 24.2 29 24.2 29L24.2 26.8H19.8V25.5H26.4C28.7 25.5 30.5 23.8 30.5 21.1C30.5 18 28.5 17.8 28.5 17.8H26.8V19.8C26.8 22.1 24.8 22.1 24.8 22.1H19.8C17.8 22.1 17.5 23.9 17.5 23.9V28.8C17.5 28.8 17.4 31 20 31ZM22.4 29.3C21.8 29.3 21.3 28.8 21.3 28.2C21.3 27.6 21.8 27.1 22.4 27.1C23 27.1 23.5 27.6 23.5 28.2C23.5 28.8 23 29.3 22.4 29.3Z" fill="#F59E0B" />
-  </svg>
-);
-
-// 3. React Tech Badge
-const ReactLogo = () => (
-  <svg width="40" height="40" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="21" cy="21" r="3.2" fill="#0284C7" />
-    <g stroke="#0284C7" strokeWidth="1.8" fill="none">
-      <ellipse cx="21" cy="21" rx="15" ry="5.8" />
-      <ellipse cx="21" cy="21" rx="15" ry="5.8" transform="rotate(60 21 21)" />
-      <ellipse cx="21" cy="21" rx="15" ry="5.8" transform="rotate(120 21 21)" />
-    </g>
-  </svg>
-);
-
-// 4. Java Tech Badge
-const JavaLogo = () => (
-  <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="40" height="40" rx="10" fill="#FFF7ED" />
-    <path d="M22 10C24 12 21 14 23 16" stroke="#EA580C" strokeWidth="2" strokeLinecap="round" />
-    <path d="M17 11C19 13 16 15 18 17" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" />
-    <path d="M13 19H27C27 19 28 25 20 26C12 25 13 19 13 19Z" fill="#0284C7" />
-    <path d="M27 20C28.5 20 30 21.5 30 23C30 24.5 28.5 25.5 27 25.5" stroke="#0284C7" strokeWidth="1.8" strokeLinecap="round" />
-    <path d="M11 28C16 30 24 30 29 28" stroke="#EA580C" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
-
-/* ── Custom Module Icons for Pathway Cards ── */
-
-// 1. Programming: </>
-const ProgrammingIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#EEF2FF" />
-    <path d="M13.5 13L9.5 17L13.5 21" stroke="#4F46E5" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M20.5 13L24.5 17L20.5 21" stroke="#4F46E5" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M18.5 11.5L15.5 22.5" stroke="#818CF8" strokeWidth="2" strokeLinecap="round" />
-  </svg>
-);
-
-// 2. DBMS: Database Cylinder
-const DbmsIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#E0F2FE" />
-    <ellipse cx="17" cy="11.5" rx="7.5" ry="3" fill="#38BDF8" />
-    <path d="M9.5 11.5V17C9.5 18.7 12.8 20 17 20C21.2 20 24.5 18.7 24.5 17V11.5" stroke="#0284C7" strokeWidth="2" fill="none" />
-    <path d="M9.5 17V22.5C9.5 24.2 12.8 25.5 17 25.5C21.2 25.5 24.5 24.2 24.5 22.5V17" stroke="#0284C7" strokeWidth="2" fill="none" />
-  </svg>
-);
-
-// 3. OS & Networking: Cloud & Network
-const OsNetworkingIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#F0F9FF" />
-    <path d="M11 22C9.3 22 8 20.7 8 19C8 17.5 9.1 16.2 10.6 16C11.1 13.7 13.1 12 15.5 12C18.2 12 20.4 14.1 20.5 16.8C21.8 17 22.8 18.1 22.8 19.5C22.8 20.9 21.7 22 20.2 22H11Z" fill="#38BDF8" />
-    <path d="M17 19V24M14 24H20" stroke="#0284C7" strokeWidth="1.8" strokeLinecap="round" />
-  </svg>
-);
-
-// 4. DSA: Connected Graph Nodes
-const DsaIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#FDF2F8" />
-    <line x1="12" y1="23" x2="17" y2="13" stroke="#D946EF" strokeWidth="2" />
-    <line x1="22" y1="23" x2="17" y2="13" stroke="#D946EF" strokeWidth="2" />
-    <line x1="12" y1="23" x2="22" y2="23" stroke="#D946EF" strokeWidth="2" />
-    <circle cx="17" cy="13" r="3.2" fill="#EC4899" stroke="#BE185D" strokeWidth="1.5" />
-    <circle cx="11" cy="23" r="3.2" fill="#06B6D4" stroke="#0891B2" strokeWidth="1.5" />
-    <circle cx="23" cy="23" r="3.2" fill="#8B5CF6" stroke="#6D28D9" strokeWidth="1.5" />
-  </svg>
-);
-
-// 5. Development: Globe & Network
-const DevelopmentIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#EFF6FF" />
-    <circle cx="17" cy="17" r="7.5" stroke="#2563EB" strokeWidth="1.8" />
-    <ellipse cx="17" cy="17" rx="3.5" ry="7.5" stroke="#3B82F6" strokeWidth="1.5" />
-    <line x1="9.5" y1="17" x2="24.5" y2="17" stroke="#2563EB" strokeWidth="1.5" />
-  </svg>
-);
-
-// 6. System Design: Folder & Braces
-const SystemDesignIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#FEF3C7" />
-    <path d="M9 13C9 11.9 9.9 11 11 11H14.5L16.5 13H23C24.1 13 25 13.9 25 15V23C25 24.1 24.1 25 23 25H11C9.9 25 9 24.1 9 23V13Z" fill="#F59E0B" />
-    <path d="M15 17C14.5 17.5 14.5 18 14 18.5C14.5 19 14.5 19.5 15 20" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
-    <path d="M19 17C19.5 17.5 19.5 18 20 18.5C19.5 19 19.5 19.5 19 20" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
-  </svg>
-);
-
-// 7. Version Control: Git Branch Diamond
-const VersionControlIcon = () => (
-  <svg width="38" height="38" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="34" height="34" rx="10" fill="#FFF1F2" />
-    <rect x="17" y="7.5" width="13" height="13" rx="2.5" transform="rotate(45 17 7.5)" fill="#EF4444" />
-    <circle cx="17" cy="14" r="1.6" fill="white" />
-    <circle cx="17" cy="22" r="1.6" fill="white" />
-    <circle cx="21" cy="18" r="1.6" fill="white" />
-    <path d="M17 15.6V20.4M17 18C18.2 18 19.4 18 20.2 18" stroke="white" strokeWidth="1.4" strokeLinecap="round" />
-  </svg>
-);
+const CompanyIcons = {
+  Google: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+    </svg>
+  ),
+  Amazon: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <path fill="#FF9900" d="M13.96 12.33c-.08-.6-.35-1.07-.82-1.42s-1.12-.53-1.96-.53c-.63 0-1.22.12-1.77.36-.55.24-.96.59-1.23 1.05l1.32.9c.14-.24.34-.43.6-.57.26-.14.54-.21.84-.21.43 0 .76.1.98.29.22.19.33.45.33.78v.37c-.37.04-.84.09-1.41.15s-1.1.18-1.59.36c-.49.18-.88.44-1.17.78-.29.34-.44.78-.44 1.32 0 .54.18.98.54 1.32.36.34.84.51 1.44.51.53 0 1-.12 1.41-.36.41-.24.73-.57.96-1.01v1.17h1.67V12.33zm-1.84 2.82c-.2.32-.47.56-.8.72-.33.16-.69.24-1.08.24-.34 0-.62-.09-.84-.27-.22-.18-.33-.42-.33-.72 0-.35.14-.64.42-.87.28-.23.75-.41 1.41-.54.66-.13 1.15-.22 1.47-.27v.29c0 .54-.08.99-.25 1.42z"/>
+      <path fill="#FF9900" d="M19.16 16.73c-2.8 2.06-6.87 3.15-10.37 3.15-4.89 0-9.3-1.83-12.63-4.9.26.24.8.46 1.32.46 2.94 0 7.37-1.62 9.94-3.15.22-.13.46.12.26.31-1.08.98-3.08 2.29-6.3 2.29-1.03 0-2.02-.15-2.92-.47 3.01 2.37 6.87 3.79 11.08 3.79 3.16 0 6.64-.86 9.42-2.61.34-.21.57.17.2.13z"/>
+    </svg>
+  ),
+  Uber: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <rect width="24" height="24" rx="4" fill="#000000"/>
+      <path fill="#FFFFFF" d="M7 8h2.6v5.2c0 .9.7 1.6 1.6 1.6s1.6-.7 1.6-1.6V8h2.6v5.2c0 2.3-1.9 4.2-4.2 4.2s-4.2-1.9-4.2-4.2V8z"/>
+    </svg>
+  ),
+  Microsoft: () => (
+    <svg width="12" height="12" viewBox="0 0 23 23" className="company-svg">
+      <path fill="#f35325" d="M1 1h10v10H1z"/>
+      <path fill="#81bc06" d="M12 1h10v10H12z"/>
+      <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+      <path fill="#ffba08" d="M12 12h10v10H12z"/>
+    </svg>
+  ),
+  TCS: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <rect width="24" height="24" rx="4" fill="#002D62"/>
+      <text x="12" y="16" fill="#FFFFFF" fontSize="9" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">TCS</text>
+    </svg>
+  ),
+  Infosys: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <rect width="24" height="24" rx="4" fill="#007CC3"/>
+      <text x="12" y="17" fill="#FFFFFF" fontSize="14" fontWeight="900" textAnchor="middle" fontFamily="'Trebuchet MS', sans-serif">i</text>
+    </svg>
+  ),
+  Accenture: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <rect width="24" height="24" rx="4" fill="#A100FF"/>
+      <path fill="#FFFFFF" d="M8 6l7 6-7 6V14l3.5-2-3.5-2V6z"/>
+    </svg>
+  ),
+  Wipro: () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" className="company-svg">
+      <rect width="24" height="24" rx="4" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1"/>
+      <circle cx="8" cy="8" r="3" fill="#E81123"/>
+      <circle cx="16" cy="8" r="3" fill="#FFB900"/>
+      <circle cx="8" cy="16" r="3" fill="#008272"/>
+      <circle cx="16" cy="16" r="3" fill="#0078D7"/>
+    </svg>
+  )
+};
 
 const GuideMePage = () => {
   const navigate = useNavigate();
 
-  // Scroll to top upon page load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const scrollToPathways = () => {
-    const el = document.getElementById('guide-pathways-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleNavigateToCourse = (track) => {
+  const handleStartRoadmap = (track) => {
     navigate('/courses');
   };
 
   return (
     <div className="guide-me-page-root">
-      
-      {/* ── Hero Section (Light Background, Adjusted Text Colors) ── */}
-      <section className="guide-page-hero">
-        <div className="guide-page-container hero-container relative">
+      <div className="guide-page-container">
+        
+        {/* Clean, Lightweight Header */}
+        <div className="guide-compact-header">
+          <div className="guide-badge-pill">
+            <Compass size={13} className="text-orange-500" />
+            <span>CAREER PATHWAY COMPASS</span>
+          </div>
+          <h1 className="guide-headline">
+            Choose Your <span className="headline-gradient">Learning Path</span>
+          </h1>
+          <p className="guide-subtext">
+            Compare target packages, timeline, and core milestones at a glance.
+          </p>
+        </div>
+
+        {/* 2 Lightweight Infographic Cards */}
+        <div className="guide-compact-grid">
           
-          {/* Ambient Glow (Soft Orange Tint on Light Canvas) */}
-          <div className="guide-light-hero-glow"></div>
-
-          {/* Floating Tech Badges (4 Corners in Elevated Light Cards) */}
-          <div className="guide-page-float-badge float-top-left" title="C++">
-            <CppLogo />
-          </div>
-          <div className="guide-page-float-badge float-bottom-left" title="Python">
-            <PythonLogo />
-          </div>
-          <div className="guide-page-float-badge float-top-right" title="React">
-            <ReactLogo />
-          </div>
-          <div className="guide-page-float-badge float-bottom-right" title="Java">
-            <JavaLogo />
-          </div>
-
-          {/* Hero Content */}
-          <div className="guide-page-hero-content animate-fade-in">
-            <div className="guide-hero-pill-badge">
-              <Sparkles size={14} className="sparkle-accent" />
-              <span>CAREER NAVIGATION COMPASS</span>
+          {/* PRODUCT TRACK */}
+          <div className="compact-path-card product-border">
+            <div className="card-top-row">
+              <div className="card-tags-left">
+                <span className="compact-category product-cat">TIER-1 / PRODUCT</span>
+                <span className="compact-free-badge">
+                  <span className="free-live-dot"></span>
+                  FREE
+                </span>
+              </div>
+              <span className="compact-ctc-badge product-ctc">₹18 - 45+ LPA</span>
             </div>
 
-            <h1 className="guide-page-title">
-              Let us help you choose your <br />
-              <span className="guide-page-title-gradient">Learning Path</span>
-            </h1>
+            <h2 className="compact-card-title">Product Companies</h2>
+            <p className="compact-card-tagline">FAANG, high-growth startups & global tech firms</p>
 
-            <p className="guide-page-subtitle">
-              Whether you're aiming for a <span className="guide-kw-bold">product-based</span> or{' '}
-              <span className="guide-kw-bold">service-based</span> company, <br className="hidden-mobile" />
-              we've got the perfect learning path for you.
-            </p>
+            {/* Top Recruiters Row */}
+            <div className="compact-recruiters-row">
+              <span className="recruiters-row-label">Top Recruiters</span>
+              <div className="company-chips-row">
+                <div className="company-logo-chip" title="Google">
+                  <CompanyIcons.Google />
+                  <span className="company-chip-name">Google</span>
+                </div>
+                <div className="company-logo-chip" title="Amazon">
+                  <CompanyIcons.Amazon />
+                  <span className="company-chip-name">Amazon</span>
+                </div>
+                <div className="company-logo-chip" title="Uber">
+                  <CompanyIcons.Uber />
+                  <span className="company-chip-name">Uber</span>
+                </div>
+                <div className="company-logo-chip" title="Microsoft">
+                  <CompanyIcons.Microsoft />
+                  <span className="company-chip-name">Microsoft</span>
+                </div>
+              </div>
+            </div>
 
-            <button className="guide-page-explore-btn" onClick={scrollToPathways}>
-              <span>Explore Now</span>
-              <ArrowRight size={16} />
+            {/* Core Curriculum Roadmap Grid */}
+            <div className="compact-steps-flow">
+              <div className="flow-header-row">
+                <span className="flow-label">CURRICULUM ROADMAP</span>
+                <span className="flow-modules-count orange-count">5 Modules</span>
+              </div>
+              <div className="roadmap-modules-grid">
+                <div className="module-grid-card">
+                  <span className="module-step-badge orange-badge">01</span>
+                  <Binary size={14} className="module-topic-icon orange-icon" />
+                  <span className="module-name">DSA</span>
+                </div>
+                <div className="module-grid-card">
+                  <span className="module-step-badge orange-badge">02</span>
+                  <Globe size={14} className="module-topic-icon orange-icon" />
+                  <span className="module-name">Development</span>
+                </div>
+                <div className="module-grid-card">
+                  <span className="module-step-badge orange-badge">03</span>
+                  <Cpu size={14} className="module-topic-icon orange-icon" />
+                  <span className="module-name">System Design</span>
+                </div>
+                <div className="module-grid-card">
+                  <span className="module-step-badge orange-badge">04</span>
+                  <Network size={14} className="module-topic-icon orange-icon" />
+                  <span className="module-name">OS & Networking</span>
+                </div>
+                <div className="module-grid-card module-card-full">
+                  <span className="module-step-badge orange-badge">05</span>
+                  <GitBranch size={14} className="module-topic-icon orange-icon" />
+                  <span className="module-name">Version Control</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <button 
+              type="button" 
+              className="compact-cta-btn product-btn"
+              onClick={() => handleStartRoadmap('product')}
+            >
+              <span>Explore Product Roadmap</span>
+              <ArrowRight size={15} />
+            </button>
+          </div>
+
+          {/* SERVICE TRACK */}
+          <div className="compact-path-card service-border">
+            <div className="card-top-row">
+              <div className="card-tags-left">
+                <span className="compact-category service-cat">IT SERVICES / MNCS</span>
+                <span className="compact-free-badge">
+                  <span className="free-live-dot"></span>
+                  FREE
+                </span>
+              </div>
+              <span className="compact-ctc-badge service-ctc">₹4.5 - 9.5 LPA</span>
+            </div>
+
+            <h2 className="compact-card-title">Service Companies</h2>
+            <p className="compact-card-tagline">TCS, Infosys, Accenture, Wipro & Consultancies</p>
+
+            {/* Top Recruiters Row */}
+            <div className="compact-recruiters-row">
+              <span className="recruiters-row-label">Top Recruiters</span>
+              <div className="company-chips-row">
+                <div className="company-logo-chip" title="TCS">
+                  <CompanyIcons.TCS />
+                  <span className="company-chip-name">TCS</span>
+                </div>
+                <div className="company-logo-chip" title="Infosys">
+                  <CompanyIcons.Infosys />
+                  <span className="company-chip-name">Infosys</span>
+                </div>
+                <div className="company-logo-chip" title="Accenture">
+                  <CompanyIcons.Accenture />
+                  <span className="company-chip-name">Accenture</span>
+                </div>
+                <div className="company-logo-chip" title="Wipro">
+                  <CompanyIcons.Wipro />
+                  <span className="company-chip-name">Wipro</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Core Curriculum Roadmap Grid */}
+            <div className="compact-steps-flow">
+              <div className="flow-header-row">
+                <span className="flow-label">CURRICULUM ROADMAP</span>
+                <span className="flow-modules-count blue-count">3 Modules</span>
+              </div>
+              <div className="roadmap-modules-grid">
+                <div className="module-grid-card">
+                  <span className="module-step-badge blue-badge">01</span>
+                  <Code2 size={14} className="module-topic-icon blue-icon" />
+                  <span className="module-name">Programming</span>
+                </div>
+                <div className="module-grid-card">
+                  <span className="module-step-badge blue-badge">02</span>
+                  <Database size={14} className="module-topic-icon blue-icon" />
+                  <span className="module-name">DBMS</span>
+                </div>
+                <div className="module-grid-card module-card-full">
+                  <span className="module-step-badge blue-badge">03</span>
+                  <Network size={14} className="module-topic-icon blue-icon" />
+                  <span className="module-name">OS & Networking</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <button 
+              type="button" 
+              className="compact-cta-btn service-btn"
+              onClick={() => handleStartRoadmap('service')}
+            >
+              <span>Explore Service Roadmap</span>
+              <ArrowRight size={15} />
             </button>
           </div>
 
         </div>
-      </section>
 
-      {/* ── Two Learning Path Cards Section ── */}
-      <section className="guide-pathways-section" id="guide-pathways-section">
-        <div className="guide-page-container">
-          
-          <div className="guide-section-header">
-            <h2 className="guide-section-title">Select Your Career Trajectory</h2>
-            <p className="guide-section-desc">
-              Curated roadmaps designed by industry architects to match campus recruitment standards.
-            </p>
-          </div>
-
-          <div className="guide-cards-grid-layout">
-            
-            {/* CARD 1: Service Based Company Learning Path */}
-            <div className="guide-card-surface service-track-card">
-              <div className="card-top-header">
-                <span className="track-badge service-tag">IT SERVICES TRACK</span>
-                <h3 className="card-heading">
-                  Service Based Company <br />
-                  <span>Learning Path</span>
-                </h3>
-                <p className="card-summary">
-                  Kickstart your career in IT services & consulting with a strong foundation in core software engineering principles.
-                </p>
-              </div>
-
-              {/* Modules Row (3 Modules) */}
-              <div className="card-modules-container">
-                <span className="modules-label">CORE CURRICULUM MODULES</span>
-                <div className="modules-pill-row">
-                  {/* Programming */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <ProgrammingIcon />
-                    </div>
-                    <span className="chip-title">Programming</span>
-                  </div>
-
-                  {/* DBMS */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <DbmsIcon />
-                    </div>
-                    <span className="chip-title">DBMS</span>
-                  </div>
-
-                  {/* OS & Networking */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <OsNetworkingIcon />
-                    </div>
-                    <span className="chip-title">OS & Networking</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card Footer Actions */}
-              <div className="card-bottom-action">
-                <button 
-                  className="card-cta-btn" 
-                  onClick={() => handleNavigateToCourse('service')}
-                >
-                  <span>Go to Course</span>
-                  <ArrowRight size={15} />
-                </button>
-                <div className="card-roles-ribbon">
-                  <CheckCircle2 size={14} className="green-check" />
-                  <span>Target Roles: IT Consultant, Analyst, Support Engineer & more</span>
-                </div>
-              </div>
-            </div>
-
-            {/* CARD 2: Product Based Company Learning Path */}
-            <div className="guide-card-surface product-track-card">
-              <div className="card-top-header">
-                <span className="track-badge product-tag">HIGH IMPACT TRACK</span>
-                <h3 className="card-heading">
-                  Product Based Company <br />
-                  <span>Learning Path</span>
-                </h3>
-                <p className="card-summary">
-                  Master the skills to build world-class products, scalable backend systems, and crack tier-1 product tech interviews.
-                </p>
-              </div>
-
-              {/* Modules Row (5 Modules) */}
-              <div className="card-modules-container">
-                <span className="modules-label">CORE CURRICULUM MODULES</span>
-                <div className="modules-pill-row product-pill-row">
-                  {/* DSA */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <DsaIcon />
-                    </div>
-                    <span className="chip-title">DSA</span>
-                  </div>
-
-                  {/* Development */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <DevelopmentIcon />
-                    </div>
-                    <span className="chip-title">Development</span>
-                  </div>
-
-                  {/* System Design */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <SystemDesignIcon />
-                    </div>
-                    <span className="chip-title">System Design</span>
-                  </div>
-
-                  {/* OS & Networking */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <OsNetworkingIcon />
-                    </div>
-                    <span className="chip-title">OS & Networking</span>
-                  </div>
-
-                  {/* Version Control */}
-                  <div className="module-chip">
-                    <div className="chip-icon">
-                      <VersionControlIcon />
-                    </div>
-                    <span className="chip-title">Version Control</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card Footer Actions */}
-              <div className="card-bottom-action">
-                <button 
-                  className="card-cta-btn" 
-                  onClick={() => handleNavigateToCourse('product')}
-                >
-                  <span>Go to Course</span>
-                  <ArrowRight size={15} />
-                </button>
-                <div className="card-roles-ribbon">
-                  <CheckCircle2 size={14} className="green-check" />
-                  <span>Target Roles: Software Engineer, Full Stack Dev, Architect & more</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
+      </div>
     </div>
   );
 };
