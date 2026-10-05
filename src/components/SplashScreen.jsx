@@ -101,22 +101,11 @@ const SplashScreen = ({ onFinish }) => {
           
           {/* Header Annotation */}
           <div className="splash-sheet-topbar">
-            <span className="splash-badge-scribble splash-badge-revamped">
-              <span className="scribble-dot"></span>
-              CORE_V2 // 2026
-            </span>
             <span className="splash-stamp-date">OFFICIAL RELEASE</span>
           </div>
 
           {/* ── PRIORITY 'WE GOT REVAMPED' HERO STAGE ── */}
           <div className="splash-revamped-hero-stage">
-            
-            <div className="splash-eyebrow-pill animate-pop-in">
-              <span className="eyebrow-sparkle">✦</span>
-              <span>MAJOR PLATFORM OVERHAUL</span>
-              <span className="eyebrow-sparkle">✦</span>
-            </div>
-
             {/* Giant Prioritized Headline with Highlighted REVAMPED */}
             <h1 className="splash-priority-headline animate-headline-slam">
               <span className="splash-we-got">WE GOT</span>
@@ -130,20 +119,6 @@ const SplashScreen = ({ onFinish }) => {
                 <span className="splash-highlight-star star-br">✦</span>
               </span>
             </h1>
-
-            {/* Subnote with handwritten arrow */}
-            <div className="splash-revamped-subnote animate-subnote-fade">
-              <span className="subnote-arrow">↳</span>
-              <span className="subnote-text">Next-Gen AI Compilers • Modern UI • Real-time Labs</span>
-            </div>
-
-            {/* Funky Stickers Row */}
-            <div className="splash-stickers-row">
-              <span className="splash-funky-sticker sticker-highlight-revamped">★ 100% REVAMPED</span>
-              <span className="splash-funky-sticker sticker-orange">AI COMPILERS</span>
-              <span className="splash-funky-sticker sticker-dark">CAMPUS ECOSYSTEM</span>
-            </div>
-
           </div>
 
           {/* ── BOTTOM PROGRESS & SCRATCHPAD METER ── */}

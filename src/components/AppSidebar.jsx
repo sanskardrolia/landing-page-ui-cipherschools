@@ -115,11 +115,11 @@ const NAV_ITEMS = [
     label: 'Compiler', 
     badge: 'FREE',
     Icon: CompilerIcon, 
-    targetSection: 'student-section',
+    path: '/compiler',
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Cloud Online Compiler',
-    cardDesc: 'Instant zero-setup in-browser code editor supporting 35+ languages with live input/output console.',
-    cardTags: ['35+ Languages', 'Instant Run', 'I/O Console']
+    cardDesc: 'Instant zero-setup in-browser code editor supporting 5+ core languages with live input/output console and built-in whiteboard.',
+    cardTags: ['5+ Languages', 'Instant Run', 'Whiteboard Mode']
   },
   { 
     id: 'reward', 
@@ -211,6 +211,8 @@ const AppSidebar = () => {
       setActiveId('feedback');
     } else if (location.pathname === '/resume') {
       setActiveId('resume');
+    } else if (location.pathname === '/compiler') {
+      setActiveId('compiler');
     }
   }, [location.pathname]);
 

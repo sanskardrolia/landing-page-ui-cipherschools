@@ -9,6 +9,7 @@ import GuideMePage from './pages/GuideMePage';
 import PremiumPage from './pages/PremiumPage';
 import FeedbackPage from './pages/FeedbackPage';
 import ResumePage from './pages/ResumePage';
+import CompilerPage from './pages/CompilerPage';
 import BackToTop from './components/BackToTop';
 import AppSidebar from './components/AppSidebar';
 import SplashScreen from './components/SplashScreen';
@@ -23,7 +24,7 @@ function App() {
   const isLoginPage = location.pathname === '/login';
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume') return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/compiler') return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -75,6 +76,7 @@ function App() {
             <Route path="/guide" element={<GuideMePage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/resume" element={<ResumePage />} />
+            <Route path="/compiler" element={<CompilerPage />} />
             <Route path="/*" element={<MainPage />} />
           </Routes>
         </main>
