@@ -285,6 +285,23 @@ const CompilerPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Floating CTA & Shortcut dock visibility on scroll
+  const [showFloatingCta, setShowFloatingCta] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Appear when user scrolls down past hero action buttons (~280px)
+      if (window.scrollY > 280) {
+        setShowFloatingCta(true);
+      } else {
+        setShowFloatingCta(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // ── SEO & Dynamic Head Metadata Management ──
   useEffect(() => {
     const prevTitle = document.title;
@@ -428,11 +445,13 @@ const CompilerPage = () => {
     };
   }, [currentLang.id, currentLang.name]);
 
-  // Keyboard shortcut listener (Ctrl/Cmd + Enter to Compile)
+  // Keyboard shortcut listener (Ctrl/Cmd + Enter to Open & Compile)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
+        setIsWhiteboardMode(false);
+        editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         handleCompile();
       }
     };
@@ -674,8 +693,7 @@ const CompilerPage = () => {
           <div className="compiler-header-text">
             <h1 className="compiler-main-title">
               <span className="compiler-title-line">
-                <span className="compiler-title-black-italic">CODE, COMPILE</span>{' '}
-                <span className="compiler-title-orange-italic">& DRY RUN</span>
+                <span className="compiler-title-black-italic">CODE, COMPILE & REPEAT</span>
               </span>
               <span className="compiler-title-line">
                 <span className="compiler-title-black-italic">IN</span>{' '}
@@ -700,7 +718,7 @@ const CompilerPage = () => {
 
               <div className="hero-keyboard-hint">
                 <span className="kbd-shortcut-pill">
-                  <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to Run
+                  <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to open
                 </span>
               </div>
             </div>
@@ -765,12 +783,6 @@ const CompilerPage = () => {
             {/* Top Window Header */}
             <div className="compiler-top-header">
               <div className="header-brand-group">
-                <img 
-                  src="/cipherschools-logo.png" 
-                  alt="CipherSchools Logo" 
-                  className="cs-header-logo-img" 
-                />
-                <span className="brand-text">CipherSchools</span>
                 <span className="compiler-type-text">{currentLang.compilerTitle}</span>
               </div>
 
@@ -1366,6 +1378,40 @@ const CompilerPage = () => {
           </div>
         </div>
       </section>
+
+      {/* ── Floating CTA & Keyboard Shortcut Dock (When Scrolled) ── */}
+      <div 
+        className={`compiler-floating-cta-dock ${showFloatingCta ? 'visible' : ''}`}
+        aria-hidden={!showFloatingCta}
+      >
+        <div className="floating-dock-card">
+          <button
+            type="button"
+            className="floating-btn-primary"
+            onClick={() => {
+              setIsWhiteboardMode(false);
+              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            aria-label="Open Code Editor"
+          >
+            <span>Open Editor</span>
+            <ChevronRight size={15} />
+          </button>
+
+          <div 
+            className="floating-keyboard-hint"
+            onClick={() => {
+              setIsWhiteboardMode(false);
+              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            title="Click or press Ctrl + Enter to open"
+          >
+            <span className="kbd-shortcut-pill">
+              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to open
+            </span>
+          </div>
+        </div>
+      </div>
 
     </div>
   );

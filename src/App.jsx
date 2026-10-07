@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
@@ -7,7 +7,7 @@ import LoginPage from './pages/LoginPage';
 import CoursesPage from './pages/CoursesPage';
 import GuideMePage from './pages/GuideMePage';
 import PremiumPage from './pages/PremiumPage';
-import FeedbackPage from './pages/FeedbackPage';
+import FeedbackDrawer from './components/FeedbackDrawer';
 import ResumePage from './pages/ResumePage';
 import CompilerPage from './pages/CompilerPage';
 import BackToTop from './components/BackToTop';
@@ -18,7 +18,9 @@ import './App.css';
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showSplash, setShowSplash] = useState(true);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   useSmoothScroll();
 
   const isLoginPage = location.pathname === '/login';
@@ -57,6 +59,26 @@ function App() {
     return () => window.removeEventListener('replay-splash', handleReplay);
   }, []);
 
+  // Global Feedback Drawer event listeners
+  useEffect(() => {
+    const handleOpenFeedback = () => setIsFeedbackOpen(true);
+    const handleCloseFeedback = () => setIsFeedbackOpen(false);
+    window.addEventListener('open-feedback-drawer', handleOpenFeedback);
+    window.addEventListener('close-feedback-drawer', handleCloseFeedback);
+    return () => {
+      window.removeEventListener('open-feedback-drawer', handleOpenFeedback);
+      window.removeEventListener('close-feedback-drawer', handleCloseFeedback);
+    };
+  }, []);
+
+  // Handle direct navigation to /feedback
+  useEffect(() => {
+    if (location.pathname === '/feedback') {
+      setIsFeedbackOpen(true);
+      navigate('/', { replace: true });
+    }
+  }, [location.pathname, navigate]);
+
   if (isLoginPage) {
     return <LoginPage />;
   }
@@ -64,6 +86,7 @@ function App() {
   return (
     <>
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
+      <FeedbackDrawer isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
       <AppSidebar />
       <div className="app-container with-sidebar">
         <Navbar />
@@ -74,7 +97,6 @@ function App() {
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/guide-me" element={<GuideMePage />} />
             <Route path="/guide" element={<GuideMePage />} />
-            <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/compiler" element={<CompilerPage />} />
             <Route path="/*" element={<MainPage />} />

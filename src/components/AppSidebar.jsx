@@ -216,6 +216,20 @@ const AppSidebar = () => {
     }
   }, [location.pathname]);
 
+  // Sync back to current route when feedback drawer closes
+  useEffect(() => {
+    const handleDrawerClose = () => {
+      if (location.pathname === '/') setActiveId('home');
+      else if (location.pathname === '/courses') setActiveId('courses');
+      else if (location.pathname === '/premium') setActiveId('premium');
+      else if (location.pathname === '/compiler') setActiveId('compiler');
+      else if (location.pathname === '/resume') setActiveId('resume');
+      else if (location.pathname === '/login') setActiveId('dashboard');
+    };
+    window.addEventListener('close-feedback-drawer', handleDrawerClose);
+    return () => window.removeEventListener('close-feedback-drawer', handleDrawerClose);
+  }, [location.pathname]);
+
   const handleItemClick = (item) => {
     setActiveId(item.id);
     if (item.id === 'home') {
@@ -224,6 +238,10 @@ const AppSidebar = () => {
       } else {
         navigate('/');
       }
+      return;
+    }
+    if (item.id === 'feedback') {
+      window.dispatchEvent(new CustomEvent('open-feedback-drawer'));
       return;
     }
     if (item.path) {
