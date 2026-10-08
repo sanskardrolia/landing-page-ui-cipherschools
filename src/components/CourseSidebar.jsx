@@ -28,6 +28,8 @@ const CourseSidebar = ({ activeItem = 'courses', setActiveItem }) => {
       navigate('/');
     } else if (item.id === 'courses') {
       navigate('/courses');
+    } else if (item.id === 'resume') {
+      navigate('/resume');
     } else if (item.id === 'feedback') {
       window.dispatchEvent(new CustomEvent('open-feedback-drawer'));
     } else if (setActiveItem) {

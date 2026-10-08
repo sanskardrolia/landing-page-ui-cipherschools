@@ -28,7 +28,8 @@ import {
   PenTool,
   Eraser,
   HelpCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  GraduationCap
 } from 'lucide-react';
 import './CompilerPage.css';
 
@@ -197,31 +198,31 @@ welcome();`,
 const FAQ_ITEMS = [
   {
     q: 'Why does CipherSchools Compiler include a built-in whiteboard?',
-    a: 'When practicing Data Structures and Algorithms (DSA) or solving coding interview questions, sketching logic (such as binary tree traversals, graph cycles, or two-pointer traces) is critical. Having a whiteboard directly alongside your editor eliminates window-switching to Excalidraw or physical paper.'
+    a: 'Sketch data structures, recursion trees, and pointer traces without tab switching.'
   },
   {
-    q: 'Can I provide custom inputs and test cases for programming problems?',
-    a: 'Yes! The dedicated Input pane lets you enter multi-line test cases (e.g. array sizes, test matrices, strings) before clicking Compile. The runtime seamlessly passes your input to your program across any language.'
+    q: 'Can I provide custom inputs and test cases?',
+    a: 'Yes, enter multi-line test inputs in the input pane before compiling.'
   },
   {
     q: 'Is the CipherSchools Online Compiler free to use?',
-    a: 'Yes, 100% free with unlimited runs, zero ads, and no sign-up or installation required. You can jump in and execute code in seconds.'
+    a: '100% free with unlimited runs, zero ads, and no sign-up required.'
   },
   {
     q: 'Which compiler and runtime versions are supported?',
-    a: 'We support modern enterprise-grade toolchains: GCC 13.2 (C17 & C++20), OpenJDK 21 LTS, Python 3.12.2, and Node.js 20 LTS.'
+    a: 'GCC 13.2 (C & C++), OpenJDK 21 LTS, Python 3.12, and Node.js 20 LTS.'
   },
   {
     q: 'Can I download my source code files?',
-    a: 'Yes! Click the Download icon in the editor top toolbar to instantly export your code (e.g. main.cpp, main.py) straight to your computer.'
+    a: 'Yes, 1-click export downloads files with original extensions (.cpp, .py, etc.).'
   },
   {
-    q: 'How does the built-in whiteboard help during technical interview preparation?',
-    a: 'Top tech company interviews (e.g. Google, Amazon, Microsoft) require candidates to explain their thought process before writing code. The built-in whiteboard allows you to draw recursion trees, dynamic programming state transitions, graph adjacency lists, and pointer movements alongside your code in real time.'
+    q: 'How does the whiteboard help during technical interview preparation?',
+    a: 'Diagram logic, dry-runs, and algorithm steps in real time before coding.'
   },
   {
-    q: 'Can I use keyboard shortcuts in the CipherSchools Code Editor?',
-    a: 'Yes! You can press Ctrl + Enter (or Cmd + Enter on macOS) to instantly compile and execute your code without having to click the button.'
+    q: 'Can I use keyboard shortcuts?',
+    a: 'Press Ctrl + Enter (or Cmd + Enter on macOS) to instantly compile.'
   }
 ];
 
@@ -671,7 +672,243 @@ const CompilerPage = () => {
     showToast('Whiteboard drawing saved as PNG');
   };
 
-  const currentCodeLines = (codes[selectedLangId] || '').split('\n');
+  // ── Auto Typing, Simulated Cursor & Compile Simulation ──
+  const [isCompilerInView, setIsCompilerInView] = useState(false);
+  const [animationPhase, setAnimationPhase] = useState('idle'); // 'idle' | 'delay' | 'typing' | 'cursor_moving' | 'cursor_hovering' | 'cursor_clicking' | 'compiling' | 'output'
+  const [displayedCode, setDisplayedCode] = useState('');
+  const [typingIndex, setTypingIndex] = useState(0);
+  const [cursorTargeted, setCursorTargeted] = useState(false);
+
+  // ── "Run your buggy code" Headline Animated Strikethrough & Removal ──
+  const [buggyPhase, setBuggyPhase] = useState('visible'); // 'visible' | 'striking' | 'removed'
+
+  useEffect(() => {
+    if (isCompilerInView) {
+      setBuggyPhase('visible');
+      const timer1 = setTimeout(() => {
+        setBuggyPhase('striking');
+      }, 700);
+
+      const timer2 = setTimeout(() => {
+        setBuggyPhase('removed');
+      }, 950);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
+    } else {
+      setBuggyPhase('visible');
+    }
+  }, [isCompilerInView]);
+
+  const handleReplayBuggyAnimation = () => {
+    setBuggyPhase('visible');
+    setTimeout(() => setBuggyPhase('striking'), 300);
+    setTimeout(() => setBuggyPhase('removed'), 550);
+  };
+
+  const targetCode = currentLang.code;
+
+  // Active scroll check: animation is strictly ONLY functional when user scrolls to compiler section
+  useEffect(() => {
+    const handleScrollCheck = () => {
+      if (!editorRef.current) return;
+      const rect = editorRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      // Section is considered in view if the top has scrolled into viewport and user is not at hero top
+      const isScrolledPastHero = window.scrollY > 90;
+      const isVisibleInViewport = rect.top < windowHeight * 0.75 && rect.bottom > windowHeight * 0.2;
+
+      if (isScrolledPastHero && isVisibleInViewport) {
+        setIsCompilerInView(true);
+      } else if (!isScrolledPastHero || rect.top > windowHeight * 0.88) {
+        // Reset when user scrolls back to hero top or away
+        setIsCompilerInView(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollCheck, { passive: true });
+    handleScrollCheck();
+
+    return () => window.removeEventListener('scroll', handleScrollCheck);
+  }, []);
+
+  // When compiler scrolls into view or language changes: start with deliberate delay
+  useEffect(() => {
+    if (isCompilerInView) {
+      setDisplayedCode('');
+      setTypingIndex(0);
+      setCursorTargeted(false);
+      setAnimationPhase('delay');
+    } else {
+      // Scrolled away / at hero: pause animation and stay idle
+      setDisplayedCode('');
+      setTypingIndex(0);
+      setCursorTargeted(false);
+      setAnimationPhase('idle');
+    }
+  }, [isCompilerInView, selectedLangId]);
+
+  useEffect(() => {
+    if (!isCompilerInView && animationPhase !== 'idle') return;
+
+    let timer;
+    if (animationPhase === 'delay') {
+      // 850ms intentional delay after scrolling into view before typing starts
+      timer = setTimeout(() => {
+        setAnimationPhase('typing');
+      }, 850);
+    } else if (animationPhase === 'typing') {
+      if (typingIndex < targetCode.length) {
+        // Human-paced typing: 1 character at a time at a deliberate, readable pace
+        const currentChar = targetCode[typingIndex];
+        const charDelay = currentChar === '\n' ? 55 : (currentChar === ' ' ? 22 : 36);
+        timer = setTimeout(() => {
+          const nextIndex = typingIndex + 1;
+          setDisplayedCode(targetCode.slice(0, nextIndex));
+          setTypingIndex(nextIndex);
+        }, charDelay);
+      } else {
+        // Typing done! Pause for 600ms, then cursor begins slow deliberate glide
+        timer = setTimeout(() => {
+          setCursorTargeted(false);
+          setAnimationPhase('cursor_moving');
+        }, 600);
+      }
+    } else if (animationPhase === 'cursor_moving') {
+      // Small tick so cursor starts at code position before gliding
+      const glideTick = setTimeout(() => {
+        setCursorTargeted(true);
+      }, 60);
+
+      // Slower, smooth glide: 1.55s across editor to Compile button
+      timer = setTimeout(() => {
+        setAnimationPhase('cursor_hovering');
+      }, 1550);
+
+      return () => {
+        clearTimeout(glideTick);
+        clearTimeout(timer);
+      };
+    } else if (animationPhase === 'cursor_hovering') {
+      // Hover over Compile button for 420ms with active glow
+      timer = setTimeout(() => {
+        setAnimationPhase('cursor_clicking');
+      }, 420);
+    } else if (animationPhase === 'cursor_clicking') {
+      // Cursor click pulse & button press for 380ms -> then start compiling!
+      timer = setTimeout(() => {
+        setAnimationPhase('compiling');
+      }, 380);
+    } else if (animationPhase === 'compiling') {
+      // Compiling animation for 1.1s -> then show output
+      timer = setTimeout(() => {
+        setAnimationPhase('output');
+      }, 1100);
+    } else if (animationPhase === 'output') {
+      // Show output for 8.5 seconds, then smoothly restart if still in view
+      timer = setTimeout(() => {
+        if (isCompilerInView) {
+          setDisplayedCode('');
+          setTypingIndex(0);
+          setCursorTargeted(false);
+          setAnimationPhase('delay');
+        }
+      }, 8500);
+    }
+
+    return () => clearTimeout(timer);
+  }, [animationPhase, typingIndex, targetCode, isCompilerInView]);
+
+  const handleManualTriggerCompile = () => {
+    setDisplayedCode(targetCode);
+    setTypingIndex(targetCode.length);
+    setCursorTargeted(true);
+    setAnimationPhase('cursor_clicking');
+  };
+
+  const handleReplayCompiler = () => {
+    setDisplayedCode('');
+    setTypingIndex(0);
+    setCursorTargeted(false);
+    setAnimationPhase('delay');
+  };
+
+  const currentCodeLines = (displayedCode || (animationPhase === 'idle' ? targetCode : '') || '//').split('\n');
+
+  // ── Whiteboard Cursive Drawing Animation State ──
+  const whiteboardSectionRef = useRef(null);
+  const [isWhiteboardInView, setIsWhiteboardInView] = useState(false);
+  const [wbPhase, setWbPhase] = useState('idle'); // 'idle' | 'delay' | 'drawing_text' | 'drawing_cta' | 'complete'
+  const [wbText, setWbText] = useState('');
+  const targetWbText = 'We got you';
+
+  // Active scroll check for Whiteboard section: strictly only functional when scrolled to that section
+  useEffect(() => {
+    const handleWbScrollCheck = () => {
+      if (!whiteboardSectionRef.current) return;
+      const rect = whiteboardSectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      const isVisibleInViewport = rect.top < windowHeight * 0.75 && rect.bottom > windowHeight * 0.2;
+
+      if (isVisibleInViewport) {
+        setIsWhiteboardInView(true);
+      } else if (rect.top > windowHeight * 0.9) {
+        setIsWhiteboardInView(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleWbScrollCheck, { passive: true });
+    handleWbScrollCheck();
+
+    return () => window.removeEventListener('scroll', handleWbScrollCheck);
+  }, []);
+
+  useEffect(() => {
+    if (isWhiteboardInView) {
+      setWbText('');
+      setWbPhase('delay');
+    } else {
+      setWbText('');
+      setWbPhase('idle');
+    }
+  }, [isWhiteboardInView]);
+
+  useEffect(() => {
+    let timer;
+    if (wbPhase === 'delay') {
+      // 400ms delay after scroll into view before cursive drawing starts
+      timer = setTimeout(() => {
+        setWbPhase('drawing_text');
+      }, 400);
+    } else if (wbPhase === 'drawing_text') {
+      if (wbText.length < targetWbText.length) {
+        timer = setTimeout(() => {
+          setWbText(targetWbText.slice(0, wbText.length + 1));
+        }, 90);
+      } else {
+        // Text drawing done! Reveal whiteboard button
+        timer = setTimeout(() => {
+          setWbPhase('drawing_cta');
+        }, 300);
+      }
+    } else if (wbPhase === 'drawing_cta') {
+      timer = setTimeout(() => {
+        setWbPhase('complete');
+      }, 400);
+    }
+
+    return () => clearTimeout(timer);
+  }, [wbPhase, wbText, targetWbText]);
+
+  const handleReplayWhiteboard = () => {
+    setWbText('');
+    setWbPhase('drawing_text');
+    showToast('Replaying whiteboard drawing...');
+  };
 
   return (
     <div className="compiler-page-root">
@@ -708,8 +945,7 @@ const CompilerPage = () => {
                 type="button"
                 className="hero-btn-primary"
                 onClick={() => {
-                  setIsWhiteboardMode(false);
-                  editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
               >
                 <span>Open Editor</span>
@@ -757,28 +993,43 @@ const CompilerPage = () => {
       {/* ─────────────────────────────────────────────────────────────
          INTERACTIVE COMPILER & WHITEBOARD INTERFACE (Screenshots 1 & 2)
          ───────────────────────────────────────────────────────────── */}
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 1: CIPHERSCHOOLS COMPILER MOCKUP (NON-ACCESSIBLE)
+         ───────────────────────────────────────────────────────────── */}
       <section className="compiler-sandbox-section" ref={editorRef}>
         <div className="sandbox-container">
 
-          {/* Mobile Top Segmented Control: [ Compiler ] [ Whiteboard ] (Matches mobile mock) */}
-          <div className="mobile-mode-toggle-bar">
-            <button
-              type="button"
-              className={`mobile-segmented-btn ${!isWhiteboardMode ? 'active' : ''}`}
-              onClick={() => setIsWhiteboardMode(false)}
+          <div className="section-head-center mockup-head-intro">
+            <h2 
+              className="section-title section-title-animated-buggy"
+              onClick={handleReplayBuggyAnimation}
+              title="Click to replay animation"
             >
-              Compiler
-            </button>
-            <button
-              type="button"
-              className={`mobile-segmented-btn ${isWhiteboardMode ? 'active' : ''}`}
-              onClick={() => setIsWhiteboardMode(true)}
-            >
-              Whiteboard
-            </button>
+              <span>Run Your</span>
+              <span className={`buggy-word-wrapper ${buggyPhase}`}>
+                <span className="buggy-space-prefix">&nbsp;</span>
+                <span className="buggy-word-inner">
+                  <span className="buggy-word-text">buggy</span>
+                  <span className="buggy-strikethrough-line" />
+                </span>
+              </span>
+              <span>&nbsp;Code with </span>
+              <span className="headline-gradient">Zero Setup</span>
+            </h2>
+
+            {/* Minimal "Did You Know?" Compiler Definition Strip */}
+            <div className="compiler-did-you-know-strip">
+              <div className="dyk-badge">
+                <Sparkles size={12} className="dyk-icon" />
+                <span>DID YOU KNOW?</span>
+              </div>
+              <p className="dyk-text">
+                A compiler is the ultimate bridge between human intellect and pure physics—transforming elegant lines of code into lightning-fast binary symphonies that whisper directly to the silicon of modern machines.
+              </p>
+            </div>
           </div>
 
-          <div className="compiler-window-frame">
+          <div className="compiler-window-frame mockup-frame-non-accessible">
             
             {/* Top Window Header */}
             <div className="compiler-top-header">
@@ -792,11 +1043,12 @@ const CompilerPage = () => {
                   className="header-icon-btn" 
                   title="Toggle Light Theme"
                   aria-label="Theme toggle"
+                  tabIndex={-1}
                 >
                   <Sun size={15} />
                 </button>
 
-                <div className="header-avatar-circle" title="User Profile">
+                <div className="header-avatar-circle" title="User Profile" tabIndex={-1}>
                   <User size={15} />
                 </div>
               </div>
@@ -826,17 +1078,10 @@ const CompilerPage = () => {
                   })}
                 </div>
 
-                {/* Bottom Rail: Whiteboard Easel Toggle Icon (Screenshot 1 & 2) */}
                 <div className="rail-bottom-tools">
-                  <button
-                    type="button"
-                    className={`rail-tool-btn ${isWhiteboardMode ? 'active-whiteboard' : ''}`}
-                    onClick={() => setIsWhiteboardMode(prev => !prev)}
-                    title={isWhiteboardMode ? "Switch to Terminal Mode" : "Switch to Whiteboard Mode"}
-                    aria-label="Toggle Whiteboard Canvas"
-                  >
-                    <WhiteboardEaselIcon size={20} />
-                  </button>
+                  <div className="rail-tool-btn static-tool" title="Compiler Core Active">
+                    <Terminal size={18} />
+                  </div>
                 </div>
               </aside>
 
@@ -846,202 +1091,101 @@ const CompilerPage = () => {
                 {/* Editor File Tabs & Action Bar */}
                 <div className="editor-tabs-bar">
                   <div className="tabs-cluster">
-                    <button 
-                      type="button" 
-                      className={`code-tab-item ${activeTab === 'main' ? 'active' : ''}`}
-                      onClick={() => setActiveTab('main')}
-                    >
+                    <div className="code-tab-item active">
                       <span className="tab-dot desktop-only"></span>
                       <span>{currentLang.file.toLowerCase()}</span>
                       <span className="tab-bullet-mobile">•</span>
                       <span className="tab-asterisk desktop-only">*</span>
-                    </button>
+                    </div>
 
-                    {extraTabs.map((tabName) => (
-                      <button 
-                        key={tabName} 
-                        type="button" 
-                        className={`code-tab-item ${activeTab === tabName ? 'active' : ''}`}
-                        onClick={() => setActiveTab(tabName)}
-                      >
-                        <span>{tabName}</span>
-                      </button>
-                    ))}
+                    <div className="code-tab-item secondary-tab desktop-only">
+                      <span>solution.h</span>
+                    </div>
 
-                    <button 
-                      type="button" 
-                      className="add-tab-btn" 
-                      onClick={handleAddTab}
-                      title="Add File"
-                      aria-label="Add file"
-                    >
+                    <span className="add-tab-btn static-btn desktop-only" title="Add File">
                       +
-                    </button>
+                    </span>
                   </div>
 
-                  {/* Desktop Action Cluster (Hidden on mobile) */}
+                  {/* Desktop Action Cluster */}
                   <div className="editor-actions-cluster desktop-only">
-                    <button type="button" className="btn-editor-tool files-btn">
+                    <button type="button" className="btn-editor-tool files-btn" tabIndex={-1}>
                       Files
                     </button>
                     <button 
                       type="button" 
                       className="btn-editor-tool icon-tool" 
-                      onClick={handleResetCode}
-                      title="Reset Code"
-                      aria-label="Reset Code"
+                      onClick={handleReplayCompiler}
+                      title="Replay Code Writing"
                     >
                       <RotateCcw size={14} />
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn-editor-tool icon-tool" 
-                      onClick={handleShare}
-                      title="Share Code Link"
-                      aria-label="Share Code"
-                    >
+                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Share">
                       <Share2 size={14} />
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn-editor-tool icon-tool" 
-                      onClick={() => showToast('Code saved to Cloud Workspace')}
-                      title="Save Code"
-                      aria-label="Save Code"
-                    >
+                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Save">
                       <Bookmark size={14} />
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn-editor-tool icon-tool" 
-                      onClick={handleDownloadCode}
-                      title="Download File"
-                      aria-label="Download File"
-                    >
+                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Download">
                       <Download size={14} />
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn-editor-tool icon-tool" 
-                      onClick={() => showToast('Fullscreen mode toggled')}
-                      title="Fullscreen"
-                      aria-label="Fullscreen"
-                    >
+                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Fullscreen">
                       <Maximize2 size={14} />
                     </button>
 
-                    {/* Prominent Compile Button */}
-                    <button 
-                      type="button" 
-                      className="btn-compile-orange"
-                      onClick={handleCompile}
-                      disabled={isCompiling}
-                    >
-                      {isCompiling ? (
-                        <>
-                          <span className="spinner-dot"></span>
-                          <span>Compiling...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Play size={13} fill="currentColor" />
-                          <span>Compile</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+                    {/* Animated Compile Button with Simulated Cursor Target */}
+                    <div className="compile-btn-wrap">
+                      <button 
+                        type="button" 
+                        className={`btn-compile-orange ${animationPhase === 'cursor_clicking' ? 'simulated-pressed' : ''} ${(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) ? 'target-glow' : ''}`}
+                        onClick={handleManualTriggerCompile}
+                        title="Click to Compile & Run"
+                      >
+                        {animationPhase === 'compiling' ? (
+                          <>
+                            <span className="spinner-dot"></span>
+                            <span>Compiling...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Play size={13} fill="currentColor" />
+                            <span>Compile</span>
+                          </>
+                        )}
+                      </button>
 
-                  {/* Mobile Dots Action Button & Dropdown Menu */}
-                  <div className="mobile-dots-action-wrap" ref={mobileActionsRef}>
-                    <button
-                      type="button"
-                      className="mobile-dots-btn"
-                      onClick={() => setMobileActionsOpen(prev => !prev)}
-                      aria-label="Editor actions"
-                      title="More options"
-                    >
-                      <MoreHorizontal size={18} color="#FFFFFF" />
-                    </button>
-
-                    {mobileActionsOpen && (
-                      <div className="mobile-actions-dropdown animate-fade-in">
-                        <button
-                          type="button"
-                          className="mobile-action-dropdown-item run-action"
-                          onClick={() => {
-                            handleCompile();
-                            setMobileActionsOpen(false);
-                          }}
-                        >
-                          <Play size={14} fill="currentColor" />
-                          <span>Compile & Run</span>
-                        </button>
-
-                        <div className="dropdown-divider"></div>
-
-                        <div className="dropdown-lang-section">
-                          <span className="dropdown-section-title">LANGUAGES</span>
-                          <div className="dropdown-lang-chips">
-                            {LANGUAGES.map((l) => (
-                              <button
-                                key={l.id}
-                                type="button"
-                                className={`dropdown-chip-btn ${selectedLangId === l.id ? 'active' : ''}`}
-                                onClick={() => {
-                                  handleSelectLang(l.id);
-                                  setMobileActionsOpen(false);
-                                }}
-                              >
-                                {l.name}
-                              </button>
-                            ))}
-                          </div>
+                      {(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) && (
+                        <div className="compile-highlight-pointer-tooltip animate-fade-in">
+                          <span>Click to Compile</span>
                         </div>
+                      )}
 
-                        <div className="dropdown-divider"></div>
-
-                        <button
-                          type="button"
-                          className="mobile-action-dropdown-item"
-                          onClick={() => {
-                            handleResetCode();
-                            setMobileActionsOpen(false);
-                          }}
+                      {/* Simulated Mouse Cursor Animation directly on Compile Button */}
+                      {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
+                        <div 
+                          className={`simulated-mockup-cursor ${animationPhase === 'cursor_clicking' ? 'clicking' : ''} ${(cursorTargeted || animationPhase === 'cursor_hovering') ? 'at-button' : 'at-origin'}`}
+                          aria-hidden="true"
                         >
-                          <RotateCcw size={14} />
-                          <span>Reset Code</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className="mobile-action-dropdown-item"
-                          onClick={() => {
-                            handleDownloadCode();
-                            setMobileActionsOpen(false);
-                          }}
-                        >
-                          <Download size={14} />
-                          <span>Download Source</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className="mobile-action-dropdown-item"
-                          onClick={() => {
-                            handleShare();
-                            setMobileActionsOpen(false);
-                          }}
-                        >
-                          <Share2 size={14} />
-                          <span>Share Code</span>
-                        </button>
-                      </div>
-                    )}
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="cursor-svg-icon">
+                            <path 
+                              d="M3.5 2.5L10.5 20.5L14 13.5L21 10L3.5 2.5Z" 
+                              fill="#0F172A" 
+                              stroke="#FFFFFF" 
+                              strokeWidth="1.5" 
+                              strokeLinejoin="round" 
+                            />
+                          </svg>
+                          {animationPhase === 'cursor_clicking' && (
+                            <span className="cursor-click-wave" />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Code Area with Line Numbers & Editable Code */}
-                <div className="editor-textarea-wrap">
+                {/* Code Area with Line Numbers (Typing Simulation) */}
+                <div className="editor-textarea-wrap mockup-non-accessible-area">
                   <div className="line-numbers-gutter">
                     {currentCodeLines.map((_, i) => (
                       <span key={i} className="line-num">{i + 1}</span>
@@ -1050,18 +1194,11 @@ const CompilerPage = () => {
                   
                   <textarea
                     className="code-editable-area"
-                    value={codes[selectedLangId] || ''}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setCodes(prev => ({
-                        ...prev,
-                        [selectedLangId]: val
-                      }));
-                    }}
+                    value={animationPhase === 'typing' ? (displayedCode + ' ▍') : (displayedCode || currentLang.code)}
+                    readOnly={true}
+                    tabIndex={-1}
                     spellCheck="false"
-                    autoCapitalize="off"
-                    autoComplete="off"
-                    autoCorrect="off"
+                    aria-label="Non-interactive code mockup with typing animation"
                   />
                 </div>
 
@@ -1075,225 +1212,548 @@ const CompilerPage = () => {
 
               </div>
 
-              {/* Right Side Pane: Split Input/Output OR Whiteboard Canvas */}
-              {!isWhiteboardMode ? (
-                /* Mode 1: Split Input & Output (Screenshot 1) */
-                <div className="editor-terminal-pane">
-                  
-                  {/* Mobile Middle Segmented Control: [ Input ] [ Output ] (Matches mobile mock) */}
-                  <div className="mobile-console-toggle-bar">
-                    <button
-                      type="button"
-                      className={`mobile-segmented-btn ${mobileConsoleTab === 'input' ? 'active' : ''}`}
-                      onClick={() => setMobileConsoleTab('input')}
-                    >
-                      Input
-                    </button>
-                    <button
-                      type="button"
-                      className={`mobile-segmented-btn ${mobileConsoleTab === 'output' ? 'active' : ''}`}
-                      onClick={() => setMobileConsoleTab('output')}
-                    >
-                      Output
-                    </button>
+              {/* Right Side Pane: Split Input & Output */}
+              <div className="editor-terminal-pane mockup-terminal-pane">
+                
+                {/* Top: Input Pane */}
+                <div className="terminal-subpanel input-subpanel">
+                  <div className="subpanel-header">
+                    <span className="panel-title-text">Input</span>
                   </div>
-
-                  {/* Top: Input Pane */}
-                  <div className={`terminal-subpanel input-subpanel ${mobileConsoleTab === 'input' ? 'mobile-visible' : 'mobile-hidden'}`}>
-                    <div className="subpanel-header">
-                      <span className="panel-title-text">
-                        Input <span className="input-hint-sub">[Please input, before you compile]</span>
-                      </span>
+                  <div className="input-editor-box mockup-non-accessible-area">
+                    <div className="input-gutter">
+                      <span className="gutter-num">1</span>
                     </div>
-                    <div className="input-editor-box">
-                      <div className="input-gutter">
-                        <span className="gutter-num">1</span>
-                      </div>
-                      <textarea
-                        className="input-textarea"
-                        placeholder="Enter custom input / test cases here..."
-                        value={inputVal}
-                        onChange={(e) => setInputVal(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Split Divider (Desktop only) */}
-                  <div className="terminal-split-handle desktop-only"></div>
-
-                  {/* Bottom: Output Pane */}
-                  <div className={`terminal-subpanel output-subpanel ${mobileConsoleTab === 'output' ? 'mobile-visible' : 'mobile-hidden'}`}>
-                    <div className="subpanel-header">
-                      <span className="panel-title-text">Output</span>
-                      <button 
-                        type="button" 
-                        className="clear-output-link"
-                        onClick={() => setOutputVal('')}
-                      >
-                        Clear
-                      </button>
-                    </div>
-                    <div className="output-console-box">
-                      <pre className="output-pre-text" aria-live="polite" aria-atomic="true">{outputVal}</pre>
-                    </div>
-                  </div>
-
-                </div>
-              ) : (
-                /* Mode 2: Whiteboard Scratchpad (Screenshot 2) */
-                <div className="editor-whiteboard-pane animate-fade-in">
-                  
-                  {/* Canvas Viewport */}
-                  <div className="whiteboard-canvas-wrap">
-                    <canvas
-                      ref={canvasRef}
-                      className={`whiteboard-canvas ${drawTool === 'hand' ? 'cursor-grab' : 'cursor-crosshair'}`}
-                      onMouseDown={startDrawing}
-                      onMouseMove={draw}
-                      onMouseUp={stopDrawing}
-                      onMouseLeave={stopDrawing}
-                      onTouchStart={startDrawing}
-                      onTouchMove={draw}
-                      onTouchEnd={stopDrawing}
+                    <textarea
+                      className="input-textarea"
+                      placeholder="Enter custom input / test cases here..."
+                      value={`5\n10 20 30 40 50`}
+                      readOnly={true}
+                      tabIndex={-1}
+                      aria-label="Non-interactive input mockup"
                     />
                   </div>
-
-                  {/* Bottom Whiteboard Toolbar (Exact Screenshot 2) */}
-                  <div className="whiteboard-bottom-toolbar">
-                    
-                    {/* Tool Selection */}
-                    <div className="toolbar-cluster tools-group">
-                      <button
-                        type="button"
-                        className={`wb-tool-btn ${drawTool === 'pen' ? 'active' : ''}`}
-                        onClick={() => setDrawTool('pen')}
-                        title="Pen Tool"
-                      >
-                        <PenTool size={15} />
-                      </button>
-                      <button
-                        type="button"
-                        className={`wb-tool-btn ${drawTool === 'eraser' ? 'active' : ''}`}
-                        onClick={() => setDrawTool('eraser')}
-                        title="Eraser"
-                      >
-                        <Eraser size={15} />
-                      </button>
-                      <button
-                        type="button"
-                        className={`wb-tool-btn ${drawTool === 'hand' ? 'active' : ''}`}
-                        onClick={() => setDrawTool('hand')}
-                        title="Hand Pan"
-                      >
-                        <Move size={15} />
-                      </button>
-                      <span className="toolbar-section-label">TOOLS</span>
-                    </div>
-
-                    <div className="toolbar-divider"></div>
-
-                    {/* Color Swatches */}
-                    <div className="toolbar-cluster colors-group">
-                      {[
-                        { color: '#1E293B', label: 'Black' },
-                        { color: '#3B82F6', label: 'Blue' },
-                        { color: '#10B981', label: 'Green' },
-                        { color: '#F97316', label: 'Orange' },
-                        { color: '#A855F7', label: 'Purple' }
-                      ].map((swatch) => (
-                        <button
-                          key={swatch.color}
-                          type="button"
-                          className={`wb-color-dot ${penColor === swatch.color && drawTool === 'pen' ? 'selected' : ''}`}
-                          style={{ backgroundColor: swatch.color }}
-                          onClick={() => {
-                            setPenColor(swatch.color);
-                            setDrawTool('pen');
-                          }}
-                          title={swatch.label}
-                        />
-                      ))}
-                    </div>
-
-                    <div className="toolbar-divider"></div>
-
-                    {/* Brush Size */}
-                    <div className="toolbar-cluster size-group">
-                      <button
-                        type="button"
-                        className="wb-size-toggle"
-                        onClick={() => setPenSize(prev => prev === 2 ? 4 : prev === 4 ? 6 : 2)}
-                        title={`Brush Size: ${penSize}px`}
-                      >
-                        <span 
-                          className="size-dot" 
-                          style={{ width: `${penSize * 2 + 2}px`, height: `${penSize * 2 + 2}px` }}
-                        ></span>
-                      </button>
-                      <span className="toolbar-section-label">SIZE</span>
-                    </div>
-
-                    <div className="toolbar-divider"></div>
-
-                    {/* Actions: Undo, Redo, Clear, Download */}
-                    <div className="toolbar-cluster actions-group">
-                      <button
-                        type="button"
-                        className="wb-action-btn"
-                        onClick={() => showToast('Undo last stroke')}
-                        title="Undo"
-                      >
-                        <Undo2 size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        className="wb-action-btn"
-                        onClick={() => showToast('Redo stroke')}
-                        title="Redo"
-                      >
-                        <Redo2 size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        className="wb-action-btn delete-btn"
-                        onClick={clearCanvas}
-                        title="Clear Canvas"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        className="wb-action-btn download-btn"
-                        onClick={downloadCanvas}
-                        title="Download Diagram"
-                      >
-                        <Download size={14} />
-                      </button>
-                      <span className="toolbar-section-label">ACTIONS</span>
-                    </div>
-
-                  </div>
-
                 </div>
-              )}
+
+                {/* Split Divider */}
+                <div className="terminal-split-handle desktop-only"></div>
+
+                {/* Bottom: Output Pane with Live Animation */}
+                <div className="terminal-subpanel output-subpanel">
+                  <div className="subpanel-header">
+                    <span className="panel-title-text">Output</span>
+                    {animationPhase === 'output' && (
+                      <span className="output-status-pill success animate-fade-in">
+                        <span className="status-success-dot"></span>
+                        <span>0.08s</span>
+                      </span>
+                    )}
+                    <button 
+                      type="button"
+                      className="clear-output-link" 
+                      onClick={handleReplayCompiler}
+                      title="Replay Animation"
+                    >
+                      Replay
+                    </button>
+                  </div>
+                  <div className="output-console-box">
+                    {(animationPhase === 'idle' || animationPhase === 'delay') && (
+                      <pre className="output-pre-text output-typing-state">
+                        <span className="output-muted-comment">// Ready to compile...</span>
+                        <br />
+                        <span className="output-muted-comment">// Waiting for compiler trigger...</span>
+                      </pre>
+                    )}
+                    {animationPhase === 'typing' && (
+                      <pre className="output-pre-text output-typing-state">
+                        <span className="output-muted-comment">// Ready to compile...</span>
+                        <br />
+                        <span className="output-muted-comment">// Code is being written in editor...</span>
+                      </pre>
+                    )}
+                    {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
+                      <pre className="output-pre-text output-highlight-state animate-fade-in">
+                        <span className="output-active-comment">// Code complete! Cursor moving to compile...</span>
+                      </pre>
+                    )}
+                    {animationPhase === 'compiling' && (
+                      <div className="output-compiling-state animate-fade-in">
+                        <div className="compiling-loader-bar">
+                          <div className="compiling-loader-progress"></div>
+                        </div>
+                        <span className="output-cmd-line">$ {currentLang.compilerTitle.toLowerCase().replace(' ', '-')} -run {currentLang.file}</span>
+                        <div className="compiling-status-msg">
+                          <span className="spinner-dot"></span>
+                          <span>Compiling code and linking binaries...</span>
+                        </div>
+                      </div>
+                    )}
+                    {animationPhase === 'output' && (
+                      <div className="output-success-state animate-fade-in">
+                        <pre className="output-pre-text" aria-live="polite">
+{`Welcome to CipherSchools Code Editor!
+Happy Coding! 🎉
+
+[Execution Finished in 0.08s - Exit Code: 0]`}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+              </div>
 
             </div>
 
           </div>
 
-          {/* Quick Helper Mode Switcher Bar (Desktop only) */}
-          <div className="workspace-mode-switch-bar desktop-only">
-            <span className="mode-desc">
-              Currently viewing: <strong>{isWhiteboardMode ? 'Whiteboard Scratchpad (Dry-Run Mode)' : 'Code Editor, Custom Input & Output Console'}</strong>
-            </span>
-            <button
-              type="button"
-              className="mode-toggle-pill-btn"
-              onClick={() => setIsWhiteboardMode(prev => !prev)}
-            >
-              <WhiteboardEaselIcon size={14} />
-              <span>{isWhiteboardMode ? 'Switch to Terminal Console' : 'Switch to Whiteboard Scratchpad'}</span>
-            </button>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 2: THINGS CAN BE DONE VIA CIPHERSCHOOLS COMPILER
+         ───────────────────────────────────────────────────────────── */}
+      <section className="compiler-capabilities-section">
+        <div className="capabilities-container">
+          
+          <div className="section-head-center">
+            <h2 className="section-title">
+              Things Can Be Done via <span className="headline-gradient">CipherSchools Compiler</span>
+            </h2>
+          </div>
+
+          <div className="compiler-bento-grid">
+            
+            {/* Bento Card 1: Write Code in 5 languages (Col Span 2 - Hero Feature Box) */}
+            <div className="bento-card bento-span-2 bento-card-languages">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <FileCode size={20} />
+                </div>
+                <span className="bento-badge-pill">Multi-Language Engine</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Write Code in 5 languages</h3>
+                <p className="bento-card-desc">
+                  Optimized low-latency cloud runtimes configured for competitive programming, system design, and DSA interviews.
+                </p>
+                {/* Visual Bento Widget: Language Chips with Compiler Specs */}
+                <div className="bento-langs-display-row">
+                  {[
+                    { name: 'C', version: 'C17 Clang', icon: '⚡' },
+                    { name: 'C++', version: 'C++20 GCC 13', icon: '🚀' },
+                    { name: 'Java', version: 'OpenJDK 17 LTS', icon: '☕' },
+                    { name: 'Python', version: 'Python 3.11', icon: '🐍' },
+                    { name: 'JavaScript', version: 'Node.js 20', icon: '🌐' }
+                  ].map((l) => (
+                    <div key={l.name} className="bento-lang-chip">
+                      <span className="lang-chip-icon">{l.icon}</span>
+                      <div className="lang-chip-meta">
+                        <span className="lang-chip-name">{l.name}</span>
+                        <span className="lang-chip-ver">{l.version}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 2: Compile in no time with * (Col Span 1 - Speed Benchmark Box) */}
+            <div className="bento-card bento-span-1 bento-card-speed">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <Play size={20} />
+                </div>
+                <span className="bento-badge-pill">Sub-Second Cloud</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Compile in no time with *</h3>
+                <p className="bento-card-desc">
+                  Instant sub-second cloud execution.
+                </p>
+                {/* Visual Bento Widget: Apple-Style Bold Execution Metric */}
+                <div className="bento-speed-stat-box">
+                  <div className="bento-stat-number-row">
+                    <span className="bento-speed-value">0.08</span>
+                    <span className="bento-speed-unit">s</span>
+                  </div>
+                  <div className="bento-speed-tag">
+                    <span className="speed-pulse-indicator" />
+                    <span>Real-time Execution Benchmark</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 3: Save Your Code (Col Span 1 - Persistence Box) */}
+            <div className="bento-card bento-span-1 bento-card-save">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <Bookmark size={20} />
+                </div>
+                <span className="bento-badge-pill">Cloud Persistence</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Save Your Code</h3>
+                <p className="bento-card-desc">
+                  Auto-saves directly to your cloud workspace.
+                </p>
+                {/* Visual Bento Widget: Cloud Sync Status Card */}
+                <div className="bento-sync-widget">
+                  <div className="bento-sync-icon-pulse">
+                    <Check size={16} className="text-emerald-500" />
+                  </div>
+                  <div className="bento-sync-text-wrap">
+                    <span className="sync-title">Cloud Auto-Save</span>
+                    <span className="sync-subtitle">Synced on every keystroke</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 4: Create multiple files together (Col Span 2 - Modular Tabs Box) */}
+            <div className="bento-card bento-span-2 bento-card-multifile">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <FolderPlus size={20} />
+                </div>
+                <span className="bento-badge-pill">Modular Projects</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Create multiple file together .c, .cpp, .java, .js, .py</h3>
+                <p className="bento-card-desc">
+                  Multi-file tabs for modular projects. Split headers, algorithms, and test cases across native tabs.
+                </p>
+                {/* Visual Bento Widget: Mini Multi-File Tab Bar Mockup */}
+                <div className="bento-mini-tabbar">
+                  <div className="mini-tab-item active">
+                    <span className="mini-tab-dot" />
+                    <span>main.cpp *</span>
+                  </div>
+                  <div className="mini-tab-item">
+                    <span>solution.h</span>
+                  </div>
+                  <div className="mini-tab-item">
+                    <span>test_cases.py</span>
+                  </div>
+                  <div className="mini-tab-add" title="Add File">
+                    +
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 5: Create a shareable link for your code (Col Span 2 - Collaboration Box) */}
+            <div className="bento-card bento-span-2 bento-card-share">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <Share2 size={20} />
+                </div>
+                <span className="bento-badge-pill">Instant Share</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Create a shareable link for your code</h3>
+                <p className="bento-card-desc">
+                  Instant shareable URLs for code. Generate clean read-only links for peers, mentors, or interviews.
+                </p>
+                {/* Visual Bento Widget: Interactive Apple-Style URL Bar */}
+                <div className="bento-share-url-widget">
+                  <div className="share-url-input-mimic">
+                    <span className="share-url-protocol">https://</span>
+                    <span className="share-url-domain">cipherschools.com/code/</span>
+                    <span className="share-url-slug">algo-v2-live</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="bento-copy-btn"
+                    onClick={() => {
+                      navigator.clipboard?.writeText('https://cipherschools.com/code/algo-v2-live');
+                      showToast('Share link copied to clipboard!');
+                    }}
+                    title="Copy Share Link"
+                  >
+                    <Copy size={13} />
+                    <span>Copy Link</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Bento Card 6: Download Your Code (Col Span 1 - Native Export Box) */}
+            <div className="bento-card bento-span-1 bento-card-download">
+              <div className="bento-card-header">
+                <div className="bento-icon-box">
+                  <Download size={20} />
+                </div>
+                <span className="bento-badge-pill">Native File Export</span>
+              </div>
+              <div className="bento-content-body">
+                <h3 className="bento-card-title">Download Your Code</h3>
+                <p className="bento-card-desc">
+                  1-click native file export.
+                </p>
+                {/* Visual Bento Widget: Formats Row & Action Button */}
+                <div className="bento-formats-row">
+                  {['.cpp', '.py', '.java', '.js', '.c'].map((ext) => (
+                    <span key={ext} className="bento-ext-pill">{ext}</span>
+                  ))}
+                </div>
+                <button 
+                  type="button" 
+                  className="bento-download-action-btn"
+                  onClick={() => showToast(`Downloaded ${currentLang.file}`)}
+                  title="Download File"
+                >
+                  <Download size={14} />
+                  <span>1-Click Download</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 3: DEDICATED WHITEBOARD MOCKUP (NON-ACCESSIBLE)
+         ───────────────────────────────────────────────────────────── */}
+      <section className="whiteboard-mockup-section" ref={whiteboardSectionRef}>
+        <div className="sandbox-container">
+
+          <div className="section-head-center mockup-head-intro">
+            <h2 className="section-title">
+              Visual Dry-Runs with <span className="headline-gradient">Interactive Whiteboard</span>
+            </h2>
+          </div>
+
+          <div className="compiler-window-frame mockup-frame-non-accessible">
+            
+            {/* Top Whiteboard Header */}
+            <div className="compiler-top-header">
+              <div className="header-brand-group">
+                <WhiteboardEaselIcon size={20} />
+                <span className="compiler-type-text">CipherSchools Whiteboard Studio</span>
+              </div>
+
+              <div className="header-right-actions">
+                <button type="button" className="header-icon-btn" title="Toggle Light Theme" tabIndex={-1}>
+                  <Sun size={15} />
+                </button>
+                <div className="header-avatar-circle" title="User Profile" tabIndex={-1}>
+                  <User size={15} />
+                </div>
+              </div>
+            </div>
+
+            {/* Whiteboard Main Canvas Area (Strictly "We got you" & "Start for FREE" button) */}
+            <div className="whiteboard-canvas-wrap mockup-non-accessible-area">
+              <div className="whiteboard-surface-container clean-board">
+                
+                {/* Subtle Whiteboard Grid Dot Pattern */}
+                <div className="whiteboard-grid-pattern" />
+
+                {/* Center Whiteboard Showcase */}
+                <div className="whiteboard-center-drawing-box">
+                  
+                  {/* Cursive Handwriting: "We got you" */}
+                  <div className="wb-cursive-text-row">
+                    <h3 className="wb-cursive-heading">
+                      {wbText || (wbPhase === 'idle' ? 'We got you' : '')}
+                    </h3>
+                  </div>
+
+                  {/* Start for FREE Button */}
+                  <div className={`wb-cta-callout-card ${wbPhase === 'drawing_cta' || wbPhase === 'complete' ? 'show-card' : ''}`}>
+                    <button 
+                      type="button" 
+                      className="wb-start-free-btn"
+                      onClick={() => {
+                        editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        showToast('Ready! Jumping to Compiler...');
+                      }}
+                      title="Jump to Compiler - 100% Free"
+                    >
+                      <Sparkles size={18} className="wb-btn-sparkle" />
+                      <span className="wb-start-free-text">Start for FREE</span>
+                      <ChevronRight size={18} className="wb-btn-chevron" />
+                    </button>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            {/* Bottom Whiteboard Toolbar */}
+            <div className="whiteboard-bottom-toolbar">
+              <div className="toolbar-cluster tools-group">
+                <div className="wb-tool-btn active" title="Pen Tool">
+                  <PenTool size={15} />
+                </div>
+                <div className="wb-tool-btn" title="Eraser">
+                  <Eraser size={15} />
+                </div>
+                <div className="wb-tool-btn" title="Hand Pan">
+                  <Move size={15} />
+                </div>
+              </div>
+
+              <div className="toolbar-divider"></div>
+
+              <div className="toolbar-cluster colors-group">
+                {[
+                  { color: '#1E293B', label: 'Black' },
+                  { color: '#3B82F6', label: 'Blue' },
+                  { color: '#10B981', label: 'Green' },
+                  { color: '#F97316', label: 'Orange' },
+                  { color: '#A855F7', label: 'Purple' }
+                ].map((swatch, idx) => (
+                  <div
+                    key={swatch.color}
+                    className={`wb-color-dot ${idx === 3 ? 'selected' : ''}`}
+                    style={{ backgroundColor: swatch.color }}
+                    title={swatch.label}
+                  />
+                ))}
+              </div>
+
+              <div className="toolbar-divider"></div>
+
+              <div className="toolbar-cluster size-group">
+                <div className="wb-size-toggle" title="Brush Size: 4px">
+                  <span className="size-dot" style={{ width: '10px', height: '10px' }}></span>
+                </div>
+              </div>
+
+              <div className="toolbar-divider"></div>
+
+              <div className="toolbar-cluster actions-group">
+                <button 
+                  type="button" 
+                  className="wb-action-btn" 
+                  onClick={handleReplayWhiteboard}
+                  title="Replay Whiteboard Drawing"
+                >
+                  <RotateCcw size={14} />
+                </button>
+                <div className="wb-action-btn" title="Undo">
+                  <Undo2 size={14} />
+                </div>
+                <div className="wb-action-btn" title="Redo">
+                  <Redo2 size={14} />
+                </div>
+                <div className="wb-action-btn delete-btn" onClick={clearCanvas} title="Clear Canvas">
+                  <Trash2 size={14} />
+                </div>
+                <div className="wb-action-btn download-btn" onClick={downloadCanvas} title="Download Diagram">
+                  <Download size={14} />
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 4: POINTERS BELOW WHITE BOARD COMPILER
+         ───────────────────────────────────────────────────────────── */}
+      <section className="whiteboard-pointers-section">
+        <div className="whiteboard-pointers-container">
+          
+          <div className="section-head-center">
+            <h2 className="section-title">
+              Visual Learning Made Simple with <span className="headline-gradient">Whiteboard</span>
+            </h2>
+            <p className="section-subtitle">
+              Teach students, sketch algorithms, and export diagrams.
+            </p>
+          </div>
+
+          {/* 2 Core Pointers */}
+          <div className="wb-pointers-dual-grid">
+            
+            {/* Pointer 1: Draw as you like */}
+            <div className="wb-pointer-card">
+              <div className="wb-pointer-icon-wrap">
+                <PenTool size={22} />
+              </div>
+              <div className="wb-pointer-content">
+                <div className="wb-pointer-header">
+                  <h3 className="wb-pointer-title">Draw as you like</h3>
+                </div>
+                <p className="wb-pointer-desc">
+                  Sketch recursion trees, graphs, and logic freely.
+                </p>
+                <div className="wb-pointer-pills">
+                  <span className="wb-feature-pill">Freehand Sketching</span>
+                  <span className="wb-feature-pill">5 Marker Colors</span>
+                  <span className="wb-feature-pill">Pan & Zoom</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pointer 2: Download PNG */}
+            <div className="wb-pointer-card">
+              <div className="wb-pointer-icon-wrap">
+                <Download size={22} />
+              </div>
+              <div className="wb-pointer-content">
+                <div className="wb-pointer-header">
+                  <h3 className="wb-pointer-title">Download PNG</h3>
+                </div>
+                <p className="wb-pointer-desc">
+                  1-click export for notes, slides, and revisions.
+                </p>
+                <div className="wb-pointer-pills">
+                  <span className="wb-feature-pill">High-Resolution PNG</span>
+                  <span className="wb-feature-pill">Instant 1-Click Export</span>
+                  <span className="wb-feature-pill">Lossless Quality</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Teach Students & Share Feature Highlights Strip */}
+          <div className="wb-teach-share-banner">
+            <div className="teach-share-item">
+              <div className="ts-icon-circle">
+                <GraduationCap size={19} />
+              </div>
+              <div className="ts-text-wrap">
+                <h4 className="ts-title">Teach Students Visually</h4>
+                <p className="ts-caption">Illustrate data structures and logic live on screen.</p>
+              </div>
+            </div>
+
+            <div className="ts-divider"></div>
+
+            <div className="teach-share-item">
+              <div className="ts-icon-circle">
+                <Share2 size={19} />
+              </div>
+              <div className="ts-text-wrap">
+                <h4 className="ts-title">Download & Share with Them</h4>
+                <p className="ts-caption">Share high-res diagrams with batches and study groups.</p>
+              </div>
+            </div>
+
+            <div className="ts-divider"></div>
+
+            <div className="teach-share-item">
+              <div className="ts-icon-circle">
+                <Sparkles size={19} />
+              </div>
+              <div className="ts-text-wrap">
+                <h4 className="ts-title">Your Go-To Whiteboard Tool</h4>
+                <p className="ts-caption">Built into your compiler so you never switch tabs.</p>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -1306,7 +1766,6 @@ const CompilerPage = () => {
         <div className="faq-container">
           
           <div className="section-head-center">
-            <span className="compiler-badge-pill">FREQUENTLY ASKED QUESTIONS</span>
             <h2 className="section-title">
               Everything You Need to Know About <span className="headline-gradient">CipherSchools Compiler</span>
             </h2>
@@ -1389,8 +1848,7 @@ const CompilerPage = () => {
             type="button"
             className="floating-btn-primary"
             onClick={() => {
-              setIsWhiteboardMode(false);
-              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
             aria-label="Open Code Editor"
           >
@@ -1401,8 +1859,7 @@ const CompilerPage = () => {
           <div 
             className="floating-keyboard-hint"
             onClick={() => {
-              setIsWhiteboardMode(false);
-              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
             title="Click or press Ctrl + Enter to open"
           >
