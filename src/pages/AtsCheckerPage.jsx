@@ -63,29 +63,33 @@ const PILLAR_DEFINITIONS = {
   }
 };
 
-const getPillarStatus = (score) => {
-  if (score >= 80) {
-    return {
-      label: 'Excellent',
-      color: '#10B981',
-      badgeClass: 'pillar-badge-excellent'
-    };
-  }
-  if (score >= 55) {
-    return {
-      label: 'Needs Attention',
-      color: '#FFA103',
-      badgeClass: 'pillar-badge-attention'
-    };
-  }
-  return {
-    label: 'Poor',
-    color: '#EF4444',
-    badgeClass: 'pillar-badge-poor'
-  };
+// Skills pillar when no job description was given
+const SKILLS_PILLAR_NO_JD = {
+  category: 'PILLAR 2',
+  title: 'Skills Coverage',
+  description: 'Counts the in-demand engineering skills your resume shows. Add a job description to match against a specific role.'
 };
 
-const CircularScoreRing = ({ score = 0, size = 88, strokeWidth = 7, color = '#FFA103' }) => {
+const getPillarStatus = (score) => {
+  if (score >= 80) {
+    return { label: 'Excellent', color: '#059669', tone: 'good' };
+  }
+  if (score >= 55) {
+    return { label: 'Needs attention', color: '#F3912E', tone: 'fair' };
+  }
+  return { label: 'Poor', color: '#DC2626', tone: 'poor' };
+};
+
+const BAND_LABELS = { EXCELLENT: 'Excellent', GOOD: 'Good', FAIR: 'Fair', NEEDS_WORK: 'Needs work' };
+const PRIORITY_LABELS = { CRITICAL: 'Critical', IMPORTANT: 'Important', OPTIONAL: 'Optional' };
+const MATCH_LABELS = { EXACT: 'Exact match', ALIAS: 'Synonym match', PARTIAL: 'Partial match' };
+
+const prettyLabel = (value = '') => {
+  const text = value.toLowerCase().replaceAll('_', ' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+const CircularScoreRing = ({ score = 0, size = 88, strokeWidth = 7, color = '#F3912E', showMax = true }) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const clampedScore = Math.max(0, Math.min(100, Math.round(score)));
@@ -99,7 +103,7 @@ const CircularScoreRing = ({ score = 0, size = 88, strokeWidth = 7, color = '#FF
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#F1F5F9"
+          stroke="#E5E7EB"
           strokeWidth={strokeWidth}
         />
         <circle
@@ -118,7 +122,7 @@ const CircularScoreRing = ({ score = 0, size = 88, strokeWidth = 7, color = '#FF
       </svg>
       <div className="pillar-ring-center-content">
         <span className="pillar-ring-score-val" style={{ color }}>{clampedScore}</span>
-        <span className="pillar-ring-score-max">/100</span>
+        {showMax && <span className="pillar-ring-score-max">/100</span>}
       </div>
     </div>
   );
@@ -165,7 +169,10 @@ const AtsCheckerPage = () => {
   // 'uploading' | 'scraping' | 'analyzing' | 'almost_done'
   const [orbStage, setOrbStage] = useState('uploading');
   const [orbProgress, setOrbProgress] = useState(0);
-  const [isFlashing, setIsFlashing] = useState(false);
+  // Circular brand reveal after the scan: null | 'cover' | 'reveal'
+  const [flashPhase, setFlashPhase] = useState(null);
+  const [flashOrigin, setFlashOrigin] = useState({ x: '50%', y: '50%' });
+  const scanOrbRef = useRef(null);
   const [terminalLogs, setTerminalLogs] = useState([]);
   const animationTimersRef = useRef([]);
   const animationIntervalRef = useRef(null);
@@ -237,6 +244,24 @@ const AtsCheckerPage = () => {
       }
     };
   }, []);
+
+  // Orange circle grows out of the orb to cover the screen, the view swaps
+  // underneath, then a circle opens from the same point to reveal the report.
+  const playReportReveal = (onSwap) => {
+    const rect = scanOrbRef.current?.getBoundingClientRect();
+    setFlashOrigin(rect
+      ? { x: `${Math.round(rect.left + rect.width / 2)}px`, y: `${Math.round(rect.top + rect.height / 2)}px` }
+      : { x: '50%', y: '50%' });
+    setFlashPhase('cover');
+
+    const swapTimer = setTimeout(() => {
+      onSwap();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      setFlashPhase('reveal');
+    }, 560);
+    const endTimer = setTimeout(() => setFlashPhase(null), 1320);
+    animationTimersRef.current.push(swapTimer, endTimer);
+  };
 
   // ── Pipeline Runner: Uploading -> Scraping -> Analyzing -> Almost Done -> Flash -> Report ──
   const startAnalysisPipeline = (options = {}) => {
@@ -331,15 +356,10 @@ const AtsCheckerPage = () => {
             setAnalysisResult(result);
             setFixedSuggestionIds(new Set());
             setFixedSectionKeys(new Set());
-            setIsFlashing(true);
-
-            const flashTimer = setTimeout(() => {
-              setIsFlashing(false);
+            playReportReveal(() => {
               setViewState('REPORT');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
               showToast('ATS Report Generated Successfully');
-            }, 400);
-            animationTimersRef.current.push(flashTimer);
+            });
           } catch (err) {
             console.error('ATS calculation error:', err);
             setErrorMessage(err?.message || 'An unexpected error occurred during ATS analysis. Please try again.');
@@ -353,6 +373,7 @@ const AtsCheckerPage = () => {
 
   // Instant skip for animation
   const handleSkipAnimation = () => {
+    if (flashPhase) return;
     animationTimersRef.current.forEach(t => clearTimeout(t));
     animationTimersRef.current = [];
     if (animationIntervalRef.current) {
@@ -381,14 +402,10 @@ const AtsCheckerPage = () => {
       setAnalysisResult(result);
       setFixedSuggestionIds(new Set());
       setFixedSectionKeys(new Set());
-      setIsFlashing(true);
-
-      setTimeout(() => {
-        setIsFlashing(false);
+      playReportReveal(() => {
         setViewState('REPORT');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
         showToast('ATS Report Generated');
-      }, 280);
+      });
     } catch (err) {
       console.error('ATS calculation error:', err);
       setErrorMessage(err?.message || 'An unexpected error occurred during ATS analysis. Please try again.');
@@ -532,7 +549,7 @@ const AtsCheckerPage = () => {
         next.delete(suggId);
       } else {
         next.add(suggId);
-        showToast(`Fix applied! Score boosted by +${pointsGain} points.`);
+        showToast(`Marked as done. Projected score +${pointsGain}.`);
       }
       return next;
     });
@@ -544,10 +561,10 @@ const AtsCheckerPage = () => {
       const next = new Set(prev);
       if (next.has(secKey)) {
         next.delete(secKey);
-        showToast('Section fix reverted.');
+        showToast('Marked as not done.');
       } else {
         next.add(secKey);
-        showToast(`Section fix applied! Score boosted by +${pointsGain} points.`);
+        showToast(`Marked as done. Projected score +${pointsGain}.`);
       }
       return next;
     });
@@ -563,7 +580,7 @@ const AtsCheckerPage = () => {
   const calculatedSectionPoints = analysisResult?.sections
     ? analysisResult.sections
         .filter(s => fixedSectionKeys.has(s.key))
-        .reduce((acc, s) => acc + (s.pointsGain || 5), 0)
+        .reduce((acc, s) => acc + (s.pointsGain ?? 5), 0)
     : 0;
 
   const calculatedPointsGained = calculatedSuggestionPoints + calculatedSectionPoints;
@@ -593,13 +610,21 @@ const AtsCheckerPage = () => {
       />
 
       {/* ── High-Energy Screen Flash Overlay ── */}
-      {isFlashing && (
-        <div className="ats-flash-screen" />
+      {flashPhase && (
+        <div
+          className={`ats-reveal ats-reveal--${flashPhase}`}
+          style={{ '--rx': flashOrigin.x, '--ry': flashOrigin.y }}
+          aria-hidden="true"
+        >
+          <div className="ats-reveal-fill" />
+          <div className="ats-reveal-ring" />
+        </div>
       )}
 
       <div className="ats-checker-container">
         
-        {/* ── Breadcrumb Navigation ── */}
+        {/* ── Breadcrumb Navigation (hidden while the scan runs) ── */}
+        {viewState !== 'ANIMATING' && (
         <div className="ats-breadcrumbs">
           <Link to="/" className="breadcrumb-link">Home</Link>
           <ChevronRight size={13} className="breadcrumb-sep" />
@@ -607,6 +632,7 @@ const AtsCheckerPage = () => {
           <ChevronRight size={13} className="breadcrumb-sep" />
           <span className="breadcrumb-current">ATS Checker Engine</span>
         </div>
+        )}
 
         {/* =========================================================================
             VIEW 1: STANDALONE MODE SELECTION SCREEN (Google / CipherSchools Style)
@@ -615,167 +641,123 @@ const AtsCheckerPage = () => {
           <div className="ats-mode-selection-view animate-fade-in">
             
             {/* Minimal Hero Header */}
-            <section className="ats-checker-hero centered-hero">
-              <h1 className="ats-hero-title">
-                ATS <span className="headline-gradient">ANALYSIS</span>
+            <section className="am-hero">
+              <h1 className="am-title">
+                Check your <span className="am-title-pill">ATS score</span>
               </h1>
-
-              <p className="ats-hero-sub">
-                Select your evaluation method to check ATS readability and match score.
-              </p>
+              <p className="am-sub">Choose how you want your resume checked.</p>
             </section>
 
-            {/* ── Google-style Card Selector List (Matching Screenshot with 4px Border & Benefit Pointers) ── */}
-            <div className="ats-google-selector-container">
-              
-              {/* Option 1: Upload Resume (Resume Only) */}
-              <div 
-                className={`ats-google-option-row ${selectedMode === 'RESUME_ONLY' ? 'is-selected' : ''}`}
-                onClick={() => handleSelectMode('RESUME_ONLY')}
-                onDoubleClick={handleContinueFromSelection}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { 
-                  if (e.key === 'Enter') handleContinueFromSelection(); 
-                  if (e.key === ' ') handleSelectMode('RESUME_ONLY');
-                }}
-              >
-                {/* Minimal Infographic Box */}
-                <div className="option-infographic-frame">
-                  <div className="mini-doc-canvas">
-                    <div className="mini-doc-header-line" />
-                    <div className="mini-doc-sub-line" />
-                    <div className="mini-doc-divider" />
-                    <div className="mini-doc-body-lines">
-                      <span className="mini-line line-1" />
-                      <span className="mini-line line-2" />
-                      <span className="mini-line line-3" />
+            <div className="am-options" role="radiogroup" aria-label="Scan type">
+              {[
+                {
+                  mode: 'RESUME_ONLY',
+                  tag: 'Quick check',
+                  title: 'Resume only',
+                  desc: 'See how well applicant tracking systems can read your resume.',
+                  points: ['Layout & formatting', 'Action verbs & metrics', 'Section-by-section fixes']
+                },
+                {
+                  mode: 'JD_RESUME',
+                  tag: 'Best for applying',
+                  title: 'Resume + job description',
+                  desc: 'Match your resume to a specific job and find missing keywords.',
+                  points: ['Keyword & skill gaps', 'Role match score', 'What to add and where']
+                }
+              ].map(opt => {
+                const isSelected = selectedMode === opt.mode;
+                return (
+                  <div
+                    key={opt.mode}
+                    className={`am-option ${isSelected ? 'is-selected' : ''}`}
+                    role="radio"
+                    aria-checked={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
+                    onClick={() => handleSelectMode(opt.mode)}
+                    onDoubleClick={handleContinueFromSelection}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleContinueFromSelection();
+                      if (e.key === ' ') { e.preventDefault(); handleSelectMode(opt.mode); }
+                      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                        e.preventDefault();
+                        const next = opt.mode === 'RESUME_ONLY' ? 'JD_RESUME' : 'RESUME_ONLY';
+                        handleSelectMode(next);
+                        e.currentTarget.parentElement
+                          ?.querySelector(`[data-mode="${next}"]`)?.focus();
+                      }
+                    }}
+                    data-mode={opt.mode}
+                  >
+                    <span className="am-radio" aria-hidden="true" />
+
+                    {/* Illustration */}
+                    <div className="am-art" aria-hidden="true">
+                      {opt.mode === 'RESUME_ONLY' ? (
+                        <div className="am-sheet">
+                          <span className="am-l am-l--name" />
+                          <span className="am-l am-l--meta" />
+                          <span className="am-l am-l--h" />
+                          <span className="am-l" />
+                          <span className="am-l am-l--short" />
+                          <span className="am-l am-l--h" />
+                          <span className="am-l" />
+                          <span className="am-l am-l--short" />
+                          <span className="am-badge am-badge--score">
+                            <CheckCircle2 size={11} /> 92
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="am-pair">
+                          <div className="am-sheet am-sheet--sm">
+                            <span className="am-l am-l--name" />
+                            <span className="am-l am-l--h" />
+                            <span className="am-l" />
+                            <span className="am-l am-l--short" />
+                            <span className="am-l am-l--h" />
+                            <span className="am-l" />
+                          </div>
+                          <span className="am-link" />
+                          <div className="am-sheet am-sheet--sm am-sheet--jd">
+                            <span className="am-jd-icon"><Briefcase size={11} /></span>
+                            <span className="am-l am-l--meta" />
+                            <span className="am-chip-row">
+                              <span className="am-chip is-hit" />
+                              <span className="am-chip is-hit" />
+                              <span className="am-chip is-miss" />
+                            </span>
+                            <span className="am-l" />
+                            <span className="am-l am-l--short" />
+                          </div>
+                          <span className="am-badge am-badge--match">87% match</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="am-body">
+                      <span className="am-tag">{opt.tag}</span>
+                      <h3 className="am-option-title">{opt.title}</h3>
+                      <p className="am-option-desc">{opt.desc}</p>
+                      <ul className="am-points">
+                        {opt.points.map(pt => (
+                          <li key={pt}><Check size={14} /><span>{pt}</span></li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                  {/* Floating Minimal ATS Badge */}
-                  <div className="mini-floating-badge badge-ats">
-                    <CheckCircle2 size={10} className="badge-icon-orange" />
-                    <span>ATS</span>
-                  </div>
-                </div>
+                );
+              })}
+            </div>
 
-                {/* Option Text & Benefits */}
-                <div className="option-content-block">
-                  <div className="option-title-row">
-                    <h3 className="option-title">Upload Resume</h3>
-                    {selectedMode === 'RESUME_ONLY' && (
-                      <span className="selected-mode-pill">Selected</span>
-                    )}
-                  </div>
-                  <p className="option-description">
-                    Evaluate formatting compliance, single-column readability, and action verb impact.
-                  </p>
-
-                  {/* 3 Benefit Pointers */}
-                  <ul className="option-benefits-list">
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-amber" />
-                      <span>Single-column formatting & standard heading compliance</span>
-                    </li>
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-amber" />
-                      <span>Action verb strength & metric density evaluation</span>
-                    </li>
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-amber" />
-                      <span>Selectable text layer & instant OCR parse score</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Action Arrow */}
-                <div className="option-arrow-box">
-                  <ChevronRight size={18} />
-                </div>
-              </div>
-
-              {/* Option 2: Upload JD + Resume (Role Targeted Match) */}
-              <div 
-                className={`ats-google-option-row ${selectedMode === 'JD_RESUME' ? 'is-selected' : ''}`}
-                onClick={() => handleSelectMode('JD_RESUME')}
-                onDoubleClick={handleContinueFromSelection}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { 
-                  if (e.key === 'Enter') handleContinueFromSelection(); 
-                  if (e.key === ' ') handleSelectMode('JD_RESUME');
-                }}
+            <div className="am-cta">
+              <button
+                type="button"
+                className="am-continue"
+                onClick={handleContinueFromSelection}
               >
-                {/* Minimal Infographic Box */}
-                <div className="option-infographic-frame">
-                  <div className="mini-doc-canvas jd-canvas">
-                    <div className="mini-doc-header-line" />
-                    <div className="mini-doc-sub-line" />
-                    <div className="mini-doc-divider" />
-                    <div className="mini-doc-body-lines">
-                      <span className="mini-line line-1" />
-                      <span className="mini-line line-2" />
-                    </div>
-                  </div>
-                  {/* Floating JD Badge Top-Right */}
-                  <div className="mini-floating-badge badge-jd-top">
-                    <Briefcase size={9} className="badge-icon-blue" />
-                    <span>JD</span>
-                  </div>
-                  {/* Floating Match Badge Bottom-Left */}
-                  <div className="mini-floating-badge badge-match-bottom">
-                    <Sparkles size={9} className="badge-icon-orange" />
-                    <span>Match</span>
-                  </div>
-                </div>
-
-                {/* Option Text & Benefits */}
-                <div className="option-content-block">
-                  <div className="option-title-row">
-                    <h3 className="option-title">Upload JD + Resume</h3>
-                    {selectedMode === 'JD_RESUME' && (
-                      <span className="selected-mode-pill blue">Selected</span>
-                    )}
-                  </div>
-                  <p className="option-description">
-                    Compare your resume against a target job description to diagnose keyword and skill gaps.
-                  </p>
-
-                  {/* 3 Benefit Pointers */}
-                  <ul className="option-benefits-list">
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-blue" />
-                      <span>Role-targeted keyword & skill gap diagnosis</span>
-                    </li>
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-blue" />
-                      <span>Hard & soft competency coverage against job description</span>
-                    </li>
-                    <li className="option-benefit-item">
-                      <CheckCircle2 size={13} className="benefit-icon-blue" />
-                      <span>Deterministic match score to beat recruiter ATS filters</span>
-                    </li>
-                  </ul>
-                </div>
-
-                {/* Action Arrow */}
-                <div className="option-arrow-box">
-                  <ChevronRight size={18} />
-                </div>
-              </div>
-
-              {/* Dedicated Continue CTA */}
-              <div className="selector-cta-row">
-                <button
-                  type="button"
-                  className="selector-continue-btn"
-                  onClick={handleContinueFromSelection}
-                >
-                  <span>Continue</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
-
+                <span>{selectedMode === 'RESUME_ONLY' ? 'Continue with resume only' : 'Continue with job description'}</span>
+                <ArrowRight size={16} />
+              </button>
+              <p className="am-note">Free · Takes about 10 seconds</p>
             </div>
 
           </div>
@@ -1234,74 +1216,49 @@ const AtsCheckerPage = () => {
         {/* =========================================================================
             VIEW 2: 3D AI ORB ANIMATION PIPELINE VIEW
             ========================================================================= */}
-        {viewState === 'ANIMATING' && (
-          <div className="ats-orb-animation-view animate-engine-enter">
-            
-            {/* Top Quick Actions Bar with Mode Indicator */}
-            <div className="orb-top-nav">
-              <div className="orb-mode-pill-chip">
-                {selectedMode === 'RESUME_ONLY' ? (
-                  <>
-                    <Zap size={12} className="text-amber-500" />
-                    <span>MODE: RESUME ONLY</span>
-                  </>
-                ) : (
-                  <>
-                    <Target size={12} className="text-blue-500" />
-                    <span>MODE: JD + RESUME MATCH</span>
-                  </>
-                )}
+        {viewState === 'ANIMATING' && (() => {
+          const stages = [
+            { key: 'uploading', label: 'Read', title: 'Reading your resume', from: 0, to: 25 },
+            { key: 'scraping', label: 'Extract', title: 'Extracting the text', from: 25, to: 55 },
+            {
+              key: 'analyzing',
+              label: selectedMode === 'JD_RESUME' ? 'Match' : 'Review',
+              title: selectedMode === 'JD_RESUME' ? 'Matching it to the job' : 'Checking the content',
+              from: 55,
+              to: 85,
+            },
+            { key: 'almost_done', label: 'Score', title: 'Calculating your score', from: 85, to: 100 },
+          ];
+          const activeIndex = Math.max(0, stages.findIndex((st) => st.key === orbStage));
+
+          return (
+            <div className="ats-scan-view animate-engine-enter">
+              <div className="ats-scan-bar">
+                <div className="ats-scan-file" title={fileName}>
+                  <span className="ats-scan-file-tag">{docMetrics.file_format?.toUpperCase() || 'PDF'}</span>
+                  <span className="ats-scan-file-name">{fileName}</span>
+                </div>
+                <button
+                  type="button"
+                  className="ats-scan-skip"
+                  onClick={handleSkipAnimation}
+                >
+                  Skip
+                  <FastForward size={13} />
+                </button>
               </div>
 
-              <button 
-                type="button" 
-                className="skip-animation-btn"
-                onClick={handleSkipAnimation}
-                title="Skip animation and display report immediately"
-              >
-                <span>Skip to Report</span>
-                <FastForward size={14} />
-              </button>
-            </div>
-
-            {/* Central Clean Light-Themed ThinkingOrb Showcase */}
-            <div className="ats-orb-centerpiece clean-light-theme">
-              
-              {/* Document Identity Pill (Continuity Anchor: Upload -> Engine) */}
-              <div className="engine-continuity-header animate-fade-in">
-                <div className="engine-doc-identity-pill">
-                  <div className="doc-pill-left">
-                    <span className="doc-pill-format-tag">
-                      {docMetrics.file_format?.toUpperCase() || 'PDF'}
-                    </span>
-                    <FileText size={14} className="doc-pill-file-icon" />
-                    <span className="doc-pill-file-name" title={fileName}>
-                      {fileName}
-                    </span>
-                    <span className="doc-pill-file-size">
-                      {fileSizeFormatted || '142 KB'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Animated Stream Connector Flowing into the Orb Pedestal */}
-                <div className="engine-stream-flow-line">
-                  <div className="flow-pulse-particle" />
-                </div>
-              </div>
-
-              {/* Grand Glowing Pedestal with ThinkingOrb from Libraries.dev */}
-              <div className="clean-thinking-orb-stage">
-                <div className="clean-orb-pedestal">
-                  <div className="clean-orb-glow-backdrop" />
-                  <div className="clean-orb-ambient-ring" />
-                  <div className="clean-orb-inner-ring" />
-                  <div className="clean-orb-canvas-wrap">
-                    <ThinkingOrb 
-                      state={getThinkingOrbState(orbStage)} 
-                      size={64} 
+              <div className="ats-scan-stage">
+                <div className="ats-scan-orb" ref={scanOrbRef}>
+                  <span className="ats-scan-ring ats-scan-ring--outer" />
+                  <span className="ats-scan-ring ats-scan-ring--arc" />
+                  <span className="ats-scan-ring ats-scan-ring--inner" />
+                  <div className="ats-scan-orb-canvas">
+                    <ThinkingOrb
+                      state={getThinkingOrbState(orbStage)}
+                      size={64}
                       theme="light"
-                      color="#ffa103"
+                      color="#F3912E"
                       speed={0.85}
                       dots={1.25}
                       dotSize={1.15}
@@ -1309,171 +1266,154 @@ const AtsCheckerPage = () => {
                     />
                   </div>
                 </div>
+
+                <p className="ats-scan-eyebrow">Step {activeIndex + 1} of {stages.length}</p>
+                <h2 className="ats-scan-title" key={orbStage}>{stages[activeIndex].title}</h2>
               </div>
 
-              {/* Minimal Calm Status Title with Continuity Document Reference */}
-              <h2 className="orb-stage-minimal-title">
-                {orbStage === 'uploading' && `Ingesting "${fileName}" & validating layout structure...`}
-                {orbStage === 'scraping' && `Extracting text layer & verifying single-column hierarchy...`}
-                {orbStage === 'analyzing' && (selectedMode === 'JD_RESUME' 
-                  ? `Comparing "${fileName}" against target job description...` 
-                  : `Evaluating action verbs, metric density & formatting compliance...`)}
-                {orbStage === 'almost_done' && `Compiling deterministic ATS score & recommendations...`}
-              </h2>
-
-              {/* Minimal 4-Step Pipeline Flow */}
-              <div className="orb-minimal-steps">
-                <div className={`orb-step-item ${orbStage === 'uploading' ? 'current' : orbProgress >= 25 ? 'done' : ''}`}>
-                  <span className="orb-step-num">1</span>
-                  <span>Upload</span>
+              <div className="ats-scan-progress" role="progressbar" aria-valuenow={orbProgress} aria-valuemin={0} aria-valuemax={100}>
+                <div className="ats-scan-segments">
+                  {stages.map((st, i) => {
+                    const fill = Math.min(100, Math.max(0, ((orbProgress - st.from) / (st.to - st.from)) * 100));
+                    return (
+                      <div
+                        key={st.key}
+                        className={`ats-scan-seg ${i < activeIndex ? 'is-done' : ''} ${i === activeIndex ? 'is-active' : ''}`}
+                      >
+                        <div className="ats-scan-seg-track">
+                          <div className="ats-scan-seg-fill" style={{ width: `${fill}%` }} />
+                        </div>
+                        <span className="ats-scan-seg-label">
+                          {i < activeIndex && <Check size={11} strokeWidth={3} />}
+                          {st.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-                <span className="orb-step-arrow">→</span>
-                <div className={`orb-step-item ${orbStage === 'scraping' ? 'current' : orbProgress >= 55 ? 'done' : ''}`}>
-                  <span className="orb-step-num">2</span>
-                  <span>Scrape</span>
-                </div>
-                <span className="orb-step-arrow">→</span>
-                <div className={`orb-step-item ${orbStage === 'analyzing' ? 'current' : orbProgress >= 85 ? 'done' : ''}`}>
-                  <span className="orb-step-num">3</span>
-                  <span>Analyze</span>
-                </div>
-                <span className="orb-step-arrow">→</span>
-                <div className={`orb-step-item ${orbStage === 'almost_done' ? 'current' : orbProgress === 100 ? 'done' : ''}`}>
-                  <span className="orb-step-num">4</span>
-                  <span>Finalize</span>
-                </div>
+                <span className="ats-scan-pct">{orbProgress}%</span>
               </div>
-
-              {/* Minimal Sleek Progress Bar */}
-              <div className="orb-minimal-progress-wrap">
-                <div className="orb-minimal-progress-bar">
-                  <div 
-                    className="orb-minimal-progress-fill" 
-                    style={{ width: `${orbProgress}%` }}
-                  />
-                </div>
-                <span className="orb-minimal-progress-pct">{orbProgress}%</span>
-              </div>
-
             </div>
-
-          </div>
-        )}
+          );
+        })()}
 
         {/* =========================================================================
             VIEW 3: STANDALONE REPORT DASHBOARD VIEW
             ========================================================================= */}
-        {viewState === 'REPORT' && analysisResult && (
-          <section className="ats-results-dashboard animate-fade-in" ref={reportRef}>
-            
-            {/* Standalone Report Header Navigation Bar */}
-            <div className="report-standalone-navbar">
-              <button 
-                type="button" 
-                className="report-back-btn"
-                onClick={() => {
-                  setViewState('MODE_SELECTION');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-              >
-                <ArrowLeft size={15} />
-                <span>Back to Mode Selection</span>
-              </button>
+        {viewState === 'REPORT' && analysisResult && (() => {
+          const { overall, cards, keywords, keywordSummary, sections, suggestions, suggestionSummary } = analysisResult;
+          const isJd = overall.mode === 'WITH_JD';
+          const overallStatus = getPillarStatus(overall.score);
+          const hasProjection = calculatedPointsGained > 0;
+          const pillars = [
+            { key: 'atsCompatibility', def: PILLAR_DEFINITIONS.atsCompatibility, data: cards.atsCompatibility },
+            { key: 'keywordMatch', def: isJd ? PILLAR_DEFINITIONS.keywordMatch : SKILLS_PILLAR_NO_JD, data: cards.keywordMatch },
+            { key: 'resumeImpact', def: PILLAR_DEFINITIONS.resumeImpact, data: cards.resumeImpact }
+          ];
+          const issueCounts = [
+            { key: 'critical', label: 'Critical', count: overall.issues.critical },
+            { key: 'important', label: 'Important', count: overall.issues.important },
+            { key: 'optional', label: 'Optional', count: overall.issues.optional }
+          ];
+          const missingCount = keywords.filter(kw => kw.status === 'MISSING').length;
+          const visibleKeywords = keywords.filter(kw => {
+            if (keywordFilter === 'MATCHED') return kw.status !== 'MISSING';
+            if (keywordFilter === 'MISSING') return kw.status === 'MISSING';
+            return true;
+          });
+          const keywordGroups = [
+            { key: 'REQUIRED', title: 'Required', items: visibleKeywords.filter(kw => kw.importance === 'REQUIRED') },
+            { key: 'PREFERRED', title: 'Preferred', items: visibleKeywords.filter(kw => kw.importance !== 'REQUIRED') }
+          ].filter(g => g.items.length > 0);
+          // Sections that need work come first
+          const orderedSections = [
+            ...sections.filter(sec => sec.hasConcern || sec.topIssue),
+            ...sections.filter(sec => !(sec.hasConcern || sec.topIssue))
+          ];
+          const resetToModeSelection = () => {
+            setViewState('MODE_SELECTION');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          };
 
-              <div className="report-nav-actions">
-                <button 
-                  type="button" 
-                  className="rerun-scan-nav-btn"
+          return (
+          <section className="ats-results-dashboard ar-report animate-fade-in" ref={reportRef}>
+
+            {/* Top bar */}
+            <div className="ar-topbar">
+              <button type="button" className="ar-text-btn" onClick={resetToModeSelection}>
+                <ArrowLeft size={15} />
+                <span>New scan</span>
+              </button>
+              <div className="ar-topbar-right">
+                <span className="ar-file" title={fileName}>
+                  <span className="ar-file-tag">{docMetrics.file_format?.toUpperCase() || 'PDF'}</span>
+                  <span className="ar-file-name">{fileName}</span>
+                </span>
+                <button
+                  type="button"
+                  className="ar-ghost-btn"
                   onClick={() => startAnalysisPipeline()}
-                  title="Re-run the full 4-stage scan animation"
                 >
                   <RefreshCw size={14} />
-                  <span>Re-run Scan</span>
+                  <span>Re-run</span>
                 </button>
               </div>
             </div>
 
-            {/* Top Overview Banner Card */}
-            <div className="results-hero-banner">
-              <div className="score-radial-group">
-                <div className={`score-radial-circle band-${analysisResult.overall.band.toLowerCase()}`}>
-                  <span className="score-big-number">{dynamicScore}</span>
-                  <span className="score-total-denom">/100</span>
-                </div>
-                <div className="score-band-pill">
-                  {analysisResult.overall.band}
-                </div>
+            {/* Summary */}
+            <div className="ar-card ar-summary">
+              <div className="ar-summary-score">
+                <CircularScoreRing score={overall.score} size={148} strokeWidth={10} color={overallStatus.color} showMax={false} />
+                <span className={`ar-band ar-tone-${overallStatus.tone}`}>{BAND_LABELS[overall.band] || prettyLabel(overall.band)}</span>
               </div>
 
-              <div className="banner-details-group">
-                <div className="banner-top-tags">
-                  <span className="mode-indicator-chip">
-                    MODE: <strong>{analysisResult.overall.mode}</strong>
-                  </span>
-                  {analysisResult.overall.jobTitle && (
-                    <span className="target-role-chip">
-                      Target: <strong>{analysisResult.overall.jobTitle}</strong> ({analysisResult.overall.company || 'Enterprise'})
+              <div className="ar-summary-body">
+                <p className="ar-eyebrow">
+                  {isJd
+                    ? <>Matched to <strong>{overall.jobTitle || 'your job description'}</strong>{overall.company && <> at <strong>{overall.company}</strong></>}</>
+                    : 'Resume-only scan'}
+                </p>
+                <h2 className="ar-verdict">{overall.verdict}</h2>
+
+                <div className="ar-issues">
+                  {issueCounts.map(item => (
+                    <span key={item.key} className={`ar-issue ar-issue--${item.key} ${item.count === 0 ? 'is-zero' : ''}`}>
+                      <span className="ar-issue-num">{item.count}</span>
+                      {item.label}
                     </span>
-                  )}
-                  <span className="potential-score-chip">
-                    Potential Score: <strong>{analysisResult.overall.potentialScore}/100</strong>
-                    {analysisResult.suggestionSummary.pointsAvailable > 0 && (
-                      <span> (+{analysisResult.suggestionSummary.pointsAvailable} pts available)</span>
-                    )}
-                  </span>
+                  ))}
                 </div>
 
-                <h2 className="verdict-heading">
-                  "{analysisResult.overall.verdict}"
-                </h2>
-
-                <div className="issues-counter-row">
-                  <span className="issue-count-item critical">
-                    <span className="count-dot" /> {analysisResult.overall.issues.critical} Critical
-                  </span>
-                  <span className="issue-count-item important">
-                    <span className="count-dot" /> {analysisResult.overall.issues.important} Important
-                  </span>
-                  <span className="issue-count-item optional">
-                    <span className="count-dot" /> {analysisResult.overall.issues.optional} Optional
-                  </span>
+                <div className="ar-potential">
+                  <div className="ar-potential-row">
+                    <span>
+                      {hasProjection
+                        ? <>Projected score <strong>{dynamicScore}</strong></>
+                        : <>Up to <strong>{overall.potentialScore}</strong> with the fixes below</>}
+                    </span>
+                    {suggestionSummary.pointsAvailable > 0 && (
+                      <span className="ar-gain">+{suggestionSummary.pointsAvailable} pts available</span>
+                    )}
+                  </div>
+                  <div className="ar-potential-bar" aria-hidden="true">
+                    <span className="ar-potential-max" style={{ width: `${overall.potentialScore}%` }} />
+                    <span className="ar-potential-now" style={{ width: `${hasProjection ? dynamicScore : overall.score}%` }} />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* ── 3 Main Pillar Cards (Minimal Circular Gauge + Info Popover) ── */}
-            <div className="pillar-cards-grid">
-              {[
-                {
-                  key: 'atsCompatibility',
-                  def: PILLAR_DEFINITIONS.atsCompatibility,
-                  data: analysisResult.cards.atsCompatibility
-                },
-                {
-                  key: 'keywordMatch',
-                  def: PILLAR_DEFINITIONS.keywordMatch,
-                  data: analysisResult.cards.keywordMatch
-                },
-                {
-                  key: 'resumeImpact',
-                  def: PILLAR_DEFINITIONS.resumeImpact,
-                  data: analysisResult.cards.resumeImpact
-                }
-              ].map(({ key, def, data }) => {
+            {/* Pillars */}
+            <div className="ar-pillars">
+              {pillars.map(({ key, def, data }) => {
                 const status = getPillarStatus(data.score);
                 return (
-                  <div key={key} className="pillar-minimal-card">
-                    <div className="pillar-card-top-row">
-                      <span className="pillar-category-tag">{def.category}</span>
-                      
-                      {/* Info Button with Hover Popover */}
+                  <div key={key} className="ar-card ar-pillar">
+                    <div className="ar-pillar-head">
+                      <h3 className="ar-pillar-title">{def.title}</h3>
                       <div className="pillar-info-wrap">
-                        <button 
-                          type="button" 
-                          className="pillar-info-icon-btn" 
-                          aria-label={`About ${def.title}`}
-                        >
-                          <Info size={13} />
+                        <button type="button" className="pillar-info-icon-btn" aria-label={`About ${def.title}`}>
+                          <Info size={14} />
                         </button>
                         <div className="pillar-info-popover" role="tooltip">
                           <strong className="popover-title">{def.title}</strong>
@@ -1481,19 +1421,11 @@ const AtsCheckerPage = () => {
                         </div>
                       </div>
                     </div>
-
-                    <div className="pillar-title-row">
-                      <h3 className="pillar-title-text">{def.title}</h3>
-                    </div>
-
-                    <div className="pillar-visual-content">
-                      <CircularScoreRing score={data.score} color={status.color} />
-                      
-                      <div className="pillar-score-details">
-                        <span className={`pillar-label-badge ${status.badgeClass}`}>
-                          {status.label}
-                        </span>
-                        <span className="pillar-stat-text">{data.stat}</span>
+                    <div className="ar-pillar-body">
+                      <CircularScoreRing score={data.score} size={72} strokeWidth={6} color={status.color} showMax={false} />
+                      <div>
+                        <p className={`ar-status ar-tone-${status.tone}`}>{status.label}</p>
+                        <p className="ar-muted">{data.stat}</p>
                       </div>
                     </div>
                   </div>
@@ -1501,310 +1433,240 @@ const AtsCheckerPage = () => {
               })}
             </div>
 
-            {/* ── Targeted Keywords Breakdown (When WITH_JD) ── */}
-            {analysisResult.overall.mode === 'WITH_JD' && (
-              <div className="keywords-deep-dive-card">
-                <div className="section-header-row">
+            {/* Keywords (JD) or detected skills (resume only) */}
+            {isJd ? (
+              <div className="ar-card">
+                <div className="ar-card-head">
                   <div>
-                    <h3 className="section-block-title">Job Description Skills Breakdown</h3>
+                    <h3 className="ar-card-title">Job keywords</h3>
+                    <p className="ar-muted">
+                      {keywordSummary.matched} of {keywordSummary.total} found in your resume
+                      {keywordSummary.missingRequired > 0 && <> · <span className="ar-text-poor">{keywordSummary.missingRequired} required missing</span></>}
+                    </p>
                   </div>
-                  <div className="keyword-filters-row">
-                    <button
-                      type="button"
-                      className={`filter-tab-btn ${keywordFilter === 'ALL' ? 'active' : ''}`}
-                      onClick={() => setKeywordFilter('ALL')}
-                    >
-                      All ({analysisResult.keywords.length})
-                    </button>
-                    <button
-                      type="button"
-                      className={`filter-tab-btn ${keywordFilter === 'MATCHED' ? 'active' : ''}`}
-                      onClick={() => setKeywordFilter('MATCHED')}
-                    >
-                      Matched ({analysisResult.keywordSummary.matched})
-                    </button>
-                    <button
-                      type="button"
-                      className={`filter-tab-btn ${keywordFilter === 'MISSING' ? 'active' : ''}`}
-                      onClick={() => setKeywordFilter('MISSING')}
-                    >
-                      Missing Required ({analysisResult.keywordSummary.missingRequired})
-                    </button>
+                  <div className="ar-segmented" role="tablist" aria-label="Filter keywords">
+                    {[
+                      { key: 'ALL', label: `All ${keywords.length}` },
+                      { key: 'MATCHED', label: `Found ${keywords.length - missingCount}` },
+                      { key: 'MISSING', label: `Missing ${missingCount}` }
+                    ].map(tab => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={keywordFilter === tab.key}
+                        className={keywordFilter === tab.key ? 'is-active' : ''}
+                        onClick={() => setKeywordFilter(tab.key)}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
-                <div className="keywords-chips-grid">
-                  {analysisResult.keywords
-                    .filter(kw => {
-                      if (keywordFilter === 'MATCHED') return kw.status === 'MATCHED' || kw.status === 'OVERUSED';
-                      if (keywordFilter === 'MISSING') return kw.status === 'MISSING' && kw.importance === 'REQUIRED';
-                      return true;
-                    })
-                    .map((kw, i) => (
-                      <div key={i} className={`keyword-chip-card status-${kw.status.toLowerCase()}`}>
-                        <div className="chip-top-line">
-                          <span className="kw-text">{kw.text}</span>
-                          <span className={`importance-tag ${kw.importance.toLowerCase()}`}>
-                            {kw.importance}
-                          </span>
-                        </div>
-                        <div className="chip-bottom-line">
-                          <span className={`match-type-tag type-${kw.matchType.toLowerCase()}`}>
-                            {kw.status === 'MISSING' ? 'Missing' : `${kw.matchType} (${kw.count}x)`}
-                          </span>
-                          <span className="found-in-text">{kw.foundIn}</span>
-                        </div>
-                      </div>
+                {keywordGroups.length === 0 ? (
+                  <p className="ar-empty">
+                    {keywordFilter === 'MISSING' ? 'Nothing missing. Your resume covers every keyword in this job description.' : 'No keywords to show.'}
+                  </p>
+                ) : keywordGroups.map(group => (
+                  <div key={group.key} className="ar-kw-group">
+                    <p className="ar-kw-group-title">{group.title}</p>
+                    <ul className="ar-kw-list">
+                      {group.items.map(kw => {
+                        const missing = kw.status === 'MISSING';
+                        const tip = missing
+                          ? `Not in your resume. Add it to ${kw.addTo || 'Skills'}.`
+                          : `${MATCH_LABELS[kw.matchType] || prettyLabel(kw.matchType)}, ${kw.count}x · ${kw.foundIn}`;
+                        return (
+                          <li key={kw.text} className={`ar-kw ${missing ? 'is-missing' : 'is-found'}`} title={tip}>
+                            {missing ? <XCircle size={13} /> : <CheckCircle2 size={13} />}
+                            <span>{kw.text}</span>
+                            {!missing && kw.count > 1 && <span className="ar-kw-count">{kw.count}×</span>}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="ar-card ar-skills">
+                <div className="ar-skills-body">
+                  <h3 className="ar-card-title">Skills we detected</h3>
+                  <p className="ar-muted">{keywords.length} in-demand skills found in your resume.</p>
+                  <ul className="ar-kw-list">
+                    {keywords.map(kw => (
+                      <li key={kw.text} className="ar-kw is-found">
+                        <CheckCircle2 size={13} />
+                        <span>{kw.text}</span>
+                      </li>
                     ))}
+                  </ul>
+                </div>
+                <div className="ar-skills-cta">
+                  <Target size={18} />
+                  <p>Applying for a specific role? Add the job description to see which keywords you are missing.</p>
+                  <button
+                    type="button"
+                    className="ar-ghost-btn"
+                    onClick={() => {
+                      setSelectedMode('JD_RESUME');
+                      setViewState('UPLOAD');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                  >
+                    <span>Add job description</span>
+                    <ArrowRight size={14} />
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* ── Section-by-Section Health Check ── */}
-            <div className="sections-health-card">
-              <div className="section-header-row">
+            {/* Section health */}
+            <div className="ar-card">
+              <div className="ar-card-head">
                 <div>
-                  <h3 className="section-block-title">Section-by-Section Health Check</h3>
+                  <h3 className="ar-card-title">Section check</h3>
+                  <p className="ar-muted">Sections that need work are listed first.</p>
                 </div>
-                <span className="hint-note">Order: Personal → Summary → Experience → Education → Skills → Projects</span>
               </div>
 
-              <div className="sections-bento-grid">
-                {analysisResult.sections.map(sec => {
+              <ul className="ar-sections">
+                {orderedSections.map(sec => {
                   const hasConcern = Boolean(sec.hasConcern || sec.topIssue);
                   const isFixed = fixedSectionKeys.has(sec.key);
                   const isExpanded = expandedSections.has(sec.key);
-                  const pointsGain = sec.pointsGain || 5;
+                  const pointsGain = sec.pointsGain ?? 5;
+                  const state = isFixed ? 'fixed' : hasConcern ? 'warn' : sec.score === null ? 'empty' : 'ok';
+                  const stateLabel = { fixed: 'Done', warn: 'Needs work', empty: 'Not added', ok: 'Looks good' }[state];
 
                   return (
-                    <div 
-                      key={sec.key} 
-                      className={`section-bento-card ${hasConcern && !isFixed ? 'has-concern action-needed-highlight' : 'is-optimal'} ${isFixed ? 'fix-applied' : ''} ${isExpanded ? 'is-expanded' : 'is-minimized'}`}
-                    >
-                      {/* Minimized Clickable Header Bar */}
-                      <div 
-                        className="sec-minimized-bar"
-                        onClick={() => toggleSectionExpand(sec.key)}
-                        role="button"
-                        tabIndex={0}
+                    <li key={sec.key} className={`ar-sec ar-sec--${state} ${isExpanded ? 'is-open' : ''}`}>
+                      <button
+                        type="button"
+                        className="ar-sec-row"
                         aria-expanded={isExpanded}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            toggleSectionExpand(sec.key);
-                          }
-                        }}
+                        onClick={() => toggleSectionExpand(sec.key)}
                       >
-                        <div className="sec-bar-left">
-                          <button
-                            type="button"
-                            className="sec-expand-icon-btn"
-                            aria-label={isExpanded ? 'Collapse section' : 'Expand section'}
-                            tabIndex={-1}
-                          >
-                            {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
-                          </button>
+                        <span className="ar-sec-icon">
+                          {state === 'warn' ? <AlertTriangle size={15} /> : state === 'empty' ? <Info size={15} /> : <CheckCircle2 size={15} />}
+                        </span>
+                        <span className="ar-sec-name">{sec.title}</span>
+                        <span className="ar-sec-state">{stateLabel}</span>
+                        <span className="ar-sec-stat">{sec.stat}</span>
+                        <span className="ar-sec-score">
+                          {sec.score !== null ? (isFixed ? Math.min(100, sec.score + pointsGain) : sec.score) : ''}
+                        </span>
+                        <ChevronDown size={16} className="ar-sec-chevron" />
+                      </button>
 
-                          <strong className="sec-name">{sec.title}</strong>
-
-                          {isFixed ? (
-                            <span className="status-badge-pill pass">FIXED (+{pointsGain} pts)</span>
-                          ) : hasConcern ? (
-                            <span className="status-badge-pill action-needed-pill">
-                              <AlertTriangle size={12} />
-                              <span>Action Needed</span>
-                            </span>
-                          ) : (
-                            <span className="status-badge-pill pass">OPTIMAL</span>
-                          )}
-
-                          {sec.score !== null && (
-                            <span className="sec-score-num">
-                              {isFixed ? Math.min(100, sec.score + pointsGain) : sec.score}/100
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="sec-bar-right">
-                          <span className="sec-stat-line">{sec.stat}</span>
-                          {hasConcern && !isFixed ? (
-                            <span className="sec-cue-badge cue-warn">
-                              <span>{isExpanded ? 'Collapse' : 'View Fix'}</span>
-                              {isExpanded ? <ChevronUp size={12} /> : <ChevronRight size={12} />}
-                            </span>
-                          ) : (
-                            <span className="sec-cue-badge cue-neutral">
-                              <span>{isExpanded ? 'Collapse' : 'Details'}</span>
-                              {isExpanded ? <ChevronUp size={12} /> : <ChevronRight size={12} />}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Expandable Diagnostic Body */}
                       {isExpanded && (
-                        <div className="sec-expandable-body animate-fade-in">
+                        <div className="ar-sec-body animate-fade-in">
                           {hasConcern ? (
-                            <div className="sec-concern-details">
-                              <div className="sec-concern-issue-bar">
-                                <AlertTriangle size={14} className="sec-warn-icon" />
-                                <span className="sec-issue-headline">
-                                  <strong>Concern:</strong> {sec.topIssue}
-                                </span>
-                              </div>
-
-                              <div className="sec-explanation-box">
-                                <span className="sec-explanation-label">What needs to be fixed & why:</span>
-                                <p className="sec-explanation-text">{sec.fixExplanation}</p>
-                              </div>
-
+                            <>
+                              <p className="ar-sec-issue">{sec.topIssue}</p>
+                              <p className="ar-sec-text">{sec.fixExplanation}</p>
                               {sec.fixAction && (
-                                <div className="sec-action-recommendation">
-                                  <Wrench size={12} className="sec-action-icon" />
-                                  <span><strong>Recommended Action:</strong> {sec.fixAction}</span>
+                                <p className="ar-sec-action"><Wrench size={13} /><span>{sec.fixAction}</span></p>
+                              )}
+                              <button
+                                type="button"
+                                className={`ar-done-btn ${isFixed ? 'is-done' : ''}`}
+                                onClick={() => handleToggleSectionFix(sec.key, pointsGain)}
+                              >
+                                <Check size={14} />
+                                <span>{isFixed ? 'Marked as done' : `Mark as done (+${pointsGain} pts)`}</span>
+                              </button>
+                            </>
+                          ) : (
+                            <p className="ar-sec-text">{sec.fixExplanation}</p>
+                          )}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Suggestions */}
+            {suggestions.length > 0 && (
+              <div className="ar-card">
+                <div className="ar-card-head">
+                  <div>
+                    <h3 className="ar-card-title">Top fixes</h3>
+                    <p className="ar-muted">{suggestionSummary.total} fixes, highest impact first.</p>
+                  </div>
+                  {suggestionSummary.pointsAvailable > 0 && (
+                    <span className="ar-gain">+{suggestionSummary.pointsAvailable} pts available</span>
+                  )}
+                </div>
+
+                <ol className="ar-fixes">
+                  {suggestions.map(sugg => {
+                    const isFixed = fixedSuggestionIds.has(sugg.id);
+                    const priority = sugg.priority.toLowerCase();
+                    return (
+                      <li key={sugg.id} className={`ar-fix ${isFixed ? 'is-done' : ''}`}>
+                        <div className="ar-fix-main">
+                          <div className="ar-fix-meta">
+                            <span className={`ar-priority ar-priority--${priority}`}>{PRIORITY_LABELS[sugg.priority] || prettyLabel(sugg.priority)}</span>
+                            <span className="ar-dot-sep">·</span>
+                            <span>{prettyLabel(sugg.action)}</span>
+                            <span className="ar-dot-sep">·</span>
+                            <span className="ar-text-good">+{sugg.pointsGain} pts</span>
+                          </div>
+                          <h4 className="ar-fix-title">{sugg.title}</h4>
+                          <p className="ar-fix-reason">{sugg.reason}</p>
+
+                          {(sugg.before || sugg.after) && (
+                            <div className="ar-diff">
+                              {sugg.before && (
+                                <div className="ar-diff-line is-before">
+                                  <span className="ar-diff-label">Before</span>
+                                  <p>{sugg.before}</p>
                                 </div>
                               )}
-
-                              {/* Apply Fix Action Bar */}
-                              <div className="sec-fix-action-bar">
-                                <button
-                                  type="button"
-                                  className={`sec-apply-fix-btn ${isFixed ? 'applied' : ''}`}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleToggleSectionFix(sec.key, pointsGain);
-                                  }}
-                                  title={isFixed ? 'Click to revert fix' : `Apply fix to gain +${pointsGain} points`}
-                                >
-                                  {isFixed ? (
-                                    <>
-                                      <Check size={13} />
-                                      <span>Fix Applied (+{pointsGain} pts)</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Sparkles size={13} />
-                                      <span>Apply Fix (+{pointsGain} pts)</span>
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="sec-optimal-details">
-                              <div className="sec-optimal-pill">
-                                <CheckCircle2 size={14} className="sec-pass-icon" />
-                                <span className="sec-optimal-headline">All structure & ATS formatting checks optimal</span>
-                              </div>
-                              <p className="sec-optimal-text">{sec.fixExplanation}</p>
+                              {sugg.after && (
+                                <div className="ar-diff-line is-after">
+                                  <span className="ar-diff-label">After</span>
+                                  <p>{sugg.after}</p>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
 
-            {/* ── Prioritized Actionable Suggestions ── */}
-            <div className="suggestions-showcase-card">
-              <div className="section-header-row">
-                <div>
-                  <h3 className="section-block-title">Prioritized High-Gain Improvements</h3>
-                </div>
-                <div className="suggestions-counter-badge">
-                  <span>{analysisResult.suggestionSummary.total} Total Fixes</span>
-                  <span className="pts-available-tag">
-                    +{analysisResult.suggestionSummary.pointsAvailable} pts available
-                  </span>
-                </div>
-              </div>
-
-              <div className="suggestions-cards-column">
-                {analysisResult.suggestions.map(sugg => {
-                  const isFixed = fixedSuggestionIds.has(sugg.id);
-                  return (
-                    <div key={sugg.id} className={`suggestion-card priority-${sugg.priority.toLowerCase()} ${isFixed ? 'fixed' : ''}`}>
-                      <div className="suggestion-card-top">
-                        <div className="sugg-tags-row">
-                          <span className={`priority-tag ${sugg.priority.toLowerCase()}`}>
-                            {sugg.priority}
-                          </span>
-                          <span className="action-tag">{sugg.action.replace('_', ' ')}</span>
-                          <span className="gain-tag">+{sugg.pointsGain} pts</span>
-                          {sugg.autoFix && <span className="autofix-tag">Auto-Fixable</span>}
-                        </div>
                         <button
                           type="button"
-                          className={`apply-fix-btn ${isFixed ? 'fixed-active' : ''}`}
+                          className={`ar-done-btn ${isFixed ? 'is-done' : ''}`}
                           onClick={() => handleToggleFix(sugg.id, sugg.pointsGain)}
                         >
-                          {isFixed ? (
-                            <>
-                              <Check size={14} />
-                              <span>Fixed ({dynamicScore}/100)</span>
-                            </>
-                          ) : (
-                            <>
-                              <span>Apply Fix</span>
-                              <ChevronRight size={14} />
-                            </>
-                          )}
+                          <Check size={14} />
+                          <span>{isFixed ? 'Done' : 'Mark as done'}</span>
                         </button>
-                      </div>
-
-                      <h4 className="sugg-title">{sugg.title}</h4>
-                      <p className="sugg-reason">{sugg.reason}</p>
-
-                      {/* Before / After diff block where applicable */}
-                      {(sugg.before || sugg.after) && (
-                        <div className="diff-preview-box">
-                          {sugg.before && (
-                            <div className="diff-line before">
-                              <span className="diff-indicator">- BEFORE:</span>
-                              <code>{sugg.before}</code>
-                            </div>
-                          )}
-                          {sugg.after && (
-                            <div className="diff-line after">
-                              <span className="diff-indicator">+ AFTER:</span>
-                              <code>{sugg.after}</code>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                      </li>
+                    );
+                  })}
+                </ol>
               </div>
-            </div>
+            )}
 
-            {/* Bottom Conversion Action Bar */}
-            <div className="results-bottom-actions">
-              <button
-                type="button"
-                className="build-resume-from-ats-btn"
-                onClick={() => navigate('/resume')}
-              >
-                <span>Edit & Fix in CipherSchools Resume Builder</span>
+            {/* Bottom actions */}
+            <div className="ar-bottom">
+              <button type="button" className="ar-primary-btn" onClick={() => navigate('/resume')}>
+                <span>Fix it in the Resume Builder</span>
                 <ArrowRight size={16} />
               </button>
-              <button
-                type="button"
-                className="reanalyze-btn"
-                onClick={() => {
-                  setViewState('MODE_SELECTION');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
-              >
+              <button type="button" className="ar-ghost-btn ar-ghost-btn--lg" onClick={resetToModeSelection}>
                 <RotateCcw size={15} />
-                <span>Change Mode or Upload Another Resume</span>
+                <span>Scan another resume</span>
               </button>
             </div>
 
           </section>
-        )}
+          );
+        })()}
 
       </div>
     </div>

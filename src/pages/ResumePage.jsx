@@ -1,388 +1,362 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  FileText, 
-  ArrowRight, 
-  ShieldCheck, 
-  ChevronRight, 
-  ChevronDown, 
-  ChevronUp, 
+import {
+  ArrowRight,
+  ChevronRight,
+  ChevronDown,
   Check,
-  UploadCloud
+  LayoutTemplate,
+  PenLine,
+  Download,
+  ScanSearch
 } from 'lucide-react';
+import { CompanyLogos } from '../components/PlacementMarquee';
+import { ScaledPage, BeginnerResume, ExperiencedResume, ModernResume } from '../components/ResumeTemplates';
 import './ResumePage.css';
 
-// ── ATS Proven Templates Data ──
+// Standalone builder; the picked template is passed as ?template=<id>.
+const EDITOR_PATH = '/resume/builder';
+
 const TEMPLATES = [
   {
     id: 'beginner',
-    title: 'Beginner Template',
-    badge: 'Freshers',
+    title: 'Beginner',
+    audience: 'Students & freshers',
     tagline: 'Perfect for students and freshers starting their career journey.',
-    description: 'Prioritizes education, academic projects, technical coursework, and foundational problem-solving strengths.',
-    sampleCandidate: 'Anurag Mishra',
-    role: 'Computer Science Graduate',
-    highlights: ['Academic Credentials First', 'Core Coursework & Projects', 'Technical Strengths Matrix']
+    highlights: ['Academic details table up top', 'Projects with guide and timeline', 'Skills grouped by type']
   },
   {
     id: 'experienced',
-    title: 'Mid-Level Template',
-    badge: 'Popular',
-    tagline: 'Designed for early career pros to highlight key skills and achievements.',
-    description: 'Balances quantified professional experience, measurable team impact, technical stack competencies, and verified achievements.',
-    sampleCandidate: 'Sanskar Drolia',
-    role: 'Senior Full-Stack Developer',
-    highlights: ['Quantified Impact Metrics', 'Production Stack Breakdown', 'Architecture & System Design']
+    title: 'Experienced',
+    audience: 'Internships & jobs',
+    tagline: 'Ideal for those with internships, projects or job experience.',
+    highlights: ['Dense one-page layout', 'Impact-first experience bullets', 'Skills summary by category']
   },
   {
     id: 'modern',
-    title: 'Senior Template',
-    badge: 'Leadership',
-    tagline: 'Optimized for leadership roles to showcase impact and expertise.',
-    description: 'High-contrast executive layout engineered for senior engineers, tech leads, and managers highlighting strategic initiatives and mentorship.',
-    sampleCandidate: 'Priya Sharma',
-    role: 'Engineering Lead / Architect',
-    highlights: ['Executive Summary', 'Cross-functional Leadership', 'Scale & Reliability Wins']
+    title: 'Modern',
+    audience: 'Any stage',
+    tagline: 'Sleek and clean design, suitable for both beginners and experienced.',
+    highlights: ['Two-column layout', 'Links and skills in a sidebar', 'Clean sans-serif type']
   }
 ];
 
+const STEPS = [
+  { icon: LayoutTemplate, title: 'Pick a template', body: 'Choose the layout that matches where you are in your career.' },
+  { icon: PenLine, title: 'Fill guided sections', body: 'Each section tells you what recruiters look for, so nothing important is missed.' },
+  { icon: Download, title: 'Download your PDF', body: 'Export a clean, ATS-readable PDF ready to upload to any job portal.' }
+];
+
+const TRUSTED_COMPANIES = Object.keys(CompanyLogos);
+
 const FAQ_ITEMS = [
   {
-    q: 'How does the CipherSchools ATS Resume Builder ensure ATS friendliness?',
-    a: 'Our templates are built using single-column semantic structures, standard system font hierarchies, and zero non-parseable tables or graphics. They adhere to strict parsing protocols recognized by Workday, Lever, Greenhouse, and Taleo.'
+    q: 'What makes these templates ATS-friendly?',
+    a: 'They use a single-column structure, standard section headings and real text instead of tables, icons or images, so applicant tracking systems like Workday, Lever, Greenhouse and Taleo can read every line.'
   },
   {
-    q: 'Is CipherSchools Resume Builder really 100% free?',
-    a: 'Yes, completely free! There are no watermarks, no hidden paywalls at checkout, and no limits on PDF exports or template changes.'
+    q: 'Is the resume builder free?',
+    a: 'Yes. There are no watermarks, no paywall at download and no limit on PDF exports or template changes.'
   },
   {
-    q: 'Will my changes be saved if I accidentally close the tab?',
-    a: 'Yes. The editor utilizes real-time local storage auto-save. Every keystroke is saved immediately on your machine without requiring manual save buttons.'
+    q: 'Do I need an account?',
+    a: 'Yes, a free CipherSchools account. It lets you save your resumes and come back to edit them from any device.'
   },
   {
-    q: 'Can I download my resume as a PDF and print it directly?',
-    a: 'Absolutely. You can click the "Download PDF" button in the studio header or trigger browser printing directly with standard A4 margins.'
+    q: 'Can I check a resume I already have?',
+    a: 'Yes. Upload it to the ATS Checker to get a score and a list of fixes before you apply.'
   }
 ];
+
+const PREVIEWS = { beginner: BeginnerResume, experienced: ExperiencedResume, modern: ModernResume };
 
 const ResumePage = () => {
   const navigate = useNavigate();
   const templatesRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const [openFaq, setOpenFaq] = useState(0);
+  const [showDock, setShowDock] = useState(false);
 
-  // Scroll to top on load
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // State Management
-  const [selectedTemplate, setSelectedTemplate] = useState('experienced');
-  const [toastMessage, setToastMessage] = useState('');
-  const [openFaq, setOpenFaq] = useState(null);
-  const [showFloatingCta, setShowFloatingCta] = useState(false);
-
-  // Toast feedback helper
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3500);
-  };
+  useEffect(() => {
+    const handleScroll = () => setShowDock(window.scrollY > 520);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToTemplates = () => {
     templatesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const handleSelectTemplate = (tmplId) => {
-    setSelectedTemplate(tmplId);
-    showToast(`Template "${TEMPLATES.find(t => t.id === tmplId)?.title}" selected!`);
-    scrollToTemplates();
+  const startWithTemplate = (templateId) => {
+    navigate(`${EDITOR_PATH}?template=${templateId}`);
   };
 
-  const handleAtsCheckerClick = () => {
-    navigate('/ats-checker');
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    showToast(`Analyzing "${file.name}" with ATS Parser...`);
-    setTimeout(() => {
-      showToast(`ATS Compatibility Score: 96/100 (Optimal for Workday & Greenhouse)`);
-    }, 1200);
-
-    // Reset input so same file can be selected again
-    e.target.value = '';
-  };
-
-  const handleMyResumes = () => {
-    showToast('No saved resumes found yet. Choose a template below to get started!');
-    scrollToTemplates();
-  };
-
-  // Scroll listener for floating CTA dock
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowFloatingCta(window.scrollY > 280);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const openAtsChecker = () => navigate('/resume/ats-checker');
 
   return (
-    <div className="compiler-page-root resume-page-root">
-      
-      {/* Hidden File Input for ATS Checker */}
-      <input 
-        type="file" 
-        ref={fileInputRef} 
-        accept=".pdf,.doc,.docx" 
-        onChange={handleFileUpload} 
-        style={{ display: 'none' }} 
-      />
+    <div className="rs-page">
 
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="compiler-toast-pill animate-fade-in">
-          <Check size={14} className="text-emerald-500" />
-          <span>{toastMessage}</span>
+      {/* ── HERO ── */}
+      <section className="rs-hero">
+        <h1 className="rs-hero-title">
+          <span className="rs-hero-line">Make an ATS resume</span>
+          <span className="rs-hero-line">
+            in <span className="rs-hero-pill">minutes</span>
+          </span>
+        </h1>
+
+        <p className="rs-hero-sub">
+          Pick a recruiter-tested template, fill in guided sections and download a PDF that applicant tracking systems can read line by line.
+        </p>
+
+        <div className="rs-hero-actions">
+          <button type="button" className="rs-btn rs-btn--primary rs-btn--lg" onClick={scrollToTemplates}>
+            <span>Build my resume</span>
+            <ChevronRight size={16} />
+          </button>
+          <button type="button" className="rs-btn rs-btn--dark rs-btn--lg" onClick={openAtsChecker}>
+            <ScanSearch size={16} />
+            <span>Check my ATS score</span>
+          </button>
         </div>
-      )}
 
-      {/* ─────────────────────────────────────────────────────────────
-         HERO SECTION: Compiler Style Title & Template Picker
-         ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-hero-section">
-        <div className="compiler-hero-inner">
-          <div className="compiler-header-text">
-            <h1 className="compiler-main-title">
-              <span className="compiler-title-line">
-                <span className="compiler-title-black-italic">MAKE AN ATS RESUME</span>
-              </span>
-              <span className="compiler-title-line">
-                <span className="compiler-title-black-italic">IN</span>{' '}
-                <span className="compiler-hero-word-pill">
-                  <span className="compiler-pill-text">MINUTES</span>
-                </span>
-              </span>
-            </h1>
+        <p className="rs-hero-note">Free · No watermark · Unlimited PDF downloads</p>
 
-            <p className="compiler-subtitle">
-              Create a job-ready resume in minutes. Choose from ATS-friendly, tested templates that make you stand out and get hired faster.
-            </p>
-
-            {/* Antigravity Hero Action Buttons */}
-            <div className="hero-action-buttons">
-              <button
-                type="button"
-                className="hero-btn-primary"
-                onClick={scrollToTemplates}
-              >
-                <span>Build new Resume</span>
-                <ChevronRight size={15} />
-              </button>
-
-              <button
-                type="button"
-                className="hero-btn-black"
-                onClick={handleAtsCheckerClick}
-                aria-label="ATS Checker"
-              >
-                <ShieldCheck size={16} />
-                <span>ATS Checker</span>
-              </button>
-
-              <button
-                type="button"
-                className="hero-btn-secondary"
-                onClick={handleMyResumes}
-              >
-                <span>My Resumes</span>
-                <ArrowRight size={15} />
-              </button>
+        {/* Product visual: a sample resume with the ATS readout it would get */}
+        <div className="rs-hero-visual" aria-label="Sample resume made with the CipherSchools builder" role="img">
+          <div className="rs-sheet">
+            <div className="rs-sheet-head">
+              <p className="rs-sheet-name">Anurag Mishra</p>
+              <p className="rs-sheet-role">Software Engineer · B.Tech CSE 2026</p>
+              <p className="rs-sheet-meta">anurag.m@mail.com · linkedin/anuragm · github/anuragm</p>
+            </div>
+            <div className="rs-sheet-sec">
+              <p className="rs-sheet-h">Experience</p>
+              <p className="rs-sheet-row"><strong>Backend Intern, Groww</strong><span>May – Jul 2025</span></p>
+              <ul>
+                <li>Built a <mark>Node.js</mark> service that reconciles 1.2M daily transactions</li>
+                <li>Reduced report generation time from 9 min to 47 s using <mark>PostgreSQL</mark> indexes</li>
+              </ul>
+            </div>
+            <div className="rs-sheet-sec">
+              <p className="rs-sheet-h">Projects</p>
+              <p className="rs-sheet-row"><strong>PeerPrep: mock-interview platform</strong><span>2025</span></p>
+              <ul>
+                <li><mark>React</mark> + WebRTC app with 640 sign-ups in the first month</li>
+              </ul>
+            </div>
+            <div className="rs-sheet-sec">
+              <p className="rs-sheet-h">Skills</p>
+              <p className="rs-sheet-p">Java, Python, <mark>React</mark>, <mark>Node.js</mark>, <mark>PostgreSQL</mark>, Docker, Git</p>
             </div>
           </div>
 
+          <div className="rs-float rs-float--score">
+            <div className="rs-score-ring"><span>92</span></div>
+            <div>
+              <p className="rs-float-title">ATS score</p>
+              <p className="rs-float-sub">Parses cleanly</p>
+            </div>
+          </div>
+
+          <div className="rs-float rs-float--checks">
+            <p className="rs-float-title">Checks passed</p>
+            <ul>
+              <li><Check size={12} /> Single-column layout</li>
+              <li><Check size={12} /> Standard headings</li>
+              <li><Check size={12} /> Keywords matched</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      {/* ─────────────────────────────────────────────────────────────
-         SECTION 2: PROVEN PROFESSIONAL TEMPLATES (Compiler Card Pattern)
-         Copy:
-         - "Make Your Resume with Proven Professional Templates."
-         - Beginner, Mid-Level, Senior templates with tags
-         ───────────────────────────────────────────────────────────── */}
-      <section className="resume-templates-section" ref={templatesRef}>
-        <div className="section-head-center">
-          <h2 className="section-title">
-            Make Your Resume with <span className="headline-gradient">Proven Professional Templates.</span>
+      {/* ── TRUST STRIP ── */}
+      <section className="rs-trust" aria-label="Companies our job seekers work at">
+        <p className="rs-trust-label">
+          <strong>5000+</strong> Job Seekers trusted us
+        </p>
+        <div className="rs-marquee">
+          <ul className="rs-marquee-track">
+            {[...TRUSTED_COMPANIES, ...TRUSTED_COMPANIES].map((name, i) => (
+              <li
+                key={`${name}-${i}`}
+                className="rs-logo"
+                aria-hidden={i >= TRUSTED_COMPANIES.length ? 'true' : undefined}
+              >
+                <span className="rs-logo-mark">{CompanyLogos[name]}</span>
+                <span className="rs-logo-name">{name}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── TEMPLATES ── */}
+      <section className="rs-section rs-templates" ref={templatesRef} id="templates">
+        <div className="rs-section-head">
+          <h2 className="rs-section-title">
+            Start from a <span className="rs-accent-text">proven template</span>
           </h2>
-          <p className="section-subtitle">
-            Engineered and tested against leading Applicant Tracking Systems (ATS) to ensure flawless parsing by recruiters.
+          <p className="rs-section-sub">
+            Three layouts tested against leading applicant tracking systems. Each one orders your sections for the stage you're at.
           </p>
         </div>
 
-        <div className="templates-showcase-grid">
+        <div className="rs-template-grid">
           {TEMPLATES.map((tmpl) => {
-            const isSelected = selectedTemplate === tmpl.id;
+            const Preview = PREVIEWS[tmpl.id];
             return (
-              <div 
-                key={tmpl.id} 
-                className={`template-feature-card ${isSelected ? 'active-template' : ''}`}
-              >
-                <div className="template-card-header">
-                  <div className="template-badge-pill">{tmpl.badge}</div>
-                  <h3 className="template-card-title">{tmpl.title}</h3>
-                  <p className="template-card-tagline">{tmpl.tagline}</p>
-                </div>
-
-                <div className="template-preview-mock">
-                  <div className="mock-sheet-preview">
-                    <div className="mock-sheet-bar" style={{ width: '40%', height: '8px', background: '#0F172A', marginBottom: '6px' }} />
-                    <div className="mock-sheet-bar" style={{ width: '25%', height: '5px', background: '#94A3B8', marginBottom: '10px' }} />
-                    <div className="mock-sheet-divider" />
-                    <div className="mock-sheet-bar" style={{ width: '90%', height: '4px', background: '#CBD5E1', marginBottom: '4px' }} />
-                    <div className="mock-sheet-bar" style={{ width: '82%', height: '4px', background: '#E2E8F0', marginBottom: '8px' }} />
-                    <div className="mock-sheet-divider" />
-                    <div className="mock-sheet-bar" style={{ width: '95%', height: '4px', background: '#CBD5E1', marginBottom: '4px' }} />
-                    <div className="mock-sheet-bar" style={{ width: '70%', height: '4px', background: '#E2E8F0' }} />
+              <article key={tmpl.id} className="rs-template-card">
+                <div className="rs-template-preview">
+                  <div className="rs-template-paper">
+                    <ScaledPage>
+                      <Preview />
+                    </ScaledPage>
                   </div>
                 </div>
+                <div className="rs-template-body">
+                  <span className="rs-tag">{tmpl.audience}</span>
+                  <h3 className="rs-template-title">{tmpl.title} template</h3>
+                  <p className="rs-template-tagline">{tmpl.tagline}</p>
+                  <ul className="rs-template-points">
+                    {tmpl.highlights.map((h) => (
+                      <li key={h}><Check size={13} /> <span>{h}</span></li>
+                    ))}
+                  </ul>
+                  <button
+                    type="button"
+                    className="rs-btn rs-btn--outline rs-btn--block"
+                    onClick={() => startWithTemplate(tmpl.id)}
+                    aria-label={`Use the ${tmpl.title} template`}
+                  >
+                    <span>Use this template</span>
+                    <ChevronRight size={14} />
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
 
-                <ul className="template-highlights-list">
-                  {tmpl.highlights.map((h, i) => (
-                    <li key={i}>
-                      <Check size={13} className="text-emerald-500" />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
+      {/* ── HOW IT WORKS ── */}
+      <section className="rs-section rs-steps-section">
+        <div className="rs-section-head">
+          <h2 className="rs-section-title">
+            From blank page to <span className="rs-accent-text">ready to apply</span>
+          </h2>
+        </div>
+        <ol className="rs-steps">
+          {STEPS.map(({ icon: Icon, title, body }, i) => (
+            <li key={title} className="rs-step">
+              <span className="rs-step-num">0{i + 1}</span>
+              <span className="rs-step-icon"><Icon size={18} /></span>
+              <h3 className="rs-step-title">{title}</h3>
+              <p className="rs-step-body">{body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-                <button
-                  type="button"
-                  className={`template-select-btn ${isSelected ? 'selected' : ''}`}
-                  onClick={() => handleSelectTemplate(tmpl.id)}
+      {/* ── ATS CHECKER ── */}
+      <section className="rs-section">
+        <div className="rs-ats-card">
+          <div className="rs-ats-copy">
+            <span className="rs-tag rs-tag--dark"><ScanSearch size={12} /> ATS Checker</span>
+            <h2 className="rs-ats-title">Already have a resume? See how recruiters' software reads it.</h2>
+            <p className="rs-ats-sub">
+              Upload a PDF or DOCX and get a score across formatting, keywords and impact, with a list of specific fixes.
+            </p>
+            <button type="button" className="rs-btn rs-btn--dark" onClick={openAtsChecker}>
+              <span>Check my resume</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="rs-ats-readout" aria-hidden="true">
+            {[
+              ['ATS compatibility', 94],
+              ['Keyword match', 71],
+              ['Resume impact', 63]
+            ].map(([label, value]) => (
+              <div key={label} className="rs-meter">
+                <div className="rs-meter-top"><span>{label}</span><span>{value}</span></div>
+                <div className="rs-meter-track"><div className="rs-meter-fill" style={{ '--v': `${value}%` }} /></div>
+              </div>
+            ))}
+            <p className="rs-readout-note">Sample report</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="rs-section rs-faq">
+        <div className="rs-section-head">
+          <h2 className="rs-section-title">
+            Questions about the <span className="rs-accent-text">resume builder</span>
+          </h2>
+        </div>
+        <div className="rs-faq-list">
+          {FAQ_ITEMS.map((item, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div key={item.q} className={`rs-faq-item ${isOpen ? 'is-open' : ''}`}>
+                <h3 className="rs-faq-q">
+                  <button
+                    type="button"
+                    id={`rs-faq-q-${idx}`}
+                    aria-expanded={isOpen}
+                    aria-controls={`rs-faq-a-${idx}`}
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  >
+                    <span>{item.q}</span>
+                    <ChevronDown size={16} className="rs-faq-chevron" />
+                  </button>
+                </h3>
+                <div
+                  id={`rs-faq-a-${idx}`}
+                  role="region"
+                  aria-labelledby={`rs-faq-q-${idx}`}
+                  className="rs-faq-a"
+                  inert={!isOpen}
                 >
-                  <span>{isSelected ? 'Currently Selected' : 'Use This Template'}</span>
-                  <ChevronRight size={14} />
-                </button>
+                  <div className="rs-faq-a-inner"><p>{item.a}</p></div>
+                </div>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* ─────────────────────────────────────────────────────────────
-         SECTION 3: SKILLS LEVEL-UP BANNER (Compiler Bottom CTA Pattern)
-         Copy:
-         - "Want to level up your skills?"
-         - "Upskill with CipherSchools industry-aligned courses, curated projects, and expert mentorship to supercharge your resume."
-         - Button: "Explore Courses →"
-         ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-bottom-cta">
-        <div className="cta-box-card">
-          <div className="cta-content">
-            <h2 className="cta-heading">Want to level up your skills?</h2>
-            <p className="cta-sub">
-              Upskill with CipherSchools industry-aligned courses, curated projects, and expert mentorship to supercharge your resume.
+      {/* ── UPSKILL (secondary) ── */}
+      <section className="rs-section rs-upskill-wrap">
+        <div className="rs-upskill">
+          <div>
+            <h2 className="rs-upskill-title">Want more to put on your resume?</h2>
+            <p className="rs-upskill-sub">
+              CipherSchools courses come with guided projects and mentor reviews you can list under Projects.
             </p>
           </div>
-          <div className="cta-actions">
-            <button
-              type="button"
-              className="cta-btn-primary"
-              onClick={() => navigate('/courses')}
-            >
-              <span>Explore Courses</span>
-              <ArrowRight size={14} />
-            </button>
-            <button
-              type="button"
-              className="cta-btn-secondary"
-              onClick={scrollToTemplates}
-            >
-              <span>Build new Resume</span>
-              <ChevronRight size={14} />
-            </button>
-          </div>
+          <button type="button" className="rs-btn rs-btn--outline" onClick={() => navigate('/courses')}>
+            <span>Explore courses</span>
+            <ArrowRight size={14} />
+          </button>
         </div>
       </section>
 
-      {/* ─────────────────────────────────────────────────────────────
-         SECTION 4: FAQ ACCORDION (Compiler FAQ Section Pattern)
-         ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-faq-section">
-        <div className="faq-container">
-          
-          <div className="section-head-center">
-            <h2 className="section-title">
-              Everything You Need to Know About <span className="headline-gradient">Resume Builder</span>
-            </h2>
-          </div>
-
-          <div className="faq-accordion-wrap">
-            {FAQ_ITEMS.map((item, idx) => {
-              const isOpen = openFaq === idx;
-              return (
-                <div 
-                  key={idx} 
-                  className={`faq-accordion-item ${isOpen ? 'open' : ''}`}
-                >
-                  <button
-                    type="button"
-                    className="faq-question-btn"
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    aria-expanded={isOpen}
-                  >
-                    <span className="faq-question-text">{item.q}</span>
-                    <span className="faq-toggle-icon">
-                      {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <div className="faq-answer-content animate-fade-in">
-                      <p>{item.a}</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-         FLOATING CTA DOCK (WHEN SCROLLED)
-         ───────────────────────────────────────────────────────────── */}
-      <div 
-        className={`compiler-floating-cta-dock ${showFloatingCta ? 'visible' : ''}`}
-        aria-hidden={!showFloatingCta}
-      >
-        <div className="floating-dock-card">
-          <button
-            type="button"
-            className="floating-btn-primary"
-            onClick={scrollToTemplates}
-            aria-label="Build new Resume"
-          >
-            <span>Build new Resume</span>
-            <ChevronRight size={15} />
-          </button>
-
-          <button
-            type="button"
-            className="floating-btn-black"
-            onClick={handleAtsCheckerClick}
-            aria-label="ATS Checker"
-          >
-            <ShieldCheck size={14} />
-            <span>ATS Checker</span>
-          </button>
-        </div>
+      {/* ── FLOATING DOCK ── */}
+      <div className={`rs-dock ${showDock ? 'is-visible' : ''}`} inert={!showDock}>
+        <button type="button" className="rs-btn rs-btn--primary" onClick={scrollToTemplates}>
+          <span>Build my resume</span>
+          <ChevronRight size={15} />
+        </button>
+        <button type="button" className="rs-btn rs-btn--dark" onClick={openAtsChecker}>
+          <ScanSearch size={15} />
+          <span>Check ATS score</span>
+        </button>
       </div>
-
     </div>
   );
 };

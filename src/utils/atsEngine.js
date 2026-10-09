@@ -103,10 +103,14 @@ export function analyzeResume(inputs) {
     if (parts[0]) parsedJobTitle = parts[0];
     if (parts[1]) parsedCompany = parts[1];
   } else if (hasJd) {
-    // Attempt extracting from first lines of JD
-    const firstLines = jdText.slice(0, 150).split('\n');
-    parsedJobTitle = firstLines[0]?.slice(0, 50) || 'Software Engineer';
-    parsedCompany = 'Target Organization';
+    // Read "Job Title:" / "Company:" lines when present, else fall back to the first line
+    const lines = jdText.split('\n').map(l => l.trim()).filter(Boolean);
+    const field = (label) => {
+      const line = lines.find(l => l.toLowerCase().startsWith(`${label}:`));
+      return line ? line.slice(label.length + 1).trim() : null;
+    };
+    parsedJobTitle = (field('job title') || field('title') || field('role') || lines[0] || 'Software Engineer').slice(0, 60);
+    parsedCompany = field('company') || field('organization') || null;
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -442,7 +446,7 @@ export function analyzeResume(inputs) {
         importance: k.importance,
         matchType,
         count,
-        foundIn: foundIn.length > 0 ? foundIn.join(', ') : 'Not found',
+        foundIn: foundIn.length > 0 ? foundIn.join(', ') : (status === 'MISSING' ? 'Not found' : 'Resume text (synonym)'),
         addTo: status === 'MISSING' ? (k.importance === 'REQUIRED' ? 'Skills & Projects' : 'Skills') : null
       };
     });
@@ -500,7 +504,7 @@ export function analyzeResume(inputs) {
       band: getScoreBand(generalKwScore),
       passed: Math.min(8, Math.max(5, detectedGeneralSkills.length)),
       total: 8,
-      stat: `${detectedGeneralSkills.length} core engineering technologies identified`,
+      stat: `${plural(detectedGeneralSkills.length, 'in-demand skill')} found`,
       topIssue: null,
       checks: [
         { id: 'tech_breadth', label: 'Core Technical Stack Breadth', status: detectedGeneralSkills.length >= 6 ? 'PASS' : (detectedGeneralSkills.length >= 3 ? 'WARN' : 'FAIL'), value: `${detectedGeneralSkills.length} foundational software engineering technologies recognized` },
@@ -519,7 +523,7 @@ export function analyzeResume(inputs) {
       missingRequired: 0
     };
     keywords = detectedGeneralSkills.map(s => ({
-      text: s.toUpperCase(),
+      text: SKILL_DISPLAY_NAMES[s] || s,
       status: 'MATCHED',
       importance: 'REQUIRED',
       matchType: 'EXACT',
@@ -697,7 +701,7 @@ export function analyzeResume(inputs) {
       filled: Boolean(resume_json?.experience?.length),
       required: false,
       issues: metricShare < 0.35 ? 1 : 0,
-      stat: `${resume_json?.experience?.length || 0} position(s) listed with ${(resume_json?.experience || []).flatMap(e => e.bullets || []).length} bullets`,
+      stat: `${plural(resume_json?.experience?.length || 0, 'position')} with ${plural((resume_json?.experience || []).flatMap(e => e.bullets || []).length, 'bullet')}`,
       topIssue: (resume_json?.experience?.length || 0) > 0 && metricShare < 0.35 ? 'Bullets lack quantifiable numbers and measurable metrics' : null,
       hasConcern: (resume_json?.experience?.length || 0) > 0 && metricShare < 0.35,
       fixExplanation: 'Recruiters and ATS parsers prioritize candidates with quantified engineering impact. Frame bullets using the Google X-Y-Z formula: "Accomplished [X] measured by [Y]% by doing [Z]". Include metrics like latency reductions, user scale, or performance gains.',
@@ -717,7 +721,7 @@ export function analyzeResume(inputs) {
       filled: hasEdu,
       required: true,
       issues: hasEdu ? 0 : 1,
-      stat: `${resume_json?.education?.length || 0} academic credential(s) listed`,
+      stat: `${plural(resume_json?.education?.length || 0, 'degree')} listed`,
       topIssue: hasEdu ? null : 'Missing education section',
       hasConcern: !hasEdu,
       fixExplanation: 'Enterprise ATS parsers screen candidates against minimum degree requirements. Add your formal degree, field of study, university name, and graduation year.',
@@ -763,7 +767,7 @@ export function analyzeResume(inputs) {
       filled: Boolean(resume_json?.projects?.length),
       required: !resume_json?.experience?.length,
       issues: 0,
-      stat: `${resume_json?.projects?.length || 0} software project(s) showcased`,
+      stat: `${plural(resume_json?.projects?.length || 0, 'project')} listed`,
       topIssue: null,
       hasConcern: false,
       fixExplanation: 'Projects are well-structured with clear technical stacks.',
@@ -783,7 +787,7 @@ export function analyzeResume(inputs) {
       filled: Boolean(resume_json?.certifications?.length),
       required: false,
       issues: 0,
-      stat: `${resume_json?.certifications?.length || 0} verified certification(s)`,
+      stat: `${plural(resume_json?.certifications?.length || 0, 'certification')} listed`,
       topIssue: null,
       hasConcern: false,
       fixExplanation: 'Certifications are formatted properly.',
@@ -803,7 +807,7 @@ export function analyzeResume(inputs) {
       filled: Boolean(resume_json?.activities?.length),
       required: false,
       issues: 0,
-      stat: `${resume_json?.activities?.length || 0} activity entry`,
+      stat: (resume_json?.activities?.length || 0) > 0 ? `${plural(resume_json.activities.length, 'activity', 'activities')} listed` : 'Optional section, not in your resume',
       topIssue: null,
       hasConcern: false,
       fixExplanation: 'Extracurricular section formatted properly.',
@@ -819,7 +823,7 @@ export function analyzeResume(inputs) {
       filled: Boolean(resume_json?.achievements?.length),
       required: false,
       issues: 0,
-      stat: `${resume_json?.achievements?.length || 0} achievement entry`,
+      stat: (resume_json?.achievements?.length || 0) > 0 ? `${plural(resume_json.achievements.length, 'achievement')} listed` : 'Optional section, not in your resume',
       topIssue: null,
       hasConcern: false,
       fixExplanation: 'Achievements formatted properly.',
@@ -1088,6 +1092,15 @@ export function analyzeResume(inputs) {
     suggestions
   };
 }
+
+function plural(count, word, pluralWord = `${word}s`) {
+  return `${count} ${count === 1 ? word : pluralWord}`;
+}
+
+const SKILL_DISPLAY_NAMES = {
+  java: 'Java', python: 'Python', react: 'React', javascript: 'JavaScript', sql: 'SQL', git: 'Git',
+  'node.js': 'Node.js', docker: 'Docker', 'c++': 'C++', html: 'HTML', css: 'CSS', dsa: 'DSA', rest: 'REST APIs'
+};
 
 function getScoreBand(score) {
   if (score >= 90) return 'EXCELLENT';
