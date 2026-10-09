@@ -108,7 +108,7 @@ const NAV_ITEMS = [
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Interactive Resume Builder',
     cardDesc: 'Craft ATS-compliant developer resumes with live PDF preview and real-time formatting guidance.',
-    cardTags: ['ATS Templates', 'PDF Export', 'Live Preview']
+    cardTags: ['ATS Templates', 'ATS Checker', 'PDF Export']
   },
   { 
     id: 'compiler', 

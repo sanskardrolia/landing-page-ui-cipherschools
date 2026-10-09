@@ -221,7 +221,7 @@ const Navbar = () => {
                     {/* 3. Resume Builder */}
                     <div 
                       className="nav-mega-card card-resumebuilder"
-                      onClick={() => scrollToSection('student-section')}
+                      onClick={() => navigate('/resume')}
                     >
                       <div className="nav-card-preview">
                         <div className="nav-card-mini-window">
@@ -245,7 +245,7 @@ const Navbar = () => {
                     {/* 4. Compiler */}
                     <div 
                       className="nav-mega-card card-compiler"
-                      onClick={() => scrollToSection('student-section')}
+                      onClick={() => navigate('/compiler')}
                     >
                       <div className="nav-card-preview">
                         <div className="nav-card-mini-window">

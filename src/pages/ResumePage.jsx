@@ -107,7 +107,7 @@ const ResumePage = () => {
 
     showToast(`Analyzing "${file.name}" with ATS Parser...`);
     setTimeout(() => {
-      showToast(`✓ ATS Compatibility Score: 96/100 (Optimal for Workday & Greenhouse)!`);
+      showToast(`ATS Compatibility Score: 96/100 (Optimal for Workday & Greenhouse)`);
     }, 1200);
 
     // Reset input so same file can be selected again
@@ -154,13 +154,6 @@ const ResumePage = () => {
          ───────────────────────────────────────────────────────────── */}
       <section className="compiler-hero-section">
         <div className="compiler-hero-inner">
-          
-          {/* Antigravity Pill Badge */}
-          <span className="compiler-badge-pill">
-            <span className="badge-pulse-dot" />
-            FREE ATS RESUME BUILDER
-          </span>
-
           <div className="compiler-header-text">
             <h1 className="compiler-main-title">
               <span className="compiler-title-line">
@@ -210,32 +203,6 @@ const ResumePage = () => {
             </div>
           </div>
 
-          {/* ── OR PICK A TEMPLATE TO START (Segmented Pill Dock) ── */}
-          <div className="pick-language-block">
-            <span className="pick-language-label">OR PICK A TEMPLATE TO START</span>
-            
-            <div className="language-pills-row">
-              {TEMPLATES.map((tmpl) => {
-                const isSelected = selectedTemplate === tmpl.id;
-                return (
-                  <button
-                    key={tmpl.id}
-                    type="button"
-                    className={`lang-pill-btn ${isSelected ? 'active' : ''}`}
-                    onClick={() => handleSelectTemplate(tmpl.id)}
-                    aria-label={`Select ${tmpl.title}`}
-                  >
-                    {tmpl.badge && (
-                      <span className="lang-popular-badge">{tmpl.badge}</span>
-                    )}
-                    <FileText size={18} />
-                    <span className="lang-pill-name">{tmpl.title}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
         </div>
       </section>
 
@@ -247,7 +214,6 @@ const ResumePage = () => {
          ───────────────────────────────────────────────────────────── */}
       <section className="resume-templates-section" ref={templatesRef}>
         <div className="section-head-center">
-          <span className="compiler-badge-pill">PROVEN ATS TEMPLATES</span>
           <h2 className="section-title">
             Make Your Resume with <span className="headline-gradient">Proven Professional Templates.</span>
           </h2>
@@ -309,14 +275,14 @@ const ResumePage = () => {
       {/* ─────────────────────────────────────────────────────────────
          SECTION 3: SKILLS LEVEL-UP BANNER (Compiler Bottom CTA Pattern)
          Copy:
-         - "Want to level up your skills? 🚀"
+         - "Want to level up your skills?"
          - "Upskill with CipherSchools industry-aligned courses, curated projects, and expert mentorship to supercharge your resume."
          - Button: "Explore Courses →"
          ───────────────────────────────────────────────────────────── */}
       <section className="compiler-bottom-cta">
         <div className="cta-box-card">
           <div className="cta-content">
-            <h2 className="cta-heading">Want to level up your skills? 🚀</h2>
+            <h2 className="cta-heading">Want to level up your skills?</h2>
             <p className="cta-sub">
               Upskill with CipherSchools industry-aligned courses, curated projects, and expert mentorship to supercharge your resume.
             </p>
@@ -349,7 +315,6 @@ const ResumePage = () => {
         <div className="faq-container">
           
           <div className="section-head-center">
-            <span className="compiler-badge-pill">FREQUENTLY ASKED QUESTIONS</span>
             <h2 className="section-title">
               Everything You Need to Know About <span className="headline-gradient">Resume Builder</span>
             </h2>

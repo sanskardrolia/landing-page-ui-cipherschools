@@ -841,9 +841,9 @@ const CompilerPage = () => {
   // ── Whiteboard Cursive Drawing Animation State ──
   const whiteboardSectionRef = useRef(null);
   const [isWhiteboardInView, setIsWhiteboardInView] = useState(false);
-  const [wbPhase, setWbPhase] = useState('idle'); // 'idle' | 'delay' | 'drawing_text' | 'drawing_cta' | 'complete'
+  const [wbPhase, setWbPhase] = useState('idle'); // 'idle' | 'delay' | 'drawing_text' | 'complete'
   const [wbText, setWbText] = useState('');
-  const targetWbText = 'We got you';
+  const targetWbText = 'Explain as you debug / dry run on white board';
 
   // Active scroll check for Whiteboard section: strictly only functional when scrolled to that section
   useEffect(() => {
@@ -888,17 +888,13 @@ const CompilerPage = () => {
       if (wbText.length < targetWbText.length) {
         timer = setTimeout(() => {
           setWbText(targetWbText.slice(0, wbText.length + 1));
-        }, 90);
+        }, 45);
       } else {
-        // Text drawing done! Reveal whiteboard button
+        // Text drawing done!
         timer = setTimeout(() => {
-          setWbPhase('drawing_cta');
+          setWbPhase('complete');
         }, 300);
       }
-    } else if (wbPhase === 'drawing_cta') {
-      timer = setTimeout(() => {
-        setWbPhase('complete');
-      }, 400);
     }
 
     return () => clearTimeout(timer);
@@ -1312,16 +1308,10 @@ Happy Coding! 🎉
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-         SECTION 2: THINGS CAN BE DONE VIA CIPHERSCHOOLS COMPILER
+         SECTION 2: COMPILER CAPABILITIES BENTO GRID
          ───────────────────────────────────────────────────────────── */}
       <section className="compiler-capabilities-section">
         <div className="capabilities-container">
-          
-          <div className="section-head-center">
-            <h2 className="section-title">
-              Things Can Be Done via <span className="headline-gradient">CipherSchools Compiler</span>
-            </h2>
-          </div>
 
           <div className="compiler-bento-grid">
             
@@ -1547,7 +1537,7 @@ Happy Coding! 🎉
               </div>
             </div>
 
-            {/* Whiteboard Main Canvas Area (Strictly "We got you" & "Start for FREE" button) */}
+            {/* Whiteboard Main Canvas Area */}
             <div className="whiteboard-canvas-wrap mockup-non-accessible-area">
               <div className="whiteboard-surface-container clean-board">
                 
@@ -1557,28 +1547,11 @@ Happy Coding! 🎉
                 {/* Center Whiteboard Showcase */}
                 <div className="whiteboard-center-drawing-box">
                   
-                  {/* Cursive Handwriting: "We got you" */}
+                  {/* Cursive / Dry-Erase Handwriting */}
                   <div className="wb-cursive-text-row">
                     <h3 className="wb-cursive-heading">
-                      {wbText || (wbPhase === 'idle' ? 'We got you' : '')}
+                      {wbText || (wbPhase === 'idle' ? targetWbText : '')}
                     </h3>
-                  </div>
-
-                  {/* Start for FREE Button */}
-                  <div className={`wb-cta-callout-card ${wbPhase === 'drawing_cta' || wbPhase === 'complete' ? 'show-card' : ''}`}>
-                    <button 
-                      type="button" 
-                      className="wb-start-free-btn"
-                      onClick={() => {
-                        editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        showToast('Ready! Jumping to Compiler...');
-                      }}
-                      title="Jump to Compiler - 100% Free"
-                    >
-                      <Sparkles size={18} className="wb-btn-sparkle" />
-                      <span className="wb-start-free-text">Start for FREE</span>
-                      <ChevronRight size={18} className="wb-btn-chevron" />
-                    </button>
                   </div>
 
                 </div>
