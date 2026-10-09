@@ -16,6 +16,8 @@ import {
   GraduationCap,
   ListPlus,
   Plus,
+  Sparkles,
+  Target,
   Trash2,
   User,
   Wrench,
@@ -37,6 +39,13 @@ import {
   formatRange,
   yearRange,
 } from '../utils/resumeData';
+import {
+  readHandoff,
+  writeHandoff,
+  scoreBuilder,
+  deriveFixes,
+  applyFix,
+} from '../utils/resumeAtsBridge';
 import './ResumeBuilderPage.css';
 
 const STORAGE_KEY = 'cs-resume-builder:v1';
@@ -202,6 +211,56 @@ const AddButton = ({ onClick, children }) => (
 
 const EmptyNote = ({ children }) => <p className="rb-empty">{children}</p>;
 
+/* Number that counts to its new value */
+const AnimatedNumber = ({ value }) => {
+  const [shown, setShown] = useState(value);
+  const fromRef = useRef(value);
+
+  useEffect(() => {
+    const from = fromRef.current;
+    if (from === value) return undefined;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const duration = reduce ? 0 : 900;
+    let raf;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = duration ? Math.min(1, (now - start) / duration) : 1;
+      const eased = 1 - (1 - t) ** 3;
+      setShown(Math.round(from + (value - from) * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+      else fromRef.current = value;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+
+  return <>{shown}</>;
+};
+
+const scoreTone = (score) => (score >= 80 ? 'good' : score >= 60 ? 'fair' : 'poor');
+
+const ScoreRing = ({ score, size = 64, stroke = 6, glowing }) => {
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  return (
+    <span className={`rb-ring rb-tone-${scoreTone(score)} ${glowing ? 'is-glowing' : ''}`} style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden="true">
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#E5E7EB" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={stroke}
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c - (score / 100) * c}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`} style={{ transition: 'stroke-dashoffset 0.9s cubic-bezier(0.16, 1, 0.3, 1)' }} />
+      </svg>
+      <span className="rb-ring-num"><AnimatedNumber value={score} /></span>
+    </span>
+  );
+};
+
+const PILLAR_LABELS = [
+  { key: 'atsCompatibility', label: 'ATS compatibility' },
+  { key: 'keywordMatch', label: 'Keywords' },
+  { key: 'resumeImpact', label: 'Impact' },
+];
+
 /* ─────────────────────────────── Page ─────────────────────────────── */
 
 const ResumeBuilderPage = () => {
@@ -215,6 +274,48 @@ const ResumeBuilderPage = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [savedAt, setSavedAt] = useState(null);
   const formTopRef = useRef(null);
+
+  /* ── ATS hand-off (arrived from an ATS report with "Copy data from my resume") ── */
+  const fromAts = searchParams.get('from') === 'ats';
+  const [handoff, setHandoff] = useState(() => {
+    const h = fromAts ? readHandoff() : null;
+    if (!h || h.initialFixes) return h;
+    // First visit: remember the starting fix list and pillar scores
+    const first = scoreBuilder(resume, { docMetrics: h.docMetrics, jd: h.jd, meta: h.meta });
+    const next = {
+      ...h,
+      initialFixes: deriveFixes(first),
+      initialPillars: Object.fromEntries(PILLAR_LABELS.map((pl) => [pl.key, first.cards[pl.key].score])),
+    };
+    writeHandoff(next);
+    return next;
+  });
+  const [glow, setGlow] = useState(null); // { kind, at }
+  const [fixesOpen, setFixesOpen] = useState(true);
+  const [formGlow, setFormGlow] = useState(false);
+  const atsCtx = handoff ? { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta } : null;
+  const analysis = useMemo(
+    () => (handoff ? scoreBuilder(resume, { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta }) : null),
+    [resume, handoff],
+  );
+  const currentFixes = useMemo(() => deriveFixes(analysis), [analysis]);
+  const fixList = handoff?.initialFixes || [];
+  const pendingKinds = new Set(currentFixes.map((f) => f.kind));
+  const pendingAuto = fixList.filter((f) => f.auto && pendingKinds.has(f.kind));
+  const liveScore = analysis?.overall?.score ?? 0;
+
+  // Clear the glow after the animation
+  useEffect(() => {
+    if (!glow) return undefined;
+    const t = setTimeout(() => setGlow(null), 1800);
+    return () => clearTimeout(t);
+  }, [glow]);
+
+  useEffect(() => {
+    if (!formGlow) return undefined;
+    const t = setTimeout(() => setFormGlow(false), 1600);
+    return () => clearTimeout(t);
+  }, [formGlow]);
 
   const Template = TEMPLATE_COMPONENTS[template];
   const section = SECTIONS[active];
@@ -298,7 +399,63 @@ const ResumeBuilderPage = () => {
     onRemove: () => removeItem(key, item.id),
   });
 
-  const setTemplate = (id) => setSearchParams({ template: id }, { replace: true });
+  const setTemplate = (id) => setSearchParams((prev) => {
+    const next = new URLSearchParams(prev);
+    next.set('template', id);
+    return next;
+  }, { replace: true });
+
+  const runFixes = (kinds) => {
+    if (!handoff || kinds.length === 0) return;
+    let data = resume;
+    let ctx = atsCtx;
+    let tpl = template;
+    kinds.forEach((kind) => {
+      ({ data, ctx, template: tpl } = applyFix(kind, data, ctx, tpl));
+    });
+    setResume(data);
+    if (tpl !== template) setTemplate(tpl);
+    const next = { ...handoff, docMetrics: ctx.docMetrics };
+    setHandoff(next);
+    writeHandoff(next);
+    setGlow({ kinds, at: Date.now() });
+  };
+
+  const showFix = (fix) => {
+    const i = SECTIONS.findIndex((sec) => sec.key === fix.section);
+    if (i >= 0) {
+      setActive(i);
+      formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    setFormGlow(true);
+  };
+
+  // Hiding only folds the panel away; the score in the sidebar / top bar brings it back
+  const panelHidden = Boolean(handoff?.hidden);
+  const fixesRef = useRef(null);
+  const [panelFlash, setPanelFlash] = useState(0);
+
+  const setPanelHidden = (hidden) => {
+    const next = { ...handoff, hidden };
+    setHandoff(next);
+    writeHandoff(next);
+  };
+
+  const hideAts = () => setPanelHidden(true);
+
+  const showAts = () => {
+    if (panelHidden) setPanelHidden(false);
+    setFixesOpen(true);
+    setPanelFlash(Date.now());
+  };
+
+  // Bring the panel into view when it is reopened from the score
+  useEffect(() => {
+    if (!panelFlash) return undefined;
+    const raf = requestAnimationFrame(() => fixesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    const t = setTimeout(() => setPanelFlash(0), 1700);
+    return () => { cancelAnimationFrame(raf); clearTimeout(t); };
+  }, [panelFlash]);
 
   const goTo = (i) => {
     setActive(i);
@@ -523,6 +680,81 @@ const ResumeBuilderPage = () => {
     </div>
   );
 
+  const startScore = handoff?.reportScore ?? liveScore;
+  const delta = liveScore - startScore;
+  const isGlowing = (kind) => Boolean(glow && glow.kinds.includes(kind));
+
+  const pendingCount = fixList.filter((f) => pendingKinds.has(f.kind)).length;
+
+  const fixesPanel = handoff && fixList.length > 0 && !panelHidden && (
+    <section ref={fixesRef} className={`rb-fixes ${glow || panelFlash ? 'is-glowing' : ''}`} aria-label="Fixes from your ATS report">
+      <div className="rb-fixes-head">
+        <ScoreRing score={liveScore} size={68} glowing={Boolean(glow)} />
+        <div className="rb-fixes-summary">
+          <p className="rb-fixes-eyebrow">ATS score</p>
+          <p className="rb-fixes-score">
+            {delta > 0 ? <>Up from {startScore} <span className="rb-delta">+{delta}</span></> : <>Report score {startScore}</>}
+          </p>
+          <div className="rb-pillars">
+            {PILLAR_LABELS.map((pl) => {
+              const now = analysis.cards[pl.key].score;
+              const was = handoff.initialPillars?.[pl.key] ?? now;
+              return (
+                <span key={pl.key}>
+                  {pl.key === 'keywordMatch' && handoff.mode !== 'WITH_JD' ? 'Skills' : pl.label}{' '}
+                  <strong><AnimatedNumber value={now} /></strong>
+                  {now > was && <em>+{now - was}</em>}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        <div className="rb-fixes-actions">
+          {pendingAuto.length > 0 ? (
+            <button type="button" className="rb-btn rb-btn--primary" onClick={() => runFixes(pendingAuto.map((f) => f.kind))}>
+              <Sparkles size={16} />
+              <span>Apply {pendingAuto.length === 1 ? 'fix' : `${pendingAuto.length} fixes`} now</span>
+            </button>
+          ) : (
+            <span className="rb-fixes-done"><Check size={15} strokeWidth={3} /> Automatic fixes applied</span>
+          )}
+          <button type="button" className="rb-icon-btn" onClick={() => setFixesOpen((o) => !o)}
+            aria-expanded={fixesOpen} aria-label={fixesOpen ? 'Hide fixes' : 'Show fixes'}>
+            <ChevronDown size={18} className={`rb-fixes-chevron ${fixesOpen ? 'is-open' : ''}`} />
+          </button>
+        </div>
+      </div>
+
+      {fixesOpen && (
+        <ul className="rb-fix-list">
+          {fixList.map((fix) => {
+            const done = !pendingKinds.has(fix.kind);
+            const focused = handoff.focusKind === fix.kind && !done;
+            return (
+              <li key={fix.kind} className={`rb-fix ${done ? 'is-done' : ''} ${focused ? 'is-focus' : ''} ${isGlowing(fix.kind) ? 'is-glowing' : ''}`}>
+                <span className="rb-fix-icon" aria-hidden="true">
+                  {done ? <Check size={14} strokeWidth={3} /> : fix.auto ? <Sparkles size={14} /> : <Target size={14} />}
+                </span>
+                <div className="rb-fix-text">
+                  <strong>{fix.title}</strong>
+                  <span>{done ? 'Applied' : fix.detail}</span>
+                </div>
+                {!done && (fix.auto ? (
+                  <button type="button" className="rb-btn rb-btn--dark rb-fix-btn" onClick={() => runFixes([fix.kind])}>Apply</button>
+                ) : (
+                  <button type="button" className="rb-btn rb-btn--ghost rb-fix-btn" onClick={() => showFix(fix)}>Show me</button>
+                ))}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <button type="button" className="rb-fixes-close" onClick={hideAts}>
+        Hide panel <span>· bring it back from your ATS score</span>
+      </button>
+    </section>
+  );
+
   return (
     <div className="rb-root" ref={rootRef}>
       {/* ── Top bar ── */}
@@ -538,6 +770,14 @@ const ResumeBuilderPage = () => {
         </div>
         <div className="rb-top-center">{templateSwitcher}</div>
         <div className="rb-top-right">
+          {handoff && (
+            <button type="button" className={`rb-score-chip rb-tone-${scoreTone(liveScore)} ${glow ? 'is-glowing' : ''}`}
+              onClick={showAts} aria-label={`ATS score ${liveScore}. ${panelHidden ? 'Show' : 'View'} ATS fixes`}>
+              ATS <strong><AnimatedNumber value={liveScore} /></strong>
+              {delta > 0 && <em>+{delta}</em>}
+              {panelHidden && pendingCount > 0 && <span className="rb-chip-badge">{pendingCount}</span>}
+            </button>
+          )}
           <button type="button" className="rb-btn rb-btn--primary" onClick={handleDownload}>
             <Download size={16} />
             <span>Download PDF</span>
@@ -558,6 +798,22 @@ const ResumeBuilderPage = () => {
               <span>{savedAt ? 'Saved on this device' : 'Not saved yet'}</span>
             </div>
           </div>
+
+          {handoff && (
+            <button type="button" className={`rb-side-block rb-side-score ${glow ? 'is-glowing' : ''}`} onClick={showAts}>
+              <ScoreRing score={liveScore} size={52} stroke={5} glowing={Boolean(glow)} />
+              <span className="rb-side-score-body">
+                <span className="rb-side-label">Live ATS score</span>
+                <span className="rb-side-score-text">
+                  {delta > 0 ? <>Up from {startScore} <span className="rb-delta">+{delta}</span></> : <>From your report</>}
+                </span>
+                <span className="rb-side-score-link">
+                  {panelHidden ? `Show fixes${pendingCount ? ` (${pendingCount})` : ''}` : 'View fixes'}
+                  <ChevronRight size={14} />
+                </span>
+              </span>
+            </button>
+          )}
 
           <label className="rb-side-block">
             <span className="rb-side-label">Template</span>
@@ -591,7 +847,9 @@ const ResumeBuilderPage = () => {
         </nav>
 
         {/* ── Form ── */}
-        <section className="rb-form" aria-labelledby="rb-section-title">
+        <div className="rb-form-col">
+        {fixesPanel}
+        <section className={`rb-form ${formGlow ? 'is-glowing' : ''}`} aria-labelledby="rb-section-title">
           <div ref={formTopRef} className="rb-form-anchor" />
           <div className="rb-form-head">
             <p className="rb-step">Step {active + 1} of {SECTIONS.length}</p>
@@ -619,6 +877,7 @@ const ResumeBuilderPage = () => {
             )}
           </div>
         </section>
+        </div>
 
         {/* ── Live preview (desktop) ── */}
         <aside className="rb-preview" aria-label="Live preview">
@@ -626,7 +885,7 @@ const ResumeBuilderPage = () => {
             <span>Live preview</span>
             <span className="rb-preview-template">{TEMPLATE_NAMES[template]}</span>
           </div>
-          <div className="rb-preview-paper">
+          <div className={`rb-preview-paper ${glow ? 'is-glowing' : ''}`}>
             <ScaledPage fit={false}><Template data={resume} fit={false} /></ScaledPage>
           </div>
         </aside>

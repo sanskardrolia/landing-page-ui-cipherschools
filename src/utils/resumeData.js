@@ -137,14 +137,21 @@ export const formatScore = (edu) => {
 export const skillList = (skills = '') =>
   skills.split(',').map((s) => s.trim()).filter(Boolean).join(', ');
 
+// Additional sections with these headings render as a summary paragraph under the name
+export const SUMMARY_HEADING_RE = /^(professional\s+)?(summary|profile|objective|about)/i;
+
 /* Filled sections only, so empty form rows never print blank headings */
 export const visible = (resume) => ({
+  summary: resume.additional
+    .filter((a) => SUMMARY_HEADING_RE.test(a.heading.trim()) && a.description.trim())
+    .map((a) => toBullets(a.description).join(' '))
+    .join(' '),
   education: resume.education.filter((e) => e.institution || e.degree),
   experience: resume.experience.filter((e) => e.employer || e.title),
   skills: resume.skills.filter((s) => s.category && s.skills.trim()),
   projects: resume.projects.filter((p) => p.title),
   certifications: resume.certifications.filter((c) => c.title),
-  additional: resume.additional.filter((a) => a.heading || a.description),
+  additional: resume.additional.filter((a) => (a.heading || a.description) && !SUMMARY_HEADING_RE.test(a.heading.trim())),
 });
 
 /* ── Sample resumes for the landing page previews ── */

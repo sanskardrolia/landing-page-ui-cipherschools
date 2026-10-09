@@ -265,7 +265,6 @@ const ResumePage = () => {
       <section className="rs-section">
         <div className="rs-ats-card">
           <div className="rs-ats-copy">
-            <span className="rs-tag rs-tag--dark"><ScanSearch size={12} /> ATS Checker</span>
             <h2 className="rs-ats-title">Already have a resume? See how recruiters' software reads it.</h2>
             <p className="rs-ats-sub">
               Upload a PDF or DOCX and get a score across formatting, keywords and impact, with a list of specific fixes.

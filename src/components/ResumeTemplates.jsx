@@ -105,6 +105,13 @@ export const BeginnerResume = ({ data = SAMPLE_RESUMES.beginner, fit = true }) =
         </p>
       )}
 
+      {v.summary && (
+        <>
+          <h2 className="rt-b-h">Summary</h2>
+          <p className="rt-b-summary">{v.summary}</p>
+        </>
+      )}
+
       {v.education.length > 0 && (
         <>
           <h2 className="rt-b-h">Academic Details</h2>
@@ -213,6 +220,13 @@ export const ExperiencedResume = ({ data = SAMPLE_RESUMES.experienced, fit = tru
         </div>
       </header>
 
+      {v.summary && (
+        <>
+          <h2 className="rt-e-h">Summary</h2>
+          <p className="rt-e-summary">{v.summary}</p>
+        </>
+      )}
+
       {v.education.length > 0 && (
         <>
           <h2 className="rt-e-h">Education</h2>
@@ -318,6 +332,8 @@ export const ModernResume = ({ data = SAMPLE_RESUMES.modern, fit = true }) => {
         {p.email && <span><Mail />{p.email}</span>}
         {p.location && <span><MapPin />{p.location}</span>}
       </p>
+
+      {v.summary && <p className="rt-m-summary">{v.summary}</p>}
 
       <div className="rt-m-cols">
         <div className="rt-m-left">

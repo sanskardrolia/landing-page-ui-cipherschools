@@ -36,13 +36,16 @@ import {
   Terminal,
   RefreshCw,
   Target,
-  Wrench
+  Wrench,
+  X
 } from 'lucide-react';
 import { 
   analyzeResume, 
   SAMPLE_RESUMES 
 } from '../utils/atsEngine';
 import { ThinkingOrb } from 'thinking-orbs';
+import { atsToBuilder, fixKindFor, readDraft, writeDraft, writeHandoff } from '../utils/resumeAtsBridge';
+import { emptyResume, fullName } from '../utils/resumeData';
 
 // ── Pillar Metadata & Hover Definitions ──
 const PILLAR_DEFINITIONS = {
@@ -421,11 +424,12 @@ const AtsCheckerPage = () => {
   };
 
   // Continue CTA handler: advances to upload workstation
-  const handleContinueFromSelection = () => {
+  const handleContinueFromSelection = (mode = selectedMode) => {
+    setSelectedMode(mode);
     setErrorMessage('');
     setViewState('UPLOAD');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (selectedMode === 'RESUME_ONLY') {
+    if (mode === 'RESUME_ONLY') {
       showToast('Mode: Upload Your Resume');
     } else {
       showToast('Mode: Upload JD + Resume Match');
@@ -541,33 +545,42 @@ const AtsCheckerPage = () => {
     }
   };
 
-  // Toggle Fix for Suggestions
-  const handleToggleFix = (suggId, pointsGain) => {
-    setFixedSuggestionIds(prev => {
-      const next = new Set(prev);
-      if (next.has(suggId)) {
-        next.delete(suggId);
-      } else {
-        next.add(suggId);
-        showToast(`Marked as done. Projected score +${pointsGain}.`);
-      }
-      return next;
+  // "Apply this fix" opens a consent dialog: copy this resume into the builder, or start a new one
+  const [fixConsent, setFixConsent] = useState(null); // { kind, title }
+  const consentPrimaryRef = useRef(null);
+
+  useEffect(() => {
+    if (!fixConsent) return undefined;
+    consentPrimaryRef.current?.focus();
+    const onKey = (e) => { if (e.key === 'Escape') setFixConsent(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [fixConsent]);
+
+  const existingDraft = fixConsent ? readDraft() : null;
+  const existingDraftName = existingDraft?.personal ? fullName(existingDraft.personal) : '';
+
+  const openBuilderWithCopy = () => {
+    const isJd = analysisResult?.overall?.mode === 'WITH_JD';
+    writeDraft(atsToBuilder(resumeData));
+    writeHandoff({
+      createdAt: Date.now(),
+      reportScore: analysisResult?.overall?.score,
+      mode: analysisResult?.overall?.mode,
+      jd: isJd ? jobDescription : '',
+      meta: isJd ? jobMeta : '',
+      docMetrics,
+      focusKind: fixConsent?.kind || null,
     });
+    setFixConsent(null);
+    navigate('/resume/builder?template=experienced&from=ats');
   };
 
-  // Toggle Fix for Section Concerns
-  const handleToggleSectionFix = (secKey, pointsGain = 5) => {
-    setFixedSectionKeys(prev => {
-      const next = new Set(prev);
-      if (next.has(secKey)) {
-        next.delete(secKey);
-        showToast('Marked as not done.');
-      } else {
-        next.add(secKey);
-        showToast(`Marked as done. Projected score +${pointsGain}.`);
-      }
-      return next;
-    });
+  const openBuilderBlank = () => {
+    writeDraft(emptyResume());
+    writeHandoff(null);
+    setFixConsent(null);
+    navigate('/resume/builder?template=beginner');
   };
 
   // Calculate dynamic score with fixed suggestions and fixed sections
@@ -597,6 +610,50 @@ const AtsCheckerPage = () => {
         <div className="compiler-toast-pill animate-fade-in">
           <Check size={14} className="text-emerald-500" />
           <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Apply-fix consent dialog */}
+      {fixConsent && (
+        <div className="fc-overlay" onClick={() => setFixConsent(null)}>
+          <div
+            className="fc-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="fc-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button type="button" className="fc-close" onClick={() => setFixConsent(null)} aria-label="Close">
+              <X size={18} />
+            </button>
+            <span className="fc-icon" aria-hidden="true"><Sparkles size={20} /></span>
+            <h2 id="fc-title" className="fc-title">Apply this fix in the Resume Builder</h2>
+            <p className="fc-text">
+              Fixes are made on an editable copy of your resume, so you can review every change before downloading a new PDF.
+            </p>
+            {fixConsent.title && <p className="fc-fix"><span>Fix</span>{fixConsent.title}</p>}
+
+            <div className="fc-options">
+              <button type="button" ref={consentPrimaryRef} className="fc-option fc-option--primary" onClick={openBuilderWithCopy}>
+                <span className="fc-option-text">
+                  <strong>Copy data from my resume</strong>
+                  <span>Prefill the builder and apply fixes in one click</span>
+                </span>
+                <ArrowRight size={18} />
+              </button>
+              <button type="button" className="fc-option" onClick={openBuilderBlank}>
+                <span className="fc-option-text">
+                  <strong>Create a new resume</strong>
+                  <span>Start from a blank template</span>
+                </span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
+
+            {existingDraftName && (
+              <p className="fc-note">Either option replaces your current builder draft ({existingDraftName}).</p>
+            )}
+          </div>
         </div>
       )}
 
@@ -645,10 +702,10 @@ const AtsCheckerPage = () => {
               <h1 className="am-title">
                 Check your <span className="am-title-pill">ATS score</span>
               </h1>
-              <p className="am-sub">Choose how you want your resume checked.</p>
+              <p className="am-sub">Pick how you want your resume checked to get started.</p>
             </section>
 
-            <div className="am-options" role="radiogroup" aria-label="Scan type">
+            <div className="am-options">
               {[
                 {
                   mode: 'RESUME_ONLY',
@@ -665,30 +722,23 @@ const AtsCheckerPage = () => {
                   points: ['Keyword & skill gaps', 'Role match score', 'What to add and where']
                 }
               ].map(opt => {
-                const isSelected = selectedMode === opt.mode;
+                const openMode = () => handleContinueFromSelection(opt.mode);
                 return (
                   <div
                     key={opt.mode}
-                    className={`am-option ${isSelected ? 'is-selected' : ''}`}
-                    role="radio"
-                    aria-checked={isSelected}
-                    tabIndex={isSelected ? 0 : -1}
-                    onClick={() => handleSelectMode(opt.mode)}
-                    onDoubleClick={handleContinueFromSelection}
+                    className="am-option"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${opt.title}: ${opt.desc}`}
+                    onClick={openMode}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleContinueFromSelection();
-                      if (e.key === ' ') { e.preventDefault(); handleSelectMode(opt.mode); }
-                      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+                      if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
-                        const next = opt.mode === 'RESUME_ONLY' ? 'JD_RESUME' : 'RESUME_ONLY';
-                        handleSelectMode(next);
-                        e.currentTarget.parentElement
-                          ?.querySelector(`[data-mode="${next}"]`)?.focus();
+                        openMode();
                       }
                     }}
-                    data-mode={opt.mode}
                   >
-                    <span className="am-radio" aria-hidden="true" />
+                    <span className="am-go" aria-hidden="true"><ArrowRight size={16} /></span>
 
                     {/* Illustration */}
                     <div className="am-art" aria-hidden="true">
@@ -749,14 +799,6 @@ const AtsCheckerPage = () => {
             </div>
 
             <div className="am-cta">
-              <button
-                type="button"
-                className="am-continue"
-                onClick={handleContinueFromSelection}
-              >
-                <span>{selectedMode === 'RESUME_ONLY' ? 'Continue with resume only' : 'Continue with job description'}</span>
-                <ArrowRight size={16} />
-              </button>
               <p className="am-note">Free · Takes about 10 seconds</p>
             </div>
 
@@ -1571,11 +1613,11 @@ const AtsCheckerPage = () => {
                               )}
                               <button
                                 type="button"
-                                className={`ar-done-btn ${isFixed ? 'is-done' : ''}`}
-                                onClick={() => handleToggleSectionFix(sec.key, pointsGain)}
+                                className="ar-apply-btn"
+                                onClick={() => setFixConsent({ kind: fixKindFor({ sectionKey: sec.key }), title: sec.topIssue })}
                               >
-                                <Check size={14} />
-                                <span>{isFixed ? 'Marked as done' : `Mark as done (+${pointsGain} pts)`}</span>
+                                <Sparkles size={14} />
+                                <span>Apply this fix</span>
                               </button>
                             </>
                           ) : (
@@ -1639,11 +1681,11 @@ const AtsCheckerPage = () => {
 
                         <button
                           type="button"
-                          className={`ar-done-btn ${isFixed ? 'is-done' : ''}`}
-                          onClick={() => handleToggleFix(sugg.id, sugg.pointsGain)}
+                          className="ar-apply-btn"
+                          onClick={() => setFixConsent({ kind: fixKindFor({ suggestion: sugg }), title: sugg.title })}
                         >
-                          <Check size={14} />
-                          <span>{isFixed ? 'Done' : 'Mark as done'}</span>
+                          <Sparkles size={14} />
+                          <span>Apply fix</span>
                         </button>
                       </li>
                     );

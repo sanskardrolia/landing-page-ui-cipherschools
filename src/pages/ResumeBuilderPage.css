@@ -289,7 +289,7 @@
 
 @media (max-width: 1279px) {
   .rb-side-head,
-  .rb-side-block,
+  .rb-nav .rb-side-block,
   .rb-side-download {
     display: none;
   }
@@ -746,6 +746,424 @@ select.rb-input {
 .rb-preview-paper .rt-scaled {
   box-shadow: 0 10px 30px -12px rgba(17, 24, 39, 0.25);
   background: #FFFFFF;
+}
+
+/* ── ATS fixes (arrived from an ATS report) ── */
+.rb-form-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.rb-tone-good { color: var(--rb-good); }
+.rb-tone-fair { color: var(--rb-brand); }
+.rb-tone-poor { color: var(--rb-poor); }
+
+.rb-ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.rb-ring svg {
+  position: absolute;
+  inset: 0;
+}
+
+.rb-ring-num {
+  position: relative;
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.rb-side-score .rb-ring-num {
+  font-size: 1rem;
+}
+
+.rb-ring.is-glowing {
+  animation: rbRingPulse 1.6s ease-out;
+}
+
+@keyframes rbRingPulse {
+  0% { box-shadow: 0 0 0 0 rgba(243, 145, 46, 0.55); }
+  60% { box-shadow: 0 0 0 14px rgba(243, 145, 46, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(243, 145, 46, 0); }
+}
+
+.rb-delta {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--rb-good);
+  background: #ECFDF5;
+  border-radius: 999px;
+}
+
+.rb-fixes {
+  position: relative;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-line);
+  border-radius: 4px;
+  padding: 22px 24px 14px;
+}
+
+.rb-fixes.is-glowing,
+.rb-form.is-glowing,
+.rb-preview-paper.is-glowing .rt-scaled {
+  animation: rbGlow 1.7s ease-out;
+}
+
+@keyframes rbGlow {
+  0% { box-shadow: 0 0 0 0 rgba(243, 145, 46, 0); border-color: var(--rb-line); }
+  25% { box-shadow: 0 0 0 4px rgba(243, 145, 46, 0.35), 0 0 32px 4px rgba(243, 145, 46, 0.35); border-color: var(--rb-brand); }
+  100% { box-shadow: 0 0 0 0 rgba(243, 145, 46, 0); border-color: var(--rb-line); }
+}
+
+.rb-fixes-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.rb-fixes-summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.rb-fixes-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--rb-muted);
+}
+
+.rb-fixes-score {
+  margin-top: 2px !important;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--rb-ink);
+}
+
+.rb-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--rb-muted);
+}
+
+.rb-pillars strong {
+  color: var(--rb-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-pillars em {
+  margin-left: 3px;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--rb-good);
+}
+
+.rb-fixes-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rb-fixes-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--rb-good);
+}
+
+.rb-fixes-chevron {
+  transition: transform 0.2s ease;
+}
+
+.rb-fixes-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.rb-fix-list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--rb-line);
+}
+
+.rb-fix {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 6px;
+  border-bottom: 1px solid var(--rb-line);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.rb-fix.is-focus {
+  background: #FFFBF5;
+  box-shadow: inset 3px 0 0 var(--rb-brand);
+}
+
+.rb-fix.is-glowing {
+  animation: rbFixFlash 1.7s ease-out;
+}
+
+@keyframes rbFixFlash {
+  0% { background: rgba(243, 145, 46, 0.22); }
+  100% { background: transparent; }
+}
+
+.rb-fix-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: var(--rb-brand);
+  background: var(--rb-brand-soft);
+}
+
+.rb-fix.is-done .rb-fix-icon {
+  color: #FFFFFF;
+  background: var(--rb-good);
+  animation: rbPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rbPop {
+  from { transform: scale(0.4); }
+  to { transform: scale(1); }
+}
+
+.rb-fix-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rb-fix-text strong {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--rb-ink);
+}
+
+.rb-fix-text span {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--rb-muted);
+}
+
+.rb-fix.is-done .rb-fix-text strong {
+  color: var(--rb-muted);
+}
+
+.rb-fix.is-done .rb-fix-text span {
+  color: var(--rb-good);
+  font-weight: 600;
+}
+
+.rb-fix-btn {
+  min-height: 34px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+}
+
+.rb-fixes-close {
+  display: block;
+  margin: 10px auto 0;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--rb-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.rb-fixes-close:hover {
+  color: var(--rb-ink);
+}
+
+.rb-fixes-close span {
+  font-weight: 500;
+}
+
+.rb-fixes {
+  scroll-margin-top: calc(var(--rb-offset) + 16px);
+}
+
+/* Sidebar score (wide desktop): also reopens the fixes panel */
+.rb-side-score {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px;
+  text-align: left;
+  font-family: inherit;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rb-side-score:hover {
+  border-color: var(--rb-brand);
+  box-shadow: 0 4px 14px -6px rgba(243, 145, 46, 0.35);
+}
+
+.rb-side-score-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rb-side-score .rb-side-label {
+  margin-bottom: 2px;
+}
+
+.rb-side-score-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--rb-ink);
+}
+
+.rb-side-score-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--rb-brand);
+}
+
+/* Top bar score chip (below 1280px) */
+.rb-score-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 10px;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: inherit;
+  background: var(--rb-surface);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.rb-score-chip.rb-tone-good { color: var(--rb-good); }
+.rb-score-chip.rb-tone-fair { color: var(--rb-brand); }
+.rb-score-chip.rb-tone-poor { color: var(--rb-poor); }
+
+.rb-score-chip:hover {
+  background: var(--rb-surface-2);
+}
+
+.rb-chip-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: var(--rb-brand);
+  border-radius: 999px;
+}
+
+.rb-score-chip strong {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rb-score-chip em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--rb-good);
+}
+
+.rb-score-chip.is-glowing {
+  animation: rbRingPulse 1.6s ease-out;
+}
+
+.rb-top-right {
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .rb-fixes {
+    padding: 18px 16px 10px;
+    margin: 0 -16px;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
+  .rb-fixes-head {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .rb-fixes-actions {
+    width: 100%;
+  }
+
+  .rb-fixes-actions .rb-btn {
+    flex: 1;
+  }
+
+  .rb-fix {
+    flex-wrap: wrap;
+  }
+
+  .rb-fix-btn {
+    margin-left: 42px;
+  }
+
+  .rb-score-chip {
+    margin-right: 6px;
+    padding: 5px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-ring.is-glowing,
+  .rb-fixes.is-glowing,
+  .rb-form.is-glowing,
+  .rb-preview-paper.is-glowing .rt-scaled,
+  .rb-fix.is-glowing,
+  .rb-fix.is-done .rb-fix-icon,
+  .rb-score-chip.is-glowing {
+    animation: none;
+  }
 }
 
 /* ── Mobile pieces (hidden on desktop) ── */
