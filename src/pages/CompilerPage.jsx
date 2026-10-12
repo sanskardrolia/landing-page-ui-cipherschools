@@ -12,8 +12,6 @@ import {
   Sun, 
   User, 
   Check, 
-  Copy, 
-  Terminal, 
   Cpu, 
   Sparkles, 
   Layers, 
@@ -28,8 +26,7 @@ import {
   PenTool,
   Eraser,
   HelpCircle,
-  MoreHorizontal,
-  GraduationCap
+  MoreHorizontal
 } from 'lucide-react';
 import './CompilerPage.css';
 
@@ -81,6 +78,34 @@ const WhiteboardEaselIcon = ({ size = 20 }) => (
     <line x1="6" y1="21" x2="18" y2="21" />
     <circle cx="9" cy="8" r="1.2" />
     <path d="M14 11l-2-2-4 4" />
+  </svg>
+);
+
+const BugIcon = () => (
+  <svg viewBox="0 0 48 48" className="buggy-bug-svg" aria-hidden="true">
+    <g className="bug-legs bug-legs--a" stroke="#1E293B" strokeWidth="2.4" strokeLinecap="round" fill="none">
+      <path d="M14 21 L7 17" />
+      <path d="M13 31 L6 34" />
+      <path d="M34 26 L42 26" />
+    </g>
+    <g className="bug-legs bug-legs--b" stroke="#1E293B" strokeWidth="2.4" strokeLinecap="round" fill="none">
+      <path d="M34 21 L41 17" />
+      <path d="M35 31 L42 34" />
+      <path d="M14 26 L6 26" />
+    </g>
+    <g className="bug-antennae" stroke="#1E293B" strokeWidth="2.2" strokeLinecap="round" fill="none">
+      <path d="M21 10 Q18 5 14 4" />
+      <path d="M27 10 Q30 5 34 4" />
+    </g>
+    <circle cx="24" cy="13" r="6" fill="#1E293B" />
+    <circle cx="21.6" cy="12" r="1.5" fill="#FFFFFF" />
+    <circle cx="26.4" cy="12" r="1.5" fill="#FFFFFF" />
+    <ellipse cx="24" cy="28" rx="11" ry="13" fill="#EF4444" />
+    <path d="M24 16 L24 41" stroke="#1E293B" strokeWidth="1.8" />
+    <circle cx="19" cy="24" r="2.2" fill="#1E293B" />
+    <circle cx="29" cy="24" r="2.2" fill="#1E293B" />
+    <circle cx="18.5" cy="32" r="1.8" fill="#1E293B" />
+    <circle cx="29.5" cy="32" r="1.8" fill="#1E293B" />
   </svg>
 );
 
@@ -195,6 +220,18 @@ welcome();`,
   }
 ];
 
+// Whiteboard mockup is fixed to the C++ editor
+const WB_LANG = LANGUAGES.find((l) => l.id === 'cpp');
+
+// Multi-file demo: a project's files all share one language
+const BENTO_PROJECTS = [
+  { lang: 'C++', files: ['main.cpp', 'graph.h', 'graph.cpp'] },
+  { lang: 'Java', files: ['Main.java', 'Solution.java', 'Node.java'] },
+  { lang: 'Python', files: ['main.py', 'solver.py', 'utils.py'] },
+  { lang: 'C', files: ['main.c', 'stack.h', 'stack.c'] },
+  { lang: 'JavaScript', files: ['index.js', 'queue.js', 'utils.js'] }
+];
+
 const FAQ_ITEMS = [
   {
     q: 'Why does CipherSchools Compiler include a built-in whiteboard?',
@@ -222,7 +259,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Can I use keyboard shortcuts?',
-    a: 'Press Ctrl + Enter (or Cmd + Enter on macOS) to instantly compile.'
+    a: 'Press Ctrl + Enter (or Cmd + Enter on macOS) to instantly compile or open editor.'
   }
 ];
 
@@ -285,6 +322,49 @@ const CompilerPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Bento grid micro-animations: reveal on scroll, speed count-up, cycling file tabs
+  const bentoRef = useRef(null);
+  const [bentoInView, setBentoInView] = useState(false);
+  const [bentoSpeed, setBentoSpeed] = useState(0);
+  const [bentoTick, setBentoTick] = useState(0);
+
+  useEffect(() => {
+    const el = bentoRef.current;
+    if (!el || !('IntersectionObserver' in window)) {
+      setBentoInView(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setBentoInView(true);
+        io.disconnect();
+      }
+    }, { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!bentoInView) return undefined;
+    let raf;
+    const start = performance.now();
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / 1100);
+      setBentoSpeed(0.08 * (1 - Math.pow(1 - t, 3)));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const tabTimer = setInterval(() => setBentoTick((i) => i + 1), 1400);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearInterval(tabTimer);
+    };
+  }, [bentoInView]);
+
+  // Each project stays in one language; cycle files within it, then move to the next language
+  const activeProject = BENTO_PROJECTS[Math.floor(bentoTick / 3) % BENTO_PROJECTS.length];
+  const bentoFile = bentoTick % 3;
 
   // Floating CTA & Shortcut dock visibility on scroll
   const [showFloatingCta, setShowFloatingCta] = useState(false);
@@ -679,7 +759,7 @@ const CompilerPage = () => {
   const [typingIndex, setTypingIndex] = useState(0);
   const [cursorTargeted, setCursorTargeted] = useState(false);
 
-  // ── "Run your buggy code" Headline Animated Strikethrough & Removal ──
+  // ── "Run your buggy code" Headline: bug squashed & removed when compiler is in view ──
   const [buggyPhase, setBuggyPhase] = useState('visible'); // 'visible' | 'striking' | 'removed'
 
   useEffect(() => {
@@ -691,7 +771,7 @@ const CompilerPage = () => {
 
       const timer2 = setTimeout(() => {
         setBuggyPhase('removed');
-      }, 950);
+      }, 1150);
 
       return () => {
         clearTimeout(timer1);
@@ -705,7 +785,7 @@ const CompilerPage = () => {
   const handleReplayBuggyAnimation = () => {
     setBuggyPhase('visible');
     setTimeout(() => setBuggyPhase('striking'), 300);
-    setTimeout(() => setBuggyPhase('removed'), 550);
+    setTimeout(() => setBuggyPhase('removed'), 750);
   };
 
   const targetCode = currentLang.code;
@@ -900,6 +980,13 @@ const CompilerPage = () => {
     return () => clearTimeout(timer);
   }, [wbPhase, wbText, targetWbText]);
 
+  const [wbCtaVisible, setWbCtaVisible] = useState(false);
+
+  // TODO: point this at the live whiteboard once its URL is available
+  const handleOpenWhiteboard = () => {
+    editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   const handleReplayWhiteboard = () => {
     setWbText('');
     setWbPhase('drawing_text');
@@ -950,7 +1037,7 @@ const CompilerPage = () => {
 
               <div className="hero-keyboard-hint">
                 <span className="kbd-shortcut-pill">
-                  <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to open
+                  or press <kbd>Ctrl/Cmd</kbd> + <kbd>Enter</kbd>
                 </span>
               </div>
             </div>
@@ -1004,29 +1091,18 @@ const CompilerPage = () => {
               <span>Run Your</span>
               <span className={`buggy-word-wrapper ${buggyPhase}`}>
                 <span className="buggy-space-prefix">&nbsp;</span>
-                <span className="buggy-word-inner">
-                  <span className="buggy-word-text">buggy</span>
-                  <span className="buggy-strikethrough-line" />
+                <span className="buggy-word-inner" role="img" aria-label="buggy">
+                  <BugIcon />
+                  <span className="buggy-poof" aria-hidden="true" />
                 </span>
               </span>
               <span>&nbsp;Code with </span>
               <span className="headline-gradient">Zero Setup</span>
             </h2>
-
-            {/* Minimal "Did You Know?" Compiler Definition Strip */}
-            <div className="compiler-did-you-know-strip">
-              <div className="dyk-badge">
-                <Sparkles size={12} className="dyk-icon" />
-                <span>DID YOU KNOW?</span>
-              </div>
-              <p className="dyk-text">
-                A compiler is the ultimate bridge between human intellect and pure physics—transforming elegant lines of code into lightning-fast binary symphonies that whisper directly to the silicon of modern machines.
-              </p>
-            </div>
           </div>
 
           <div className="compiler-window-frame mockup-frame-non-accessible">
-            
+
             {/* Top Window Header */}
             <div className="compiler-top-header">
               <div className="header-brand-group">
@@ -1034,9 +1110,9 @@ const CompilerPage = () => {
               </div>
 
               <div className="header-right-actions">
-                <button 
-                  type="button" 
-                  className="header-icon-btn" 
+                <button
+                  type="button"
+                  className="header-icon-btn"
                   title="Toggle Light Theme"
                   aria-label="Theme toggle"
                   tabIndex={-1}
@@ -1075,8 +1151,8 @@ const CompilerPage = () => {
                 </div>
 
                 <div className="rail-bottom-tools">
-                  <div className="rail-tool-btn static-tool" title="Compiler Core Active">
-                    <Terminal size={18} />
+                  <div className="rail-tool-btn static-tool" title="Whiteboard">
+                    <WhiteboardEaselIcon size={18} />
                   </div>
                 </div>
               </aside>
@@ -1313,199 +1389,111 @@ Happy Coding! 🎉
       <section className="compiler-capabilities-section">
         <div className="capabilities-container">
 
-          <div className="compiler-bento-grid">
-            
-            {/* Bento Card 1: Write Code in 5 languages (Col Span 2 - Hero Feature Box) */}
-            <div className="bento-card bento-span-2 bento-card-languages">
+          <div ref={bentoRef} className={`compiler-bento-grid ${bentoInView ? 'is-in' : ''}`}>
+
+            {/* Bento Card 1: Write Code in 5 languages */}
+            <div className="bento-card bento-card-languages">
               <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <FileCode size={20} />
-                </div>
-                <span className="bento-badge-pill">Multi-Language Engine</span>
+                <FileCode size={20} className="bento-icon" />
+                <span className="bento-badge-pill">Multi-Language</span>
               </div>
               <div className="bento-content-body">
-                <h3 className="bento-card-title">Write Code in 5 languages</h3>
-                <p className="bento-card-desc">
-                  Optimized low-latency cloud runtimes configured for competitive programming, system design, and DSA interviews.
-                </p>
-                {/* Visual Bento Widget: Language Chips with Compiler Specs */}
+                <h3 className="bento-card-title">5 Languages</h3>
+                <p className="bento-card-desc">Latest compilers, ready to run.</p>
                 <div className="bento-langs-display-row">
                   {[
-                    { name: 'C', version: 'C17 Clang', icon: '⚡' },
-                    { name: 'C++', version: 'C++20 GCC 13', icon: '🚀' },
-                    { name: 'Java', version: 'OpenJDK 17 LTS', icon: '☕' },
-                    { name: 'Python', version: 'Python 3.11', icon: '🐍' },
-                    { name: 'JavaScript', version: 'Node.js 20', icon: '🌐' }
-                  ].map((l) => (
-                    <div key={l.name} className="bento-lang-chip">
-                      <span className="lang-chip-icon">{l.icon}</span>
-                      <div className="lang-chip-meta">
-                        <span className="lang-chip-name">{l.name}</span>
-                        <span className="lang-chip-ver">{l.version}</span>
-                      </div>
+                    { name: 'C', version: 'C17' },
+                    { name: 'C++', version: 'C++20' },
+                    { name: 'Java', version: 'JDK 17' },
+                    { name: 'Python', version: '3.11' },
+                    { name: 'JS', version: 'Node 20' }
+                  ].map(({ name, version }, i) => (
+                    <div key={name} className="bento-lang-chip" style={{ '--i': i }}>
+                      <span className="lang-chip-name">{name}</span>
+                      <span className="lang-chip-ver">{version}</span>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 2: Compile in no time with * (Col Span 1 - Speed Benchmark Box) */}
-            <div className="bento-card bento-span-1 bento-card-speed">
+            {/* Bento Card 2: Compile in no time */}
+            <div className="bento-card bento-card-speed">
               <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <Play size={20} />
-                </div>
-                <span className="bento-badge-pill">Sub-Second Cloud</span>
+                <Play size={20} className="bento-icon" />
+                <span className="bento-badge-pill">Sub-Second</span>
               </div>
               <div className="bento-content-body">
-                <h3 className="bento-card-title">Compile in no time with *</h3>
-                <p className="bento-card-desc">
-                  Instant sub-second cloud execution.
-                </p>
-                {/* Visual Bento Widget: Apple-Style Bold Execution Metric */}
+                <h3 className="bento-card-title">Compile in No Time</h3>
+                <p className="bento-card-desc">Instant cloud execution.</p>
                 <div className="bento-speed-stat-box">
                   <div className="bento-stat-number-row">
-                    <span className="bento-speed-value">0.08</span>
+                    <span className="bento-speed-value">{bentoSpeed.toFixed(2)}</span>
                     <span className="bento-speed-unit">s</span>
                   </div>
-                  <div className="bento-speed-tag">
-                    <span className="speed-pulse-indicator" />
-                    <span>Real-time Execution Benchmark</span>
-                  </div>
+                  <div className="bento-speed-track"><span /></div>
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 3: Save Your Code (Col Span 1 - Persistence Box) */}
-            <div className="bento-card bento-span-1 bento-card-save">
+            {/* Bento Card 3: Save Your Code */}
+            <div className="bento-card bento-card-save">
               <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <Bookmark size={20} />
-                </div>
-                <span className="bento-badge-pill">Cloud Persistence</span>
+                <Bookmark size={20} className="bento-icon" />
+                <span className="bento-badge-pill">Cloud Sync</span>
               </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Save Your Code</h3>
-                <p className="bento-card-desc">
-                  Auto-saves directly to your cloud workspace.
-                </p>
-                {/* Visual Bento Widget: Cloud Sync Status Card */}
+                <p className="bento-card-desc">Auto-saved to your workspace.</p>
                 <div className="bento-sync-widget">
-                  <div className="bento-sync-icon-pulse">
-                    <Check size={16} className="text-emerald-500" />
-                  </div>
+                  <span className="bento-sync-icon-pulse">
+                    <Check size={16} />
+                  </span>
                   <div className="bento-sync-text-wrap">
-                    <span className="sync-title">Cloud Auto-Save</span>
+                    <span className="sync-title">Auto-Save On</span>
                     <span className="sync-subtitle">Synced on every keystroke</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Bento Card 4: Create multiple files together (Col Span 2 - Modular Tabs Box) */}
-            <div className="bento-card bento-span-2 bento-card-multifile">
+            {/* Bento Card 4: Multi-file projects (files share one language) */}
+            <div className="bento-card bento-card-multifile">
               <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <FolderPlus size={20} />
-                </div>
-                <span className="bento-badge-pill">Modular Projects</span>
+                <FolderPlus size={20} className="bento-icon" />
+                <span className="bento-badge-pill">Multi-File</span>
               </div>
               <div className="bento-content-body">
-                <h3 className="bento-card-title">Create multiple file together .c, .cpp, .java, .js, .py</h3>
-                <p className="bento-card-desc">
-                  Multi-file tabs for modular projects. Split headers, algorithms, and test cases across native tabs.
-                </p>
-                {/* Visual Bento Widget: Mini Multi-File Tab Bar Mockup */}
-                <div className="bento-mini-tabbar">
-                  <div className="mini-tab-item active">
-                    <span className="mini-tab-dot" />
-                    <span>main.cpp *</span>
-                  </div>
-                  <div className="mini-tab-item">
-                    <span>solution.h</span>
-                  </div>
-                  <div className="mini-tab-item">
-                    <span>test_cases.py</span>
-                  </div>
-                  <div className="mini-tab-add" title="Add File">
-                    +
+                <h3 className="bento-card-title">Multiple Files</h3>
+                <p className="bento-card-desc">Split one project across files.</p>
+                <div className="bento-project-widget">
+                  <span key={activeProject.lang} className="bento-project-lang">{activeProject.lang} project</span>
+                  <div className="bento-mini-tabbar">
+                    {activeProject.files.map((f, i) => (
+                      <span key={f} className={`mini-tab-item ${i === bentoFile ? 'active' : ''}`}>
+                        <span>{f}</span>
+                      </span>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Bento Card 5: Create a shareable link for your code (Col Span 2 - Collaboration Box) */}
-            <div className="bento-card bento-span-2 bento-card-share">
-              <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <Share2 size={20} />
-                </div>
-                <span className="bento-badge-pill">Instant Share</span>
-              </div>
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Create a shareable link for your code</h3>
-                <p className="bento-card-desc">
-                  Instant shareable URLs for code. Generate clean read-only links for peers, mentors, or interviews.
-                </p>
-                {/* Visual Bento Widget: Interactive Apple-Style URL Bar */}
-                <div className="bento-share-url-widget">
-                  <div className="share-url-input-mimic">
-                    <span className="share-url-protocol">https://</span>
-                    <span className="share-url-domain">cipherschools.com/code/</span>
-                    <span className="share-url-slug">algo-v2-live</span>
-                  </div>
-                  <button 
-                    type="button" 
-                    className="bento-copy-btn"
-                    onClick={() => {
-                      navigator.clipboard?.writeText('https://cipherschools.com/code/algo-v2-live');
-                      showToast('Share link copied to clipboard!');
-                    }}
-                    title="Copy Share Link"
-                  >
-                    <Copy size={13} />
-                    <span>Copy Link</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Bento Card 6: Download Your Code (Col Span 1 - Native Export Box) */}
-            <div className="bento-card bento-span-1 bento-card-download">
-              <div className="bento-card-header">
-                <div className="bento-icon-box">
-                  <Download size={20} />
-                </div>
-                <span className="bento-badge-pill">Native File Export</span>
-              </div>
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Download Your Code</h3>
-                <p className="bento-card-desc">
-                  1-click native file export.
-                </p>
-                {/* Visual Bento Widget: Formats Row & Action Button */}
-                <div className="bento-formats-row">
-                  {['.cpp', '.py', '.java', '.js', '.c'].map((ext) => (
-                    <span key={ext} className="bento-ext-pill">{ext}</span>
-                  ))}
-                </div>
-                <button 
-                  type="button" 
-                  className="bento-download-action-btn"
-                  onClick={() => showToast(`Downloaded ${currentLang.file}`)}
-                  title="Download File"
-                >
-                  <Download size={14} />
-                  <span>1-Click Download</span>
-                </button>
               </div>
             </div>
 
           </div>
 
+          {/* Minimal "Did You Know?" Compiler Definition Strip */}
+          <div className="compiler-did-you-know-strip">
+            <div className="dyk-badge">
+              <Sparkles size={12} className="dyk-icon" />
+              <span>DID YOU KNOW?</span>
+            </div>
+            <p className="dyk-text">
+              A compiler is the ultimate bridge between human intellect and pure physics—transforming elegant lines of code into lightning-fast binary symphonies that whisper directly to the silicon of modern machines.
+            </p>
+          </div>
+
         </div>
       </section>
-
       {/* ─────────────────────────────────────────────────────────────
          SECTION 3: DEDICATED WHITEBOARD MOCKUP (NON-ACCESSIBLE)
          ───────────────────────────────────────────────────────────── */}
@@ -1519,12 +1507,11 @@ Happy Coding! 🎉
           </div>
 
           <div className="compiler-window-frame mockup-frame-non-accessible">
-            
-            {/* Top Whiteboard Header */}
+
+            {/* Top Window Header (same as compiler mockup) */}
             <div className="compiler-top-header">
               <div className="header-brand-group">
-                <WhiteboardEaselIcon size={20} />
-                <span className="compiler-type-text">CipherSchools Whiteboard Studio</span>
+                <span className="compiler-type-text">C++ Compiler + Whiteboard</span>
               </div>
 
               <div className="header-right-actions">
@@ -1537,196 +1524,153 @@ Happy Coding! 🎉
               </div>
             </div>
 
-            {/* Whiteboard Main Canvas Area */}
-            <div className="whiteboard-canvas-wrap mockup-non-accessible-area">
-              <div className="whiteboard-surface-container clean-board">
-                
-                {/* Subtle Whiteboard Grid Dot Pattern */}
-                <div className="whiteboard-grid-pattern" />
+            <div className="compiler-main-workspace wb-split-workspace">
 
-                {/* Center Whiteboard Showcase */}
-                <div className="whiteboard-center-drawing-box">
-                  
-                  {/* Cursive / Dry-Erase Handwriting */}
-                  <div className="wb-cursive-text-row">
-                    <h3 className="wb-cursive-heading">
-                      {wbText || (wbPhase === 'idle' ? targetWbText : '')}
-                    </h3>
+              {/* Left Vertical Language & Tool Rail (static, C++ selected) */}
+              <aside className="editor-left-rail">
+                <div className="rail-top-langs">
+                  {LANGUAGES.map((lang) => {
+                    const IconComp = lang.icon;
+                    return (
+                      <span
+                        key={lang.id}
+                        className={`rail-lang-btn static-btn ${lang.id === 'cpp' ? 'active' : ''}`}
+                        title={lang.name}
+                      >
+                        <IconComp size={20} />
+                      </span>
+                    );
+                  })}
+                </div>
+
+                <div className="rail-bottom-tools">
+                  <div className="rail-tool-btn static-tool" title="Whiteboard Active">
+                    <WhiteboardEaselIcon size={18} />
+                  </div>
+                </div>
+              </aside>
+
+              {/* Left: C++ Code Pane */}
+              <div className="editor-code-pane">
+                <div className="editor-tabs-bar">
+                  <div className="tabs-cluster">
+                    <div className="code-tab-item active">
+                      <span className="tab-dot desktop-only"></span>
+                      <span>{WB_LANG.file}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="editor-textarea-wrap mockup-non-accessible-area">
+                  <div className="line-numbers-gutter">
+                    {WB_LANG.code.split('\n').map((_, i) => (
+                      <span key={i} className="line-num">{i + 1}</span>
+                    ))}
+                  </div>
+                  <textarea
+                    className="code-editable-area"
+                    value={WB_LANG.code}
+                    readOnly={true}
+                    tabIndex={-1}
+                    spellCheck="false"
+                    aria-label="Non-interactive C++ code mockup"
+                  />
+                </div>
+
+                <div className="editor-status-footer">
+                  <span className="status-tag">UTF-8</span>
+                  <span className="status-tag">{WB_LANG.version}</span>
+                  <span className="status-tag">Lines: {WB_LANG.code.split('\n').length}</span>
+                </div>
+              </div>
+
+              {/* Right: Whiteboard Pane — shows "Open Whiteboard" CTA on interaction */}
+              <div
+                className={`editor-whiteboard-pane ${wbCtaVisible ? 'wb-cta-active' : ''}`}
+                onPointerEnter={() => setWbCtaVisible(true)}
+                onPointerDown={() => setWbCtaVisible(true)}
+                onPointerLeave={(e) => { if (e.pointerType === 'mouse') setWbCtaVisible(false); }}
+              >
+                <div className="whiteboard-canvas-wrap mockup-non-accessible-area">
+                  <div className="whiteboard-surface-container clean-board">
+                    <div className="whiteboard-grid-pattern" />
+                    <div className="whiteboard-center-drawing-box">
+                      <div className="wb-cursive-text-row">
+                        <h3 className="wb-cursive-heading">
+                          {wbText || (wbPhase === 'idle' ? targetWbText : '')}
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="whiteboard-bottom-toolbar">
+                  <div className="toolbar-cluster tools-group">
+                    <div className="wb-tool-btn active" title="Pen Tool">
+                      <PenTool size={15} />
+                    </div>
+                    <div className="wb-tool-btn" title="Eraser">
+                      <Eraser size={15} />
+                    </div>
+                    <div className="wb-tool-btn" title="Hand Pan">
+                      <Move size={15} />
+                    </div>
                   </div>
 
+                  <div className="toolbar-divider"></div>
+
+                  <div className="toolbar-cluster colors-group">
+                    {[
+                      { color: '#1E293B', label: 'Black' },
+                      { color: '#3B82F6', label: 'Blue' },
+                      { color: '#10B981', label: 'Green' },
+                      { color: '#F97316', label: 'Orange' }
+                    ].map((swatch, idx) => (
+                      <div
+                        key={swatch.color}
+                        className={`wb-color-dot ${idx === 3 ? 'selected' : ''}`}
+                        style={{ backgroundColor: swatch.color }}
+                        title={swatch.label}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="toolbar-divider"></div>
+
+                  <div className="toolbar-cluster actions-group">
+                    <button
+                      type="button"
+                      className="wb-action-btn"
+                      onClick={handleReplayWhiteboard}
+                      title="Replay Whiteboard Drawing"
+                    >
+                      <RotateCcw size={14} />
+                    </button>
+                    <div className="wb-action-btn" title="Undo">
+                      <Undo2 size={14} />
+                    </div>
+                    <div className="wb-action-btn" title="Redo">
+                      <Redo2 size={14} />
+                    </div>
+                  </div>
                 </div>
 
-              </div>
-            </div>
-
-            {/* Bottom Whiteboard Toolbar */}
-            <div className="whiteboard-bottom-toolbar">
-              <div className="toolbar-cluster tools-group">
-                <div className="wb-tool-btn active" title="Pen Tool">
-                  <PenTool size={15} />
-                </div>
-                <div className="wb-tool-btn" title="Eraser">
-                  <Eraser size={15} />
-                </div>
-                <div className="wb-tool-btn" title="Hand Pan">
-                  <Move size={15} />
-                </div>
-              </div>
-
-              <div className="toolbar-divider"></div>
-
-              <div className="toolbar-cluster colors-group">
-                {[
-                  { color: '#1E293B', label: 'Black' },
-                  { color: '#3B82F6', label: 'Blue' },
-                  { color: '#10B981', label: 'Green' },
-                  { color: '#F97316', label: 'Orange' },
-                  { color: '#A855F7', label: 'Purple' }
-                ].map((swatch, idx) => (
-                  <div
-                    key={swatch.color}
-                    className={`wb-color-dot ${idx === 3 ? 'selected' : ''}`}
-                    style={{ backgroundColor: swatch.color }}
-                    title={swatch.label}
-                  />
-                ))}
-              </div>
-
-              <div className="toolbar-divider"></div>
-
-              <div className="toolbar-cluster size-group">
-                <div className="wb-size-toggle" title="Brush Size: 4px">
-                  <span className="size-dot" style={{ width: '10px', height: '10px' }}></span>
-                </div>
-              </div>
-
-              <div className="toolbar-divider"></div>
-
-              <div className="toolbar-cluster actions-group">
-                <button 
-                  type="button" 
-                  className="wb-action-btn" 
-                  onClick={handleReplayWhiteboard}
-                  title="Replay Whiteboard Drawing"
-                >
-                  <RotateCcw size={14} />
-                </button>
-                <div className="wb-action-btn" title="Undo">
-                  <Undo2 size={14} />
-                </div>
-                <div className="wb-action-btn" title="Redo">
-                  <Redo2 size={14} />
-                </div>
-                <div className="wb-action-btn delete-btn" onClick={clearCanvas} title="Clear Canvas">
-                  <Trash2 size={14} />
-                </div>
-                <div className="wb-action-btn download-btn" onClick={downloadCanvas} title="Download Diagram">
-                  <Download size={14} />
+                {/* Interaction CTA overlay */}
+                <div className="wb-open-cta-overlay" aria-hidden={!wbCtaVisible}>
+                  <button
+                    type="button"
+                    className="hero-btn-primary wb-open-cta-btn"
+                    onClick={handleOpenWhiteboard}
+                    tabIndex={wbCtaVisible ? 0 : -1}
+                  >
+                    <span>Open Whiteboard</span>
+                    <ChevronRight size={15} />
+                  </button>
                 </div>
               </div>
 
             </div>
 
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-         SECTION 4: POINTERS BELOW WHITE BOARD COMPILER
-         ───────────────────────────────────────────────────────────── */}
-      <section className="whiteboard-pointers-section">
-        <div className="whiteboard-pointers-container">
-          
-          <div className="section-head-center">
-            <h2 className="section-title">
-              Visual Learning Made Simple with <span className="headline-gradient">Whiteboard</span>
-            </h2>
-            <p className="section-subtitle">
-              Teach students, sketch algorithms, and export diagrams.
-            </p>
-          </div>
-
-          {/* 2 Core Pointers */}
-          <div className="wb-pointers-dual-grid">
-            
-            {/* Pointer 1: Draw as you like */}
-            <div className="wb-pointer-card">
-              <div className="wb-pointer-icon-wrap">
-                <PenTool size={22} />
-              </div>
-              <div className="wb-pointer-content">
-                <div className="wb-pointer-header">
-                  <h3 className="wb-pointer-title">Draw as you like</h3>
-                </div>
-                <p className="wb-pointer-desc">
-                  Sketch recursion trees, graphs, and logic freely.
-                </p>
-                <div className="wb-pointer-pills">
-                  <span className="wb-feature-pill">Freehand Sketching</span>
-                  <span className="wb-feature-pill">5 Marker Colors</span>
-                  <span className="wb-feature-pill">Pan & Zoom</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Pointer 2: Download PNG */}
-            <div className="wb-pointer-card">
-              <div className="wb-pointer-icon-wrap">
-                <Download size={22} />
-              </div>
-              <div className="wb-pointer-content">
-                <div className="wb-pointer-header">
-                  <h3 className="wb-pointer-title">Download PNG</h3>
-                </div>
-                <p className="wb-pointer-desc">
-                  1-click export for notes, slides, and revisions.
-                </p>
-                <div className="wb-pointer-pills">
-                  <span className="wb-feature-pill">High-Resolution PNG</span>
-                  <span className="wb-feature-pill">Instant 1-Click Export</span>
-                  <span className="wb-feature-pill">Lossless Quality</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Teach Students & Share Feature Highlights Strip */}
-          <div className="wb-teach-share-banner">
-            <div className="teach-share-item">
-              <div className="ts-icon-circle">
-                <GraduationCap size={19} />
-              </div>
-              <div className="ts-text-wrap">
-                <h4 className="ts-title">Teach Students Visually</h4>
-                <p className="ts-caption">Illustrate data structures and logic live on screen.</p>
-              </div>
-            </div>
-
-            <div className="ts-divider"></div>
-
-            <div className="teach-share-item">
-              <div className="ts-icon-circle">
-                <Share2 size={19} />
-              </div>
-              <div className="ts-text-wrap">
-                <h4 className="ts-title">Download & Share with Them</h4>
-                <p className="ts-caption">Share high-res diagrams with batches and study groups.</p>
-              </div>
-            </div>
-
-            <div className="ts-divider"></div>
-
-            <div className="teach-share-item">
-              <div className="ts-icon-circle">
-                <Sparkles size={19} />
-              </div>
-              <div className="ts-text-wrap">
-                <h4 className="ts-title">Your Go-To Whiteboard Tool</h4>
-                <p className="ts-caption">Built into your compiler so you never switch tabs.</p>
-              </div>
-            </div>
           </div>
 
         </div>
@@ -1777,39 +1721,6 @@ Happy Coding! 🎉
         </div>
       </section>
 
-      {/* ─────────────────────────────────────────────────────────────
-         BOTTOM CONVERSION CTA BANNER
-         ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-bottom-cta">
-        <div className="cta-box-card">
-          <div className="cta-content">
-            <h2 className="cta-heading">Ready to write and dry-run your next algorithm?</h2>
-            <p className="cta-sub">
-              Experience the best in-browser IDE with built-in whiteboard tools. 100% Free. Zero installation.
-            </p>
-          </div>
-          <div className="cta-actions">
-            <button
-              type="button"
-              className="cta-btn-primary"
-              onClick={() => {
-                editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-            >
-              <span>Launch Free Compiler</span>
-              <Play size={14} fill="currentColor" />
-            </button>
-            <button
-              type="button"
-              className="cta-btn-secondary"
-              onClick={() => navigate('/courses')}
-            >
-              <span>Explore Free Courses</span>
-              <ExternalLink size={14} />
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* ── Floating CTA & Keyboard Shortcut Dock (When Scrolled) ── */}
       <div 
@@ -1829,15 +1740,9 @@ Happy Coding! 🎉
             <ChevronRight size={15} />
           </button>
 
-          <div 
-            className="floating-keyboard-hint"
-            onClick={() => {
-              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            title="Click or press Ctrl + Enter to open"
-          >
+          <div className="floating-keyboard-hint">
             <span className="kbd-shortcut-pill">
-              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to open
+              or <kbd>Ctrl/Cmd</kbd> + <kbd>Enter</kbd>
             </span>
           </div>
         </div>
