@@ -229,11 +229,12 @@ const WB_LANG = LANGUAGES.find((l) => l.id === 'cpp');
 // Multi-file demo: a project's files all share one language
 const BENTO_PROJECTS = [
   { lang: 'C++', files: ['main.cpp', 'graph.h', 'graph.cpp'] },
-  { lang: 'Java', files: ['Main.java', 'Solution.java', 'Node.java'] },
+  { lang: 'Java', files: ['Main.java', 'Node.java'] },
   { lang: 'Python', files: ['main.py', 'solver.py', 'utils.py'] },
   { lang: 'C', files: ['main.c', 'stack.h', 'stack.c'] },
   { lang: 'JavaScript', files: ['index.js', 'queue.js', 'utils.js'] }
 ];
+const BENTO_TOTAL_FILES = BENTO_PROJECTS.reduce((n, p) => n + p.files.length, 0);
 
 const FAQ_ITEMS = [
   {
@@ -366,8 +367,14 @@ const CompilerPage = () => {
   }, [bentoInView]);
 
   // Each project stays in one language; cycle files within it, then move to the next language
-  const activeProject = BENTO_PROJECTS[Math.floor(bentoTick / 3) % BENTO_PROJECTS.length];
-  const bentoFile = bentoTick % 3;
+  let bentoStep = bentoTick % BENTO_TOTAL_FILES;
+  let bentoProjectIdx = 0;
+  while (bentoStep >= BENTO_PROJECTS[bentoProjectIdx].files.length) {
+    bentoStep -= BENTO_PROJECTS[bentoProjectIdx].files.length;
+    bentoProjectIdx += 1;
+  }
+  const activeProject = BENTO_PROJECTS[bentoProjectIdx];
+  const bentoFile = bentoStep;
 
   // Floating CTA & Shortcut dock visibility on scroll
   const [showFloatingCta, setShowFloatingCta] = useState(false);
@@ -1458,7 +1465,7 @@ Happy Coding! 🎉
             <div className="bento-card bento-card-save">
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Save Your Code</h3>
-                <p className="bento-card-desc">Auto-saved to your workspace.</p>
+                <p className="bento-card-desc">Login Required*</p>
                 <div className="bento-sync-widget">
                   <span className="bento-sync-icon-pulse">
                     <Cloud size={16} />
