@@ -2173,6 +2173,30 @@
   font-weight: 600;
 }
 
+.bento-save-options {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bento-save-options .bento-sync-widget {
+  margin-top: 0;
+}
+
+.bento-save-or {
+  font-size: 0.64rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94A3B8;
+  padding-left: 40px;
+}
+
+.bento-sync-icon-pulse.no-pulse::after {
+  display: none;
+}
+
 /* ── Bento Widget 4: Single-language project file tabs ── */
 .bento-project-widget {
   margin-top: auto;
@@ -3018,6 +3042,10 @@
   font-size: clamp(1.6rem, 2.4vw, 2.3rem);
 }
 
+.editor-cta-pane {
+  position: relative;
+}
+
 .wb-open-cta-overlay {
   position: absolute;
   inset: 0;
@@ -3032,7 +3060,8 @@
   transition: opacity 0.25s ease;
 }
 
-.editor-whiteboard-pane.wb-cta-active .wb-open-cta-overlay {
+.editor-whiteboard-pane.wb-cta-active .wb-open-cta-overlay,
+.editor-cta-pane.wb-cta-active .wb-open-cta-overlay {
   opacity: 1;
   pointer-events: auto;
 }
@@ -3042,7 +3071,8 @@
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.editor-whiteboard-pane.wb-cta-active .wb-open-cta-btn {
+.editor-whiteboard-pane.wb-cta-active .wb-open-cta-btn,
+.editor-cta-pane.wb-cta-active .wb-open-cta-btn {
   transform: none;
 }
 

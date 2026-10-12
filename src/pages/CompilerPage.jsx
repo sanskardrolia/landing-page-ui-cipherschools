@@ -26,7 +26,13 @@ import {
   PenTool,
   Eraser,
   HelpCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  FolderOpen,
+  Laptop,
+  Monitor,
+  Tablet,
+  Smartphone,
+  Cloud
 } from 'lucide-react';
 import './CompilerPage.css';
 
@@ -981,6 +987,12 @@ const CompilerPage = () => {
   }, [wbPhase, wbText, targetWbText]);
 
   const [wbCtaVisible, setWbCtaVisible] = useState(false);
+  const [editorCtaVisible, setEditorCtaVisible] = useState(false);
+
+  // TODO: point this at the live editor once its URL is available
+  const handleOpenEditor = () => {
+    editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   // TODO: point this at the live whiteboard once its URL is available
   const handleOpenWhiteboard = () => {
@@ -1157,8 +1169,13 @@ const CompilerPage = () => {
                 </div>
               </aside>
 
-              {/* Middle: Code Editor Pane */}
-              <div className="editor-code-pane">
+              {/* Middle: Code Editor Pane — shows "Open Editor" CTA on interaction */}
+              <div
+                className={`editor-code-pane editor-cta-pane ${editorCtaVisible ? 'wb-cta-active' : ''}`}
+                onPointerEnter={() => setEditorCtaVisible(true)}
+                onPointerDown={() => setEditorCtaVisible(true)}
+                onPointerLeave={(e) => { if (e.pointerType === 'mouse') setEditorCtaVisible(false); }}
+              >
                 
                 {/* Editor File Tabs & Action Bar */}
                 <div className="editor-tabs-bar">
@@ -1282,6 +1299,19 @@ const CompilerPage = () => {
                   <span className="status-tag">Lines: {currentCodeLines.length}</span>
                 </div>
 
+                {/* Interaction CTA overlay */}
+                <div className="wb-open-cta-overlay" aria-hidden={!editorCtaVisible}>
+                  <button
+                    type="button"
+                    className="hero-btn-primary wb-open-cta-btn"
+                    onClick={handleOpenEditor}
+                    tabIndex={editorCtaVisible ? 0 : -1}
+                  >
+                    <span>Open Editor</span>
+                    <ChevronRight size={15} />
+                  </button>
+                </div>
+
               </div>
 
               {/* Right Side Pane: Split Input & Output */}
@@ -1391,26 +1421,25 @@ Happy Coding! 🎉
 
           <div ref={bentoRef} className={`compiler-bento-grid ${bentoInView ? 'is-in' : ''}`}>
 
-            {/* Bento Card 1: Write Code in 5 languages */}
-            <div className="bento-card bento-card-languages">
+            {/* Bento Card 1: Access saved files anywhere */}
+            <div className="bento-card bento-card-access">
               <div className="bento-card-header">
-                <FileCode size={20} className="bento-icon" />
-                <span className="bento-badge-pill">Multi-Language</span>
+                <FolderOpen size={20} className="bento-icon" />
+                <span className="bento-badge-pill">Anywhere</span>
               </div>
               <div className="bento-content-body">
-                <h3 className="bento-card-title">5 Languages</h3>
-                <p className="bento-card-desc">Latest compilers, ready to run.</p>
+                <h3 className="bento-card-title">Access Saved Files</h3>
+                <p className="bento-card-desc">Whatever you save, anytime, anywhere.</p>
                 <div className="bento-langs-display-row">
                   {[
-                    { name: 'C', version: 'C17' },
-                    { name: 'C++', version: 'C++20' },
-                    { name: 'Java', version: 'JDK 17' },
-                    { name: 'Python', version: '3.11' },
-                    { name: 'JS', version: 'Node 20' }
-                  ].map(({ name, version }, i) => (
+                    { name: 'Laptop', Icon: Laptop },
+                    { name: 'Desktop', Icon: Monitor },
+                    { name: 'Tablet', Icon: Tablet },
+                    { name: 'Phone', Icon: Smartphone }
+                  ].map(({ name, Icon }, i) => (
                     <div key={name} className="bento-lang-chip" style={{ '--i': i }}>
+                      <Icon size={16} className="bento-icon" />
                       <span className="lang-chip-name">{name}</span>
-                      <span className="lang-chip-ver">{version}</span>
                     </div>
                   ))}
                 </div>
@@ -1445,13 +1474,25 @@ Happy Coding! 🎉
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Save Your Code</h3>
                 <p className="bento-card-desc">Auto-saved to your workspace.</p>
-                <div className="bento-sync-widget">
-                  <span className="bento-sync-icon-pulse">
-                    <Check size={16} />
-                  </span>
-                  <div className="bento-sync-text-wrap">
-                    <span className="sync-title">Auto-Save On</span>
-                    <span className="sync-subtitle">Synced on every keystroke</span>
+                <div className="bento-save-options">
+                  <div className="bento-sync-widget">
+                    <span className="bento-sync-icon-pulse">
+                      <Cloud size={16} />
+                    </span>
+                    <div className="bento-sync-text-wrap">
+                      <span className="sync-title">Sync with Cloud</span>
+                      <span className="sync-subtitle">Saved on every keystroke</span>
+                    </div>
+                  </div>
+                  <span className="bento-save-or">or</span>
+                  <div className="bento-sync-widget">
+                    <span className="bento-sync-icon-pulse no-pulse">
+                      <Download size={16} />
+                    </span>
+                    <div className="bento-sync-text-wrap">
+                      <span className="sync-title">Download Code File</span>
+                      <span className="sync-subtitle">Keep a local copy</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1465,7 +1506,7 @@ Happy Coding! 🎉
               </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Multiple Files</h3>
-                <p className="bento-card-desc">Split one project across files.</p>
+                <p className="bento-card-desc">Work with multiple files.</p>
                 <div className="bento-project-widget">
                   <span key={activeProject.lang} className="bento-project-lang">{activeProject.lang} project</span>
                   <div className="bento-mini-tabbar">
