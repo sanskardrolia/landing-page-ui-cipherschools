@@ -2173,30 +2173,6 @@
   font-weight: 600;
 }
 
-.bento-save-options {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.bento-save-options .bento-sync-widget {
-  margin-top: 0;
-}
-
-.bento-save-or {
-  font-size: 0.64rem;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #94A3B8;
-  padding-left: 40px;
-}
-
-.bento-sync-icon-pulse.no-pulse::after {
-  display: none;
-}
-
 /* ── Bento Widget 4: Single-language project file tabs ── */
 .bento-project-widget {
   margin-top: auto;

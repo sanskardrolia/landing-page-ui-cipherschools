@@ -7,8 +7,6 @@ import {
   Download, 
   Maximize2, 
   Bookmark, 
-  FolderPlus, 
-  FileCode, 
   Sun, 
   User, 
   Check, 
@@ -27,7 +25,6 @@ import {
   Eraser,
   HelpCircle,
   MoreHorizontal,
-  FolderOpen,
   Laptop,
   Monitor,
   Tablet,
@@ -1423,10 +1420,6 @@ Happy Coding! 🎉
 
             {/* Bento Card 1: Access saved files anywhere */}
             <div className="bento-card bento-card-access">
-              <div className="bento-card-header">
-                <FolderOpen size={20} className="bento-icon" />
-                <span className="bento-badge-pill">Anywhere</span>
-              </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Access Saved Files</h3>
                 <p className="bento-card-desc">Whatever you save, access anytime, anywhere.</p>
@@ -1448,10 +1441,6 @@ Happy Coding! 🎉
 
             {/* Bento Card 2: Compile in no time */}
             <div className="bento-card bento-card-speed">
-              <div className="bento-card-header">
-                <Play size={20} className="bento-icon" />
-                <span className="bento-badge-pill">Sub-Second</span>
-              </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Compile in No Time</h3>
                 <p className="bento-card-desc">Instant cloud execution.</p>
@@ -1467,32 +1456,16 @@ Happy Coding! 🎉
 
             {/* Bento Card 3: Save Your Code */}
             <div className="bento-card bento-card-save">
-              <div className="bento-card-header">
-                <Bookmark size={20} className="bento-icon" />
-                <span className="bento-badge-pill">Cloud Sync</span>
-              </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Save Your Code</h3>
                 <p className="bento-card-desc">Auto-saved to your workspace.</p>
-                <div className="bento-save-options">
-                  <div className="bento-sync-widget">
-                    <span className="bento-sync-icon-pulse">
-                      <Cloud size={16} />
-                    </span>
-                    <div className="bento-sync-text-wrap">
-                      <span className="sync-title">Sync with Cloud</span>
-                      <span className="sync-subtitle">Every saved file will be synced with the cloud</span>
-                    </div>
-                  </div>
-                  <span className="bento-save-or">or</span>
-                  <div className="bento-sync-widget">
-                    <span className="bento-sync-icon-pulse no-pulse">
-                      <Download size={16} />
-                    </span>
-                    <div className="bento-sync-text-wrap">
-                      <span className="sync-title">Download Code File</span>
-                      <span className="sync-subtitle">Keep a local copy</span>
-                    </div>
+                <div className="bento-sync-widget">
+                  <span className="bento-sync-icon-pulse">
+                    <Cloud size={16} />
+                  </span>
+                  <div className="bento-sync-text-wrap">
+                    <span className="sync-title">Cloud Sync or Download</span>
+                    <span className="sync-subtitle">Every saved file synced, or grab a local copy</span>
                   </div>
                 </div>
               </div>
@@ -1500,10 +1473,6 @@ Happy Coding! 🎉
 
             {/* Bento Card 4: Multi-file projects (files share one language) */}
             <div className="bento-card bento-card-multifile">
-              <div className="bento-card-header">
-                <FolderPlus size={20} className="bento-icon" />
-                <span className="bento-badge-pill">Multi-File</span>
-              </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Multiple Files</h3>
                 <p className="bento-card-desc">Work with multiple files.</p>
