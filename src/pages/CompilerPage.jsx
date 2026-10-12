@@ -1429,7 +1429,7 @@ Happy Coding! 🎉
               </div>
               <div className="bento-content-body">
                 <h3 className="bento-card-title">Access Saved Files</h3>
-                <p className="bento-card-desc">Whatever you save, anytime, anywhere.</p>
+                <p className="bento-card-desc">Whatever you save, access anytime, anywhere.</p>
                 <div className="bento-langs-display-row">
                   {[
                     { name: 'Laptop', Icon: Laptop },
@@ -1481,7 +1481,7 @@ Happy Coding! 🎉
                     </span>
                     <div className="bento-sync-text-wrap">
                       <span className="sync-title">Sync with Cloud</span>
-                      <span className="sync-subtitle">Saved on every keystroke</span>
+                      <span className="sync-subtitle">Every saved file will be synced with the cloud</span>
                     </div>
                   </div>
                   <span className="bento-save-or">or</span>
