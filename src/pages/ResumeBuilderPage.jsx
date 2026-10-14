@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
-  ArrowLeft,
   ArrowDown,
   ArrowUp,
   Award,
@@ -10,6 +9,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Download,
   Eye,
   FolderGit2,
@@ -269,11 +269,11 @@ const ResumeBuilderPage = () => {
   const template = TEMPLATE_IDS.includes(templateParam) ? templateParam : 'beginner';
 
   const [resume, setResume] = useState(() => loadDraft() || emptyResume());
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(0); // open accordion section, -1 = all collapsed
   const [openIds, setOpenIds] = useState(() => new Set([resume.education[0]?.id].filter(Boolean)));
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [savedAt, setSavedAt] = useState(null);
-  const formTopRef = useRef(null);
+  const sectionRefs = useRef({});
+  const scrollTarget = useRef(null);
 
   /* ── ATS hand-off (arrived from an ATS report with "Copy data from my resume") ── */
   const fromAts = searchParams.get('from') === 'ats';
@@ -291,8 +291,14 @@ const ResumeBuilderPage = () => {
     return next;
   });
   const [glow, setGlow] = useState(null); // { kind, at }
-  const [fixesOpen, setFixesOpen] = useState(true);
-  const [formGlow, setFormGlow] = useState(false);
+  // Open on arrival only if there is something left to fix
+  const [fixesOpen, setFixesOpen] = useState(() => {
+    if (!handoff?.initialFixes) return true;
+    const pending = deriveFixes(scoreBuilder(resume, { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta }));
+    return pending.length > 0;
+  });
+  const [sectionGlow, setSectionGlow] = useState(null);
+  const [showAllFixes, setShowAllFixes] = useState(false);
   const atsCtx = handoff ? { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta } : null;
   const analysis = useMemo(
     () => (handoff ? scoreBuilder(resume, { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta }) : null),
@@ -312,20 +318,26 @@ const ResumeBuilderPage = () => {
   }, [glow]);
 
   useEffect(() => {
-    if (!formGlow) return undefined;
-    const t = setTimeout(() => setFormGlow(false), 1600);
+    if (!sectionGlow) return undefined;
+    const t = setTimeout(() => setSectionGlow(null), 1600);
     return () => clearTimeout(t);
-  }, [formGlow]);
+  }, [sectionGlow]);
+
+  // After a section opens from code (Next, "Show me"), bring its header into view
+  useEffect(() => {
+    const key = scrollTarget.current;
+    if (!key) return;
+    scrollTarget.current = null;
+    sectionRefs.current[key]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [active]);
 
   const Template = TEMPLATE_COMPONENTS[template];
-  const section = SECTIONS[active];
 
   // Autosave the draft
   useEffect(() => {
     const t = setTimeout(() => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(resume));
-        setSavedAt(new Date());
       } catch {
         /* storage unavailable: keep working in memory */
       }
@@ -423,11 +435,9 @@ const ResumeBuilderPage = () => {
 
   const showFix = (fix) => {
     const i = SECTIONS.findIndex((sec) => sec.key === fix.section);
-    if (i >= 0) {
-      setActive(i);
-      formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    setFormGlow(true);
+    if (i < 0) return;
+    goTo(i);
+    setSectionGlow(fix.section);
   };
 
   // Hiding only folds the panel away; the score in the sidebar / top bar brings it back
@@ -457,10 +467,14 @@ const ResumeBuilderPage = () => {
     return () => { cancelAnimationFrame(raf); clearTimeout(t); };
   }, [panelFlash]);
 
+  // Accordion: one section open at a time keeps the editor short
   const goTo = (i) => {
+    if (i < 0 || i >= SECTIONS.length) return;
+    scrollTarget.current = SECTIONS[i].key;
     setActive(i);
-    formTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  const toggleSection = (i) => setActive((cur) => (cur === i ? -1 : i));
 
   const handleDownload = () => {
     const prev = document.title;
@@ -490,9 +504,28 @@ const ResumeBuilderPage = () => {
 
   const doneCount = Object.values(done).filter(Boolean).length;
 
+  // What a collapsed section shows under its title
+  const summaries = useMemo(() => {
+    const withMore = (names) => {
+      const list = names.filter(Boolean);
+      if (!list.length) return '';
+      return list.length === 1 ? list[0] : `${list[0]} · +${list.length - 1} more`;
+    };
+    const p = resume.personal;
+    return {
+      personal: [fullName(p), p.email].filter(Boolean).join(' · '),
+      education: withMore(resume.education.map((e) => e.institution)),
+      experience: withMore(resume.experience.map((e) => e.title || e.employer)),
+      skills: resume.skills.filter((sk) => sk.skills.trim()).map((sk) => sk.category || 'Skills').join(', '),
+      projects: withMore(resume.projects.map((pr) => pr.title)),
+      certifications: withMore(resume.certifications.map((c) => c.title)),
+      additional: withMore(resume.additional.map((a) => a.heading)),
+    };
+  }, [resume]);
+
   /* ── section forms ── */
-  const renderSection = () => {
-    switch (section.key) {
+  const renderSection = (key) => {
+    switch (key) {
       case 'personal': {
         const p = resume.personal;
         return (
@@ -686,6 +719,28 @@ const ResumeBuilderPage = () => {
 
   const pendingCount = fixList.filter((f) => pendingKinds.has(f.kind)).length;
 
+  // Pending ATS fixes per section, shown as a badge on that section's header
+  const fixesBySection = fixList.reduce((acc, f) => {
+    if (pendingKinds.has(f.kind) && f.section) acc[f.section] = (acc[f.section] || 0) + 1;
+    return acc;
+  }, {});
+
+  // When the last fix is resolved, fold the panel down to its summary bar
+  const prevPending = useRef(pendingCount);
+  useEffect(() => {
+    if (prevPending.current > 0 && pendingCount === 0) setFixesOpen(false);
+    prevPending.current = pendingCount;
+  }, [pendingCount]);
+
+  const scoreChip = handoff && (
+    <button type="button" className={`rb-score-chip rb-tone-${scoreTone(liveScore)} ${glow ? 'is-glowing' : ''}`}
+      onClick={showAts} aria-label={`ATS score ${liveScore}. ${panelHidden ? 'Show' : 'View'} ATS fixes`}>
+      ATS <strong><AnimatedNumber value={liveScore} /></strong>
+      {delta > 0 && <em>+{delta}</em>}
+      {panelHidden && pendingCount > 0 && <span className="rb-chip-badge">{pendingCount}</span>}
+    </button>
+  );
+
   const fixesPanel = handoff && fixList.length > 0 && !panelHidden && (
     <section ref={fixesRef} className={`rb-fixes ${glow || panelFlash ? 'is-glowing' : ''}`} aria-label="Fixes from your ATS report">
       <div className="rb-fixes-head">
@@ -716,7 +771,10 @@ const ResumeBuilderPage = () => {
               <span>Apply {pendingAuto.length === 1 ? 'fix' : `${pendingAuto.length} fixes`} now</span>
             </button>
           ) : (
-            <span className="rb-fixes-done"><Check size={15} strokeWidth={3} /> Automatic fixes applied</span>
+            <span className="rb-fixes-done">
+              <Check size={15} strokeWidth={3} />
+              {pendingCount === 0 ? 'All fixes applied' : `Automatic fixes applied · ${pendingCount} left`}
+            </span>
           )}
           <button type="button" className="rb-icon-btn" onClick={() => setFixesOpen((o) => !o)}
             aria-expanded={fixesOpen} aria-label={fixesOpen ? 'Hide fixes' : 'Show fixes'}>
@@ -725,30 +783,53 @@ const ResumeBuilderPage = () => {
         </div>
       </div>
 
-      {fixesOpen && (
-        <ul className="rb-fix-list">
-          {fixList.map((fix) => {
-            const done = !pendingKinds.has(fix.kind);
-            const focused = handoff.focusKind === fix.kind && !done;
-            return (
-              <li key={fix.kind} className={`rb-fix ${done ? 'is-done' : ''} ${focused ? 'is-focus' : ''} ${isGlowing(fix.kind) ? 'is-glowing' : ''}`}>
-                <span className="rb-fix-icon" aria-hidden="true">
-                  {done ? <Check size={14} strokeWidth={3} /> : fix.auto ? <Sparkles size={14} /> : <Target size={14} />}
-                </span>
-                <div className="rb-fix-text">
-                  <strong>{fix.title}</strong>
-                  <span>{done ? 'Applied' : fix.detail}</span>
-                </div>
-                {!done && (fix.auto ? (
-                  <button type="button" className="rb-btn rb-btn--dark rb-fix-btn" onClick={() => runFixes([fix.kind])}>Apply</button>
-                ) : (
-                  <button type="button" className="rb-btn rb-btn--ghost rb-fix-btn" onClick={() => showFix(fix)}>Show me</button>
-                ))}
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {fixesOpen && (() => {
+        // Keep the panel short: open fixes first (top 3 unless expanded), applied ones folded into one line
+        const open = fixList.filter((f) => pendingKinds.has(f.kind));
+        const applied = fixList.length - open.length;
+        const visible = showAllFixes ? open : open.slice(0, 3);
+        const hiddenCount = open.length - visible.length;
+        return (
+          <>
+            <ul className="rb-fix-list">
+              {visible.map((fix) => {
+                const focused = handoff.focusKind === fix.kind;
+                return (
+                  <li key={fix.kind} className={`rb-fix ${focused ? 'is-focus' : ''} ${isGlowing(fix.kind) ? 'is-glowing' : ''}`}>
+                    <span className="rb-fix-icon" aria-hidden="true">
+                      {fix.auto ? <Sparkles size={14} /> : <Target size={14} />}
+                    </span>
+                    <div className="rb-fix-text">
+                      <strong>{fix.title}</strong>
+                      <span>{fix.detail}</span>
+                    </div>
+                    {fix.auto ? (
+                      <button type="button" className="rb-btn rb-btn--dark rb-fix-btn" onClick={() => runFixes([fix.kind])}>Apply</button>
+                    ) : (
+                      <button type="button" className="rb-btn rb-btn--ghost rb-fix-btn" onClick={() => showFix(fix)}>Show me</button>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+            {(hiddenCount > 0 || applied > 0 || showAllFixes) && (
+              <div className="rb-fix-meta">
+                {applied > 0 && (
+                  <span className="rb-fix-applied"><Check size={13} strokeWidth={3} /> {applied} applied</span>
+                )}
+                {hiddenCount > 0 && (
+                  <button type="button" className="rb-fix-more" onClick={() => setShowAllFixes(true)}>
+                    Show {hiddenCount} more {hiddenCount === 1 ? 'fix' : 'fixes'}
+                  </button>
+                )}
+                {showAllFixes && open.length > 3 && (
+                  <button type="button" className="rb-fix-more" onClick={() => setShowAllFixes(false)}>Show fewer</button>
+                )}
+              </div>
+            )}
+          </>
+        );
+      })()}
       <button type="button" className="rb-fixes-close" onClick={hideAts}>
         Hide panel <span>· bring it back from your ATS score</span>
       </button>
@@ -758,132 +839,108 @@ const ResumeBuilderPage = () => {
   return (
     <div className="rb-root" ref={rootRef}>
       {/* ── Top bar ── */}
-      <header className="rb-top">
-        <div className="rb-top-left">
-          <Link to="/resume" className="rb-back" aria-label="Back to Resume Builder home">
-            <ArrowLeft size={18} />
-          </Link>
-          <div className="rb-top-title">
-            <strong>Resume Builder</strong>
-            <span>{savedAt ? 'Saved on this device' : 'Not saved yet'}</span>
-          </div>
-        </div>
-        <div className="rb-top-center">{templateSwitcher}</div>
-        <div className="rb-top-right">
-          {handoff && (
-            <button type="button" className={`rb-score-chip rb-tone-${scoreTone(liveScore)} ${glow ? 'is-glowing' : ''}`}
-              onClick={showAts} aria-label={`ATS score ${liveScore}. ${panelHidden ? 'Show' : 'View'} ATS fixes`}>
-              ATS <strong><AnimatedNumber value={liveScore} /></strong>
-              {delta > 0 && <em>+{delta}</em>}
-              {panelHidden && pendingCount > 0 && <span className="rb-chip-badge">{pendingCount}</span>}
-            </button>
-          )}
-          <button type="button" className="rb-btn rb-btn--primary" onClick={handleDownload}>
-            <Download size={16} />
-            <span>Download PDF</span>
-          </button>
-        </div>
-      </header>
-
       <div className="rb-main">
-        {/* ── Section nav ── */}
-        <nav className="rb-nav" aria-label="Resume sections">
-          {/* Wide desktop only: replaces the top toolbar */}
-          <div className="rb-side-head">
-            <Link to="/resume" className="rb-back" aria-label="Back to Resume Builder home">
-              <ArrowLeft size={18} />
-            </Link>
-            <div className="rb-top-title">
-              <strong>Resume Builder</strong>
-              <span>{savedAt ? 'Saved on this device' : 'Not saved yet'}</span>
+        {/* ── Editor: ATS fixes (when arriving from a report) + section accordion ── */}
+        <div className="rb-form-col">
+          {fixesPanel}
+
+          <div className="rb-editor-head">
+            <div className="rb-editor-title-row">
+              <h1 className="rb-editor-title">Edit your resume</h1>
+              <label className="rb-template-pick">
+                <span className="rb-template-pick-label">Template</span>
+                <select className="rb-input" value={template} onChange={(e) => setTemplate(e.target.value)}>
+                  {TEMPLATE_IDS.map((id) => (
+                    <option key={id} value={id}>{TEMPLATE_NAMES[id]}</option>
+                  ))}
+                </select>
+              </label>
+              {scoreChip}
             </div>
+            <p className="rb-editor-progress">
+              <span className="rb-progress-track" aria-hidden="true">
+                <span style={{ width: `${(doneCount / SECTIONS.length) * 100}%` }} />
+              </span>
+              {doneCount} of {SECTIONS.length} sections filled
+            </p>
           </div>
 
-          {handoff && (
-            <button type="button" className={`rb-side-block rb-side-score ${glow ? 'is-glowing' : ''}`} onClick={showAts}>
-              <ScoreRing score={liveScore} size={52} stroke={5} glowing={Boolean(glow)} />
-              <span className="rb-side-score-body">
-                <span className="rb-side-label">Live ATS score</span>
-                <span className="rb-side-score-text">
-                  {delta > 0 ? <>Up from {startScore} <span className="rb-delta">+{delta}</span></> : <>From your report</>}
-                </span>
-                <span className="rb-side-score-link">
-                  {panelHidden ? `Show fixes${pendingCount ? ` (${pendingCount})` : ''}` : 'View fixes'}
-                  <ChevronRight size={14} />
-                </span>
-              </span>
-            </button>
-          )}
-
-          <label className="rb-side-block">
-            <span className="rb-side-label">Template</span>
-            <select className="rb-input rb-side-select" value={template} onChange={(e) => setTemplate(e.target.value)}>
-              {TEMPLATE_IDS.map((id) => (
-                <option key={id} value={id}>{TEMPLATE_NAMES[id]}</option>
-              ))}
-            </select>
-          </label>
-
-          <p className="rb-nav-progress">{doneCount} of {SECTIONS.length} sections filled</p>
-          <ol className="rb-nav-list">
-            {SECTIONS.map((s, i) => {
-              const Icon = s.icon;
+          <div className="rb-acc-list">
+            {SECTIONS.map((sec, i) => {
+              const Icon = sec.icon;
+              const isOpen = i === active;
+              const atsCount = fixesBySection[sec.key] || 0;
+              const summary = summaries[sec.key];
               return (
-                <li key={s.key}>
-                  <button type="button" className={`rb-nav-item ${i === active ? 'is-active' : ''} ${done[s.key] ? 'is-done' : ''}`}
-                    onClick={() => goTo(i)} aria-current={i === active ? 'step' : undefined}>
-                    <span className="rb-nav-icon">{done[s.key] ? <Check size={14} strokeWidth={3} /> : <Icon size={15} />}</span>
-                    <span>{s.label}</span>
-                  </button>
-                </li>
+                <section
+                  key={sec.key}
+                  ref={(el) => { sectionRefs.current[sec.key] = el; }}
+                  className={`rb-acc ${isOpen ? 'is-open' : ''} ${done[sec.key] ? 'is-done' : ''} ${sectionGlow === sec.key ? 'is-glowing' : ''}`}
+                >
+                  <h2 className="rb-acc-h">
+                    <button
+                      type="button"
+                      className="rb-acc-toggle"
+                      id={`rb-acc-h-${sec.key}`}
+                      aria-expanded={isOpen}
+                      aria-controls={`rb-acc-p-${sec.key}`}
+                      onClick={() => toggleSection(i)}
+                    >
+                      <span className="rb-acc-icon">
+                        {done[sec.key] ? <Check size={14} strokeWidth={3} /> : <Icon size={15} />}
+                      </span>
+                      <span className="rb-acc-text">
+                        <strong>{sec.label}</strong>
+                        <span>{isOpen || !summary ? sec.hint : summary}</span>
+                      </span>
+                      {atsCount > 0 && (
+                        <span className="rb-acc-ats" title="Fixes from your ATS report">
+                          <Target size={12} />
+                          {atsCount} {atsCount === 1 ? 'fix' : 'fixes'}
+                        </span>
+                      )}
+                      <ChevronDown size={18} className="rb-acc-chevron" />
+                    </button>
+                  </h2>
+
+                  {isOpen && (
+                    <div className="rb-acc-body" id={`rb-acc-p-${sec.key}`} role="region" aria-labelledby={`rb-acc-h-${sec.key}`}>
+                      <div className="rb-form-body">{renderSection(sec.key)}</div>
+                      <div className="rb-acc-foot">
+                        <button type="button" className="rb-btn rb-btn--ghost" onClick={() => setActive(-1)}>
+                          <ChevronUp size={16} />
+                          <span>Collapse</span>
+                        </button>
+                        {i < SECTIONS.length - 1 ? (
+                          <button type="button" className="rb-btn rb-btn--dark" onClick={() => goTo(i + 1)}>
+                            <span>Next: {SECTIONS[i + 1].label}</span>
+                            <ChevronRight size={16} />
+                          </button>
+                        ) : (
+                          <button type="button" className="rb-btn rb-btn--primary" onClick={handleDownload}>
+                            <Download size={16} />
+                            <span>Download PDF</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </section>
               );
             })}
-          </ol>
-          <button type="button" className="rb-btn rb-btn--primary rb-side-download" onClick={handleDownload}>
-            <Download size={16} />
-            <span>Download PDF</span>
-          </button>
+          </div>
+
           <button type="button" className="rb-reset" onClick={resetDraft}>Start over</button>
-        </nav>
-
-        {/* ── Form ── */}
-        <div className="rb-form-col">
-        {fixesPanel}
-        <section className={`rb-form ${formGlow ? 'is-glowing' : ''}`} aria-labelledby="rb-section-title">
-          <div ref={formTopRef} className="rb-form-anchor" />
-          <div className="rb-form-head">
-            <p className="rb-step">Step {active + 1} of {SECTIONS.length}</p>
-            <h1 id="rb-section-title" className="rb-form-title">{section.label}</h1>
-            <p className="rb-form-hint">{section.hint}</p>
-          </div>
-
-          <div className="rb-form-body" key={section.key}>{renderSection()}</div>
-
-          <div className="rb-form-foot">
-            <button type="button" className="rb-btn rb-btn--ghost" onClick={() => goTo(active - 1)} disabled={active === 0}>
-              <ChevronLeft size={16} />
-              <span>Back</span>
-            </button>
-            {active < SECTIONS.length - 1 ? (
-              <button type="button" className="rb-btn rb-btn--dark" onClick={() => goTo(active + 1)}>
-                <span>Next: {SECTIONS[active + 1].label}</span>
-                <ChevronRight size={16} />
-              </button>
-            ) : (
-              <button type="button" className="rb-btn rb-btn--primary" onClick={handleDownload}>
-                <Download size={16} />
-                <span>Download PDF</span>
-              </button>
-            )}
-          </div>
-        </section>
         </div>
 
         {/* ── Live preview (desktop) ── */}
         <aside className="rb-preview" aria-label="Live preview">
           <div className="rb-preview-head">
-            <span>Live preview</span>
-            <span className="rb-preview-template">{TEMPLATE_NAMES[template]}</span>
+            <span>Live preview · <span className="rb-preview-template">{TEMPLATE_NAMES[template]}</span></span>
+            <button type="button" className="rb-btn rb-btn--primary rb-btn--sm" onClick={handleDownload}>
+              <Download size={15} />
+              <span>Download PDF</span>
+            </button>
           </div>
           <div className={`rb-preview-paper ${glow ? 'is-glowing' : ''}`}>
             <ScaledPage fit={false}><Template data={resume} fit={false} /></ScaledPage>
@@ -893,7 +950,7 @@ const ResumeBuilderPage = () => {
 
       {/* ── Mobile bottom bar ── */}
       <div className="rb-mobile-bar">
-        <button type="button" className="rb-btn rb-btn--ghost rb-btn--icon" onClick={() => goTo(active - 1)} disabled={active === 0} aria-label="Previous section">
+        <button type="button" className="rb-btn rb-btn--ghost rb-btn--icon" onClick={() => goTo(active - 1)} disabled={active <= 0} aria-label="Previous section">
           <ChevronLeft size={18} />
         </button>
         <button type="button" className="rb-btn rb-btn--ghost rb-mobile-preview" onClick={() => setPreviewOpen(true)}>
@@ -901,7 +958,7 @@ const ResumeBuilderPage = () => {
           <span>Preview</span>
         </button>
         {active < SECTIONS.length - 1 ? (
-          <button type="button" className="rb-btn rb-btn--dark rb-mobile-next" onClick={() => goTo(active + 1)}>
+          <button type="button" className="rb-btn rb-btn--dark rb-mobile-next" onClick={() => goTo(Math.max(0, active + 1))}>
             <span>Next</span>
             <ChevronRight size={16} />
           </button>

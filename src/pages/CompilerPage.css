@@ -41,7 +41,7 @@
    ───────────────────────────────────────────────────────────── */
 /* Page gutters match the home page .container / .section (index.css) */
 .compiler-hero-section {
-  padding: 3.5rem 2rem 2rem;
+  padding: 3.5rem 2rem 0;
   max-width: var(--max-width);
   margin: 0 auto;
 }
@@ -91,16 +91,16 @@
   font-size: clamp(2.2rem, 3.8vw, 3.35rem);
   line-height: 1.15;
   letter-spacing: -0.03em;
-  margin: 0 0 34px 0;
+  margin: 0 0 18px 0;
   max-width: 960px;
   text-align: center;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/* Two fixed lines on desktop; each line may wrap on small screens */
 .compiler-title-line {
   display: block;
-  text-align: center;
-  width: 100%;
+  white-space: nowrap;
   margin: 0;
 }
 
@@ -164,7 +164,7 @@
   align-items: center;
   justify-content: center;
   gap: 14px;
-  margin-bottom: 38px;
+  margin-bottom: 36px;
   flex-wrap: wrap;
 }
 
@@ -364,6 +364,48 @@
 
 .lang-pill-name {
   font-size: 0.88rem;
+}
+
+/* ── HERO COMPILER MOCKUP: slide-up entrance + scroll-linked tilt ── */
+.hero-mockup-stage {
+  width: 100%;
+  margin: 48px 0 64px;
+  text-align: left;
+  perspective: 1800px;
+  animation: heroMockupRise 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+/* --tilt-progress is set from scroll: 0 = tilted back, 1 = flat */
+.hero-mockup-tilt {
+  --tilt-progress: 0;
+  transform-origin: 50% 0%;
+  transform:
+    rotateX(calc((1 - var(--tilt-progress)) * 14deg))
+    scale(calc(0.94 + var(--tilt-progress) * 0.06));
+  will-change: transform;
+}
+
+@keyframes heroMockupRise {
+  from { opacity: 0; transform: translateY(72px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 768px) {
+  .hero-mockup-stage {
+    margin: 32px 0 40px;
+  }
+  .hero-mockup-tilt {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mockup-stage {
+    animation: none;
+  }
+  .hero-mockup-tilt {
+    transform: none;
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1134,7 +1176,7 @@
    SEO FAQ ACCORDION (Clean Minimalist Accordion)
    ───────────────────────────────────────────────────────────── */
 .compiler-faq-section {
-  padding: 5rem 2rem;
+  padding: 0 2rem 3rem;
   max-width: var(--max-width);
   margin: 0 auto;
 }
@@ -1227,7 +1269,7 @@
 
 @media (max-width: 768px) {
   .compiler-hero-section {
-    padding: 2rem 1.25rem 1.25rem;
+    padding: 2rem 1.25rem 0;
   }
   .compiler-main-title {
     font-size: clamp(1.75rem, 6.8vw, 2.35rem);
@@ -1584,13 +1626,14 @@
   .hero-action-buttons {
     flex-direction: column;
     width: 100%;
+    margin-bottom: 28px;
   }
   .hero-btn-primary, .hero-btn-secondary {
     width: 100%;
     justify-content: center;
   }
   .compiler-faq-section {
-    padding: 3rem 1.25rem;
+    padding: 0 1.25rem 2rem;
   }
 }
 
@@ -1685,7 +1728,7 @@
    NON-ACCESSIBLE MOCKUP PREVIEW BADGES & INTERACTION SHIELD
    ───────────────────────────────────────────────────────────── */
 .mockup-head-intro {
-  margin-bottom: 24px;
+  margin-bottom: 40px;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -1826,69 +1869,6 @@
   }
 }
 
-/* Minimal "Did You Know?" Compiler Definition Strip (Sharp Corners) */
-.compiler-did-you-know-strip {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  background: #FFFFFF;
-  border: 1.5px solid #FED7AA;
-  border-left: 4px solid #EA580C;
-  border-radius: 0px;
-  padding: 8px 18px 8px 12px;
-  margin-top: 14px;
-  box-shadow: 0 2px 12px rgba(249, 115, 22, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
-  max-width: 960px;
-  text-align: left;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dyk-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #FFF7ED;
-  border: 1px solid #FDBA74;
-  color: #C2410C;
-  font-family: inherit;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  padding: 4px 10px;
-  border-radius: 0px;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.dyk-icon {
-  color: #EA580C;
-}
-
-.dyk-text {
-  font-size: 0.86rem;
-  line-height: 1.45;
-  color: #475569;
-  margin: 0;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-@media (max-width: 768px) {
-  .compiler-did-you-know-strip {
-    border-radius: 0px;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 12px 14px;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .dyk-text {
-    font-size: 0.82rem;
-    line-height: 1.4;
-  }
-}
-
 .mockup-indicator-badge {
   display: inline-flex;
   align-items: center;
@@ -1946,7 +1926,7 @@
 .compiler-capabilities-section {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 2rem 5rem;
+  padding: 7rem 2rem;
 }
 
 .capabilities-container {
@@ -1955,29 +1935,12 @@
   align-items: center;
 }
 
-.capabilities-container .compiler-did-you-know-strip {
-  margin: 36px 0 0;
-}
-
 .compiler-bento-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
   width: 100%;
 }
 
-/* Cards are informational, not interactive: no hover lift, no pointer */
+/* Card look comes from .wb-feature-card; .bento-card only adds the scroll reveal */
 .bento-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 4px;
-  padding: 24px 22px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
   opacity: 0;
   transform: translateY(16px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2041,7 +2004,6 @@
   display: flex;
   justify-content: space-between;
   gap: 4px;
-  margin-top: auto;
 }
 
 .bento-lang-chip {
@@ -2076,11 +2038,34 @@
   white-space: nowrap;
 }
 
+/* Device illustrations (Access Your Code Anywhere) */
+.bento-devices-row {
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+.bento-device-chip {
+  gap: 6px;
+  color: #334155;
+}
+
+.bento-login-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  font-size: 0.72rem;
+  font-weight: 650;
+  color: #C2410C;
+}
+
 /* ── Bento Widget 2: Speed metric ── */
 .bento-speed-stat-box {
-  margin-top: auto;
+  width: 70%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 10px;
 }
 
@@ -2106,6 +2091,7 @@
 }
 
 .bento-speed-track {
+  align-self: stretch;
   height: 3px;
   background: #F1F5F9;
   overflow: hidden;
@@ -2129,7 +2115,6 @@
 
 /* ── Bento Widget 3: Cloud Sync ── */
 .bento-sync-widget {
-  margin-top: auto;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2260,28 +2245,9 @@
 }
 
 /* ── Responsive Bento Grid ── */
-@media (max-width: 1024px) {
-  .compiler-bento-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 768px) {
-  .compiler-bento-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .bento-card {
-    padding: 24px 20px;
-  }
-
   .bento-speed-value {
     font-size: 2.4rem;
-  }
-
-  .capabilities-container .compiler-did-you-know-strip {
-    margin-top: 24px;
   }
 }
 
@@ -2291,7 +2257,7 @@
 .whiteboard-mockup-section {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 2rem 5rem;
+  padding: 0 2rem 7rem;
 }
 
 .whiteboard-svg-display {
@@ -3077,8 +3043,552 @@
 }
 
 @media (max-width: 768px) {
-  .compiler-capabilities-section,
+  .compiler-capabilities-section {
+    padding: 4.5rem 1.25rem;
+  }
   .whiteboard-mockup-section {
-    padding: 0 1.25rem 3rem;
+    padding: 0 1.25rem 4.5rem;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   WHITEBOARD SECTION: compact mockup (left) + copy & CTA (right)
+   ───────────────────────────────────────────────────────────── */
+.wb-split-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+}
+
+/* Compact mockup: same rail + code + whiteboard split, scaled down */
+.wb-split-mockup .wb-split-workspace {
+  grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1.1fr);
+  min-height: 380px;
+}
+
+.wb-split-mockup .code-editable-area {
+  font-size: 0.74rem;
+  padding: 12px 10px;
+}
+
+.wb-split-mockup .line-numbers-gutter {
+  width: 30px;
+  padding: 12px 4px 12px 0;
+  font-size: 0.7rem;
+}
+
+.wb-split-mockup .line-num {
+  font-size: 0.74rem;
+}
+
+.wb-split-mockup .code-tab-item,
+.wb-split-mockup .editor-status-footer {
+  font-size: 0.7rem;
+}
+
+.wb-split-mockup .whiteboard-bottom-toolbar {
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.wb-split-mockup .editor-left-rail {
+  padding-top: 10px;
+}
+
+.wb-split-mockup .rail-lang-btn {
+  transform: scale(0.88);
+}
+
+.wb-split-mockup .whiteboard-surface-container.clean-board {
+  padding: 24px 18px;
+}
+
+.wb-split-mockup .whiteboard-surface-container.clean-board .wb-cursive-heading {
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
+}
+
+.wb-split-copy {
+  text-align: left;
+}
+
+.wb-split-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #EA580C;
+  margin-bottom: 12px;
+}
+
+.wb-split-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.wb-split-subtitle {
+  font-size: 0.98rem;
+  color: #64748B;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  max-width: 460px;
+}
+
+.wb-feature-list {
+  list-style: none;
+  margin: 0 0 32px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.wb-feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.wb-feature-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #EA580C;
+}
+
+.wb-feature-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 3px;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+}
+
+.wb-feature-desc {
+  font-size: 0.88rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.wb-split-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.wb-split-note {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94A3B8;
+}
+
+@media (max-width: 1024px) {
+  .wb-split-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  /* Copy first on stacked layouts so the heading leads */
+  .wb-split-copy {
+    order: -1;
+  }
+  .wb-split-mockup .wb-split-workspace {
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1.1fr);
+  }
+  .wb-split-mockup .wb-split-workspace > .editor-whiteboard-pane {
+    grid-column: auto;
+    border-top: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .wb-split-title {
+    font-size: 1.6rem;
+  }
+  .wb-split-actions .hero-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   WHITEBOARD FEATURE CARDS (horizontal row under the mockup)
+   ───────────────────────────────────────────────────────────── */
+.wb-features-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+  text-align: left;
+}
+
+.wb-feature-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  cursor: default;
+}
+
+.wb-feature-visual {
+  height: 112px;
+  margin-bottom: 18px;
+  border: 1px solid #EEF2F6;
+  border-radius: 4px;
+  background-color: #F8FAFC;
+  background-image: radial-gradient(#E2E8F0 1px, transparent 1px);
+  background-size: 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.wb-feature-title {
+  font-size: 1.08rem;
+  font-weight: 850;
+  color: #0F172A;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.wb-feature-desc {
+  font-size: 0.88rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Visual 1: question | whiteboard split */
+.wbf-split {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+}
+
+.wbf-split-pane {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 3px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.wbf-split-label {
+  font-size: 0.6rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94A3B8;
+  margin-bottom: 2px;
+  line-height: 1;
+}
+
+.wbf-line {
+  display: block;
+  flex-shrink: 0;
+  height: 5px;
+  border-radius: 3px;
+  background: #E2E8F0;
+}
+
+.wbf-scribble {
+  display: block;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  fill: none;
+  stroke: #1E293B;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wbf-scribble .wbf-arrow {
+  stroke: #F97316;
+}
+
+/* Visual 2: PNG file → share with peers */
+.wbf-share {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.wbf-file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+  padding: 7px 10px;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.wbf-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wbf-file-chip svg {
+  flex-shrink: 0;
+}
+
+.wbf-file-ext {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  background: #F3912E;
+  border-radius: 2px;
+  padding: 3px 4px;
+}
+
+/* Visual 3: drawing toolbar */
+.wbf-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  padding: 5px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.wbf-tool {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 7px;
+  border-radius: 4px;
+  color: #64748B;
+}
+
+.wbf-tool em {
+  font-style: normal;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wbf-tool.active {
+  background: #FFF4E8;
+  color: #F3912E;
+}
+
+.wbf-tool-divider {
+  width: 1px;
+  height: 28px;
+  background: #E2E8F0;
+  margin: 0 3px;
+}
+
+.wbf-colors {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 12px);
+  gap: 4px;
+  padding: 0 4px;
+}
+
+.wbf-color {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* CTA under the whiteboard feature row */
+.wb-features-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+@media (max-width: 768px) {
+  .wb-features-cta .hero-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Four-card variant (capabilities row under the compiler mockup) */
+.wb-features-row--four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 0;
+}
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  .wb-features-row--four {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet & mobile: stay horizontal, swipe between cards */
+@media (max-width: 900px) {
+  .wb-features-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 14px;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .wb-features-row::-webkit-scrollbar {
+    display: none;
+  }
+  .wb-feature-card {
+    flex: 0 0 min(78%, 320px);
+    scroll-snap-align: start;
+  }
+}
+
+/* Hero intro wrapper: keeps title/CTA/languages above the peeking bug */
+.hero-intro {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-intro > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HERO BUG: peeks from "Open Compiler", crawls over the mockup
+   code as the page scrolls, then disappears
+   ───────────────────────────────────────────────────────────── */
+.compiler-hero-inner {
+  position: relative;
+}
+
+/* Position (--bx/--by) and heading (--ba) are set from scroll in JS */
+.hero-bug {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  transform: translate3d(var(--bx, -999px), var(--by, -999px), 0);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* While peeking it sits behind the CTA (hero-intro children are z-index 1) */
+.hero-bug.is-peek {
+  z-index: 0;
+}
+
+.hero-bug-body {
+  width: 100%;
+  height: 100%;
+  transform: rotate(var(--ba, 0deg));
+  transition: transform 0.25s ease-out, opacity 0.35s ease;
+  filter: drop-shadow(0 2px 3px rgba(127, 29, 29, 0.25));
+}
+
+.hero-bug-body svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Pop up out of the button once, then idle: antennae twitch, a quick look around */
+.hero-bug.is-peek .hero-bug-body svg {
+  animation:
+    heroBugPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s both,
+    heroBugLook 4.5s ease-in-out 2.6s infinite;
+}
+
+.hero-bug-antennae {
+  transform-origin: 16px 7px;
+  animation: heroBugTwitch 2.2s ease-in-out infinite;
+}
+
+/* Legs scuttle only while the page is actually scrolling */
+.hero-bug-legs {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hero-bug.is-walking .hero-bug-legs-a {
+  animation: heroBugLegs 0.16s linear infinite alternate;
+}
+
+.hero-bug.is-walking .hero-bug-legs-b {
+  animation: heroBugLegs 0.16s linear infinite alternate-reverse;
+}
+
+/* End of path: the bug slips into the code and is gone */
+.hero-bug.is-gone .hero-bug-body {
+  opacity: 0;
+  transform: rotate(calc(var(--ba, 0deg) + 90deg)) scale(0.15);
+  transition: transform 0.45s cubic-bezier(0.55, 0, 0.75, 0), opacity 0.4s ease 0.05s;
+}
+
+@keyframes heroBugPop {
+  from { opacity: 0; transform: translateY(16px) scale(0.6); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes heroBugLook {
+  0%, 70%, 100% { transform: rotate(0deg); }
+  78% { transform: rotate(-16deg); }
+  86% { transform: rotate(14deg); }
+}
+
+@keyframes heroBugTwitch {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  88% { transform: rotate(-7deg); }
+  94% { transform: rotate(6deg); }
+}
+
+@keyframes heroBugLegs {
+  from { transform: rotate(-9deg); }
+  to { transform: rotate(9deg); }
+}
+
+/* Small screens: CTA is full width and the mockup is cramped; skip the bug */
+@media (max-width: 767px) {
+  .hero-bug {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bug {
+    display: none;
   }
 }

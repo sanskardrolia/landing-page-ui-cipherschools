@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { 
   ShieldCheck, 
   UploadCloud, 
@@ -163,10 +163,14 @@ const AtsCheckerPage = () => {
   // 'UPLOAD' = Standalone document upload workstation
   // 'ANIMATING' = AI Orb multi-stage processing pipeline
   // 'REPORT' = Standalone comprehensive ATS report page
-  const [viewState, setViewState] = useState('MODE_SELECTION');
+  // ?mode=resume | ?mode=jd (from the landing page) skips the mode screen
+  const [searchParams] = useSearchParams();
+  const modeParam = searchParams.get('mode');
+  const presetMode = modeParam === 'jd' ? 'JD_RESUME' : modeParam === 'resume' ? 'RESUME_ONLY' : null;
+  const [viewState, setViewState] = useState(presetMode ? 'UPLOAD' : 'MODE_SELECTION');
 
   // Selected analysis mode: 'RESUME_ONLY' (NO_JD) | 'JD_RESUME' (WITH_JD)
-  const [selectedMode, setSelectedMode] = useState('RESUME_ONLY');
+  const [selectedMode, setSelectedMode] = useState(presetMode || 'RESUME_ONLY');
 
   // Orb Animation Pipeline States
   // 'uploading' | 'scraping' | 'analyzing' | 'almost_done'

@@ -11,7 +11,6 @@ import {
   User, 
   Check, 
   Cpu, 
-  Sparkles, 
   Layers, 
   ChevronRight, 
   ExternalLink,
@@ -25,13 +24,32 @@ import {
   Eraser,
   HelpCircle,
   MoreHorizontal,
-  Laptop,
-  Monitor,
-  Tablet,
-  Smartphone,
-  Cloud
+  CircleAlert
 } from 'lucide-react';
 import './CompilerPage.css';
+
+// Device illustrations for the "Access Your Code Anywhere" card
+const DeviceLaptopIcon = () => (
+  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
+    <rect x="6" y="2" width="28" height="19" rx="2.2" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
+    <rect x="17.5" y="2" width="5" height="1.6" rx="0.8" fill="currentColor" />
+    <path d="M2 22.5h36v1.2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="currentColor" />
+  </svg>
+);
+
+const DeviceTabletIcon = () => (
+  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
+    <rect x="10" y="1" width="20" height="26" rx="3" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
+    <circle cx="20" cy="3.6" r="0.9" fill="currentColor" />
+  </svg>
+);
+
+const DevicePhoneIcon = () => (
+  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
+    <rect x="13.5" y="1" width="13" height="26" rx="3.4" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
+    <rect x="17.5" y="3.2" width="5" height="1.6" rx="0.8" fill="currentColor" />
+  </svg>
+);
 
 // ── Language Icons (exact SVGs from screenshots) ──
 const CIcon = ({ size = 20 }) => (
@@ -84,34 +102,6 @@ const WhiteboardEaselIcon = ({ size = 20 }) => (
   </svg>
 );
 
-const BugIcon = () => (
-  <svg viewBox="0 0 48 48" className="buggy-bug-svg" aria-hidden="true">
-    <g className="bug-legs bug-legs--a" stroke="#1E293B" strokeWidth="2.4" strokeLinecap="round" fill="none">
-      <path d="M14 21 L7 17" />
-      <path d="M13 31 L6 34" />
-      <path d="M34 26 L42 26" />
-    </g>
-    <g className="bug-legs bug-legs--b" stroke="#1E293B" strokeWidth="2.4" strokeLinecap="round" fill="none">
-      <path d="M34 21 L41 17" />
-      <path d="M35 31 L42 34" />
-      <path d="M14 26 L6 26" />
-    </g>
-    <g className="bug-antennae" stroke="#1E293B" strokeWidth="2.2" strokeLinecap="round" fill="none">
-      <path d="M21 10 Q18 5 14 4" />
-      <path d="M27 10 Q30 5 34 4" />
-    </g>
-    <circle cx="24" cy="13" r="6" fill="#1E293B" />
-    <circle cx="21.6" cy="12" r="1.5" fill="#FFFFFF" />
-    <circle cx="26.4" cy="12" r="1.5" fill="#FFFFFF" />
-    <ellipse cx="24" cy="28" rx="11" ry="13" fill="#EF4444" />
-    <path d="M24 16 L24 41" stroke="#1E293B" strokeWidth="1.8" />
-    <circle cx="19" cy="24" r="2.2" fill="#1E293B" />
-    <circle cx="29" cy="24" r="2.2" fill="#1E293B" />
-    <circle cx="18.5" cy="32" r="1.8" fill="#1E293B" />
-    <circle cx="29.5" cy="32" r="1.8" fill="#1E293B" />
-  </svg>
-);
-
 // ── Language Definitions & Initial Codes ──
 const LANGUAGES = [
   {
@@ -119,7 +109,6 @@ const LANGUAGES = [
     name: 'C',
     file: 'main.c',
     icon: CIcon,
-    badge: null,
     compilerTitle: 'C Compiler',
     version: 'GCC 13.2 (C17 Standard)',
     flags: 'C17 (-O2 -Wall)',
@@ -141,7 +130,6 @@ int main() {
     name: 'C++',
     file: 'main.cpp',
     icon: CppIcon,
-    badge: null,
     compilerTitle: 'C++ Compiler',
     version: 'G++ 13.2 (C++20 Standard)',
     flags: 'C++20 (-std=c++20 -O2)',
@@ -163,7 +151,6 @@ int main() {
     name: 'Java',
     file: 'Main.java',
     icon: JavaIcon,
-    badge: null,
     compilerTitle: 'Java Compiler',
     version: 'OpenJDK 21 LTS',
     flags: 'Java 21 (HotSpot JIT)',
@@ -184,7 +171,6 @@ public class Main {
     name: 'Python',
     file: 'main.py',
     icon: PythonIcon,
-    badge: 'Popular',
     compilerTitle: 'Python Compiler',
     version: 'Python 3.12.2',
     flags: 'CPython 3.12.2',
@@ -202,10 +188,9 @@ if __name__ == "__main__":
   },
   {
     id: 'javascript',
-    name: 'Javascript',
+    name: 'JavaScript',
     file: 'script.js',
     icon: JSIcon,
-    badge: null,
     compilerTitle: 'JavaScript Compiler',
     version: 'Node.js 20 LTS (V8 Engine)',
     flags: 'ES2024 / Node.js 20',
@@ -226,50 +211,42 @@ welcome();`,
 // Whiteboard mockup is fixed to the C++ editor
 const WB_LANG = LANGUAGES.find((l) => l.id === 'cpp');
 
-// Multi-file demo: a project's files all share one language
-const BENTO_PROJECTS = [
-  { lang: 'C++', files: ['main.cpp', 'graph.h', 'graph.cpp'] },
-  { lang: 'Java', files: ['Main.java', 'Node.java'] },
-  { lang: 'Python', files: ['main.py', 'solver.py', 'utils.py'] },
-  { lang: 'C', files: ['main.c', 'stack.h', 'stack.c'] },
-  { lang: 'JavaScript', files: ['index.js', 'queue.js', 'utils.js'] }
-];
-const BENTO_TOTAL_FILES = BENTO_PROJECTS.reduce((n, p) => n + p.files.length, 0);
-
 const FAQ_ITEMS = [
   {
-    q: 'Why does CipherSchools Compiler include a built-in whiteboard?',
-    a: 'Sketch data structures, recursion trees, and pointer traces without tab switching.'
+    q: 'Is the CipherSchools online compiler free?',
+    a: 'Yes. The online compiler is free to use with unlimited runs and no ads.'
   },
   {
-    q: 'Can I provide custom inputs and test cases?',
-    a: 'Yes, enter multi-line test inputs in the input pane before compiling.'
+    q: 'Which languages does the online compiler support?',
+    a: 'C, C++, Java, Python and JavaScript, running on GCC 13.2 (C and C++), OpenJDK 21 LTS, Python 3.12 and Node.js 20 LTS.'
   },
   {
-    q: 'Is the CipherSchools Online Compiler free to use?',
-    a: '100% free with unlimited runs, zero ads, and no sign-up required.'
+    q: 'Do I need to sign up to run code?',
+    a: 'No. You can compile and run code without an account. Log in to save your files and sync them to the cloud.'
   },
   {
-    q: 'Which compiler and runtime versions are supported?',
-    a: 'GCC 13.2 (C & C++), OpenJDK 21 LTS, Python 3.12, and Node.js 20 LTS.'
+    q: 'Can I run code with custom input?',
+    a: 'Yes. Enter multi-line input or test cases in the input pane before you compile.'
   },
   {
-    q: 'Can I download my source code files?',
-    a: 'Yes, 1-click export downloads files with original extensions (.cpp, .py, etc.).'
+    q: 'Can I download my code?',
+    a: 'Yes. Download any file in one click with its original extension, such as .cpp, .java or .py.'
   },
   {
-    q: 'How does the whiteboard help during technical interview preparation?',
-    a: 'Diagram logic, dry-runs, and algorithm steps in real time before coding.'
+    q: 'Why does the compiler have a built-in whiteboard?',
+    a: 'Use it to dry run your code and sketch arrays, linked lists, trees and recursion steps next to your code, which helps with DSA and coding interview practice.'
   },
   {
-    q: 'Can I use keyboard shortcuts?',
-    a: 'Press Ctrl + Enter (or Cmd + Enter on macOS) to instantly compile or open editor.'
+    q: 'Is there a keyboard shortcut to run code?',
+    a: 'Yes. Press Ctrl + Enter (Cmd + Enter on macOS) to compile and run your code.'
   }
 ];
 
 const CompilerPage = () => {
   const navigate = useNavigate();
   const editorRef = useRef(null);
+  const heroTiltRef = useRef(null);
+
   const canvasRef = useRef(null);
 
   // Active language state
@@ -331,7 +308,6 @@ const CompilerPage = () => {
   const bentoRef = useRef(null);
   const [bentoInView, setBentoInView] = useState(false);
   const [bentoSpeed, setBentoSpeed] = useState(0);
-  const [bentoTick, setBentoTick] = useState(0);
 
   useEffect(() => {
     const el = bentoRef.current;
@@ -359,22 +335,114 @@ const CompilerPage = () => {
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const tabTimer = setInterval(() => setBentoTick((i) => i + 1), 1400);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearInterval(tabTimer);
-    };
+    return () => cancelAnimationFrame(raf);
   }, [bentoInView]);
 
-  // Each project stays in one language; cycle files within it, then move to the next language
-  let bentoStep = bentoTick % BENTO_TOTAL_FILES;
-  let bentoProjectIdx = 0;
-  while (bentoStep >= BENTO_PROJECTS[bentoProjectIdx].files.length) {
-    bentoStep -= BENTO_PROJECTS[bentoProjectIdx].files.length;
-    bentoProjectIdx += 1;
-  }
-  const activeProject = BENTO_PROJECTS[bentoProjectIdx];
-  const bentoFile = bentoStep;
+  // Hero mockup tilt: 0 = tilted back (page top), 1 = flat (after ~420px of scroll)
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const progress = Math.min(1, Math.max(0, window.scrollY / 420));
+      heroTiltRef.current?.style.setProperty('--tilt-progress', progress.toFixed(3));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Hero bug: peeks out from behind "Open Compiler", crawls onto the mockup's
+  // code as the page scrolls, then disappears at the end of its path.
+  // Waypoints are re-measured every frame because the mockup tilts on scroll.
+  const heroInnerRef = useRef(null);
+  const heroCtaRef = useRef(null);
+  const heroCodeRef = useRef(null);
+  const heroBugRef = useRef(null);
+  const [bugPhase, setBugPhase] = useState('peek'); // 'peek' | 'crawl' | 'gone'
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const SCROLL_START = 30;
+    const SCROLL_END = 560;
+    const LINE_H = 20; // .code-editable-area: 0.86rem × 1.45
+    let raf = 0;
+    let walkTimer = 0;
+    let lastP = -1;
+
+    const catmull = (a, b, c, d, t) =>
+      0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t * t + (3 * b - a - 3 * c + d) * t * t * t);
+    const pointAt = (pts, u) => {
+      const n = pts.length - 1;
+      const f = Math.min(n - 1e-6, Math.max(0, u * n));
+      const i = Math.floor(f);
+      const t = f - i;
+      const p0 = pts[Math.max(0, i - 1)];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[Math.min(n, i + 2)];
+      return { x: catmull(p0.x, p1.x, p2.x, p3.x, t), y: catmull(p0.y, p1.y, p2.y, p3.y, t) };
+    };
+
+    const update = () => {
+      raf = 0;
+      const inner = heroInnerRef.current;
+      const cta = heroCtaRef.current;
+      const code = heroCodeRef.current;
+      const bug = heroBugRef.current;
+      if (!inner || !cta || !code || !bug || bug.offsetParent === null) return;
+
+      const p = Math.min(1, Math.max(0, (window.scrollY - SCROLL_START) / (SCROLL_END - SCROLL_START)));
+      const o = inner.getBoundingClientRect();
+      const c = cta.getBoundingClientRect();
+      const k = code.getBoundingClientRect();
+      const at = (x, y) => ({ x: x - o.left, y: y - o.top });
+      const codeX = (px) => k.left + Math.min(px, k.width - 24);
+      const lineY = (n) => k.top + 14 + LINE_H / 2 + n * LINE_H;
+
+      const pts = [
+        at(c.left + c.width * 0.72, c.top - 3), // head peeking over the CTA
+        at(c.right + 36, c.bottom + 44),
+        at(codeX(440), k.top - 70),
+        at(codeX(380), lineY(0)),
+        at(codeX(110), lineY(1)),
+        at(codeX(320), lineY(3)),
+        at(codeX(170), lineY(2))
+      ];
+
+      const pos = pointAt(pts, p);
+      const ahead = pointAt(pts, Math.min(1, p + 0.012));
+      const behind = pointAt(pts, Math.max(0, p - 0.012));
+      // The SVG faces up; while peeking keep it looking up out of the button
+      const angle = p < 0.01 ? -8 : (Math.atan2(ahead.y - behind.y, ahead.x - behind.x) * 180) / Math.PI + 90;
+
+      bug.style.setProperty('--bx', `${pos.x.toFixed(1)}px`);
+      bug.style.setProperty('--by', `${pos.y.toFixed(1)}px`);
+      bug.style.setProperty('--ba', `${angle.toFixed(1)}deg`);
+
+      if (p !== lastP && lastP !== -1) {
+        bug.classList.add('is-walking');
+        clearTimeout(walkTimer);
+        walkTimer = setTimeout(() => bug.classList.remove('is-walking'), 180);
+      }
+      lastP = p;
+      setBugPhase(p <= 0 ? 'peek' : p >= 0.98 ? 'gone' : 'crawl');
+    };
+
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    update();
+    return () => {
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      cancelAnimationFrame(raf);
+      clearTimeout(walkTimer);
+    };
+  }, []);
 
   // Floating CTA & Shortcut dock visibility on scroll
   const [showFloatingCta, setShowFloatingCta] = useState(false);
@@ -396,7 +464,7 @@ const CompilerPage = () => {
   // ── SEO & Dynamic Head Metadata Management ──
   useEffect(() => {
     const prevTitle = document.title;
-    const pageTitle = `Free ${currentLang.name} Online Compiler & IDE with Whiteboard | CipherSchools`;
+    const pageTitle = `Online ${currentLang.name} Compiler: Free Online Compiler | CipherSchools`;
     document.title = pageTitle;
 
     const setMeta = (name, content, isProperty = false) => {
@@ -432,14 +500,14 @@ const CompilerPage = () => {
     };
 
     // Primary Meta Tags
-    setMeta('description', `Free in-browser ${currentLang.name} online compiler & IDE with built-in whiteboard scratchpad for DSA dry runs. Instant execution across C, C++, Java, Python, and JavaScript with custom inputs.`);
-    setMeta('keywords', `online compiler, ${currentLang.name.toLowerCase()} compiler online, free online ide, dsa whiteboard, code editor online, cipherschools compiler, dry run algorithms`);
+    setMeta('description', `Free online ${currentLang.name} compiler. Write, compile and run ${currentLang.name} code in your browser with custom input and a built-in whiteboard. Also supports C, C++, Java, Python and JavaScript.`);
+    setMeta('keywords', `online compiler, online ${currentLang.name.toLowerCase()} compiler, free online compiler, run code online`);
     setMeta('author', 'CipherSchools');
     setMeta('robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
 
     // Open Graph
     setMeta('og:title', pageTitle, true);
-    setMeta('og:description', `Run, compile, and dry-run ${currentLang.name} code online with zero installation. Features an integrated visual whiteboard for DSA interview prep.`, true);
+    setMeta('og:description', `Compile and run ${currentLang.name} code online for free. No installation, with custom input and a built-in whiteboard.`, true);
     setMeta('og:type', 'website', true);
     setMeta('og:url', 'https://www.cipherschools.com/compiler', true);
     setMeta('og:site_name', 'CipherSchools', true);
@@ -448,7 +516,7 @@ const CompilerPage = () => {
     // Twitter Cards
     setMeta('twitter:card', 'summary_large_image');
     setMeta('twitter:title', pageTitle);
-    setMeta('twitter:description', `Free online ${currentLang.name} compiler & IDE with whiteboard algorithm scratchpad.`);
+    setMeta('twitter:description', `Free online ${currentLang.name} compiler. Compile and run code in your browser.`);
     setMeta('twitter:site', '@cipherschools');
 
     // Canonical link
@@ -458,8 +526,8 @@ const CompilerPage = () => {
     const webAppSchema = {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      'name': 'CipherSchools Online Compiler & IDE',
-      'alternateName': 'CipherSchools Code Editor',
+      'name': 'CipherSchools Online Compiler',
+      'alternateName': 'CipherSchools Code Compiler',
       'url': 'https://www.cipherschools.com/compiler',
       'applicationCategory': 'DeveloperApplication',
       'operatingSystem': 'All (Web Browser)',
@@ -471,7 +539,7 @@ const CompilerPage = () => {
         'priceCurrency': 'INR',
         'availability': 'https://schema.org/InStock'
       },
-      'description': 'Free in-browser multi-language online compiler (C, C++, Java, Python, JavaScript) featuring an integrated whiteboard scratchpad for DSA algorithm tracing.',
+      'description': 'Free online compiler for C, C++, Java, Python and JavaScript with custom input and a built-in whiteboard for dry runs.',
       'featureList': [
         'Instant compilation with GCC 13.2, OpenJDK 21, Python 3.12, and Node.js 20',
         'Integrated Whiteboard Scratchpad for DSA visual dry runs',
@@ -518,7 +586,7 @@ const CompilerPage = () => {
         {
           '@type': 'ListItem',
           'position': 3,
-          'name': `${currentLang.name} Compiler`,
+          'name': `Online ${currentLang.name} Compiler`,
           'item': `https://www.cipherschools.com/compiler?lang=${currentLang.id}`
         }
       ]
@@ -769,52 +837,22 @@ const CompilerPage = () => {
   const [typingIndex, setTypingIndex] = useState(0);
   const [cursorTargeted, setCursorTargeted] = useState(false);
 
-  // ── "Run your buggy code" Headline: bug squashed & removed when compiler is in view ──
-  const [buggyPhase, setBuggyPhase] = useState('visible'); // 'visible' | 'striking' | 'removed'
-
-  useEffect(() => {
-    if (isCompilerInView) {
-      setBuggyPhase('visible');
-      const timer1 = setTimeout(() => {
-        setBuggyPhase('striking');
-      }, 700);
-
-      const timer2 = setTimeout(() => {
-        setBuggyPhase('removed');
-      }, 1150);
-
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-      };
-    } else {
-      setBuggyPhase('visible');
-    }
-  }, [isCompilerInView]);
-
-  const handleReplayBuggyAnimation = () => {
-    setBuggyPhase('visible');
-    setTimeout(() => setBuggyPhase('striking'), 300);
-    setTimeout(() => setBuggyPhase('removed'), 750);
-  };
-
   const targetCode = currentLang.code;
 
-  // Active scroll check: animation is strictly ONLY functional when user scrolls to compiler section
+  // Active scroll check: run the typing animation only while the mockup is on screen
   useEffect(() => {
     const handleScrollCheck = () => {
       if (!editorRef.current) return;
       const rect = editorRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-      // Section is considered in view if the top has scrolled into viewport and user is not at hero top
-      const isScrolledPastHero = window.scrollY > 90;
-      const isVisibleInViewport = rect.top < windowHeight * 0.75 && rect.bottom > windowHeight * 0.2;
+      // Mockup sits in the hero, so it usually starts in view on load
+      const isVisibleInViewport = rect.top < windowHeight * 0.9 && rect.bottom > windowHeight * 0.2;
 
-      if (isScrolledPastHero && isVisibleInViewport) {
+      if (isVisibleInViewport) {
         setIsCompilerInView(true);
-      } else if (!isScrolledPastHero || rect.top > windowHeight * 0.88) {
-        // Reset when user scrolls back to hero top or away
+      } else if (rect.bottom < 0 || rect.top > windowHeight) {
+        // Reset once the mockup is fully off-screen
         setIsCompilerInView(false);
       }
     };
@@ -993,8 +1031,8 @@ const CompilerPage = () => {
   const [wbCtaVisible, setWbCtaVisible] = useState(false);
   const [editorCtaVisible, setEditorCtaVisible] = useState(false);
 
-  // TODO: point this at the live editor once its URL is available
-  const handleOpenEditor = () => {
+  // TODO: point this at the live compiler once its URL is available
+  const handleOpenCompiler = () => {
     editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
@@ -1024,30 +1062,35 @@ const CompilerPage = () => {
          HERO SECTION: Title & Language Picker
          ───────────────────────────────────────────────────────────── */}
       <section className="compiler-hero-section">
-        <div className="compiler-hero-inner">
+        <div className="compiler-hero-inner" ref={heroInnerRef}>
           
-          <div className="compiler-header-text">
-            <h1 className="compiler-main-title">
-              <span className="compiler-title-line">
-                <span className="compiler-title-black-italic">CODE, COMPILE & REPEAT</span>
-              </span>
-              <span className="compiler-title-line">
-                <span className="compiler-title-black-italic">IN</span>{' '}
-                <span className="compiler-hero-word-pill">
-                  <span className="compiler-pill-text">REAL-TIME</span>
+          {/* Wraps the intro so it stacks above the bug while it peeks from the CTA */}
+          <div className="hero-intro">
+            <div className="compiler-header-text">
+              <h1 className="compiler-main-title">
+                <span className="compiler-title-line">
+                  <span className="compiler-title-black-italic">Free</span>{' '}
+                  <span className="compiler-title-orange-italic">Online Compiler</span>{' '}
+                  <span className="compiler-title-black-italic">to</span>
+                </span>{' '}
+                <span className="compiler-title-line">
+                  <span className="compiler-title-black-italic">Write, Run &amp; Test Code</span>
                 </span>
-              </span>
-            </h1>
+              </h1>
+
+              <p className="compiler-subtitle">
+                Write, compile and run C, C++, Java, Python and JavaScript code in your browser, with custom input with a built-in whiteboard. No installation needed.
+              </p>
+            </div>
 
             <div className="hero-action-buttons">
               <button
                 type="button"
                 className="hero-btn-primary"
-                onClick={() => {
-                  editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }}
+                onClick={handleOpenCompiler}
+                ref={heroCtaRef}
               >
-                <span>Open Editor</span>
+                <span>Open Compiler</span>
                 <ChevronRight size={15} />
               </button>
 
@@ -1057,361 +1100,363 @@ const CompilerPage = () => {
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* ── OR PICK A LANGUAGE TO START ── */}
-          <div className="pick-language-block">
-            <span className="pick-language-label">OR PICK A LANGUAGE TO START</span>
+            {/* ── OR PICK A LANGUAGE TO START ── */}
+            <div className="pick-language-block">
+              <span className="pick-language-label">OR PICK A LANGUAGE TO START</span>
             
-            <div className="language-pills-row">
-              {LANGUAGES.map((lang) => {
-                const isSelected = selectedLangId === lang.id;
-                const IconComponent = lang.icon;
-                return (
-                  <button
-                    key={lang.id}
-                    type="button"
-                    className={`lang-pill-btn ${isSelected ? 'active' : ''}`}
-                    onClick={() => handleSelectLang(lang.id)}
-                    aria-label={`Select ${lang.name} compiler`}
-                  >
-                    {lang.badge && (
-                      <span className="lang-popular-badge">{lang.badge}</span>
-                    )}
-                    <IconComponent size={22} />
-                    <span className="lang-pill-name">{lang.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-         INTERACTIVE COMPILER & WHITEBOARD INTERFACE (Screenshots 1 & 2)
-         ───────────────────────────────────────────────────────────── */}
-      {/* ─────────────────────────────────────────────────────────────
-         SECTION 1: CIPHERSCHOOLS COMPILER MOCKUP (NON-ACCESSIBLE)
-         ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-sandbox-section" ref={editorRef}>
-        <div className="sandbox-container">
-
-          <div className="section-head-center mockup-head-intro">
-            <h2 
-              className="section-title section-title-animated-buggy"
-              onClick={handleReplayBuggyAnimation}
-              title="Click to replay animation"
-            >
-              <span>Run Your</span>
-              <span className={`buggy-word-wrapper ${buggyPhase}`}>
-                <span className="buggy-space-prefix">&nbsp;</span>
-                <span className="buggy-word-inner" role="img" aria-label="buggy">
-                  <BugIcon />
-                  <span className="buggy-poof" aria-hidden="true" />
-                </span>
-              </span>
-              <span>&nbsp;Code with </span>
-              <span className="headline-gradient">Zero Setup</span>
-            </h2>
-          </div>
-
-          <div className="compiler-window-frame mockup-frame-non-accessible">
-
-            {/* Top Window Header */}
-            <div className="compiler-top-header">
-              <div className="header-brand-group">
-                <span className="compiler-type-text">{currentLang.compilerTitle}</span>
-              </div>
-
-              <div className="header-right-actions">
-                <button
-                  type="button"
-                  className="header-icon-btn"
-                  title="Toggle Light Theme"
-                  aria-label="Theme toggle"
-                  tabIndex={-1}
-                >
-                  <Sun size={15} />
-                </button>
-
-                <div className="header-avatar-circle" title="User Profile" tabIndex={-1}>
-                  <User size={15} />
-                </div>
-              </div>
-            </div>
-
-            {/* Editor Workspace Split View */}
-            <div className="compiler-main-workspace">
-              
-              {/* Left Vertical Language & Tool Rail */}
-              <aside className="editor-left-rail">
-                <div className="rail-top-langs">
-                  {LANGUAGES.map((lang) => {
-                    const isSelected = selectedLangId === lang.id;
-                    const IconComp = lang.icon;
-                    return (
-                      <button
-                        key={lang.id}
-                        type="button"
-                        className={`rail-lang-btn ${isSelected ? 'active' : ''}`}
-                        onClick={() => handleSelectLang(lang.id)}
-                        title={`Switch to ${lang.name}`}
-                        aria-label={`Switch to ${lang.name}`}
-                      >
-                        <IconComp size={20} />
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="rail-bottom-tools">
-                  <div className="rail-tool-btn static-tool" title="Whiteboard">
-                    <WhiteboardEaselIcon size={18} />
-                  </div>
-                </div>
-              </aside>
-
-              {/* Middle: Code Editor Pane — shows "Open Editor" CTA on interaction */}
-              <div
-                className={`editor-code-pane editor-cta-pane ${editorCtaVisible ? 'wb-cta-active' : ''}`}
-                onPointerEnter={() => setEditorCtaVisible(true)}
-                onPointerDown={() => setEditorCtaVisible(true)}
-                onPointerLeave={(e) => { if (e.pointerType === 'mouse') setEditorCtaVisible(false); }}
-              >
-                
-                {/* Editor File Tabs & Action Bar */}
-                <div className="editor-tabs-bar">
-                  <div className="tabs-cluster">
-                    <div className="code-tab-item active">
-                      <span className="tab-dot desktop-only"></span>
-                      <span>{currentLang.file.toLowerCase()}</span>
-                      <span className="tab-bullet-mobile">•</span>
-                      <span className="tab-asterisk desktop-only">*</span>
-                    </div>
-
-                    <div className="code-tab-item secondary-tab desktop-only">
-                      <span>solution.h</span>
-                    </div>
-
-                    <span className="add-tab-btn static-btn desktop-only" title="Add File">
-                      +
-                    </span>
-                  </div>
-
-                  {/* Desktop Action Cluster */}
-                  <div className="editor-actions-cluster desktop-only">
-                    <button type="button" className="btn-editor-tool files-btn" tabIndex={-1}>
-                      Files
-                    </button>
-                    <button 
-                      type="button" 
-                      className="btn-editor-tool icon-tool" 
-                      onClick={handleReplayCompiler}
-                      title="Replay Code Writing"
+              <div className="language-pills-row">
+                {LANGUAGES.map((lang) => {
+                  const IconComponent = lang.icon;
+                  return (
+                    <button
+                      key={lang.id}
+                      type="button"
+                      className="lang-pill-btn"
+                      onClick={() => handleSelectLang(lang.id)}
+                      aria-label={`Select ${lang.name} compiler`}
                     >
-                      <RotateCcw size={14} />
+                      <IconComponent size={22} />
+                      <span className="lang-pill-name">{lang.name}</span>
                     </button>
-                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Share">
-                      <Share2 size={14} />
-                    </button>
-                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Save">
-                      <Bookmark size={14} />
-                    </button>
-                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Download">
-                      <Download size={14} />
-                    </button>
-                    <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Fullscreen">
-                      <Maximize2 size={14} />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Compiler mockup: slides up on load, tilts flat on scroll ── */}
+          <div className="hero-mockup-stage" ref={editorRef}>
+            <div className="hero-mockup-tilt" ref={heroTiltRef}>
+              <div className="compiler-window-frame mockup-frame-non-accessible">
+
+                {/* Top Window Header */}
+                <div className="compiler-top-header">
+                  <div className="header-brand-group">
+                    <span className="compiler-type-text">{currentLang.compilerTitle}</span>
+                  </div>
+
+                  <div className="header-right-actions">
+                    <button
+                      type="button"
+                      className="header-icon-btn"
+                      title="Toggle Light Theme"
+                      aria-label="Theme toggle"
+                      tabIndex={-1}
+                    >
+                      <Sun size={15} />
                     </button>
 
-                    {/* Animated Compile Button with Simulated Cursor Target */}
-                    <div className="compile-btn-wrap">
-                      <button 
-                        type="button" 
-                        className={`btn-compile-orange ${animationPhase === 'cursor_clicking' ? 'simulated-pressed' : ''} ${(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) ? 'target-glow' : ''}`}
-                        onClick={handleManualTriggerCompile}
-                        title="Click to Compile & Run"
-                      >
-                        {animationPhase === 'compiling' ? (
-                          <>
-                            <span className="spinner-dot"></span>
-                            <span>Compiling...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Play size={13} fill="currentColor" />
-                            <span>Compile</span>
-                          </>
-                        )}
-                      </button>
+                    <div className="header-avatar-circle" title="User Profile" tabIndex={-1}>
+                      <User size={15} />
+                    </div>
+                  </div>
+                </div>
 
-                      {(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) && (
-                        <div className="compile-highlight-pointer-tooltip animate-fade-in">
-                          <span>Click to Compile</span>
+                {/* Editor Workspace Split View */}
+                <div className="compiler-main-workspace">
+              
+                  {/* Left Vertical Language & Tool Rail */}
+                  <aside className="editor-left-rail">
+                    <div className="rail-top-langs">
+                      {LANGUAGES.map((lang) => {
+                        const isSelected = selectedLangId === lang.id;
+                        const IconComp = lang.icon;
+                        return (
+                          <button
+                            key={lang.id}
+                            type="button"
+                            className={`rail-lang-btn ${isSelected ? 'active' : ''}`}
+                            onClick={() => handleSelectLang(lang.id)}
+                            title={`Switch to ${lang.name}`}
+                            aria-label={`Switch to ${lang.name}`}
+                          >
+                            <IconComp size={20} />
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    <div className="rail-bottom-tools">
+                      <div className="rail-tool-btn static-tool" title="Whiteboard">
+                        <WhiteboardEaselIcon size={18} />
+                      </div>
+                    </div>
+                  </aside>
+
+                  {/* Middle: Code Editor Pane — shows "Open Compiler" CTA on interaction */}
+                  <div
+                    className={`editor-code-pane editor-cta-pane ${editorCtaVisible ? 'wb-cta-active' : ''}`}
+                    onPointerEnter={() => setEditorCtaVisible(true)}
+                    onPointerDown={() => setEditorCtaVisible(true)}
+                    onPointerLeave={(e) => { if (e.pointerType === 'mouse') setEditorCtaVisible(false); }}
+                  >
+                
+                    {/* Editor File Tabs & Action Bar */}
+                    <div className="editor-tabs-bar">
+                      <div className="tabs-cluster">
+                        <div className="code-tab-item active">
+                          <span className="tab-dot desktop-only"></span>
+                          <span>{currentLang.file.toLowerCase()}</span>
+                          <span className="tab-bullet-mobile">•</span>
+                          <span className="tab-asterisk desktop-only">*</span>
                         </div>
-                      )}
 
-                      {/* Simulated Mouse Cursor Animation directly on Compile Button */}
-                      {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
-                        <div 
-                          className={`simulated-mockup-cursor ${animationPhase === 'cursor_clicking' ? 'clicking' : ''} ${(cursorTargeted || animationPhase === 'cursor_hovering') ? 'at-button' : 'at-origin'}`}
-                          aria-hidden="true"
+                        <div className="code-tab-item secondary-tab desktop-only">
+                          <span>solution.h</span>
+                        </div>
+
+                        <span className="add-tab-btn static-btn desktop-only" title="Add File">
+                          +
+                        </span>
+                      </div>
+
+                      {/* Desktop Action Cluster */}
+                      <div className="editor-actions-cluster desktop-only">
+                        <button type="button" className="btn-editor-tool files-btn" tabIndex={-1}>
+                          Files
+                        </button>
+                        <button 
+                          type="button" 
+                          className="btn-editor-tool icon-tool" 
+                          onClick={handleReplayCompiler}
+                          title="Replay Code Writing"
                         >
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="cursor-svg-icon">
-                            <path 
-                              d="M3.5 2.5L10.5 20.5L14 13.5L21 10L3.5 2.5Z" 
-                              fill="#0F172A" 
-                              stroke="#FFFFFF" 
-                              strokeWidth="1.5" 
-                              strokeLinejoin="round" 
-                            />
-                          </svg>
-                          {animationPhase === 'cursor_clicking' && (
-                            <span className="cursor-click-wave" />
+                          <RotateCcw size={14} />
+                        </button>
+                        <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Share">
+                          <Share2 size={14} />
+                        </button>
+                        <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Save">
+                          <Bookmark size={14} />
+                        </button>
+                        <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Download">
+                          <Download size={14} />
+                        </button>
+                        <button type="button" className="btn-editor-tool icon-tool" tabIndex={-1} title="Fullscreen">
+                          <Maximize2 size={14} />
+                        </button>
+
+                        {/* Animated Compile Button with Simulated Cursor Target */}
+                        <div className="compile-btn-wrap">
+                          <button 
+                            type="button" 
+                            className={`btn-compile-orange ${animationPhase === 'cursor_clicking' ? 'simulated-pressed' : ''} ${(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) ? 'target-glow' : ''}`}
+                            onClick={handleManualTriggerCompile}
+                            title="Click to Compile & Run"
+                          >
+                            {animationPhase === 'compiling' ? (
+                              <>
+                                <span className="spinner-dot"></span>
+                                <span>Compiling...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play size={13} fill="currentColor" />
+                                <span>Compile</span>
+                              </>
+                            )}
+                          </button>
+
+                          {(animationPhase === 'cursor_hovering' || (animationPhase === 'cursor_moving' && cursorTargeted)) && (
+                            <div className="compile-highlight-pointer-tooltip animate-fade-in">
+                              <span>Click to Compile</span>
+                            </div>
+                          )}
+
+                          {/* Simulated Mouse Cursor Animation directly on Compile Button */}
+                          {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
+                            <div 
+                              className={`simulated-mockup-cursor ${animationPhase === 'cursor_clicking' ? 'clicking' : ''} ${(cursorTargeted || animationPhase === 'cursor_hovering') ? 'at-button' : 'at-origin'}`}
+                              aria-hidden="true"
+                            >
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="cursor-svg-icon">
+                                <path 
+                                  d="M3.5 2.5L10.5 20.5L14 13.5L21 10L3.5 2.5Z" 
+                                  fill="#0F172A" 
+                                  stroke="#FFFFFF" 
+                                  strokeWidth="1.5" 
+                                  strokeLinejoin="round" 
+                                />
+                              </svg>
+                              {animationPhase === 'cursor_clicking' && (
+                                <span className="cursor-click-wave" />
+                              )}
+                            </div>
                           )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Code Area with Line Numbers (Typing Simulation) */}
-                <div className="editor-textarea-wrap mockup-non-accessible-area">
-                  <div className="line-numbers-gutter">
-                    {currentCodeLines.map((_, i) => (
-                      <span key={i} className="line-num">{i + 1}</span>
-                    ))}
-                  </div>
+                    {/* Code Area with Line Numbers (Typing Simulation) */}
+                    <div className="editor-textarea-wrap mockup-non-accessible-area">
+                      <div className="line-numbers-gutter">
+                        {currentCodeLines.map((_, i) => (
+                          <span key={i} className="line-num">{i + 1}</span>
+                        ))}
+                      </div>
                   
-                  <textarea
-                    className="code-editable-area"
-                    value={animationPhase === 'typing' ? (displayedCode + ' ▍') : (displayedCode || currentLang.code)}
-                    readOnly={true}
-                    tabIndex={-1}
-                    spellCheck="false"
-                    aria-label="Non-interactive code mockup with typing animation"
-                  />
-                </div>
-
-                {/* Editor Status Bottom Footer */}
-                <div className="editor-status-footer">
-                  <span className="status-tag">UTF-8</span>
-                  <span className="status-tag">{currentLang.version}</span>
-                  <span className="status-tag">Spaces: 4</span>
-                  <span className="status-tag">Lines: {currentCodeLines.length}</span>
-                </div>
-
-                {/* Interaction CTA overlay */}
-                <div className="wb-open-cta-overlay" aria-hidden={!editorCtaVisible}>
-                  <button
-                    type="button"
-                    className="hero-btn-primary wb-open-cta-btn"
-                    onClick={handleOpenEditor}
-                    tabIndex={editorCtaVisible ? 0 : -1}
-                  >
-                    <span>Open Editor</span>
-                    <ChevronRight size={15} />
-                  </button>
-                </div>
-
-              </div>
-
-              {/* Right Side Pane: Split Input & Output */}
-              <div className="editor-terminal-pane mockup-terminal-pane">
-                
-                {/* Top: Input Pane */}
-                <div className="terminal-subpanel input-subpanel">
-                  <div className="subpanel-header">
-                    <span className="panel-title-text">Input</span>
-                  </div>
-                  <div className="input-editor-box mockup-non-accessible-area">
-                    <div className="input-gutter">
-                      <span className="gutter-num">1</span>
+                      <textarea
+                        ref={heroCodeRef}
+                        className="code-editable-area"
+                        value={animationPhase === 'typing' ? (displayedCode + ' ▍') : (displayedCode || currentLang.code)}
+                        readOnly={true}
+                        tabIndex={-1}
+                        spellCheck="false"
+                        aria-label="Non-interactive code mockup with typing animation"
+                      />
                     </div>
-                    <textarea
-                      className="input-textarea"
-                      placeholder="Enter custom input / test cases here..."
-                      value={`5\n10 20 30 40 50`}
-                      readOnly={true}
-                      tabIndex={-1}
-                      aria-label="Non-interactive input mockup"
-                    />
-                  </div>
-                </div>
 
-                {/* Split Divider */}
-                <div className="terminal-split-handle desktop-only"></div>
+                    {/* Editor Status Bottom Footer */}
+                    <div className="editor-status-footer">
+                      <span className="status-tag">UTF-8</span>
+                      <span className="status-tag">{currentLang.version}</span>
+                      <span className="status-tag">Spaces: 4</span>
+                      <span className="status-tag">Lines: {currentCodeLines.length}</span>
+                    </div>
 
-                {/* Bottom: Output Pane with Live Animation */}
-                <div className="terminal-subpanel output-subpanel">
-                  <div className="subpanel-header">
-                    <span className="panel-title-text">Output</span>
-                    {animationPhase === 'output' && (
-                      <span className="output-status-pill success animate-fade-in">
-                        <span className="status-success-dot"></span>
-                        <span>0.08s</span>
-                      </span>
-                    )}
-                    <button 
-                      type="button"
-                      className="clear-output-link" 
-                      onClick={handleReplayCompiler}
-                      title="Replay Animation"
-                    >
-                      Replay
-                    </button>
+                    {/* Interaction CTA overlay */}
+                    <div className="wb-open-cta-overlay" aria-hidden={!editorCtaVisible}>
+                      <button
+                        type="button"
+                        className="hero-btn-primary wb-open-cta-btn"
+                        onClick={handleOpenCompiler}
+                        tabIndex={editorCtaVisible ? 0 : -1}
+                      >
+                        <span>Open Compiler</span>
+                        <ChevronRight size={15} />
+                      </button>
+                    </div>
+
                   </div>
-                  <div className="output-console-box">
-                    {(animationPhase === 'idle' || animationPhase === 'delay') && (
-                      <pre className="output-pre-text output-typing-state">
-                        <span className="output-muted-comment">// Ready to compile...</span>
-                        <br />
-                        <span className="output-muted-comment">// Waiting for compiler trigger...</span>
-                      </pre>
-                    )}
-                    {animationPhase === 'typing' && (
-                      <pre className="output-pre-text output-typing-state">
-                        <span className="output-muted-comment">// Ready to compile...</span>
-                        <br />
-                        <span className="output-muted-comment">// Code is being written in editor...</span>
-                      </pre>
-                    )}
-                    {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
-                      <pre className="output-pre-text output-highlight-state animate-fade-in">
-                        <span className="output-active-comment">// Code complete! Cursor moving to compile...</span>
-                      </pre>
-                    )}
-                    {animationPhase === 'compiling' && (
-                      <div className="output-compiling-state animate-fade-in">
-                        <div className="compiling-loader-bar">
-                          <div className="compiling-loader-progress"></div>
-                        </div>
-                        <span className="output-cmd-line">$ {currentLang.compilerTitle.toLowerCase().replace(' ', '-')} -run {currentLang.file}</span>
-                        <div className="compiling-status-msg">
-                          <span className="spinner-dot"></span>
-                          <span>Compiling code and linking binaries...</span>
-                        </div>
+
+                  {/* Right Side Pane: Split Input & Output */}
+                  <div className="editor-terminal-pane mockup-terminal-pane">
+                
+                    {/* Top: Input Pane */}
+                    <div className="terminal-subpanel input-subpanel">
+                      <div className="subpanel-header">
+                        <span className="panel-title-text">Input</span>
                       </div>
-                    )}
-                    {animationPhase === 'output' && (
-                      <div className="output-success-state animate-fade-in">
-                        <pre className="output-pre-text" aria-live="polite">
-{`Welcome to CipherSchools Code Editor!
-Happy Coding! 🎉
-
-[Execution Finished in 0.08s - Exit Code: 0]`}
-                        </pre>
+                      <div className="input-editor-box mockup-non-accessible-area">
+                        <div className="input-gutter">
+                          <span className="gutter-num">1</span>
+                        </div>
+                        <textarea
+                          className="input-textarea"
+                          placeholder="Enter custom input / test cases here..."
+                          value={`5\n10 20 30 40 50`}
+                          readOnly={true}
+                          tabIndex={-1}
+                          aria-label="Non-interactive input mockup"
+                        />
                       </div>
-                    )}
+                    </div>
+
+                    {/* Split Divider */}
+                    <div className="terminal-split-handle desktop-only"></div>
+
+                    {/* Bottom: Output Pane with Live Animation */}
+                    <div className="terminal-subpanel output-subpanel">
+                      <div className="subpanel-header">
+                        <span className="panel-title-text">Output</span>
+                        {animationPhase === 'output' && (
+                          <span className="output-status-pill success animate-fade-in">
+                            <span className="status-success-dot"></span>
+                            <span>0.08s</span>
+                          </span>
+                        )}
+                        <button 
+                          type="button"
+                          className="clear-output-link" 
+                          onClick={handleReplayCompiler}
+                          title="Replay Animation"
+                        >
+                          Replay
+                        </button>
+                      </div>
+                      <div className="output-console-box">
+                        {(animationPhase === 'idle' || animationPhase === 'delay') && (
+                          <pre className="output-pre-text output-typing-state">
+                            <span className="output-muted-comment">// Ready to compile...</span>
+                            <br />
+                            <span className="output-muted-comment">// Waiting for compiler trigger...</span>
+                          </pre>
+                        )}
+                        {animationPhase === 'typing' && (
+                          <pre className="output-pre-text output-typing-state">
+                            <span className="output-muted-comment">// Ready to compile...</span>
+                            <br />
+                            <span className="output-muted-comment">// Code is being written in editor...</span>
+                          </pre>
+                        )}
+                        {(animationPhase === 'cursor_moving' || animationPhase === 'cursor_hovering' || animationPhase === 'cursor_clicking') && (
+                          <pre className="output-pre-text output-highlight-state animate-fade-in">
+                            <span className="output-active-comment">// Code complete! Cursor moving to compile...</span>
+                          </pre>
+                        )}
+                        {animationPhase === 'compiling' && (
+                          <div className="output-compiling-state animate-fade-in">
+                            <div className="compiling-loader-bar">
+                              <div className="compiling-loader-progress"></div>
+                            </div>
+                            <span className="output-cmd-line">$ {currentLang.compilerTitle.toLowerCase().replace(' ', '-')} -run {currentLang.file}</span>
+                            <div className="compiling-status-msg">
+                              <span className="spinner-dot"></span>
+                              <span>Compiling code and linking binaries...</span>
+                            </div>
+                          </div>
+                        )}
+                        {animationPhase === 'output' && (
+                          <div className="output-success-state animate-fade-in">
+                            <pre className="output-pre-text" aria-live="polite">
+    {`Welcome to CipherSchools Code Editor!
+    Happy Coding! 🎉
+
+    [Execution Finished in 0.08s - Exit Code: 0]`}
+                            </pre>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
                   </div>
+
                 </div>
 
               </div>
-
             </div>
+          </div>
 
+          {/* Decorative bug: CTA → crawls over the mockup code on scroll → disappears */}
+          <div className={`hero-bug is-${bugPhase}`} ref={heroBugRef} aria-hidden="true">
+            <div className="hero-bug-body">
+              <svg viewBox="0 0 32 32" width="28" height="28">
+                <g className="hero-bug-legs hero-bug-legs-a" stroke="#7F1D1D" strokeWidth="1.4" strokeLinecap="round" fill="none">
+                  <path d="M10 14 5 11" />
+                  <path d="M22 20 27 21" />
+                  <path d="M10 25 6 28" />
+                </g>
+                <g className="hero-bug-legs hero-bug-legs-b" stroke="#7F1D1D" strokeWidth="1.4" strokeLinecap="round" fill="none">
+                  <path d="M22 14 27 11" />
+                  <path d="M10 20 5 21" />
+                  <path d="M22 25 26 28" />
+                </g>
+                <g className="hero-bug-antennae" stroke="#1F2937" strokeWidth="1.2" strokeLinecap="round" fill="none">
+                  <path d="M14.5 6 12 2.5" />
+                  <path d="M17.5 6 20 2.5" />
+                </g>
+                <ellipse cx="16" cy="19" rx="7.5" ry="9" fill="#E5484D" />
+                <path d="M16 11v16.5" stroke="#9F1F23" strokeWidth="1.1" />
+                <circle cx="12.6" cy="16.5" r="1.5" fill="#7F1D1D" opacity="0.55" />
+                <circle cx="19.4" cy="16.5" r="1.5" fill="#7F1D1D" opacity="0.55" />
+                <circle cx="12.4" cy="22.5" r="1.2" fill="#7F1D1D" opacity="0.55" />
+                <circle cx="19.6" cy="22.5" r="1.2" fill="#7F1D1D" opacity="0.55" />
+                <circle cx="16" cy="9" r="3.6" fill="#1F2937" />
+                <circle cx="14.7" cy="8.2" r="0.8" fill="#FFFFFF" />
+                <circle cx="17.3" cy="8.2" r="0.8" fill="#FFFFFF" />
+              </svg>
+            </div>
           </div>
 
         </div>
@@ -1423,34 +1468,35 @@ Happy Coding! 🎉
       <section className="compiler-capabilities-section">
         <div className="capabilities-container">
 
-          <div ref={bentoRef} className={`compiler-bento-grid ${bentoInView ? 'is-in' : ''}`}>
+          <div ref={bentoRef} className={`wb-features-row wb-features-row--four compiler-bento-grid ${bentoInView ? 'is-in' : ''}`}>
 
-            {/* Bento Card 1: Access saved files anywhere */}
-            <div className="bento-card bento-card-access">
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Access Saved Files</h3>
-                <p className="bento-card-desc">Whatever you save, access anytime, anywhere.</p>
-                <div className="bento-langs-display-row">
+            {/* Card 1: Access saved files anywhere */}
+            <div className="wb-feature-card bento-card">
+              <div className="wb-feature-visual" aria-hidden="true">
+                <div className="bento-langs-display-row bento-devices-row">
                   {[
-                    { name: 'Laptop', Icon: Laptop },
-                    { name: 'Desktop', Icon: Monitor },
-                    { name: 'Tablet', Icon: Tablet },
-                    { name: 'Phone', Icon: Smartphone }
+                    { name: 'Laptop', Icon: DeviceLaptopIcon },
+                    { name: 'Tablet', Icon: DeviceTabletIcon },
+                    { name: 'Phone', Icon: DevicePhoneIcon }
                   ].map(({ name, Icon }, i) => (
-                    <div key={name} className="bento-lang-chip" style={{ '--i': i }}>
-                      <Icon size={16} className="bento-icon" />
+                    <div key={name} className="bento-lang-chip bento-device-chip" style={{ '--i': i }}>
+                      <Icon />
                       <span className="lang-chip-name">{name}</span>
                     </div>
                   ))}
                 </div>
               </div>
+              <h3 className="wb-feature-title">Access Your Code Anywhere</h3>
+              <p className="wb-feature-desc">Open saved code on any device.</p>
+              <span className="bento-login-note">
+                <CircleAlert size={13} />
+                Login required*
+              </span>
             </div>
 
-            {/* Bento Card 2: Compile in no time */}
-            <div className="bento-card bento-card-speed">
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Compile in No Time</h3>
-                <p className="bento-card-desc">Instant cloud execution.</p>
+            {/* Card 2: Compile speed */}
+            <div className="wb-feature-card bento-card">
+              <div className="wb-feature-visual" aria-hidden="true">
                 <div className="bento-speed-stat-box">
                   <div className="bento-stat-number-row">
                     <span className="bento-speed-value">{bentoSpeed.toFixed(2)}</span>
@@ -1459,54 +1505,41 @@ Happy Coding! 🎉
                   <div className="bento-speed-track"><span /></div>
                 </div>
               </div>
+              <h3 className="wb-feature-title">Compile Code Instantly</h3>
+              <p className="wb-feature-desc">Run code online in under a second.</p>
             </div>
 
-            {/* Bento Card 3: Save Your Code */}
-            <div className="bento-card bento-card-save">
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Save Your Code</h3>
-                <p className="bento-card-desc">Login Required*</p>
+            {/* Card 3: Share code via public link */}
+            <div className="wb-feature-card bento-card">
+              <div className="wb-feature-visual" aria-hidden="true">
                 <div className="bento-sync-widget">
                   <span className="bento-sync-icon-pulse">
-                    <Cloud size={16} />
+                    <Share2 size={16} />
                   </span>
                   <div className="bento-sync-text-wrap">
-                    <span className="sync-title">Cloud Sync or Download</span>
-                    <span className="sync-subtitle">Every saved file synced, or grab a local copy</span>
+                    <span className="sync-title">Public Link</span>
+                    <span className="sync-subtitle">Anyone with the link can view</span>
                   </div>
                 </div>
               </div>
+              <h3 className="wb-feature-title">Share with Anyone</h3>
+              <p className="wb-feature-desc">Create a public link and share your code with a peer, mentor or interviewer.</p>
             </div>
 
-            {/* Bento Card 4: Multi-file projects (files share one language) */}
-            <div className="bento-card bento-card-multifile">
-              <div className="bento-content-body">
-                <h3 className="bento-card-title">Multiple Files</h3>
-                <p className="bento-card-desc">Work with multiple files.</p>
-                <div className="bento-project-widget">
-                  <span key={activeProject.lang} className="bento-project-lang">{activeProject.lang} project</span>
-                  <div className="bento-mini-tabbar">
-                    {activeProject.files.map((f, i) => (
-                      <span key={f} className={`mini-tab-item ${i === bentoFile ? 'active' : ''}`}>
-                        <span>{f}</span>
-                      </span>
-                    ))}
+            {/* Card 4: Always free */}
+            <div className="wb-feature-card bento-card">
+              <div className="wb-feature-visual" aria-hidden="true">
+                <div className="bento-speed-stat-box">
+                  <div className="bento-stat-number-row">
+                    <span className="bento-speed-value">₹0</span>
+                    <span className="bento-speed-unit">forever</span>
                   </div>
                 </div>
               </div>
+              <h3 className="wb-feature-title">Always Free</h3>
+              <p className="wb-feature-desc">No hidden paywall. Free forever.</p>
             </div>
 
-          </div>
-
-          {/* Minimal "Did You Know?" Compiler Definition Strip */}
-          <div className="compiler-did-you-know-strip">
-            <div className="dyk-badge">
-              <Sparkles size={12} className="dyk-icon" />
-              <span>DID YOU KNOW?</span>
-            </div>
-            <p className="dyk-text">
-              A compiler is the ultimate bridge between human intellect and pure physics—transforming elegant lines of code into lightning-fast binary symphonies that whisper directly to the silicon of modern machines.
-            </p>
           </div>
 
         </div>
@@ -1519,7 +1552,7 @@ Happy Coding! 🎉
 
           <div className="section-head-center mockup-head-intro">
             <h2 className="section-title">
-              Visual Dry-Runs with <span className="headline-gradient">Interactive Whiteboard</span>
+              Practice Coding on an <span className="headline-gradient">Interactive Whiteboard</span>
             </h2>
           </div>
 
@@ -1690,6 +1723,86 @@ Happy Coding! 🎉
 
           </div>
 
+          {/* ── Whiteboard feature cards ── */}
+          <div className="wb-features-row">
+
+            {/* Card 1: Split view */}
+            <div className="wb-feature-card">
+              <div className="wb-feature-visual" aria-hidden="true">
+                <div className="wbf-split">
+                  <div className="wbf-split-pane wbf-split-question">
+                    <span className="wbf-split-label">Question</span>
+                    <span className="wbf-line" style={{ width: '90%' }} />
+                    <span className="wbf-line" style={{ width: '72%' }} />
+                    <span className="wbf-line" style={{ width: '82%' }} />
+                    <span className="wbf-line" style={{ width: '48%' }} />
+                  </div>
+                  <div className="wbf-split-pane wbf-split-board">
+                    <span className="wbf-split-label">Whiteboard</span>
+                    <svg viewBox="0 0 100 44" className="wbf-scribble">
+                      <rect x="6" y="8" width="16" height="14" rx="1" />
+                      <rect x="24" y="8" width="16" height="14" rx="1" />
+                      <rect x="42" y="8" width="16" height="14" rx="1" />
+                      <rect x="60" y="8" width="16" height="14" rx="1" />
+                      <path d="M14 38 L14 26 M10 30 L14 26 L18 30" className="wbf-arrow" />
+                      <path d="M68 38 L68 26 M64 30 L68 26 L72 30" className="wbf-arrow" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <h3 className="wb-feature-title">Split-Screen Workspace</h3>
+              <p className="wb-feature-desc">
+                Keep the question on the left and sketch your approach on the right. No switching tabs.
+              </p>
+            </div>
+
+            {/* Card 2: Download & share */}
+            <div className="wb-feature-card">
+              <div className="wb-feature-visual" aria-hidden="true">
+                <div className="wbf-share">
+                  <div className="wbf-file-chip">
+                    <span className="wbf-file-ext">PNG</span>
+                    <span className="wbf-file-name">dry-run.png</span>
+                    <Download size={14} />
+                  </div>
+                </div>
+              </div>
+              <h3 className="wb-feature-title">Download PNG &amp; Share</h3>
+              <p className="wb-feature-desc">
+                Save your dry run as an image and send it to a peer or your students in one click.
+              </p>
+            </div>
+
+            {/* Card 3: Drawing tools */}
+            <div className="wb-feature-card">
+              <div className="wb-feature-visual" aria-hidden="true">
+                <div className="wbf-tools">
+                  <span className="wbf-tool active"><PenTool size={15} /><em>Pen</em></span>
+                  <span className="wbf-tool"><Eraser size={15} /><em>Erase</em></span>
+                  <span className="wbf-tool"><Move size={15} /><em>Move</em></span>
+                  <span className="wbf-tool-divider" />
+                  <span className="wbf-colors">
+                    {['#1E293B', '#3B82F6', '#10B981', '#F97316'].map((c) => (
+                      <span key={c} className="wbf-color" style={{ backgroundColor: c }} />
+                    ))}
+                  </span>
+                </div>
+              </div>
+              <h3 className="wb-feature-title">Every Tool for a Dry Run</h3>
+              <p className="wb-feature-desc">
+                Pen, eraser, move and colors to trace arrays, pointers and recursion step by step.
+              </p>
+            </div>
+
+          </div>
+
+          <div className="wb-features-cta">
+            <button type="button" className="hero-btn-primary" onClick={handleOpenWhiteboard}>
+              <span>Open Whiteboard</span>
+              <ChevronRight size={15} />
+            </button>
+          </div>
+
         </div>
       </section>
 
@@ -1701,7 +1814,7 @@ Happy Coding! 🎉
           
           <div className="section-head-center">
             <h2 className="section-title">
-              Everything You Need to Know About <span className="headline-gradient">CipherSchools Compiler</span>
+              Online Compiler <span className="headline-gradient">FAQs</span>
             </h2>
           </div>
 
@@ -1748,12 +1861,10 @@ Happy Coding! 🎉
           <button
             type="button"
             className="floating-btn-primary"
-            onClick={() => {
-              editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            aria-label="Open Code Editor"
+            onClick={handleOpenCompiler}
+            aria-label="Open Online Compiler"
           >
-            <span>Open Editor</span>
+            <span>Open Compiler</span>
             <ChevronRight size={15} />
           </button>
 
