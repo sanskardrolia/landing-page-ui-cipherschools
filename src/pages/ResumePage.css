@@ -241,7 +241,7 @@
   align-items: center;
   margin-bottom: 18px;
   padding: 5px 12px;
-  border-radius: 999px;
+  border-radius: 4px;
   background: var(--rs-brand-soft);
   border: 1px solid var(--rs-brand-line);
   color: #C2410C;
@@ -724,6 +724,39 @@
   margin-top: auto;
 }
 
+/* Whole card is clickable: the "Use this template" button stretches over it */
+.rs-template-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.rs-template-body .rs-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* A transform on the button would make it the containing block for ::after,
+   shrinking the hit area mid-click; keep it untransformed */
+.rs-template-body .rs-btn:active,
+.rs-template-body .rs-btn:hover {
+  transform: none;
+}
+
+/* Card hover also lights up its button, so the target reads as one */
+.rs-template-card:hover .rs-btn--outline {
+  border-color: var(--rs-brand);
+  background: var(--rs-brand-soft);
+  color: var(--rs-ink);
+}
+
+/* Keyboard focus on the button outlines the whole card */
+.rs-template-card:has(.rs-btn:focus-visible) {
+  outline: 2px solid var(--rs-ink);
+  outline-offset: 3px;
+}
+
 /* ─────────────────────────────────────────────────────────────
    HOW IT WORKS
    ───────────────────────────────────────────────────────────── */
@@ -749,14 +782,27 @@
   border-left: 1px solid var(--rs-line);
 }
 
-/* Illustration, then the step label, title and copy */
-.rs-step-art {
+/* Screenshot of the real UI, then the step label, title and copy */
+.rs-step-shot {
+  aspect-ratio: 4 / 3;
+  margin-bottom: 22px;
+  overflow: hidden;
+  border: 1px solid var(--rs-line);
+  border-radius: var(--rs-radius);
+  background: var(--rs-surface-2);
+  box-shadow: 0 10px 24px -16px rgba(17, 24, 39, 0.25);
+}
+
+.rs-step-shot img {
   display: block;
   width: 100%;
-  max-width: 220px;
-  height: auto;
-  margin: 0 auto 22px;
-  overflow: visible;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--rs-ease);
+}
+
+.rs-step:hover .rs-step-shot img {
+  transform: scale(1.03);
 }
 
 .rs-step-text {
@@ -771,108 +817,6 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--rs-brand);
-}
-
-/* Illustration strokes */
-.rs-step-art g,
-.rs-step-art rect,
-.rs-step-art path,
-.rs-step-art circle {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.rs-art-page rect {
-  fill: var(--rs-surface);
-  stroke: var(--rs-line-strong);
-  stroke-width: 1.5;
-}
-
-.rs-art-page path {
-  stroke: var(--rs-line);
-  stroke-width: 3;
-}
-
-.rs-art-page--dim {
-  opacity: 0.7;
-}
-
-.rs-art-page--on > rect {
-  stroke: var(--rs-brand);
-  stroke-width: 2;
-  filter: drop-shadow(0 6px 10px rgba(17, 24, 39, 0.12));
-}
-
-.rs-step-art .rs-art-ink {
-  stroke: var(--rs-ink);
-  stroke-width: 3.5;
-}
-
-.rs-step-art .rs-art-accent {
-  stroke: var(--rs-brand);
-  stroke-width: 3;
-}
-
-.rs-step-art .rs-art-label {
-  stroke: var(--rs-line-strong);
-  stroke-width: 2.5;
-}
-
-.rs-step-art .rs-art-field-on {
-  stroke: var(--rs-brand);
-  stroke-width: 1.8;
-}
-
-.rs-step-art .rs-art-caret {
-  stroke: var(--rs-brand);
-  stroke-width: 1.8;
-  animation: rsCaret 1.1s steps(1) infinite;
-}
-
-@keyframes rsCaret {
-  50% { opacity: 0; }
-}
-
-.rs-step-art .rs-art-badge {
-  fill: var(--rs-brand);
-  stroke: var(--rs-surface);
-  stroke-width: 2;
-}
-
-.rs-step-art .rs-art-tick {
-  stroke: #FFFFFF;
-  stroke-width: 2;
-}
-
-.rs-step-art .rs-art-tag {
-  fill: var(--rs-brand);
-  stroke: none;
-}
-
-.rs-art-tag-text {
-  fill: #FFFFFF;
-  font-family: inherit;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-}
-
-.rs-step-art .rs-art-dl {
-  fill: #232323;
-  stroke: var(--rs-canvas);
-  stroke-width: 3;
-}
-
-.rs-step-art .rs-art-dl-arrow {
-  stroke: #FFFFFF;
-  stroke-width: 2;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rs-step-art .rs-art-caret {
-    animation: none;
-  }
 }
 
 .rs-step-title {
@@ -1006,14 +950,11 @@
   color: var(--rs-brand);
 }
 
-.rs-am-option:hover .rs-am-link {
-  border-top-color: var(--rs-brand);
-}
-
 /* Illustration */
 .rs-am-art {
   position: relative;
-  height: 200px;
+  height: 240px;
+  padding: 56px 16px 16px; /* top room keeps the corner arrow clear of the screenshot */
   display: grid;
   place-items: center;
   background: var(--rs-surface-2);
@@ -1021,125 +962,19 @@
   transition: background 0.2s ease;
 }
 
-.rs-am-sheet {
-  position: relative;
-  width: 116px;
-  height: 148px;
-  padding: 14px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: var(--rs-surface);
-  border: 1px solid var(--rs-line);
-  border-radius: 3px;
-  box-shadow: 0 10px 24px -10px rgba(17, 24, 39, 0.2);
+/* Screenshot of the real report, fitted whole inside the panel */
+.rs-am-shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(17, 24, 39, 0.14));
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.rs-am-option:hover .rs-am-sheet {
-  transform: translateY(-4px);
-}
-
-.rs-am-sheet--sm {
-  width: 92px;
-  height: 120px;
-  padding: 12px 10px;
-  gap: 5px;
-}
-
-.rs-am-l {
-  display: block;
-  height: 4px;
-  width: 100%;
-  border-radius: 2px;
-  background: var(--rs-line);
-}
-
-.rs-am-l--name {
-  width: 60%;
-  height: 7px;
-  background: var(--rs-ink);
-}
-
-.rs-am-l--meta {
-  width: 80%;
-  height: 3px;
-  background: var(--rs-line-strong);
-}
-
-.rs-am-l--h {
-  width: 40%;
-  margin-top: 5px;
-  background: var(--rs-brand);
-}
-
-.rs-am-l--short {
-  width: 70%;
-}
-
-.rs-am-badge {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  border-radius: 4px;
-  background: var(--rs-surface);
-  border: 1px solid var(--rs-line);
-  box-shadow: 0 6px 14px -6px rgba(17, 24, 39, 0.2);
-  white-space: nowrap;
-}
-
-.rs-am-badge--score {
-  right: -34px;
-  bottom: 18px;
-  color: var(--rs-ok);
-}
-
-.rs-am-pair {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.rs-am-link {
-  width: 28px;
-  border-top: 1.5px dashed var(--rs-line-strong);
-}
-
-.rs-am-jd-icon {
-  display: inline-grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  margin-bottom: 2px;
-  border-radius: 4px;
-  color: var(--rs-brand);
-  background: rgba(243, 145, 46, 0.12);
-}
-
-.rs-am-chip-row {
-  display: flex;
-  gap: 4px;
-  margin: 4px 0 2px;
-}
-
-.rs-am-chip {
-  width: 20px;
-  height: 7px;
-  border-radius: 999px;
-}
-
-.rs-am-chip.is-hit { background: #A7F3D0; }
-.rs-am-chip.is-miss { background: #FECACA; }
-
-.rs-am-badge--match {
-  left: 50%;
-  bottom: -14px;
-  transform: translateX(-50%);
-  color: var(--rs-ink);
+.rs-am-option:hover .rs-am-shot {
+  transform: translateY(-4px) scale(1.02);
 }
 
 /* Body */
@@ -1250,7 +1085,7 @@
   }
 
   .rs-am-art {
-    height: 168px;
+    height: 210px;
   }
 
   .rs-am-body {
@@ -1260,12 +1095,12 @@
 
 @media (prefers-reduced-motion: reduce) {
   .rs-am-option,
-  .rs-am-sheet {
+  .rs-am-shot {
     transition: none;
   }
 
   .rs-am-option:hover,
-  .rs-am-option:hover .rs-am-sheet {
+  .rs-am-option:hover .rs-am-shot {
     transform: none;
   }
 }
@@ -2055,9 +1890,6 @@
     padding: 24px 20px;
   }
 
-  .rs-step-art {
-    max-width: 200px;
-  }
 
   .rs-ats-steps {
     grid-template-columns: 1fr;

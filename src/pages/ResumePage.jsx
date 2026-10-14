@@ -6,8 +6,7 @@ import {
   ChevronDown,
   Check,
   ScanSearch,
-  FileText,
-  Briefcase
+  FileText
 } from 'lucide-react';
 import { CompanyLogos } from '../components/PlacementMarquee';
 import { ScaledPage, BeginnerResume, ExperiencedResume, ModernResume } from '../components/ResumeTemplates';
@@ -40,68 +39,38 @@ const TEMPLATES = [
   }
 ];
 
-/* Small line illustrations for the 3 "make your resume" steps: greys + one orange accent */
-const PickTemplateArt = () => (
-  <svg viewBox="0 0 200 120" className="rs-step-art" aria-hidden="true">
-    <g className="rs-art-page rs-art-page--dim">
-      <rect x="22" y="34" width="44" height="60" rx="3" />
-      <path d="M30 44h22M30 52h28M30 58h20M30 66h28M30 72h16" />
-    </g>
-    <g className="rs-art-page rs-art-page--dim">
-      <rect x="134" y="34" width="44" height="60" rx="3" />
-      <path d="M142 44h22M142 52h28M142 58h20M142 66h28M142 72h16" />
-    </g>
-    <g className="rs-art-page rs-art-page--on">
-      <rect x="74" y="20" width="52" height="72" rx="3" />
-      <path d="M83 31h24" className="rs-art-ink" />
-      <path d="M83 41h16M83 60h16" className="rs-art-accent" />
-      <path d="M83 47h34M83 52h26M83 66h34M83 71h22" />
-    </g>
-    <circle cx="124" cy="22" r="9" className="rs-art-badge" />
-    <path d="m120 22 3 3 5-6" className="rs-art-tick" />
-  </svg>
-);
-
-const FillInfoArt = () => (
-  <svg viewBox="0 0 200 120" className="rs-step-art" aria-hidden="true">
-    <g className="rs-art-page">
-      <rect x="54" y="12" width="92" height="98" rx="3" />
-      <path d="M64 24h22M64 50h18M64 76h26" className="rs-art-label" />
-      <rect x="64" y="29" width="72" height="12" rx="2" />
-      <rect x="64" y="55" width="72" height="12" rx="2" className="rs-art-field-on" />
-      <rect x="64" y="81" width="72" height="12" rx="2" />
-      <path d="M69 35h26" className="rs-art-ink" />
-      <path d="M69 61h34" className="rs-art-ink" />
-      <path d="M106 58v6" className="rs-art-caret" />
-    </g>
-  </svg>
-);
-
-const DownloadPdfArt = () => (
-  <svg viewBox="0 0 200 120" className="rs-step-art" aria-hidden="true">
-    <g className="rs-art-page">
-      <rect x="62" y="12" width="70" height="90" rx="3" />
-      <path d="M72 24h30" className="rs-art-ink" />
-      <path d="M72 34h18M72 58h18" className="rs-art-accent" />
-      <path d="M72 40h48M72 45h40M72 64h48M72 69h34" />
-    </g>
-    <rect x="70" y="80" width="28" height="13" rx="2" className="rs-art-tag" />
-    <text x="84" y="89.5" textAnchor="middle" className="rs-art-tag-text">PDF</text>
-    <circle cx="134" cy="92" r="14" className="rs-art-dl" />
-    <path d="M134 84v14M128 92l6 6 6-6" className="rs-art-dl-arrow" />
-  </svg>
-);
-
+// "Make your resume" steps, each shown with a real screenshot of the product
 const STEPS = [
-  { art: PickTemplateArt, title: 'Pick a template', body: 'Choose a recruiter-tested layout for your career stage.' },
-  { art: FillInfoArt, title: 'Fill the information', body: 'Add your details in guided sections, with tips on what to write.' },
-  { art: DownloadPdfArt, title: 'Download resume as PDF', body: 'Get an ATS-friendly PDF, ready for any job portal.' }
+  {
+    title: 'Pick a template',
+    body: 'Choose a recruiter-tested layout for your career stage.',
+    img: '/assets/resume-steps/step-1-templates.webp',
+    alt: 'Beginner, Experienced and Modern resume templates in the CipherSchools resume builder',
+    w: 2384, h: 1040, pos: '50% 0%'
+  },
+  {
+    title: 'Fill the information',
+    body: 'Add your details in guided sections, with tips on what to write.',
+    img: '/assets/resume-steps/step-2-fill.webp',
+    alt: 'Resume builder form with an experience entry filled in: employer, job title, dates and achievements',
+    w: 1373, h: 1520, pos: '0% 0%'
+  },
+  {
+    title: 'Download resume as PDF',
+    body: 'Get an ATS-friendly PDF, ready for any job portal.',
+    img: '/assets/resume-steps/step-3-download.webp',
+    alt: 'Live preview of a finished resume with the Download PDF button',
+    w: 1307, h: 1280, pos: '50% 0%'
+  }
 ];
 
 // ATS checker: the two ways to check (same copy as the checker's mode screen; ?mode= opens it directly)
 const ATS_MODES = [
   {
     mode: 'resume',
+    img: '/assets/resume-steps/ats-resume-only.webp',
+    alt: 'ATS report for a resume-only scan: overall score 93 with ATS compatibility, skills coverage and resume impact scores',
+    w: 2464, h: 1081,
     tag: 'Quick check',
     title: 'Resume only',
     desc: 'See how well applicant tracking systems can read your resume.',
@@ -109,6 +78,9 @@ const ATS_MODES = [
   },
   {
     mode: 'jd',
+    img: '/assets/resume-steps/ats-with-jd.webp',
+    alt: 'Job keyword match from a resume and job description scan: 11 of 13 keywords found, AWS and CI/CD missing',
+    w: 1638, h: 649,
     tag: 'Best for applying',
     title: 'Resume + job description',
     desc: 'Match your resume to a specific job and find missing keywords.',
@@ -388,9 +360,11 @@ const ResumePage = () => {
           <p className="rs-section-sub">Three simple steps. No design skills needed.</p>
         </div>
         <ol className="rs-steps">
-          {STEPS.map(({ art: Art, title, body }, i) => (
+          {STEPS.map(({ title, body, img, alt, w, h, pos }, i) => (
             <li key={title} className="rs-step">
-              <Art />
+              <div className="rs-step-shot">
+                <img src={img} alt={alt} width={w} height={h} loading="lazy" decoding="async" style={{ objectPosition: pos }} />
+              </div>
               <div className="rs-step-text">
                 <span className="rs-step-num">Step {i + 1}</span>
                 <h3 className="rs-step-title">{title}</h3>
@@ -417,44 +391,8 @@ const ResumePage = () => {
             <Link key={opt.mode} to={`/resume/ats-checker?mode=${opt.mode}`} className="rs-am-option">
               <span className="rs-am-go" aria-hidden="true"><ArrowRight size={16} /></span>
 
-              <div className="rs-am-art" aria-hidden="true">
-                {opt.mode === 'resume' ? (
-                  <div className="rs-am-sheet">
-                    <span className="rs-am-l rs-am-l--name" />
-                    <span className="rs-am-l rs-am-l--meta" />
-                    <span className="rs-am-l rs-am-l--h" />
-                    <span className="rs-am-l" />
-                    <span className="rs-am-l rs-am-l--short" />
-                    <span className="rs-am-l rs-am-l--h" />
-                    <span className="rs-am-l" />
-                    <span className="rs-am-l rs-am-l--short" />
-                    <span className="rs-am-badge rs-am-badge--score"><Check size={11} /> 92</span>
-                  </div>
-                ) : (
-                  <div className="rs-am-pair">
-                    <div className="rs-am-sheet rs-am-sheet--sm">
-                      <span className="rs-am-l rs-am-l--name" />
-                      <span className="rs-am-l rs-am-l--h" />
-                      <span className="rs-am-l" />
-                      <span className="rs-am-l rs-am-l--short" />
-                      <span className="rs-am-l rs-am-l--h" />
-                      <span className="rs-am-l" />
-                    </div>
-                    <span className="rs-am-link" />
-                    <div className="rs-am-sheet rs-am-sheet--sm">
-                      <span className="rs-am-jd-icon"><Briefcase size={11} /></span>
-                      <span className="rs-am-l rs-am-l--meta" />
-                      <span className="rs-am-chip-row">
-                        <span className="rs-am-chip is-hit" />
-                        <span className="rs-am-chip is-hit" />
-                        <span className="rs-am-chip is-miss" />
-                      </span>
-                      <span className="rs-am-l" />
-                      <span className="rs-am-l rs-am-l--short" />
-                    </div>
-                    <span className="rs-am-badge rs-am-badge--match">87% match</span>
-                  </div>
-                )}
+              <div className="rs-am-art">
+                <img className="rs-am-shot" src={opt.img} alt={opt.alt} width={opt.w} height={opt.h} loading="lazy" decoding="async" />
               </div>
 
               <div className="rs-am-body">
