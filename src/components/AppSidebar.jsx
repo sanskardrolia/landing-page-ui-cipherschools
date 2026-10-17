@@ -209,7 +209,7 @@ const AppSidebar = () => {
       setActiveId('premium');
     } else if (location.pathname === '/feedback') {
       setActiveId('feedback');
-    } else if (location.pathname === '/resume') {
+    } else if (location.pathname.startsWith('/resume')) {
       setActiveId('resume');
     } else if (location.pathname === '/compiler') {
       setActiveId('compiler');
@@ -223,7 +223,7 @@ const AppSidebar = () => {
       else if (location.pathname === '/courses') setActiveId('courses');
       else if (location.pathname === '/premium') setActiveId('premium');
       else if (location.pathname === '/compiler') setActiveId('compiler');
-      else if (location.pathname === '/resume') setActiveId('resume');
+      else if (location.pathname.startsWith('/resume')) setActiveId('resume');
       else if (location.pathname === '/login') setActiveId('dashboard');
     };
     window.addEventListener('close-feedback-drawer', handleDrawerClose);

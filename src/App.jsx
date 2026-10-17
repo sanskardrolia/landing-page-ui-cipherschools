@@ -10,6 +10,7 @@ import PremiumPage from './pages/PremiumPage';
 import FeedbackDrawer from './components/FeedbackDrawer';
 import ResumePage from './pages/ResumePage';
 import ResumeBuilderPage from './pages/ResumeBuilderPage';
+import ResumeTemplatesPage from './pages/ResumeTemplatesPage';
 import AtsCheckerPage from './pages/AtsCheckerPage';
 import CompilerPage from './pages/CompilerPage';
 import BackToTop from './components/BackToTop';
@@ -29,7 +30,7 @@ function App() {
   const isResumeBuilder = location.pathname.startsWith('/resume/builder');
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/compiler' || location.pathname === '/ats-checker' || location.pathname === '/resume/ats-checker') return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/compiler' || location.pathname === '/ats-checker' || location.pathname === '/resume/ats-checker') return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -101,6 +102,7 @@ function App() {
             <Route path="/guide-me" element={<GuideMePage />} />
             <Route path="/guide" element={<GuideMePage />} />
             <Route path="/resume" element={<ResumePage />} />
+            <Route path="/resume/templates" element={<ResumeTemplatesPage />} />
             <Route path="/resume/builder" element={<ResumeBuilderPage />} />
             <Route path="/ats-checker" element={<AtsCheckerPage />} />
             <Route path="/resume/ats-checker" element={<AtsCheckerPage />} />
