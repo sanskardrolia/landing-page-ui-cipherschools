@@ -22,7 +22,7 @@ const HUSTLE_VS_EASE = [
   { hustle: 'Paywall right at download', ease: '100% free PDF download' }
 ];
 
-// "Make your resume" steps. Each has a cropped screenshot of the real product with one small motion on top
+// "Make your resume" steps. Step 1 has a cropped screenshot of the real product; the others are text only
 const STEPS = [
   {
     id: 'pick',
@@ -36,63 +36,13 @@ const STEPS = [
     id: 'type',
     title: 'Add your details',
     body: 'Fill in guided sections for education, skills, projects and work experience, with tips on what to write.',
-    img: '/assets/resume-steps/step-2-type.webp',
-    alt: 'Experience form with employer, start date and location fields',
-    w: 720, h: 720
   },
   {
     id: 'download',
     title: 'Download your resume as a PDF',
     body: 'Get a clean, ATS-friendly PDF you can upload to any job portal.',
-    img: '/assets/resume-steps/step-3-download-crop.webp',
-    alt: 'Live resume preview with the Download PDF button',
-    w: 1100, h: 526
   }
 ];
-
-// Pointer used by the step animations
-const StepCursor = ({ className }) => (
-  <svg className={`rs-cursor ${className}`} width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M4 2.5 19.5 12l-6.8 1.6L9.6 20.5z" fill="#111827" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
-  </svg>
-);
-
-// Types a word into the Employer field, holds, clears, repeats. Starts when visible; static under reduced motion
-const TYPED_WORD = 'Groww';
-
-const TypingField = () => {
-  const ref = useRef(null);
-  const [text, setText] = useState('');
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setText(TYPED_WORD);
-      return;
-    }
-    let timer;
-    let count = 0;
-    const tick = () => {
-      count = count > TYPED_WORD.length + 14 ? 0 : count + 1; // ~14 ticks of hold after the word
-      setText(TYPED_WORD.slice(0, Math.min(count, TYPED_WORD.length)));
-      timer = setTimeout(tick, count === 0 ? 600 : 160);
-    };
-    const io = new IntersectionObserver(([entry]) => {
-      clearTimeout(timer);
-      if (entry.isIntersecting) timer = setTimeout(tick, 400);
-    }, { threshold: 0.3 });
-    io.observe(el);
-    return () => { io.disconnect(); clearTimeout(timer); };
-  }, []);
-
-  return (
-    <span ref={ref} className="rs-type-field" aria-hidden="true">
-      <span className="rs-type-text">{text}</span>
-      <span className="rs-type-caret" />
-    </span>
-  );
-};
 
 // ATS checker: the two ways to check (same copy as the checker's mode screen; ?mode= opens it directly)
 const ATS_MODES = [
@@ -527,32 +477,13 @@ const ResumePage = () => {
                   </button>
                 )}
               </div>
-              <div className="rs-step-shot">
-                {/* Canvas keeps the image's ratio so overlays can be placed in % of the screenshot */}
-                <div className="rs-step-canvas" style={{ aspectRatio: `${w} / ${h}` }}>
-                  <img src={img} alt={alt} width={w} height={h} loading="lazy" decoding="async" />
-                  {id === 'pick' && (
-                    <>
-                      <span className="rs-pick-ring" aria-hidden="true" />
-                      <span className="rs-pick-badge" aria-hidden="true"><Check size={11} /> Selected</span>
-                      <StepCursor className="rs-cursor--pick" />
-                    </>
-                  )}
-                  {id === 'type' && (
-                    <>
-                      <span className="rs-type-ring" aria-hidden="true" />
-                      <TypingField />
-                    </>
-                  )}
-                  {id === 'download' && (
-                    <>
-                      <span className="rs-dl-press" aria-hidden="true" />
-                      <span className="rs-dl-toast" aria-hidden="true"><Check size={12} /> anurag-mishra-resume.pdf downloaded</span>
-                      <StepCursor className="rs-cursor--dl" />
-                    </>
-                  )}
+              {img && (
+                <div className="rs-step-shot">
+                  <div className="rs-step-canvas" style={{ aspectRatio: `${w} / ${h}` }}>
+                    <img src={img} alt={alt} width={w} height={h} loading="lazy" decoding="async" />
+                  </div>
                 </div>
-              </div>
+              )}
             </li>
           ))}
         </ol>

@@ -304,40 +304,6 @@ const CompilerPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Bento grid micro-animations: reveal on scroll, speed count-up, cycling file tabs
-  const bentoRef = useRef(null);
-  const [bentoInView, setBentoInView] = useState(false);
-  const [bentoSpeed, setBentoSpeed] = useState(0);
-
-  useEffect(() => {
-    const el = bentoRef.current;
-    if (!el || !('IntersectionObserver' in window)) {
-      setBentoInView(true);
-      return undefined;
-    }
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setBentoInView(true);
-        io.disconnect();
-      }
-    }, { threshold: 0.15 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!bentoInView) return undefined;
-    let raf;
-    const start = performance.now();
-    const tick = (now) => {
-      const t = Math.min(1, (now - start) / 1100);
-      setBentoSpeed(0.08 * (1 - Math.pow(1 - t, 3)));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [bentoInView]);
-
   // Hero mockup tilt: 0 = tilted back (page top), 1 = flat (after ~420px of scroll)
   useEffect(() => {
     let raf = 0;
@@ -1468,7 +1434,7 @@ const CompilerPage = () => {
       <section className="compiler-capabilities-section">
         <div className="capabilities-container">
 
-          <div ref={bentoRef} className={`wb-features-row wb-features-row--four compiler-bento-grid ${bentoInView ? 'is-in' : ''}`}>
+          <div className="wb-features-row wb-features-row--four compiler-bento-grid">
 
             {/* Card 1: Access saved files anywhere */}
             <div className="wb-feature-card bento-card">
@@ -1478,8 +1444,8 @@ const CompilerPage = () => {
                     { name: 'Laptop', Icon: DeviceLaptopIcon },
                     { name: 'Tablet', Icon: DeviceTabletIcon },
                     { name: 'Phone', Icon: DevicePhoneIcon }
-                  ].map(({ name, Icon }, i) => (
-                    <div key={name} className="bento-lang-chip bento-device-chip" style={{ '--i': i }}>
+                  ].map(({ name, Icon }) => (
+                    <div key={name} className="bento-lang-chip bento-device-chip">
                       <Icon />
                       <span className="lang-chip-name">{name}</span>
                     </div>
@@ -1499,7 +1465,7 @@ const CompilerPage = () => {
               <div className="wb-feature-visual" aria-hidden="true">
                 <div className="bento-speed-stat-box">
                   <div className="bento-stat-number-row">
-                    <span className="bento-speed-value">{bentoSpeed.toFixed(2)}</span>
+                    <span className="bento-speed-value">0.08</span>
                     <span className="bento-speed-unit">s</span>
                   </div>
                   <div className="bento-speed-track"><span /></div>
