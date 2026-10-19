@@ -201,23 +201,24 @@
    HUSTLE VS EASE (other builders vs us, row by row)
    ───────────────────────────────────────────────────────────── */
 .rs-hve {
-  max-width: 820px;
-  margin: 0 auto;
   background: var(--rs-surface);
   border: 1px solid var(--rs-line);
   border-radius: var(--rs-radius);
-  box-shadow: var(--rs-shadow-sm);
+  box-shadow: var(--rs-shadow-md);
   overflow: hidden;
 }
 
 .rs-hve-head,
 .rs-hve-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 180px 1fr 1fr;
 }
 
-.rs-hve-head span {
-  padding: 14px 24px;
+.rs-hve-head > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 24px;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -227,9 +228,15 @@
   border-bottom: 1px solid var(--rs-line);
 }
 
+.rs-hve-head .rs-hve-head-them svg {
+  color: #DC2626;
+}
+
+/* "Us" column reads as one highlighted lane: solid header, tinted cells */
 .rs-hve-head .rs-hve-head-us {
-  color: var(--rs-brand-text);
-  background: var(--rs-brand-soft);
+  color: #fff;
+  background: var(--rs-brand);
+  border-bottom-color: var(--rs-brand);
 }
 
 .rs-hve-rows {
@@ -238,20 +245,52 @@
   padding: 0;
 }
 
-.rs-hve-row + .rs-hve-row {
+.rs-hve-row + .rs-hve-row > * {
   border-top: 1px solid var(--rs-line);
 }
 
+.rs-hve-row {
+  transition: background-color 0.2s var(--rs-ease);
+}
+
+.rs-hve-row:hover {
+  background: var(--rs-surface-2);
+}
+
+.rs-hve-topic {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--rs-ink);
+}
+
+.rs-hve-topic-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--rs-radius);
+  background: var(--rs-surface-2);
+  border: 1px solid var(--rs-line);
+  color: var(--rs-ink-2);
+}
+
 .rs-hve-cell {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 18px 24px;
+  padding: 20px 24px;
   font-size: 0.95rem;
   line-height: 1.4;
 }
 
-.rs-hve-cell svg {
+.rs-hve-cell > svg {
   flex-shrink: 0;
   border-radius: 50%;
   padding: 3px;
@@ -260,9 +299,16 @@
 
 .rs-hve-cell--hustle {
   color: var(--rs-muted);
+  border-left: 1px solid var(--rs-line);
 }
 
-.rs-hve-cell--hustle svg {
+.rs-hve-cell--hustle > span {
+  text-decoration: line-through;
+  text-decoration-color: rgba(220, 38, 38, 0.45);
+  text-decoration-thickness: 1.5px;
+}
+
+.rs-hve-cell--hustle > svg {
   color: #DC2626;
   background: rgba(220, 38, 38, 0.08);
 }
@@ -270,23 +316,85 @@
 .rs-hve-cell--ease {
   color: var(--rs-ink);
   font-weight: 600;
-  background: rgba(243, 145, 46, 0.04);
-  border-left: 1px solid var(--rs-line);
+  background: var(--rs-brand-soft);
+  border-left: 1px solid var(--rs-brand-line);
 }
 
-.rs-hve-cell--ease svg {
+.rs-hve-row + .rs-hve-row > .rs-hve-cell--ease {
+  border-top-color: var(--rs-brand-line);
+}
+
+.rs-hve-cell--ease > svg {
   color: #fff;
   background: var(--rs-brand);
 }
 
+/* Arrow on the seam: "this problem becomes this" */
+.rs-hve-arrow {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--rs-surface);
+  border: 1px solid var(--rs-brand-line);
+  color: var(--rs-brand);
+  box-shadow: var(--rs-shadow-sm);
+  transition: transform 0.25s var(--rs-ease);
+}
+
+.rs-hve-row:hover .rs-hve-arrow {
+  transform: translate(-30%, -50%);
+}
+
 @media (max-width: 768px) {
-  .rs-hve-head span,
+  .rs-hve-head,
+  .rs-hve-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Topic becomes a full-width row label above its pair */
+  .rs-hve-head .rs-hve-head-topic {
+    display: none;
+  }
+
+  .rs-hve-topic {
+    grid-column: 1 / -1;
+    padding: 14px 16px 10px;
+    font-size: 0.8rem;
+    gap: 8px;
+  }
+
+  .rs-hve-topic-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .rs-hve-row + .rs-hve-row > .rs-hve-cell {
+    border-top: 0;
+  }
+
+  .rs-hve-head > span,
   .rs-hve-cell {
-    padding: 14px 16px;
+    padding: 12px 16px 14px;
   }
 
   .rs-hve-cell {
-    font-size: 0.875rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+  }
+
+  .rs-hve-cell--hustle {
+    border-left: 0;
+  }
+
+  .rs-hve-head > span {
+    padding: 12px 16px;
   }
 }
 
@@ -616,11 +724,13 @@
   .rs-hero-visual {
     margin-top: 0;
     max-width: none;
-    padding: 0 40px 0 56px;
+    padding: 0 0 0 56px;
   }
 
+  /* Sheet sits flush with the container's right edge, like every other section */
   .rs-sheet {
     max-width: 500px;
+    margin-right: 0;
   }
 
   /* Score card sits on the sheet's empty top-right corner (beside the name);
@@ -804,8 +914,6 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  max-width: 1040px;
-  margin: 0 auto;
 }
 
 .rs-step {
@@ -1365,8 +1473,6 @@
   --ink: #232323;
   --mid: #9CA3AF;
   --soft: #E5E7EB;
-  margin: 0 auto;
-  max-width: 1080px;
   background: var(--rs-surface);
   border: 1px solid var(--rs-line);
   border-radius: 4px;
@@ -1663,11 +1769,6 @@
 .rs-info-legend .empty::before { background: var(--soft); }
 
 /* ── Report compare slider: other checkers (left) vs ours (right) ── */
-.rs-cmp-wrap {
-  max-width: 1080px;
-  margin: 0 auto;
-}
-
 .rs-cmp-labels {
   display: flex;
   justify-content: space-between;
@@ -1928,10 +2029,6 @@
 /* ─────────────────────────────────────────────────────────────
    FAQ
    ───────────────────────────────────────────────────────────── */
-.rs-faq {
-  max-width: 860px;
-}
-
 .rs-faq-list {
   display: flex;
   flex-direction: column;
@@ -1995,10 +2092,6 @@
 /* ─────────────────────────────────────────────────────────────
    UPSKILL (secondary)
    ───────────────────────────────────────────────────────────── */
-.rs-upskill-wrap {
-  max-width: 1100px;
-}
-
 .rs-upskill {
   display: flex;
   align-items: center;

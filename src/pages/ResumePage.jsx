@@ -10,16 +10,19 @@ import {
   ScanSearch,
   FileText,
   Star,
-  X
+  X,
+  LayoutTemplate,
+  PenLine,
+  Wallet
 } from 'lucide-react';
 import './ResumePage.css';
 
 // "Hustle vs ease" comparison: the usual resume pain, and how we remove it
 const HUSTLE_VS_EASE = [
-  { hustle: 'Hours lost fixing margins and fonts', ease: 'Layout handled for you' },
-  { hustle: 'Staring at a blank page', ease: 'Guided sections with tips' },
-  { hustle: 'Guessing if the ATS can read it', ease: 'ATS-friendly by default' },
-  { hustle: 'Paywall right at download', ease: '100% free PDF download' }
+  { topic: 'Formatting', Icon: LayoutTemplate, hustle: 'Hours lost fixing margins and fonts', ease: 'Layout handled for you' },
+  { topic: 'Writing', Icon: PenLine, hustle: 'Staring at a blank page', ease: 'Guided sections with tips' },
+  { topic: 'ATS check', Icon: ScanSearch, hustle: 'Guessing if the ATS can read it', ease: 'ATS-friendly by default' },
+  { topic: 'Download', Icon: Wallet, hustle: 'Paywall right at download', ease: '100% free PDF download' }
 ];
 
 // "Make your resume" steps. Step 1 has a cropped screenshot of the real product; the others are text only
@@ -435,18 +438,24 @@ const ResumePage = () => {
 
         <div className="rs-hve">
           <div className="rs-hve-head" aria-hidden="true">
-            <span>Other builders</span>
-            <span className="rs-hve-head-us">CipherSchools</span>
+            <span className="rs-hve-head-topic">What you need</span>
+            <span className="rs-hve-head-them"><X size={13} /> Other builders</span>
+            <span className="rs-hve-head-us"><Check size={13} /> CipherSchools</span>
           </div>
           <ul className="rs-hve-rows">
-            {HUSTLE_VS_EASE.map(({ hustle, ease }) => (
-              <li key={ease} className="rs-hve-row">
+            {HUSTLE_VS_EASE.map(({ topic, Icon, hustle, ease }) => (
+              <li key={topic} className="rs-hve-row">
+                <span className="rs-hve-topic">
+                  <span className="rs-hve-topic-icon"><Icon size={16} aria-hidden="true" /></span>
+                  {topic}
+                </span>
                 <span className="rs-hve-cell rs-hve-cell--hustle">
-                  <X size={15} aria-hidden="true" />
+                  <X size={14} aria-hidden="true" />
                   <span><span className="rs-sr-only">Other builders: </span>{hustle}</span>
                 </span>
                 <span className="rs-hve-cell rs-hve-cell--ease">
-                  <Check size={15} aria-hidden="true" />
+                  <span className="rs-hve-arrow" aria-hidden="true"><ArrowRight size={13} /></span>
+                  <Check size={14} aria-hidden="true" />
                   <span><span className="rs-sr-only">CipherSchools: </span>{ease}</span>
                 </span>
               </li>
@@ -609,7 +618,7 @@ const ResumePage = () => {
         <div className="rs-ats-cta">
           <button type="button" className="rs-btn rs-btn--dark" onClick={() => openAtsChecker()}>
             <ScanSearch size={15} />
-            <span>Get Your Score &amp; Section-by-Section Analysis</span>
+            <span>Check My ATS Score</span>
           </button>
           <p className="rs-ats-cta-note">Free · PDF or DOCX up to 10 MB</p>
         </div>
