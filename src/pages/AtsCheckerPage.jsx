@@ -880,13 +880,10 @@ const AtsCheckerPage = () => {
 
                       <ul className="jd-rules-list">
                         {[
-                          { done: uploadStatus === 'ready', title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
-                          { done: null, title: 'Put contact details in the body', body: 'Headers and footers are often skipped.' }
-                        ].map(({ done, title, body }) => (
-                          <li key={title} className={done ? 'is-done' : undefined}>
-                            <span className="jd-rule-mark" aria-hidden="true">
-                              {done ? <Check size={12} /> : null}
-                            </span>
+                          { title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
+                          { title: 'Put contact details in the body', body: 'Headers and footers are often skipped.' }
+                        ].map(({ title, body }) => (
+                          <li key={title}>
                             <div>
                               <strong>{title}</strong>
                               <p>{body}</p>
@@ -1100,15 +1097,12 @@ const AtsCheckerPage = () => {
 
                       <ul className="jd-rules-list">
                         {[
-                          { done: jobDescription.trim().length >= 200, title: 'Paste the full job post', body: 'Include responsibilities and requirements, not just the title.' },
-                          { done: uploadStatus === 'ready', title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
-                          { done: null, title: 'Show skills in your bullets', body: 'A skill used in a project counts more than one in a list.' },
-                          { done: null, title: 'Use the job post\'s own words', body: 'Write "React.js" if the post says "React.js".' }
-                        ].map(({ done, title, body }) => (
-                          <li key={title} className={done ? 'is-done' : undefined}>
-                            <span className="jd-rule-mark" aria-hidden="true">
-                              {done ? <Check size={12} /> : null}
-                            </span>
+                          { title: 'Paste the full job post', body: 'Include responsibilities and requirements, not just the title.' },
+                          { title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
+                          { title: 'Show skills in your bullets', body: 'A skill used in a project counts more than one in a list.' },
+                          { title: 'Use the job post\'s own words', body: 'Write "React.js" if the post says "React.js".' }
+                        ].map(({ title, body }) => (
+                          <li key={title}>
                             <div>
                               <strong>{title}</strong>
                               <p>{body}</p>
