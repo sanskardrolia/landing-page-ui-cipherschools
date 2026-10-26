@@ -119,13 +119,13 @@ export function analyzeResume(inputs) {
   const metrics = doc_metrics || {};
 
   // Check 1: file_format (weight: 3)
-  const isFileValid = metrics.file_format === 'pdf' || metrics.file_format === 'docx';
+  const isFileValid = metrics.file_format === 'pdf';
   const fileFormatVal = isFileValid ? (metrics.has_text_layer !== false ? 1 : 0) : 0;
   const check_file_format = {
     id: 'file_format',
     label: 'File Format & Text Layer',
     status: fileFormatVal === 1 ? 'PASS' : 'FAIL',
-    value: isFileValid ? 'Standard PDF/DOCX with parseable text layer' : 'Unparseable or scanned image file',
+    value: isFileValid ? 'Standard PDF with parseable text layer' : 'Unparseable or scanned image file',
     weight: 3,
     scoreVal: fileFormatVal,
     suggestionId: fileFormatVal === 1 ? null : 'sg_file_fmt'
@@ -842,7 +842,7 @@ export function analyzeResume(inputs) {
   if (fileFormatVal === 0) {
     rawSuggestions.push({
       id: 'sg_001',
-      title: 'Export resume as clean text-based PDF or DOCX',
+      title: 'Export resume as clean text-based PDF',
       reason: 'Scanned images or files without selectable text cannot be read by ATS parsers.',
       priority: 'CRITICAL',
       card: 'ATS_COMPATIBILITY',

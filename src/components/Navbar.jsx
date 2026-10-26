@@ -245,7 +245,7 @@ const Navbar = () => {
                     {/* 4. Compiler */}
                     <div 
                       className="nav-mega-card card-compiler"
-                      onClick={() => navigate('/compiler')}
+                      onClick={() => navigate('/online-compiler')}
                     >
                       <div className="nav-card-preview">
                         <div className="nav-card-mini-window">

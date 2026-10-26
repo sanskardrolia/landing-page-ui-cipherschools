@@ -115,7 +115,7 @@ const NAV_ITEMS = [
     label: 'Compiler', 
     badge: 'FREE',
     Icon: CompilerIcon, 
-    path: '/compiler',
+    path: '/online-compiler',
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Cloud Online Compiler',
     cardDesc: 'Instant zero-setup in-browser code editor supporting 5+ core languages with live input/output console and built-in whiteboard.',
@@ -211,7 +211,7 @@ const AppSidebar = () => {
       setActiveId('feedback');
     } else if (location.pathname.startsWith('/resume')) {
       setActiveId('resume');
-    } else if (location.pathname === '/compiler') {
+    } else if (location.pathname === '/online-compiler') {
       setActiveId('compiler');
     }
   }, [location.pathname]);
@@ -222,7 +222,7 @@ const AppSidebar = () => {
       if (location.pathname === '/') setActiveId('home');
       else if (location.pathname === '/courses') setActiveId('courses');
       else if (location.pathname === '/premium') setActiveId('premium');
-      else if (location.pathname === '/compiler') setActiveId('compiler');
+      else if (location.pathname === '/online-compiler') setActiveId('compiler');
       else if (location.pathname.startsWith('/resume')) setActiveId('resume');
       else if (location.pathname === '/login') setActiveId('dashboard');
     };

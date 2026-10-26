@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
@@ -12,6 +12,7 @@ import ResumePage from './pages/ResumePage';
 import ResumeBuilderPage from './pages/ResumeBuilderPage';
 import ResumeTemplatesPage from './pages/ResumeTemplatesPage';
 import AtsCheckerPage from './pages/AtsCheckerPage';
+import AtsLandingPage from './pages/AtsLandingPage';
 import CompilerPage from './pages/CompilerPage';
 import BackToTop from './components/BackToTop';
 import AppSidebar from './components/AppSidebar';
@@ -30,7 +31,7 @@ function App() {
   const isResumeBuilder = location.pathname.startsWith('/resume/builder');
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/compiler' || location.pathname === '/ats-checker' || location.pathname === '/resume/ats-checker') return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -104,9 +105,12 @@ function App() {
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/resume/templates" element={<ResumeTemplatesPage />} />
             <Route path="/resume/builder" element={<ResumeBuilderPage />} />
-            <Route path="/ats-checker" element={<AtsCheckerPage />} />
-            <Route path="/resume/ats-checker" element={<AtsCheckerPage />} />
-            <Route path="/compiler" element={<CompilerPage />} />
+            <Route path="/ats-checker" element={<Navigate to="/resume/ats-checker" replace />} />
+            <Route path="/ats-checker/scan" element={<Navigate to="/resume/ats-checker/scan" replace />} />
+            <Route path="/resume/ats-checker" element={<AtsLandingPage />} />
+            <Route path="/resume/ats-checker/scan" element={<AtsCheckerPage />} />
+            <Route path="/online-compiler" element={<CompilerPage />} />
+            <Route path="/compiler" element={<Navigate to="/online-compiler" replace />} />
             <Route path="/*" element={<MainPage />} />
           </Routes>
         </main>

@@ -469,6 +469,36 @@
   pointer-events: none;
 }
 
+/* Mode indicator pill (upload screen, top right) */
+.upload-mode-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.mode-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.mode-badge-pill.resume-only-pill {
+  background: rgba(255, 161, 3, 0.08);
+  color: #b87400;
+  border: 1px solid rgba(255, 161, 3, 0.3);
+}
+
+.mode-badge-pill.jd-match-pill {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
 /* Resume Only: 2-Column Bento */
 .resume-only-upload-grid {
   display: grid;
@@ -919,15 +949,133 @@
 
 /* JD + Resume Mode Layout */
 .jd-resume-upload-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* Left: Resume Document and Target JD stacked, then the scan button */
+.jd-left-col {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
 }
 
 .workstation-inputs-layout.compact-layout.two-cols {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 16px;
+}
+
+/* Right: tips card, stretches to the height of the inputs so no white space is left */
+.jd-resume-upload-wrapper {
+  align-items: stretch;
+}
+
+.jd-rules-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 22px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
+}
+
+.jd-rules-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffa103;
+}
+
+.jd-rules-head h5 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0F172A;
+}
+
+.jd-rules-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jd-rules-list li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.jd-rule-mark {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 4px;
+  color: #FFFFFF;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.jd-rules-list li.is-done .jd-rule-mark {
+  background: #10B981;
+  border-color: #10B981;
+}
+
+.jd-rules-list strong {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.jd-rules-list p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #64748B;
+}
+
+.jd-rules-foot {
+  padding-top: 16px;
+  border-top: 1px solid #E2E8F0;
+}
+
+.jd-rules-foot-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94A3B8;
+}
+
+.jd-rules-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.jd-rules-chips span {
+  padding: 3px 9px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #475569;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 4px;
 }
 
 .compact-textarea-wrap {
@@ -2710,6 +2858,10 @@
 
 /* Responsive Overrides */
 @media (max-width: 960px) {
+  .jd-resume-upload-wrapper {
+    grid-template-columns: 1fr;
+  }
+
   .resume-only-upload-grid,
   .workstation-inputs-layout.two-cols,
   .workstation-inputs-layout.compact-layout.two-cols,

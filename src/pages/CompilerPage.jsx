@@ -1,17 +1,38 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { track } from '../utils/analytics';
+import {
+  SITE_URL,
+  PAGE_PATH,
+  CONFIRMED,
+  SEO,
+  HERO,
+  PROBLEM,
+  HOW_IT_WORKS,
+  FEATURES,
+  SPOTLIGHT,
+  PROOF,
+  PRICING,
+  OBJECTIONS,
+  FAQ,
+  FINAL_CTA,
+  SECTION_CTA
+} from '../content/online-compiler';
 import { 
   Play, 
   RotateCcw, 
   Share2, 
+  FileCode,
+  Star,
+  Link2,
+  Copy,
+  Plus,
   Download, 
   Maximize2, 
   Bookmark, 
   Sun, 
   User, 
   Check, 
-  Cpu, 
-  Layers, 
   ChevronRight, 
   ExternalLink,
   ChevronDown,
@@ -27,29 +48,6 @@ import {
   CircleAlert
 } from 'lucide-react';
 import './CompilerPage.css';
-
-// Device illustrations for the "Access Your Code Anywhere" card
-const DeviceLaptopIcon = () => (
-  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
-    <rect x="6" y="2" width="28" height="19" rx="2.2" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
-    <rect x="17.5" y="2" width="5" height="1.6" rx="0.8" fill="currentColor" />
-    <path d="M2 22.5h36v1.2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" fill="currentColor" />
-  </svg>
-);
-
-const DeviceTabletIcon = () => (
-  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
-    <rect x="10" y="1" width="20" height="26" rx="3" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
-    <circle cx="20" cy="3.6" r="0.9" fill="currentColor" />
-  </svg>
-);
-
-const DevicePhoneIcon = () => (
-  <svg viewBox="0 0 40 28" width="40" height="28" fill="none" aria-hidden="true">
-    <rect x="13.5" y="1" width="13" height="26" rx="3.4" fill="#F1F5F9" stroke="currentColor" strokeWidth="1.6" />
-    <rect x="17.5" y="3.2" width="5" height="1.6" rx="0.8" fill="currentColor" />
-  </svg>
-);
 
 // ── Language Icons (exact SVGs from screenshots) ──
 const CIcon = ({ size = 20 }) => (
@@ -211,36 +209,127 @@ welcome();`,
 // Whiteboard mockup is fixed to the C++ editor
 const WB_LANG = LANGUAGES.find((l) => l.id === 'cpp');
 
-const FAQ_ITEMS = [
-  {
-    q: 'Is the CipherSchools online compiler free?',
-    a: 'Yes. The online compiler is free to use with unlimited runs and no ads.'
-  },
-  {
-    q: 'Which languages does the online compiler support?',
-    a: 'C, C++, Java, Python and JavaScript, running on GCC 13.2 (C and C++), OpenJDK 21 LTS, Python 3.12 and Node.js 20 LTS.'
-  },
-  {
-    q: 'Do I need to sign up to run code?',
-    a: 'No. You can compile and run code without an account. Log in to save your files and sync them to the cloud.'
-  },
-  {
-    q: 'Can I run code with custom input?',
-    a: 'Yes. Enter multi-line input or test cases in the input pane before you compile.'
-  },
-  {
-    q: 'Can I download my code?',
-    a: 'Yes. Download any file in one click with its original extension, such as .cpp, .java or .py.'
-  },
-  {
-    q: 'Why does the compiler have a built-in whiteboard?',
-    a: 'Use it to dry run your code and sketch arrays, linked lists, trees and recursion steps next to your code, which helps with DSA and coding interview practice.'
-  },
-  {
-    q: 'Is there a keyboard shortcut to run code?',
-    a: 'Yes. Press Ctrl + Enter (Cmd + Enter on macOS) to compile and run your code.'
-  }
-];
+
+// Minimal UI mockups for the problem/solution bento cards
+const SetupBentoVisual = () => (
+  <div className="oc-mock oc-mock-window">
+    <div className="oc-mock-bar">
+      <span className="oc-mock-dots"><i /><i /><i /></span>
+    </div>
+    <div className="oc-mock-langs">
+      {LANGUAGES.map((lang) => (
+        <span key={lang.id} className={`oc-mock-lang ${lang.id === 'cpp' ? 'active' : ''}`}>{lang.name}</span>
+      ))}
+    </div>
+  </div>
+);
+
+const MultiFileBentoVisual = () => (
+  <div className="oc-mock oc-mock-tree">
+    {[
+      { name: 'main.cpp', active: true },
+      { name: 'helper.cpp', active: false }
+    ].map((f) => (
+      <div key={f.name} className={`oc-mock-file ${f.active ? 'active' : ''}`}>
+        <FileCode size={15} />
+        <span>{f.name}</span>
+      </div>
+    ))}
+    <div className="oc-mock-file ghost">
+      <Plus size={15} />
+      <span>New file</span>
+    </div>
+  </div>
+);
+
+const SaveBentoVisual = () => (
+  <div className="oc-mock oc-mock-saved">
+    <div className="oc-mock-saved-row">
+      <FileCode size={15} />
+      <span className="oc-mock-saved-name">my-project</span>
+      <span className="oc-mock-badge"><Check size={12} /> Saved</span>
+    </div>
+    <div className="oc-mock-saved-row faded">
+      <FileCode size={15} />
+      <span className="oc-mock-skeleton" style={{ width: '46%' }} />
+    </div>
+  </div>
+);
+
+const ShareBentoVisual = () => (
+  <div className="oc-mock oc-mock-share">
+    <div className="oc-mock-url">
+      <Link2 size={15} />
+      <span className="oc-mock-skeleton" style={{ width: '58%' }} />
+      <span className="oc-mock-copy"><Copy size={13} /> Copy link</span>
+    </div>
+    <div className="oc-mock-access">
+      <span>Anyone with the link</span>
+      <span className="oc-mock-chip">View</span>
+      <span className="oc-mock-chip">Run</span>
+    </div>
+  </div>
+);
+
+const PAIR_VISUALS = {
+  setup: SetupBentoVisual,
+  multifile: MultiFileBentoVisual,
+  save: SaveBentoVisual,
+  share: ShareBentoVisual
+};
+
+// Minimal UI mockups for the "how it works" steps
+const PickLanguageStepVisual = () => (
+  <div className="oc-mock oc-mock-window">
+    <div className="oc-mock-bar">
+      <span className="oc-mock-dots"><i /><i /><i /></span>
+    </div>
+    <div className="oc-mock-langs">
+      {LANGUAGES.map((lang) => (
+        <span key={lang.id} className={`oc-mock-lang ${lang.id === 'cpp' ? 'active' : ''}`}>{lang.name}</span>
+      ))}
+    </div>
+  </div>
+);
+
+const WriteStepVisual = () => (
+  <div className="oc-mock oc-mock-window">
+    <div className="oc-mock-bar oc-mock-tabs">
+      <span className="active">main.cpp</span>
+      <span>helper.cpp</span>
+    </div>
+    <pre className="oc-mock-code">
+      <span className="ln">1</span><span className="kw">#include</span>{' <iostream>\n'}
+      <span className="ln">2</span><span className="kw">int</span>{' main() {\n'}
+      <span className="ln">3</span>{'  std::cout << '}<span className="str">"Hello"</span>{';'}
+    </pre>
+  </div>
+);
+
+const RunStepVisual = () => (
+  <div className="oc-mock oc-mock-run">
+    <span className="oc-mock-run-btn"><Play size={14} /> Run</span>
+    <div className="oc-mock-window">
+      <div className="oc-mock-bar">
+        <span className="oc-mock-output-label">Output</span>
+        <span className="oc-mock-badge"><Check size={12} /> Done</span>
+      </div>
+      <div className="oc-mock-output">Hello</div>
+    </div>
+  </div>
+);
+
+const STEP_VISUALS = [PickLanguageStepVisual, WriteStepVisual, RunStepVisual];
+
+// Proof renders only items that carry permission: true
+const proofStats = PROOF.stats.filter((x) => x.permission !== false);
+const proofTestimonials = PROOF.testimonials.filter((x) => x.permission === true);
+const proofLogos = PROOF.logos.filter((x) => x.permission === true);
+const hasProofData = proofStats.length > 0 || proofTestimonials.length > 0 || proofLogos.length > 0 || !!PROOF.caseStudy;
+const showProof = hasProofData || PROOF.fallback.enabled;
+
+const visibleFaqs = FAQ.items.filter((item) => item.confirmed);
+const visibleObjections = OBJECTIONS.filter((o) => o.show);
 
 const CompilerPage = () => {
   const navigate = useNavigate();
@@ -311,6 +400,9 @@ const CompilerPage = () => {
       raf = 0;
       const progress = Math.min(1, Math.max(0, window.scrollY / 420));
       heroTiltRef.current?.style.setProperty('--tilt-progress', progress.toFixed(3));
+      // Fade the mockup in over the first ~300px of scroll
+      const reveal = Math.min(1, Math.max(0, window.scrollY / 300));
+      editorRef.current?.style.setProperty('--reveal', reveal.toFixed(3));
     };
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -326,6 +418,7 @@ const CompilerPage = () => {
   // Waypoints are re-measured every frame because the mockup tilts on scroll.
   const heroInnerRef = useRef(null);
   const heroCtaRef = useRef(null);
+  const whiteboardSectionRef = useRef(null);
   const heroCodeRef = useRef(null);
   const heroBugRef = useRef(null);
   const [bugPhase, setBugPhase] = useState('peek'); // 'peek' | 'crawl' | 'gone'
@@ -427,11 +520,25 @@ const CompilerPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ── SEO & Dynamic Head Metadata Management ──
+  // Fire once when the whiteboard spotlight enters the viewport
+  useEffect(() => {
+    const el = whiteboardSectionRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        track('oc_feature_whiteboard_view');
+        observer.disconnect();
+      }
+    }, { threshold: 0.3 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // ── SEO & Head Metadata (client-side) ──
   useEffect(() => {
     const prevTitle = document.title;
-    const pageTitle = `Online ${currentLang.name} Compiler: Free Online Compiler | CipherSchools`;
-    document.title = pageTitle;
+    const pageUrl = `${SITE_URL}${PAGE_PATH}`;
+    document.title = SEO.title;
 
     const setMeta = (name, content, isProperty = false) => {
       const attr = isProperty ? 'property' : 'name';
@@ -465,110 +572,66 @@ const CompilerPage = () => {
       script.textContent = JSON.stringify(data);
     };
 
-    // Primary Meta Tags
-    setMeta('description', `Free online ${currentLang.name} compiler. Write, compile and run ${currentLang.name} code in your browser with custom input and a built-in whiteboard. Also supports C, C++, Java, Python and JavaScript.`);
-    setMeta('keywords', `online compiler, online ${currentLang.name.toLowerCase()} compiler, free online compiler, run code online`);
+    setMeta('description', SEO.description);
     setMeta('author', 'CipherSchools');
     setMeta('robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
 
-    // Open Graph
-    setMeta('og:title', pageTitle, true);
-    setMeta('og:description', `Compile and run ${currentLang.name} code online for free. No installation, with custom input and a built-in whiteboard.`, true);
+    setMeta('og:title', SEO.title, true);
+    setMeta('og:description', SEO.description, true);
     setMeta('og:type', 'website', true);
-    setMeta('og:url', 'https://www.cipherschools.com/compiler', true);
+    setMeta('og:url', pageUrl, true);
     setMeta('og:site_name', 'CipherSchools', true);
-    setMeta('og:image', 'https://www.cipherschools.com/og-compiler.png', true);
+    setMeta('og:image', SEO.image, true);
+    setMeta('og:image:alt', SEO.heroAlt, true);
 
-    // Twitter Cards
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', pageTitle);
-    setMeta('twitter:description', `Free online ${currentLang.name} compiler. Compile and run code in your browser.`);
+    setMeta('twitter:title', SEO.title);
+    setMeta('twitter:description', SEO.description);
+    setMeta('twitter:image', SEO.image);
+    setMeta('twitter:image:alt', SEO.heroAlt);
     setMeta('twitter:site', '@cipherschools');
 
-    // Canonical link
-    setCanonical('https://www.cipherschools.com/compiler');
+    setCanonical(pageUrl);
 
-    // JSON-LD Structured Data Schemas
-    const webAppSchema = {
+    const softwareSchema = {
       '@context': 'https://schema.org',
-      '@type': 'WebApplication',
+      '@type': 'SoftwareApplication',
       'name': 'CipherSchools Online Compiler',
-      'alternateName': 'CipherSchools Code Compiler',
-      'url': 'https://www.cipherschools.com/compiler',
+      'url': pageUrl,
       'applicationCategory': 'DeveloperApplication',
-      'operatingSystem': 'All (Web Browser)',
-      'browserRequirements': 'Requires JavaScript. Requires HTML5.',
-      'softwareVersion': '2.0',
-      'offers': {
-        '@type': 'Offer',
-        'price': '0',
-        'priceCurrency': 'INR',
-        'availability': 'https://schema.org/InStock'
-      },
-      'description': 'Free online compiler for C, C++, Java, Python and JavaScript with custom input and a built-in whiteboard for dry runs.',
-      'featureList': [
-        'Instant compilation with GCC 13.2, OpenJDK 21, Python 3.12, and Node.js 20',
-        'Integrated Whiteboard Scratchpad for DSA visual dry runs',
-        'Custom input test cases support',
-        'Direct source code file download',
-        'Zero setup, 100% free with unlimited runs'
-      ],
+      'operatingSystem': 'Web',
+      'description': SEO.description,
+      'featureList': FEATURES.items.map((f) => `${f.title} ${f.body}`),
       'creator': {
         '@type': 'Organization',
         'name': 'CipherSchools',
-        'url': 'https://www.cipherschools.com'
+        'url': SITE_URL
       }
     };
+    // TODO(confirm): price 0 only once "free" is confirmed
+    if (CONFIRMED.free) {
+      softwareSchema.offers = { '@type': 'Offer', 'price': '0', 'priceCurrency': 'INR' };
+    }
 
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      'mainEntity': FAQ_ITEMS.map(item => ({
+      'mainEntity': FAQ.items.filter((item) => item.confirmed).map((item) => ({
         '@type': 'Question',
         'name': item.q,
-        'acceptedAnswer': {
-          '@type': 'Answer',
-          'text': item.a
-        }
+        'acceptedAnswer': { '@type': 'Answer', 'text': item.a }
       }))
     };
 
-    const breadcrumbsSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      'itemListElement': [
-        {
-          '@type': 'ListItem',
-          'position': 1,
-          'name': 'Home',
-          'item': 'https://www.cipherschools.com/'
-        },
-        {
-          '@type': 'ListItem',
-          'position': 2,
-          'name': 'Online Compiler',
-          'item': 'https://www.cipherschools.com/compiler'
-        },
-        {
-          '@type': 'ListItem',
-          'position': 3,
-          'name': `Online ${currentLang.name} Compiler`,
-          'item': `https://www.cipherschools.com/compiler?lang=${currentLang.id}`
-        }
-      ]
-    };
-
-    setJsonLd('schema-web-app', webAppSchema);
+    setJsonLd('schema-software-app', softwareSchema);
     setJsonLd('schema-faq', faqSchema);
-    setJsonLd('schema-breadcrumbs', breadcrumbsSchema);
 
     return () => {
       document.title = prevTitle;
-      document.getElementById('schema-web-app')?.remove();
+      document.getElementById('schema-software-app')?.remove();
       document.getElementById('schema-faq')?.remove();
-      document.getElementById('schema-breadcrumbs')?.remove();
     };
-  }, [currentLang.id, currentLang.name]);
+  }, []);
 
   // Keyboard shortcut listener (Ctrl/Cmd + Enter to Open & Compile)
   useEffect(() => {
@@ -933,7 +996,6 @@ const CompilerPage = () => {
   const currentCodeLines = (displayedCode || (animationPhase === 'idle' ? targetCode : '') || '//').split('\n');
 
   // ── Whiteboard Cursive Drawing Animation State ──
-  const whiteboardSectionRef = useRef(null);
   const [isWhiteboardInView, setIsWhiteboardInView] = useState(false);
   const [wbPhase, setWbPhase] = useState('idle'); // 'idle' | 'delay' | 'drawing_text' | 'complete'
   const [wbText, setWbText] = useState('');
@@ -1002,6 +1064,11 @@ const CompilerPage = () => {
     editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const handleSectionCta = (section) => {
+    track('oc_section_cta_click', { section });
+    handleOpenCompiler();
+  };
+
   // TODO: point this at the live whiteboard once its URL is available
   const handleOpenWhiteboard = () => {
     editorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1031,21 +1098,24 @@ const CompilerPage = () => {
         <div className="compiler-hero-inner" ref={heroInnerRef}>
           
           {/* Wraps the intro so it stacks above the bug while it peeks from the CTA */}
+          <div className="hero-split">
           <div className="hero-intro">
             <div className="compiler-header-text">
+              <p className="hero-microcopy">
+                {HERO.microcopy.filter((m) => m.show).map((m) => m.text).join(' · ')}
+              </p>
+
               <h1 className="compiler-main-title">
                 <span className="compiler-title-line">
-                  <span className="compiler-title-black-italic">Free</span>{' '}
-                  <span className="compiler-title-orange-italic">Online Compiler</span>{' '}
-                  <span className="compiler-title-black-italic">to</span>
+                  <span className="compiler-title-orange-italic">{HERO.h1.accent}</span>
                 </span>{' '}
                 <span className="compiler-title-line">
-                  <span className="compiler-title-black-italic">Write, Run &amp; Test Code</span>
+                  <span className="compiler-title-black-italic">{HERO.h1.rest}</span>
                 </span>
               </h1>
 
               <p className="compiler-subtitle">
-                Write, compile and run C, C++, Java, Python and JavaScript code in your browser, with custom input with a built-in whiteboard. No installation needed.
+                <strong className="compiler-subtitle-lead">{HERO.sub.lead}</strong> {HERO.sub.rest}
               </p>
             </div>
 
@@ -1053,10 +1123,10 @@ const CompilerPage = () => {
               <button
                 type="button"
                 className="hero-btn-primary"
-                onClick={handleOpenCompiler}
+                onClick={() => { track('oc_hero_cta_click', { cta: 'primary' }); handleOpenCompiler(); }}
                 ref={heroCtaRef}
               >
-                <span>Open Compiler</span>
+                <span>{HERO.primaryCta}</span>
                 <ChevronRight size={15} />
               </button>
 
@@ -1091,8 +1161,43 @@ const CompilerPage = () => {
             </div>
           </div>
 
+          {/* Right column (desktop): minimal product cards */}
+          <div className="hero-visual" aria-hidden="true">
+            <div className="hv-card hv-terminal">
+              <div className="hv-terminal-bar">
+                <span className="hv-dots"><i /><i /><i /></span>
+                <span className="hv-file">main.cpp</span>
+              </div>
+              <pre className="hv-code">
+                <span className="kw">#include</span>{' <iostream>\n'}
+                <span className="kw">int</span>{' main() {\n'}
+                {'  std::cout << '}<span className="str">"Hello"</span>{';\n'}
+                {'}'}<span className="hv-caret" />
+              </pre>
+              <div className="hv-output">
+                <span className="hv-prompt">output:</span>
+                <span className="hv-out-line">Hello</span>
+                <span className="hv-done"><Check size={12} /> Finished</span>
+              </div>
+            </div>
+
+            <div className="hv-card hv-share">
+              <div className="hv-url">
+                <Link2 size={14} />
+                <span className="hv-url-bar" />
+                <span className="hv-copy"><Copy size={12} /> Copy link</span>
+              </div>
+              <div className="hv-access">
+                <span>Anyone with the link</span>
+                <span className="hv-chip">View</span>
+                <span className="hv-chip">Run</span>
+              </div>
+            </div>
+          </div>
+          </div>
+
           {/* ── Compiler mockup: slides up on load, tilts flat on scroll ── */}
-          <div className="hero-mockup-stage" ref={editorRef}>
+          <div className="hero-mockup-stage" ref={editorRef} style={{ '--reveal': 0 }} role="group" aria-label={SEO.heroAlt}>
             <div className="hero-mockup-tilt" ref={heroTiltRef}>
               <div className="compiler-window-frame mockup-frame-non-accessible">
 
@@ -1429,97 +1534,97 @@ const CompilerPage = () => {
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-         SECTION 2: COMPILER CAPABILITIES BENTO GRID
+         SECTION 2: PROBLEM & SOLUTION
          ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-capabilities-section">
+      <section className="compiler-capabilities-section" aria-labelledby="oc-problem-title">
         <div className="capabilities-container">
 
-          <div className="wb-features-row wb-features-row--four compiler-bento-grid">
-
-            {/* Card 1: Access saved files anywhere */}
-            <div className="wb-feature-card bento-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="bento-langs-display-row bento-devices-row">
-                  {[
-                    { name: 'Laptop', Icon: DeviceLaptopIcon },
-                    { name: 'Tablet', Icon: DeviceTabletIcon },
-                    { name: 'Phone', Icon: DevicePhoneIcon }
-                  ].map(({ name, Icon }) => (
-                    <div key={name} className="bento-lang-chip bento-device-chip">
-                      <Icon />
-                      <span className="lang-chip-name">{name}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Access Your Code Anywhere</h3>
-              <p className="wb-feature-desc">Open saved code on any device.</p>
-              <span className="bento-login-note">
-                <CircleAlert size={13} />
-                Login required*
+          <div className="section-head-center">
+            <h2 className="section-title" id="oc-problem-title">
+              <span className="oc-title-line">{PROBLEM.h2.line1}</span>
+              <span className="oc-title-line">
+                <span className="headline-gradient">{PROBLEM.h2.line2Accent}</span> {PROBLEM.h2.line2Rest}
               </span>
-            </div>
+            </h2>
+            <p className="section-subtitle">{PROBLEM.intro}</p>
+          </div>
 
-            {/* Card 2: Compile speed */}
-            <div className="wb-feature-card bento-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="bento-speed-stat-box">
-                  <div className="bento-stat-number-row">
-                    <span className="bento-speed-value">0.08</span>
-                    <span className="bento-speed-unit">s</span>
-                  </div>
-                  <div className="bento-speed-track"><span /></div>
+          <ul className="wb-features-row oc-bento-grid compiler-bento-grid">
+            {PROBLEM.pairs.map((pair) => {
+              const PairVisual = PAIR_VISUALS[pair.id];
+              return (
+              <li key={pair.id} className={`wb-feature-card bento-card oc-bento-card oc-bento--${pair.id}`}>
+                <div className="oc-bento-visual" aria-hidden="true">
+                  <PairVisual />
                 </div>
-              </div>
-              <h3 className="wb-feature-title">Compile Code Instantly</h3>
-              <p className="wb-feature-desc">Run code online in under a second.</p>
-            </div>
+                <p className="oc-pain-quote">&ldquo;{pair.pain}&rdquo;</p>
+                <h3 className="wb-feature-title">{pair.title}</h3>
+                <p className="wb-feature-desc">{pair.body}</p>
+              </li>
+              );
+            })}
+          </ul>
 
-            {/* Card 3: Share code via public link */}
-            <div className="wb-feature-card bento-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="bento-sync-widget">
-                  <span className="bento-sync-icon-pulse">
-                    <Share2 size={16} />
-                  </span>
-                  <div className="bento-sync-text-wrap">
-                    <span className="sync-title">Public Link</span>
-                    <span className="sync-subtitle">Anyone with the link can view</span>
-                  </div>
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Share with Anyone</h3>
-              <p className="wb-feature-desc">Create a public link and share your code with a peer, mentor or interviewer.</p>
-            </div>
-
-            {/* Card 4: Always free */}
-            <div className="wb-feature-card bento-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="bento-speed-stat-box">
-                  <div className="bento-stat-number-row">
-                    <span className="bento-speed-value">₹0</span>
-                    <span className="bento-speed-unit">forever</span>
-                  </div>
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Always Free</h3>
-              <p className="wb-feature-desc">No hidden paywall. Free forever.</p>
-            </div>
-
+          <div className="wb-features-cta">
+            <button type="button" className="hero-btn-primary" onClick={() => handleSectionCta('problem')}>
+              <span>{SECTION_CTA}</span>
+              <ChevronRight size={15} />
+            </button>
           </div>
 
         </div>
       </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 3: HOW IT WORKS & FEATURES
+         ───────────────────────────────────────────────────────────── */}
+      <section className="oc-section" aria-labelledby="oc-how-title">
+        <div className="capabilities-container">
+
+          <div className="section-head-center">
+            <h2 className="section-title" id="oc-how-title">{HOW_IT_WORKS.h2.before} <span className="headline-gradient">{HOW_IT_WORKS.h2.accent}</span>{HOW_IT_WORKS.h2.after ? ` ${HOW_IT_WORKS.h2.after}` : ''}</h2>
+          </div>
+
+          <ol className="wb-features-row oc-steps-grid">
+            {HOW_IT_WORKS.steps.map((step, idx) => {
+              const StepVisual = STEP_VISUALS[idx];
+              return (
+                <li key={step.title} className="wb-feature-card oc-step-card">
+                  <div className="oc-bento-visual oc-step-visual" aria-hidden="true">
+                    <span className="oc-step-badge">{idx + 1}</span>
+                    <StepVisual />
+                  </div>
+                  <h3 className="wb-feature-title">{step.title}</h3>
+                  <p className="wb-feature-desc">{step.body}</p>
+                </li>
+              );
+            })}
+          </ol>
+
+          <div className="wb-features-cta">
+            <button type="button" className="hero-btn-primary" onClick={() => handleSectionCta('how')}>
+              <span>{SECTION_CTA}</span>
+              <ChevronRight size={15} />
+            </button>
+          </div>
+
+        </div>
+      </section>
+
       {/* ─────────────────────────────────────────────────────────────
          SECTION 3: DEDICATED WHITEBOARD MOCKUP (NON-ACCESSIBLE)
          ───────────────────────────────────────────────────────────── */}
-      <section className="whiteboard-mockup-section" ref={whiteboardSectionRef}>
+      <section className="whiteboard-mockup-section" id={SPOTLIGHT.id} ref={whiteboardSectionRef} aria-labelledby="oc-spotlight-title">
         <div className="sandbox-container">
 
           <div className="section-head-center mockup-head-intro">
-            <h2 className="section-title">
-              Practice Coding on an <span className="headline-gradient">Interactive Whiteboard</span>
+            <h2 className="section-title" id="oc-spotlight-title">
+              <span className="oc-title-line">
+                <span className="headline-gradient">{SPOTLIGHT.h2.accent}</span>
+              </span>
+              <span className="oc-title-line">{SPOTLIGHT.h2.rest}</span>
             </h2>
+            <p className="section-subtitle">{SPOTLIGHT.body}</p>
           </div>
 
           <div className="compiler-window-frame mockup-frame-non-accessible">
@@ -1689,123 +1794,145 @@ const CompilerPage = () => {
 
           </div>
 
-          {/* ── Whiteboard feature cards ── */}
-          <div className="wb-features-row">
-
-            {/* Card 1: Split view */}
-            <div className="wb-feature-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="wbf-split">
-                  <div className="wbf-split-pane wbf-split-question">
-                    <span className="wbf-split-label">Question</span>
-                    <span className="wbf-line" style={{ width: '90%' }} />
-                    <span className="wbf-line" style={{ width: '72%' }} />
-                    <span className="wbf-line" style={{ width: '82%' }} />
-                    <span className="wbf-line" style={{ width: '48%' }} />
-                  </div>
-                  <div className="wbf-split-pane wbf-split-board">
-                    <span className="wbf-split-label">Whiteboard</span>
-                    <svg viewBox="0 0 100 44" className="wbf-scribble">
-                      <rect x="6" y="8" width="16" height="14" rx="1" />
-                      <rect x="24" y="8" width="16" height="14" rx="1" />
-                      <rect x="42" y="8" width="16" height="14" rx="1" />
-                      <rect x="60" y="8" width="16" height="14" rx="1" />
-                      <path d="M14 38 L14 26 M10 30 L14 26 L18 30" className="wbf-arrow" />
-                      <path d="M68 38 L68 26 M64 30 L68 26 L72 30" className="wbf-arrow" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Split-Screen Workspace</h3>
-              <p className="wb-feature-desc">
-                Keep the question on the left and sketch your approach on the right. No switching tabs.
-              </p>
-            </div>
-
-            {/* Card 2: Download & share */}
-            <div className="wb-feature-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="wbf-share">
-                  <div className="wbf-file-chip">
-                    <span className="wbf-file-ext">PNG</span>
-                    <span className="wbf-file-name">dry-run.png</span>
-                    <Download size={14} />
-                  </div>
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Download PNG &amp; Share</h3>
-              <p className="wb-feature-desc">
-                Save your dry run as an image and send it to a peer or your students in one click.
-              </p>
-            </div>
-
-            {/* Card 3: Drawing tools */}
-            <div className="wb-feature-card">
-              <div className="wb-feature-visual" aria-hidden="true">
-                <div className="wbf-tools">
-                  <span className="wbf-tool active"><PenTool size={15} /><em>Pen</em></span>
-                  <span className="wbf-tool"><Eraser size={15} /><em>Erase</em></span>
-                  <span className="wbf-tool"><Move size={15} /><em>Move</em></span>
-                  <span className="wbf-tool-divider" />
-                  <span className="wbf-colors">
-                    {['#1E293B', '#3B82F6', '#10B981', '#F97316'].map((c) => (
-                      <span key={c} className="wbf-color" style={{ backgroundColor: c }} />
-                    ))}
-                  </span>
-                </div>
-              </div>
-              <h3 className="wb-feature-title">Every Tool for a Dry Run</h3>
-              <p className="wb-feature-desc">
-                Pen, eraser, move and colors to trace arrays, pointers and recursion step by step.
-              </p>
-            </div>
-
-          </div>
-
-          <div className="wb-features-cta">
-            <button type="button" className="hero-btn-primary" onClick={handleOpenWhiteboard}>
-              <span>Open Whiteboard</span>
-              <ChevronRight size={15} />
-            </button>
-          </div>
-
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-         SEO FAQ ACCORDION
+         SECTION 4: PROOF & CREDIBILITY (renders only permitted data)
          ───────────────────────────────────────────────────────────── */}
-      <section className="compiler-faq-section">
+      {showProof && (
+        <section className="oc-section" aria-labelledby="oc-proof-title">
+          <div className="capabilities-container">
+
+            <div className="section-head-center">
+              <h2 className="section-title" id="oc-proof-title">{PROOF.h2.before} <span className="headline-gradient">{PROOF.h2.accent}</span>{PROOF.h2.after ? ` ${PROOF.h2.after}` : ''}</h2>
+            </div>
+
+            {proofStats.length > 0 && (
+              <ul className="wb-features-row oc-card-grid">
+                {proofStats.map((stat) => (
+                  <li key={stat.label} className="wb-feature-card">
+                    <p className="oc-stat-value">{stat.value}</p>
+                    <p className="wb-feature-desc">{stat.label}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {proofTestimonials.length > 0 && (
+              <div className="oc-feedback-marquee">
+                {/* Rendered twice so the -50% slide loops seamlessly; the copy is hidden from screen readers */}
+                <div className="oc-feedback-track">
+                  {[0, 1].map((copy) => (
+                    <ul key={copy} className="oc-feedback-list" aria-hidden={copy === 1 || undefined}>
+                      {proofTestimonials.map(({ name, org, rating = 5, photo, quote }) => (
+                        <li key={name} className="oc-feedback-card">
+                          <div className="oc-feedback-stars" role="img" aria-label={`Rated ${rating} out of 5`}>
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <Star key={n} size={14} aria-hidden="true" className={n <= rating ? 'is-on' : undefined} />
+                            ))}
+                          </div>
+                          <p className="oc-feedback-quote">{quote}</p>
+                          <div className="oc-feedback-author">
+                            {photo ? (
+                              <img src={photo} alt="" width={40} height={40} loading="lazy" decoding="async" />
+                            ) : (
+                              <span className="oc-feedback-initial" aria-hidden="true">{name.charAt(0)}</span>
+                            )}
+                            <div>
+                              <p className="oc-feedback-name">{name}</p>
+                              <p className="oc-feedback-role">{org}</p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {proofLogos.length > 0 && (
+              <ul className="oc-chip-row">
+                {proofLogos.map((logo) => (
+                  <li key={logo.name}><img src={logo.src} alt={logo.name} className="oc-proof-logo" /></li>
+                ))}
+              </ul>
+            )}
+
+            {!hasProofData && (
+              <p className="section-subtitle">{PROOF.fallback.text}</p>
+            )}
+
+          </div>
+        </section>
+      )}
+
+      {/* ─────────────────────────────────────────────────────────────
+         SECTION 5: VALUE, OBJECTIONS & FAQS
+         ───────────────────────────────────────────────────────────── */}
+      <section className="compiler-faq-section" aria-labelledby="oc-faq-title">
         <div className="faq-container">
-          
+
           <div className="section-head-center">
-            <h2 className="section-title">
-              Online Compiler <span className="headline-gradient">FAQs</span>
-            </h2>
+            <h2 className="section-title" id="oc-faq-title">{FAQ.h2.before} <span className="headline-gradient">{FAQ.h2.accent}</span>{FAQ.h2.after ? ` ${FAQ.h2.after}` : ''}</h2>
           </div>
 
+          {(PRICING.show || visibleObjections.length > 0) && (
+            <div className="oc-value-block">
+              {PRICING.show && (
+                <>
+                  <h3 className="wb-feature-title">{PRICING.h3}</h3>
+                  <p className="wb-feature-desc">{PRICING.body}</p>
+                </>
+              )}
+              {visibleObjections.length > 0 && (
+                <dl className="oc-objections">
+                  {visibleObjections.map((o) => (
+                    <div key={o.id}>
+                      <dt>{o.q}</dt>
+                      <dd>{o.a}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+            </div>
+          )}
+
           <div className="faq-accordion-wrap">
-            {FAQ_ITEMS.map((item, idx) => {
-              const isOpen = openFaq === idx;
+            {visibleFaqs.map((item) => {
+              const isOpen = openFaq === item.id;
               return (
-                <div 
-                  key={idx} 
+                <div
+                  key={item.id}
                   className={`faq-accordion-item ${isOpen ? 'open' : ''}`}
                 >
-                  <button
-                    type="button"
-                    className="faq-question-btn"
-                    onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    aria-expanded={isOpen}
-                  >
-                    <span className="faq-question-text">{item.q}</span>
-                    <span className="faq-toggle-icon">
-                      {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </span>
-                  </button>
+                  <h3 className="faq-question-heading">
+                    <button
+                      type="button"
+                      className="faq-question-btn"
+                      onClick={() => {
+                        if (!isOpen) track('oc_faq_open', { question_id: item.id });
+                        setOpenFaq(isOpen ? null : item.id);
+                      }}
+                      aria-expanded={isOpen}
+                      aria-controls={`oc-faq-panel-${item.id}`}
+                      id={`oc-faq-btn-${item.id}`}
+                    >
+                      <span className="faq-question-text">{item.q}</span>
+                      <span className="faq-toggle-icon" aria-hidden="true">
+                        {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </span>
+                    </button>
+                  </h3>
 
                   {isOpen && (
-                    <div className="faq-answer-content animate-fade-in">
+                    <div
+                      className="faq-answer-content animate-fade-in"
+                      id={`oc-faq-panel-${item.id}`}
+                      role="region"
+                      aria-labelledby={`oc-faq-btn-${item.id}`}
+                    >
                       <p>{item.a}</p>
                     </div>
                   )}
@@ -1817,7 +1944,6 @@ const CompilerPage = () => {
         </div>
       </section>
 
-
       {/* ── Floating CTA & Keyboard Shortcut Dock (When Scrolled) ── */}
       <div 
         className={`compiler-floating-cta-dock ${showFloatingCta ? 'visible' : ''}`}
@@ -1828,9 +1954,9 @@ const CompilerPage = () => {
             type="button"
             className="floating-btn-primary"
             onClick={handleOpenCompiler}
-            aria-label="Open Online Compiler"
+            aria-label={FINAL_CTA.cta}
           >
-            <span>Open Compiler</span>
+            <span>{FINAL_CTA.cta}</span>
             <ChevronRight size={15} />
           </button>
 

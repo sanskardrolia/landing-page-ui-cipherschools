@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { 
   ShieldCheck, 
   UploadCloud, 
@@ -26,7 +26,6 @@ import {
   Filter,
   Flame,
   ArrowUpRight,
-  ChevronRight,
   Cpu,
   Zap,
   Play,
@@ -159,15 +158,16 @@ const AtsCheckerPage = () => {
   }, []);
 
   // ── Main Page State Machine ──
-  // 'MODE_SELECTION' = Standalone mode selection screen (Resume Only vs JD + Resume)
   // 'UPLOAD' = Standalone document upload workstation
   // 'ANIMATING' = AI Orb multi-stage processing pipeline
   // 'REPORT' = Standalone comprehensive ATS report page
-  // ?mode=resume | ?mode=jd (from the landing page) skips the mode screen
+  // ?mode=resume | ?mode=jd (from the landing page) picks the mode; default is resume only
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const incomingFile = location.state?.file || null; // file dropped on the landing page
   const modeParam = searchParams.get('mode');
-  const presetMode = modeParam === 'jd' ? 'JD_RESUME' : modeParam === 'resume' ? 'RESUME_ONLY' : null;
-  const [viewState, setViewState] = useState(presetMode ? 'UPLOAD' : 'MODE_SELECTION');
+  const presetMode = modeParam === 'jd' ? 'JD_RESUME' : modeParam === 'resume' ? 'RESUME_ONLY' : incomingFile ? 'RESUME_ONLY' : null;
+  const [viewState, setViewState] = useState('UPLOAD');
 
   // Selected analysis mode: 'RESUME_ONLY' (NO_JD) | 'JD_RESUME' (WITH_JD)
   const [selectedMode, setSelectedMode] = useState(presetMode || 'RESUME_ONLY');
@@ -421,26 +421,7 @@ const AtsCheckerPage = () => {
     }
   };
 
-  // Switch Mode handler: sets selected mode without leaving screen immediately
-  const handleSelectMode = (mode) => {
-    setSelectedMode(mode);
-    setErrorMessage('');
-  };
-
-  // Continue CTA handler: advances to upload workstation
-  const handleContinueFromSelection = (mode = selectedMode) => {
-    setSelectedMode(mode);
-    setErrorMessage('');
-    setViewState('UPLOAD');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (mode === 'RESUME_ONLY') {
-      showToast('Mode: Upload Your Resume');
-    } else {
-      showToast('Mode: Upload JD + Resume Match');
-    }
-  };
-
-  // Helper to process uploaded file (PDF / DOCX) with animated verification
+  // Helper to process uploaded file (PDF) with animated verification
   const processUploadedFile = (file) => {
     if (!file) return;
 
@@ -450,9 +431,11 @@ const AtsCheckerPage = () => {
     }
 
     const nameLower = file.name.toLowerCase();
-    const isDocx = nameLower.endsWith('.docx') || nameLower.endsWith('.doc');
-    const isPdf = nameLower.endsWith('.pdf');
-    const format = isPdf ? 'pdf' : (isDocx ? 'docx' : 'pdf');
+    if (!nameLower.endsWith('.pdf')) {
+      setErrorMessage('Only PDF files are supported. Please upload your resume as a PDF.');
+      return;
+    }
+    const format = 'pdf';
     const formattedSize = file.size ? formatFileSize(file.size) : '142 KB';
 
     setUploadedFile(file);
@@ -537,6 +520,14 @@ const AtsCheckerPage = () => {
       }
     }, 35);
   };
+
+  // A file handed over from the landing page is verified straight away
+  useEffect(() => {
+    if (!incomingFile) return;
+    processUploadedFile(incomingFile);
+    navigate(location.pathname + location.search, { replace: true, state: null });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // File Upload Handler via file input
   const handleFileUpload = (e) => {
@@ -665,7 +656,7 @@ const AtsCheckerPage = () => {
       <input 
         type="file" 
         ref={fileInputRef} 
-        accept=".pdf,.docx,.doc" 
+        accept=".pdf" 
         onChange={handleFileUpload} 
         style={{ display: 'none' }} 
       />
@@ -684,131 +675,6 @@ const AtsCheckerPage = () => {
 
       <div className="ats-checker-container">
         
-        {/* ── Breadcrumb Navigation (hidden while the scan runs) ── */}
-        {viewState !== 'ANIMATING' && (
-        <div className="ats-breadcrumbs">
-          <Link to="/" className="breadcrumb-link">Home</Link>
-          <ChevronRight size={13} className="breadcrumb-sep" />
-          <Link to="/resume" className="breadcrumb-link">Resume Builder</Link>
-          <ChevronRight size={13} className="breadcrumb-sep" />
-          <span className="breadcrumb-current">ATS Checker Engine</span>
-        </div>
-        )}
-
-        {/* =========================================================================
-            VIEW 1: STANDALONE MODE SELECTION SCREEN (Google / CipherSchools Style)
-            ========================================================================= */}
-        {viewState === 'MODE_SELECTION' && (
-          <div className="ats-mode-selection-view animate-fade-in">
-            
-            {/* Minimal Hero Header */}
-            <section className="am-hero">
-              <h1 className="am-title">
-                Check your <span className="am-title-pill">ATS score</span>
-              </h1>
-              <p className="am-sub">Pick how you want your resume checked to get started.</p>
-            </section>
-
-            <div className="am-options">
-              {[
-                {
-                  mode: 'RESUME_ONLY',
-                  tag: 'Quick check',
-                  title: 'Resume only',
-                  desc: 'See how well applicant tracking systems can read your resume.',
-                  points: ['Layout & formatting', 'Action verbs & metrics', 'Section-by-section fixes']
-                },
-                {
-                  mode: 'JD_RESUME',
-                  tag: 'Best for applying',
-                  title: 'Resume + job description',
-                  desc: 'Match your resume to a specific job and find missing keywords.',
-                  points: ['Keyword & skill gaps', 'Role match score', 'What to add and where']
-                }
-              ].map(opt => {
-                const openMode = () => handleContinueFromSelection(opt.mode);
-                return (
-                  <div
-                    key={opt.mode}
-                    className="am-option"
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${opt.title}: ${opt.desc}`}
-                    onClick={openMode}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        openMode();
-                      }
-                    }}
-                  >
-                    <span className="am-go" aria-hidden="true"><ArrowRight size={16} /></span>
-
-                    {/* Illustration */}
-                    <div className="am-art" aria-hidden="true">
-                      {opt.mode === 'RESUME_ONLY' ? (
-                        <div className="am-sheet">
-                          <span className="am-l am-l--name" />
-                          <span className="am-l am-l--meta" />
-                          <span className="am-l am-l--h" />
-                          <span className="am-l" />
-                          <span className="am-l am-l--short" />
-                          <span className="am-l am-l--h" />
-                          <span className="am-l" />
-                          <span className="am-l am-l--short" />
-                          <span className="am-badge am-badge--score">
-                            <CheckCircle2 size={11} /> 92
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="am-pair">
-                          <div className="am-sheet am-sheet--sm">
-                            <span className="am-l am-l--name" />
-                            <span className="am-l am-l--h" />
-                            <span className="am-l" />
-                            <span className="am-l am-l--short" />
-                            <span className="am-l am-l--h" />
-                            <span className="am-l" />
-                          </div>
-                          <span className="am-link" />
-                          <div className="am-sheet am-sheet--sm am-sheet--jd">
-                            <span className="am-jd-icon"><Briefcase size={11} /></span>
-                            <span className="am-l am-l--meta" />
-                            <span className="am-chip-row">
-                              <span className="am-chip is-hit" />
-                              <span className="am-chip is-hit" />
-                              <span className="am-chip is-miss" />
-                            </span>
-                            <span className="am-l" />
-                            <span className="am-l am-l--short" />
-                          </div>
-                          <span className="am-badge am-badge--match">87% match</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="am-body">
-                      <span className="am-tag">{opt.tag}</span>
-                      <h3 className="am-option-title">{opt.title}</h3>
-                      <p className="am-option-desc">{opt.desc}</p>
-                      <ul className="am-points">
-                        {opt.points.map(pt => (
-                          <li key={pt}><Check size={14} /><span>{pt}</span></li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="am-cta">
-              <p className="am-note">Free · Takes about 10 seconds</p>
-            </div>
-
-          </div>
-        )}
-
         {/* =========================================================================
             VIEW 2: STANDALONE DOCUMENT UPLOAD SCREEN
             ========================================================================= */}
@@ -820,14 +686,10 @@ const AtsCheckerPage = () => {
               <button 
                 type="button" 
                 className="upload-back-btn"
-                onClick={() => {
-                  setErrorMessage('');
-                  setViewState('MODE_SELECTION');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onClick={() => navigate('/resume/ats-checker')}
               >
                 <ArrowLeft size={15} />
-                <span>Back to Mode Selection</span>
+                <span>Back</span>
               </button>
 
               <div className="upload-mode-indicator">
@@ -877,7 +739,7 @@ const AtsCheckerPage = () => {
                           <FileText size={16} style={{ color: '#ffa103' }} />
                           <h4>Resume Document</h4>
                         </div>
-                        <span className="card-pill-tag">PDF / DOCX</span>
+                        <span className="card-pill-tag">PDF</span>
                       </div>
 
                       {/* Compact Dropzone with Animated In-Flight & Ready States */}
@@ -896,7 +758,7 @@ const AtsCheckerPage = () => {
                           const file = e.dataTransfer?.files?.[0];
                           if (file) processUploadedFile(file);
                         }}
-                        title={uploadStatus === 'uploading' ? 'Uploading document...' : 'Click to choose or drop resume file (PDF/DOCX)'}
+                        title={uploadStatus === 'uploading' ? 'Uploading document...' : 'Click to choose or drop resume file (PDF)'}
                       >
                         {uploadStatus === 'uploading' ? (
                           <div className="dropzone-uploading-state animate-fade-in">
@@ -1009,40 +871,46 @@ const AtsCheckerPage = () => {
                       </div>
                     </div>
 
-                    {/* Right: Minimal Important ATS Checklist Card */}
-                    <div className="upload-guidelines-bento-card minimal-checklist-card">
-                      <div className="guidelines-card-head">
-                        <div className="guidelines-card-title">
-                          <ShieldCheck size={16} className="guidelines-icon-amber" />
-                          <h5>Important ATS Rules</h5>
-                        </div>
+                    {/* Right: tips card, same pattern as the JD screen */}
+                    <aside className="jd-rules-side" aria-label="Tips for a better ATS score">
+                      <div className="jd-rules-head">
+                        <ShieldCheck size={16} />
+                        <h5>Get a better score</h5>
                       </div>
 
-                      <ul className="guidelines-checklist-list">
-                        <li>
-                          <CheckCircle2 size={15} className="checklist-check-icon" />
-                          <span>Single-column format without tables or text boxes</span>
-                        </li>
-                        <li>
-                          <CheckCircle2 size={15} className="checklist-check-icon" />
-                          <span>Clean selectable text in PDF or DOCX format</span>
-                        </li>
-                        <li>
-                          <CheckCircle2 size={15} className="checklist-check-icon" />
-                          <span>Standard section headings: Experience, Skills, Education</span>
-                        </li>
-                        <li>
-                          <CheckCircle2 size={15} className="checklist-check-icon" />
-                          <span>Contact details placed in main document body</span>
-                        </li>
+                      <ul className="jd-rules-list">
+                        {[
+                          { done: uploadStatus === 'ready', title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
+                          { done: null, title: 'Put contact details in the body', body: 'Headers and footers are often skipped.' }
+                        ].map(({ done, title, body }) => (
+                          <li key={title} className={done ? 'is-done' : undefined}>
+                            <span className="jd-rule-mark" aria-hidden="true">
+                              {done ? <Check size={12} /> : null}
+                            </span>
+                            <div>
+                              <strong>{title}</strong>
+                              <p>{body}</p>
+                            </div>
+                          </li>
+                        ))}
                       </ul>
-                    </div>
+
+                      <div className="jd-rules-foot">
+                        <span className="jd-rules-foot-label">You will get</span>
+                        <div className="jd-rules-chips">
+                          <span>ATS score</span>
+                          <span>Section check</span>
+                          <span>Ranked fixes</span>
+                        </div>
+                      </div>
+                    </aside>
 
                   </div>
                 ) : (
                   /* ── JD + Resume Mode: Compact Inputs + Bottom Guidelines Strip ── */
                   <div className="jd-resume-upload-wrapper">
                     
+                    <div className="jd-left-col">
                     <div className="workstation-inputs-layout two-cols compact-layout">
                       {/* Left: Compact Resume Upload Card */}
                       <div className="workstation-card compact-card">
@@ -1051,7 +919,7 @@ const AtsCheckerPage = () => {
                             <FileText size={16} style={{ color: '#ffa103' }} />
                             <h4>Resume Document</h4>
                           </div>
-                          <span className="card-pill-tag">PDF / DOCX</span>
+                          <span className="card-pill-tag">PDF</span>
                         </div>
 
                         {/* Compact Dropzone with Animated States */}
@@ -1070,7 +938,7 @@ const AtsCheckerPage = () => {
                             const file = e.dataTransfer?.files?.[0];
                             if (file) processUploadedFile(file);
                           }}
-                          title={uploadStatus === 'uploading' ? 'Uploading document...' : 'Click to choose or drop resume file (PDF/DOCX)'}
+                          title={uploadStatus === 'uploading' ? 'Uploading document...' : 'Click to choose or drop resume file (PDF)'}
                         >
                           {uploadStatus === 'uploading' ? (
                             <div className="dropzone-uploading-state animate-fade-in">
@@ -1221,34 +1089,43 @@ const AtsCheckerPage = () => {
                       </button>
                     </div>
 
-                    {/* Bottom Guidelines Strip for JD Match */}
-                    <div className="upload-guidelines-bento-strip minimal-checklist-strip">
-                      <div className="guidelines-card-head">
-                        <div className="guidelines-card-title">
-                          <Target size={16} className="guidelines-icon-blue" />
-                          <h5>Important JD Match Rules</h5>
-                        </div>
+                    </div>
+
+                    {/* Right: JD match rules */}
+                    <aside className="jd-rules-side" aria-label="Tips for a better JD match">
+                      <div className="jd-rules-head">
+                        <Target size={16} />
+                        <h5>Get a better match</h5>
                       </div>
 
-                      <div className="guidelines-strip-grid">
-                        <div className="guidelines-strip-item minimal-item">
-                          <CheckCircle2 size={14} className="checklist-check-icon blue" />
-                          <span>Full job description (minimum 200 characters)</span>
-                        </div>
-                        <div className="guidelines-strip-item minimal-item">
-                          <CheckCircle2 size={14} className="checklist-check-icon blue" />
-                          <span>Contextual skill proof inside experience bullets</span>
-                        </div>
-                        <div className="guidelines-strip-item minimal-item">
-                          <CheckCircle2 size={14} className="checklist-check-icon blue" />
-                          <span>Technical keywords and framework aliases</span>
-                        </div>
-                        <div className="guidelines-strip-item minimal-item">
-                          <CheckCircle2 size={14} className="checklist-check-icon blue" />
-                          <span>Required vs preferred competency alignment</span>
+                      <ul className="jd-rules-list">
+                        {[
+                          { done: jobDescription.trim().length >= 200, title: 'Paste the full job post', body: 'Include responsibilities and requirements, not just the title.' },
+                          { done: uploadStatus === 'ready', title: 'Upload a text-based PDF', body: 'Scanned images cannot be read by an ATS.' },
+                          { done: null, title: 'Show skills in your bullets', body: 'A skill used in a project counts more than one in a list.' },
+                          { done: null, title: 'Use the job post\'s own words', body: 'Write "React.js" if the post says "React.js".' }
+                        ].map(({ done, title, body }) => (
+                          <li key={title} className={done ? 'is-done' : undefined}>
+                            <span className="jd-rule-mark" aria-hidden="true">
+                              {done ? <Check size={12} /> : null}
+                            </span>
+                            <div>
+                              <strong>{title}</strong>
+                              <p>{body}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="jd-rules-foot">
+                        <span className="jd-rules-foot-label">You will get</span>
+                        <div className="jd-rules-chips">
+                          <span>Keyword match</span>
+                          <span>Missing skills</span>
+                          <span>Ranked fixes</span>
                         </div>
                       </div>
-                    </div>
+                    </aside>
 
                   </div>
                 )}
@@ -1377,7 +1254,7 @@ const AtsCheckerPage = () => {
             ...sections.filter(sec => !(sec.hasConcern || sec.topIssue))
           ];
           const resetToModeSelection = () => {
-            setViewState('MODE_SELECTION');
+            setViewState('UPLOAD');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           };
 
