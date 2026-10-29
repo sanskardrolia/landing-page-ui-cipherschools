@@ -556,7 +556,7 @@ const AtsLandingPage = () => {
       <section className="rs-section" aria-labelledby="rs-ats-sample-title">
         <div className="rs-section-head">
           <h2 className="rs-section-title" id="rs-ats-sample-title">
-            Other ATS checkers make you pay.<br /> We show your report <span className="rs-accent-text">for FREE</span>
+            Many ATS checkers lock the full report. We show yours <span className="rs-accent-text">for FREE</span>.
           </h2>
           <p className="rs-section-sub">No paywall, no locked sections. See your full score and every fix.</p>
         </div>

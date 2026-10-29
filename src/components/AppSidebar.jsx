@@ -6,6 +6,7 @@ import {
   RiGiftFill,
   RiDashboardFill,
   RiFileUserFill,
+  RiFileSearchFill,
   RiPresentationFill
 } from 'react-icons/ri';
 import './AppSidebar.css';
@@ -111,6 +112,17 @@ const NAV_ITEMS = [
     cardTags: ['ATS Templates', 'ATS Checker', 'PDF Export']
   },
   { 
+    id: 'ats', 
+    label: 'ATS Checker', 
+    badge: 'FREE',
+    Icon: RiFileSearchFill, 
+    path: '/resume/ats-checker',
+    cardBadge: 'FREE ACCESS',
+    cardTitle: 'Free ATS Checker',
+    cardDesc: 'Upload your resume, optionally add a job description, and get a full ATS score with keyword gaps and prioritized fixes.',
+    cardTags: ['ATS Score', 'Keyword Match', 'Fix Suggestions']
+  },
+  { 
     id: 'compiler', 
     label: 'Compiler', 
     badge: 'FREE',
@@ -209,6 +221,8 @@ const AppSidebar = () => {
       setActiveId('premium');
     } else if (location.pathname === '/feedback') {
       setActiveId('feedback');
+    } else if (location.pathname.startsWith('/resume/ats-checker')) {
+      setActiveId('ats');
     } else if (location.pathname.startsWith('/resume')) {
       setActiveId('resume');
     } else if (location.pathname === '/online-compiler') {
@@ -223,6 +237,7 @@ const AppSidebar = () => {
       else if (location.pathname === '/courses') setActiveId('courses');
       else if (location.pathname === '/premium') setActiveId('premium');
       else if (location.pathname === '/online-compiler') setActiveId('compiler');
+      else if (location.pathname.startsWith('/resume/ats-checker')) setActiveId('ats');
       else if (location.pathname.startsWith('/resume')) setActiveId('resume');
       else if (location.pathname === '/login') setActiveId('dashboard');
     };

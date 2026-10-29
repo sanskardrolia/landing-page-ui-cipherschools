@@ -999,7 +999,7 @@ const CompilerPage = () => {
   const [isWhiteboardInView, setIsWhiteboardInView] = useState(false);
   const [wbPhase, setWbPhase] = useState('idle'); // 'idle' | 'delay' | 'drawing_text' | 'complete'
   const [wbText, setWbText] = useState('');
-  const targetWbText = 'Explain as you debug / dry run on white board';
+  const targetWbText = 'Dry-run your code on the whiteboard';
 
   // Active scroll check for Whiteboard section: strictly only functional when scrolled to that section
   useEffect(() => {
@@ -1115,7 +1115,7 @@ const CompilerPage = () => {
               </h1>
 
               <p className="compiler-subtitle">
-                <strong className="compiler-subtitle-lead">{HERO.sub.lead}</strong> {HERO.sub.rest}
+                {HERO.sub}
               </p>
             </div>
 

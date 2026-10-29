@@ -4083,11 +4083,6 @@ ol.wb-features-row {
   color: #0F172A;
 }
 
-.compiler-subtitle-lead {
-  color: #0F172A;
-  font-weight: 700;
-}
-
 /* ── Feedback marquee (same pattern as the resume page) ── */
 .oc-feedback-marquee {
   width: 100%;

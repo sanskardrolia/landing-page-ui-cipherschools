@@ -42,8 +42,8 @@
 
 .rs-am-go {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  bottom: 24px;
+  right: 24px;
   display: grid;
   place-items: center;
   width: 32px;
@@ -161,7 +161,7 @@
 }
 
 .rs-am-body {
-  padding: 22px 24px 24px;
+  padding: 22px 72px 24px 24px; /* right gutter keeps text clear of the arrow */
 }
 
 .rs-am-tag {

@@ -25,10 +25,7 @@ export const SEO = {
 
 export const HERO = {
   h1: { accent: 'Online Compiler', rest: 'with a Built-in Whiteboard' },
-  sub: {
-    lead: 'For anyone who wants to write and run code online without any setup.',
-    rest: "It's free, runs in your browser, and needs no installs. Just write, run, save and share."
-  },
+  sub: "Write and run C, C++, Java, Python and JavaScript online. It's free, runs in your browser and needs no installs.",
   primaryCta: 'Start Coding Free',
   microcopy: [
     { text: 'No download needed', show: true },
@@ -55,7 +52,7 @@ export const PROBLEM = {
     {
       id: 'multifile',
       pain: "Real programs don't fit in one file.",
-      title: 'Multi-File.',
+      title: 'Multi-file projects.',
       body: 'Create, save, and run multiple code files.'
     },
     {

@@ -12,6 +12,8 @@ import {
   ChevronUp,
   Download,
   Eye,
+  FileText,
+  ScanSearch,
   FolderGit2,
   GraduationCap,
   ListPlus,
@@ -65,6 +67,42 @@ const SECTIONS = [
   { key: 'certifications', label: 'Certifications', icon: Award, hint: 'Courses and certificates worth showing.' },
   { key: 'additional', label: 'Additional', icon: ListPlus, hint: 'Any other section, with your own heading.' },
 ];
+
+// Sections that must be filled before the in-editor ATS check unlocks
+const ATS_MIN_SECTIONS = 6;
+const ATS_MIN_JD_CHARS = 200;
+
+// The builder exports a real-text PDF, so the file checks are known; only the layout depends on the template
+const builderDocMetrics = (data, template) => {
+  const dated = [...data.education.map((e) => e.gradYear), ...data.experience.map((e) => e.startDate)];
+  const months = data.experience.reduce((sum, e) => {
+    const [sy, sm] = (e.startDate || '').split('-').map(Number);
+    if (!sy) return sum;
+    const now = new Date();
+    const [ey, em] = e.current || !e.endDate ? [now.getFullYear(), now.getMonth() + 1] : e.endDate.split('-').map(Number);
+    return sum + Math.max(0, (ey - sy) * 12 + ((em || 1) - (sm || 1)));
+  }, 0);
+  return {
+    file_format: 'pdf',
+    has_text_layer: true,
+    column_count: template === 'modern' ? 2 : 1,
+    table_count: 0,
+    text_box_count: 0,
+    header_footer_contact: false,
+    headings_recognized: true,
+    headings_unknown_count: 0,
+    date_format_consistent: true,
+    dated_items_ratio: dated.length ? dated.filter(Boolean).length / dated.length : 1,
+    has_images: false,
+    has_icons: false,
+    parse_rate: 1,
+    has_unreadable_chars: false,
+    months_of_experience: months,
+    page_count: 1,
+    has_sensitive_info: false,
+    language_issues_count: 0,
+  };
+};
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const THIS_YEAR = new Date().getFullYear();
@@ -298,6 +336,14 @@ const ResumeBuilderPage = () => {
     return pending.length > 0;
   });
   const [sectionGlow, setSectionGlow] = useState(null);
+
+  /* ── In-editor ATS check (building from scratch: no download / re-upload needed) ── */
+  const [checkOpen, setCheckOpen] = useState(false);
+  const [checkMode, setCheckMode] = useState('resume'); // 'resume' | 'jd'
+  const [jdText, setJdText] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [checkError, setCheckError] = useState('');
+  const [nudgeDismissed, setNudgeDismissed] = useState(false);
   const [showAllFixes, setShowAllFixes] = useState(false);
   const atsCtx = handoff ? { docMetrics: handoff.docMetrics, jd: handoff.jd, meta: handoff.meta } : null;
   const analysis = useMemo(
@@ -467,6 +513,40 @@ const ResumeBuilderPage = () => {
     return () => { cancelAnimationFrame(raf); clearTimeout(t); };
   }, [panelFlash]);
 
+  const closeCheck = () => { setCheckOpen(false); setCheckError(''); };
+
+  const runBuilderCheck = () => {
+    const useJd = checkMode === 'jd';
+    const jd = useJd ? jdText.trim() : '';
+    if (useJd && jd.length < ATS_MIN_JD_CHARS) {
+      setCheckError(`Paste the full job description (at least ${ATS_MIN_JD_CHARS} characters) so keywords can be matched.`);
+      return;
+    }
+    const ctx = { docMetrics: builderDocMetrics(resume, template), jd, meta: useJd ? jobTitle.trim() : '' };
+    const first = scoreBuilder(resume, ctx);
+    if (first.error) {
+      setCheckError(first.error.message);
+      return;
+    }
+    const next = {
+      createdAt: Date.now(),
+      reportScore: first.overall.score,
+      mode: first.overall.mode,
+      jd,
+      meta: ctx.meta,
+      docMetrics: ctx.docMetrics,
+      source: 'builder',
+      initialFixes: deriveFixes(first),
+      initialPillars: Object.fromEntries(PILLAR_LABELS.map((pl) => [pl.key, first.cards[pl.key].score])),
+    };
+    writeHandoff(next);
+    setHandoff(next);
+    setShowAllFixes(false);
+    setFixesOpen(true);
+    setPanelFlash(Date.now());
+    closeCheck();
+  };
+
   // Accordion: one section open at a time keeps the editor short
   const goTo = (i) => {
     if (i < 0 || i >= SECTIONS.length) return;
@@ -503,6 +583,15 @@ const ResumeBuilderPage = () => {
   }), [resume]);
 
   const doneCount = Object.values(done).filter(Boolean).length;
+  const atsReady = doneCount >= ATS_MIN_SECTIONS;
+  const atsRemaining = ATS_MIN_SECTIONS - doneCount;
+
+  // Locked: take the user to the next empty section instead of a dead button
+  const openAtsCheck = () => {
+    if (atsReady) { setCheckOpen(true); return; }
+    const next = SECTIONS.findIndex((sec) => !done[sec.key]);
+    if (next >= 0) goTo(next);
+  };
 
   // What a collapsed section shows under its title
   const summaries = useMemo(() => {
@@ -830,9 +919,16 @@ const ResumeBuilderPage = () => {
           </>
         );
       })()}
-      <button type="button" className="rb-fixes-close" onClick={hideAts}>
-        Hide panel <span>· bring it back from your ATS score</span>
-      </button>
+      <div className="rb-fixes-foot">
+        <button type="button" className="rb-fixes-close" onClick={hideAts}>
+          Hide panel <span>· bring it back from your ATS score</span>
+        </button>
+        {handoff.source === 'builder' && (
+          <button type="button" className="rb-fixes-close" onClick={() => { setCheckMode(handoff.mode === 'WITH_JD' ? 'jd' : 'resume'); setCheckOpen(true); }}>
+            Re-check <span>· change job description</span>
+          </button>
+        )}
+      </div>
     </section>
   );
 
@@ -855,7 +951,15 @@ const ResumeBuilderPage = () => {
                   ))}
                 </select>
               </label>
-              {scoreChip}
+              {scoreChip || (
+                <button type="button" className={`rb-ats-cta ${atsReady ? 'is-ready' : ''}`} onClick={openAtsCheck}
+                  aria-disabled={!atsReady}
+                  title={atsReady ? 'Score this resume for ATS' : `Fill ${atsRemaining} more ${atsRemaining === 1 ? 'section' : 'sections'} to unlock`}>
+                  <ScanSearch size={15} />
+                  <span>Check ATS score</span>
+                  {!atsReady && <em>{doneCount}/{ATS_MIN_SECTIONS}</em>}
+                </button>
+              )}
             </div>
             <p className="rb-editor-progress">
               <span className="rb-progress-track" aria-hidden="true">
@@ -864,6 +968,20 @@ const ResumeBuilderPage = () => {
               {doneCount} of {SECTIONS.length} sections filled
             </p>
           </div>
+
+          {atsReady && !handoff && !nudgeDismissed && (
+            <div className="rb-nudge" role="region" aria-label="ATS check">
+              <span className="rb-nudge-icon" aria-hidden="true"><ScanSearch size={18} /></span>
+              <div className="rb-nudge-text">
+                <strong>Your resume is ready for an ATS check</strong>
+                <span>Get your score and fixes right here. No download or upload needed.</span>
+              </div>
+              <button type="button" className="rb-btn rb-btn--primary rb-btn--sm" onClick={() => setCheckOpen(true)}>Check now</button>
+              <button type="button" className="rb-icon-btn" onClick={() => setNudgeDismissed(true)} aria-label="Dismiss">
+                <X size={16} />
+              </button>
+            </div>
+          )}
 
           <div className="rb-acc-list">
             {SECTIONS.map((sec, i) => {
@@ -985,6 +1103,57 @@ const ResumeBuilderPage = () => {
           <div className="rb-sheet-body">
             <div className="rb-preview-paper">
               <ScaledPage fit={false}><Template data={resume} fit={false} /></ScaledPage>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── ATS check setup ── */}
+      {checkOpen && (
+        <div className="rb-modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) closeCheck(); }}>
+          <div className="rb-modal" role="dialog" aria-modal="true" aria-labelledby="rb-check-title">
+            <div className="rb-modal-head">
+              <h2 id="rb-check-title">Check your ATS score</h2>
+              <button type="button" className="rb-icon-btn" onClick={closeCheck} aria-label="Close"><X size={18} /></button>
+            </div>
+            <p className="rb-modal-sub">We score the resume you just built. Pick what to check it against.</p>
+
+            <div className="rb-mode-grid" role="radiogroup" aria-label="Check type">
+              <button type="button" role="radio" aria-checked={checkMode === 'resume'}
+                className={`rb-mode ${checkMode === 'resume' ? 'is-on' : ''}`} onClick={() => { setCheckMode('resume'); setCheckError(''); }}>
+                <FileText size={18} />
+                <strong>Resume only</strong>
+                <span>Formatting, structure and impact.</span>
+              </button>
+              <button type="button" role="radio" aria-checked={checkMode === 'jd'}
+                className={`rb-mode ${checkMode === 'jd' ? 'is-on' : ''}`} onClick={() => { setCheckMode('jd'); setCheckError(''); }}>
+                <Target size={18} />
+                <strong>Resume + Job description</strong>
+                <span>Adds keyword match for one role.</span>
+              </button>
+            </div>
+
+            {checkMode === 'jd' && (
+              <div className="rb-modal-jd">
+                <Field label="Job title (optional)">
+                  <TextInput value={jobTitle} onChange={setJobTitle} placeholder="e.g. Frontend Developer" />
+                </Field>
+                <Field label="Job description" hint={`${jdText.trim().length} / ${ATS_MIN_JD_CHARS} characters minimum`}>
+                  <textarea className="rb-textarea" rows={6} value={jdText}
+                    onChange={(e) => { setJdText(e.target.value); setCheckError(''); }}
+                    placeholder="Paste the job description here" />
+                </Field>
+              </div>
+            )}
+
+            {checkError && <p className="rb-modal-error" role="alert">{checkError}</p>}
+
+            <div className="rb-modal-foot">
+              <button type="button" className="rb-btn rb-btn--ghost" onClick={closeCheck}>Cancel</button>
+              <button type="button" className="rb-btn rb-btn--primary" onClick={runBuilderCheck}>
+                <ScanSearch size={16} />
+                <span>Run ATS check</span>
+              </button>
             </div>
           </div>
         </div>

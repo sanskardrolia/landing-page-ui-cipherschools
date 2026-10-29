@@ -55,7 +55,7 @@ const ResumeTemplatesPage = () => {
 
         <div className="rs-section-head">
           <h1 className="rs-section-title">
-            Start from a <span className="rs-accent-text">proven template</span>
+            Free <span className="rs-accent-text">ATS-Friendly</span> Resume Templates
           </h1>
           <p className="rs-section-sub">
             Three layouts tested against leading applicant tracking systems. Each one orders your sections for the stage you're at.

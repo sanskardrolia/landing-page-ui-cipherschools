@@ -131,9 +131,8 @@ const ResumePage = () => {
       {/* ── HERO ── */}
       <section className="rs-hero">
         <div className="rs-hero-copy">
-          <span className="rs-hero-badge">100% Free with ATS Checker</span>
           <h1 className="rs-hero-title">
-            <span className="rs-hero-line rs-hero-accent"><span className="rs-hero-ink">Online</span> Resume Builder</span>{' '}
+            <span className="rs-hero-line rs-hero-accent"><span className="rs-hero-ink">Free Online</span> Resume Builder</span>{' '}
             <span className="rs-hero-line">for Students &amp; Professionals</span>
           </h1>
 
@@ -240,7 +239,7 @@ const ResumePage = () => {
       <section className="rs-section" aria-labelledby="rs-hve-title">
         <div className="rs-section-head">
           <h2 className="rs-section-title" id="rs-hve-title">
-            Other resume builders make you hustle.<br /> We make you <span className="rs-accent-text">apply at ease</span>
+            A <span className="rs-accent-text">Free Resume Builder</span> That Keeps You Focused on Your Job Search
           </h2>
           <p className="rs-section-sub">Build a free, ATS-friendly resume and spend your time applying, not formatting.</p>
         </div>
@@ -313,7 +312,7 @@ const ResumePage = () => {
           <div className="rs-atsb-text">
             <span className="rs-atsb-label">For Students · Freshers · Working Professionals</span>
             <h2 className="rs-atsb-title" id="rs-atsb-title">
-              Online ATS Checker <span className="rs-accent-text">for FREE</span>
+              Check your resume's <span className="rs-accent-text">ATS score</span> for free
             </h2>
             <p className="rs-atsb-desc">
               Upload yours and get a full score, the keywords you are missing and fixes ranked by priority, in about 10 seconds.
@@ -350,7 +349,7 @@ const ResumePage = () => {
       <section className="rs-section rs-feedback" aria-labelledby="rs-feedback-title">
         <div className="rs-section-head">
           <h2 className="rs-section-title" id="rs-feedback-title">
-            Don't believe us. Believe the<br /> <span className="rs-accent-text">opportunity seekers</span> who did.
+            What <span className="rs-accent-text">students and freshers</span> say about our resume builder
           </h2>
           <p className="rs-section-sub">Reviews from students, freshers and professionals who built their resumes with the CipherSchools resume builder.</p>
         </div>
