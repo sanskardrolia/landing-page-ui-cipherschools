@@ -14,6 +14,7 @@ import ResumeTemplatesPage from './pages/ResumeTemplatesPage';
 import AtsCheckerPage from './pages/AtsCheckerPage';
 import AtsLandingPage from './pages/AtsLandingPage';
 import CompilerPage from './pages/CompilerPage';
+import PracticePage from './pages/PracticePage';
 import BackToTop from './components/BackToTop';
 import AppSidebar from './components/AppSidebar';
 import SplashScreen from './components/SplashScreen';
@@ -31,7 +32,7 @@ function App() {
   const isResumeBuilder = location.pathname.startsWith('/resume/builder');
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -99,6 +100,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/practice" element={<PracticePage />} />
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/guide-me" element={<GuideMePage />} />
             <Route path="/guide" element={<GuideMePage />} />

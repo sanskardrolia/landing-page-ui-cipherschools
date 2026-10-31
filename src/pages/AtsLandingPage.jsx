@@ -22,6 +22,7 @@ import './AtsLandingPage.css';
 
 const SCAN_PATH = '/resume/ats-checker/scan';
 const MAX_BYTES = 10 * 1024 * 1024;
+const JD_MIN = 200; // the checker rejects shorter job descriptions
 
 const HERO_MODES = [
   { value: 'resume', label: 'Resume Only' },
@@ -318,6 +319,8 @@ const AtsLandingPage = () => {
   const [error, setError] = useState('');
   const [openFaq, setOpenFaq] = useState(0);
   const [mode, setMode] = useState('resume'); // 'resume' | 'jd'
+  const [pendingFile, setPendingFile] = useState(null); // JD mode: step 1 done, waiting on the JD
+  const [jd, setJd] = useState('');
   const heroRef = useRef(null);
   const [showDock, setShowDock] = useState(false);
 
@@ -349,7 +352,26 @@ const AtsLandingPage = () => {
       return;
     }
     setError('');
+    if (mode === 'jd') {
+      setPendingFile(file); // step 2 opens in the hero
+      return;
+    }
     navigate(`${SCAN_PATH}?mode=${mode}`, { state: { file } });
+  };
+
+  const submitJd = () => {
+    if (jd.trim().length < JD_MIN) {
+      setError(`Paste at least ${JD_MIN} characters of the job description.`);
+      return;
+    }
+    setError('');
+    navigate(`${SCAN_PATH}?mode=jd`, { state: { file: pendingFile, jd: jd.trim() } });
+  };
+
+  const switchMode = (value) => {
+    setMode(value);
+    setPendingFile(null);
+    setError('');
   };
 
   return (
@@ -375,7 +397,7 @@ const AtsLandingPage = () => {
               role="radio"
               aria-checked={mode === m.value}
               className={mode === m.value ? 'is-on' : undefined}
-              onClick={() => setMode(m.value)}
+              onClick={() => switchMode(m.value)}
             >
               {m.label}
             </button>
@@ -383,10 +405,44 @@ const AtsLandingPage = () => {
         </div>
         <p className="ats-lp-toggle-hint">
           {mode === 'jd'
-            ? 'Upload your resume, then paste the job description to find missing keywords.'
+            ? 'Two quick steps: upload your resume, then add the job description to find missing keywords.'
             : 'Check how well applicant tracking systems can read your resume.'}
         </p>
 
+        {mode === 'jd' && (
+          <ol className="ats-lp-steps" aria-label="Steps">
+            <li className={pendingFile ? 'is-done' : 'is-active'}>
+              <span>{pendingFile ? <Check size={13} /> : 1}</span> Resume
+            </li>
+            <li className={pendingFile ? 'is-active' : undefined}>
+              <span>2</span> Job description
+            </li>
+          </ol>
+        )}
+
+        {mode === 'jd' && pendingFile ? (
+          <div className="ats-lp-jd">
+            <div className="ats-lp-file-chip">
+              <FileText size={16} aria-hidden="true" />
+              <span className="ats-lp-file-name">{pendingFile.name}</span>
+              <button type="button" onClick={() => { setPendingFile(null); setError(''); }}>Change</button>
+            </div>
+            <textarea
+              className="ats-lp-jd-input"
+              rows={6}
+              value={jd}
+              onChange={(e) => setJd(e.target.value)}
+              placeholder="Step 2: paste the job description here (minimum 200 characters)"
+              aria-label="Job description"
+            />
+            <div className="ats-lp-jd-foot">
+              <span className="ats-lp-jd-count">{jd.trim().length} / {JD_MIN}+ characters</span>
+              <button type="button" className="rs-btn rs-btn--dark rs-btn--lg" onClick={submitJd}>
+                <span>Check match</span>
+              </button>
+            </div>
+          </div>
+        ) : (
         <div
           className={`ats-lp-drop ${isDragging ? 'is-dragging' : ''}`}
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -415,6 +471,7 @@ const AtsLandingPage = () => {
             <span>Upload now</span>
           </button>
         </div>
+        )}
         {error && <p className="ats-lp-error" role="alert">{error}</p>}
         <p className="ats-lp-note">Free · Full report, nothing locked</p>
         </div>

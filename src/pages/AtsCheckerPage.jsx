@@ -208,7 +208,7 @@ const AtsCheckerPage = () => {
   };
 
   // Job Description States
-  const [jobDescription, setJobDescription] = useState('');
+  const [jobDescription, setJobDescription] = useState(location.state?.jd || ''); // JD pasted in the landing hero
   const [jobMeta, setJobMeta] = useState('');
 
   // Analysis Result States

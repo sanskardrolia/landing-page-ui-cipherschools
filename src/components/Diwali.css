@@ -1,0 +1,546 @@
+/* ===================================================
+   DEEPAWALI MODE — toggle, text + mockup effects
+   =================================================== */
+
+/* ── Sticky right-edge toggle ── */
+.diwali-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.8rem 0.55rem 0.9rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(243, 145, 46, 0.3);
+  border-right: none;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -6px 8px 28px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  color: #3B1A0A;
+  font-family: inherit;
+  transition: box-shadow 0.3s ease, background 0.3s ease, padding 0.3s ease;
+}
+
+.diwali-toggle:hover {
+  padding-right: 0.8rem;
+  box-shadow: -8px 10px 32px rgba(243, 145, 46, 0.28);
+}
+
+.diwali-toggle:focus-visible {
+  outline: 2px solid #F3912E;
+  outline-offset: 2px;
+}
+
+.diwali-toggle-icon {
+  display: flex;
+  filter: grayscale(1) opacity(0.55);
+  transition: filter 0.3s ease;
+}
+
+.diwali-toggle.is-on .diwali-toggle-icon {
+  filter: drop-shadow(0 0 8px rgba(255, 194, 60, 0.9));
+}
+
+.diwali-toggle .diya-svg .diya-flame { opacity: 0; transition: opacity 0.3s ease; }
+.diwali-toggle.is-on .diya-svg .diya-flame { opacity: 1; }
+
+.diwali-toggle-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.diwali-toggle-track {
+  position: relative;
+  width: 18px;
+  height: 34px;
+  border-radius: 9px;
+  background: #D4D4D8;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.diwali-toggle-thumb {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.diwali-toggle.is-on {
+  background: linear-gradient(180deg, #FFF8E6, #FFE9BE);
+  border-color: rgba(243, 145, 46, 0.7);
+}
+
+.diwali-toggle.is-on .diwali-toggle-track {
+  background: #F3912E;
+  box-shadow: 0 0 12px rgba(243, 145, 46, 0.7);
+}
+
+.diwali-toggle.is-on .diwali-toggle-thumb { transform: translateY(16px); }
+
+@media (max-width: 640px) {
+  .diwali-toggle { padding: 0.6rem 0.4rem 0.7rem; top: 42%; }
+  .diwali-toggle-label { font-size: 0.62rem; }
+}
+
+/* ── Hero ambience layer ── */
+.diwali-hero-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+  animation: diwaliFadeIn 0.9s ease both;
+}
+
+@keyframes diwaliFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Rising sparkles */
+.diwali-sparkle {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: #FFC23C;
+  box-shadow: 0 0 8px 2px rgba(255, 194, 60, 0.85);
+  opacity: 0;
+  animation-name: diwaliSparkleRise;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes diwaliSparkleRise {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  12% { opacity: 0.95; }
+  70% { opacity: 0.7; }
+  100% { transform: translate(24px, -78vh) scale(1.1); opacity: 0; }
+}
+
+/* ── Text effects (active when section has .diwali-on) ── */
+.diwali-greeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.3rem 0.85rem 0.3rem 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #3B1A0A, #6B2A0C);
+  color: #FFE08A;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 0 22px rgba(243, 145, 46, 0.45);
+  animation: diwaliGreetingIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes diwaliGreetingIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.diwali-on .headline-orange-italic {
+  background: linear-gradient(100deg, #F3912E 0%, #FFD76A 30%, #FFF6D0 50%, #FFD76A 70%, #F3912E 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 10px rgba(255, 170, 40, 0.55));
+  animation: diwaliTextShimmer 3.6s linear infinite;
+  padding-right: 0.08em;
+}
+
+@keyframes diwaliTextShimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -150% 0; }
+}
+
+.diwali-on .headline-black-italic {
+  text-shadow: 0 0 22px rgba(255, 194, 60, 0.35);
+  animation: diwaliTextFlicker 4s ease-in-out infinite;
+}
+
+@keyframes diwaliTextFlicker {
+  0%, 100% { text-shadow: 0 0 22px rgba(255, 194, 60, 0.35); }
+  45% { text-shadow: 0 0 30px rgba(255, 194, 60, 0.6), 0 0 4px rgba(255, 150, 40, 0.4); }
+  60% { text-shadow: 0 0 18px rgba(255, 194, 60, 0.25); }
+}
+
+.diwali-on .notion-hero-word-pill {
+  background: rgba(255, 194, 60, 0.2);
+  border-color: rgba(243, 145, 46, 0.7);
+  box-shadow: 0 0 20px rgba(255, 194, 60, 0.5);
+}
+
+.diwali-on .prop-highlight {
+  text-shadow: 0 0 14px rgba(255, 194, 60, 0.6);
+}
+
+/* ── Mockup effects ── */
+.diwali-mockup-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 115%;
+  height: 115%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(255, 194, 60, 0.55), rgba(243, 145, 46, 0.2) 55%, transparent 80%);
+  filter: blur(18px);
+  z-index: 5;
+  pointer-events: none;
+  animation: diwaliGlowPulse 3.2s ease-in-out infinite;
+}
+
+@keyframes diwaliGlowPulse {
+  0%, 100% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.97); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+}
+
+.diwali-on .stacked-mockup-card.card-active {
+  box-shadow:
+    0 0 0 1px rgba(255, 194, 60, 0.8),
+    0 0 36px rgba(255, 170, 40, 0.55),
+    0 24px 60px rgba(120, 60, 10, 0.25);
+  animation: diwaliCardGlow 3.2s ease-in-out infinite;
+}
+
+@keyframes diwaliCardGlow {
+  0%, 100% { filter: brightness(1) saturate(1); }
+  50% { filter: brightness(1.04) saturate(1.1); }
+}
+
+.diwali-mockup-diya {
+  position: absolute;
+  z-index: 12;
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(255, 194, 60, 0.9));
+  transition: transform 0.2s ease;
+}
+
+.diwali-mockup-diya:hover { transform: scale(1.06); }
+.diwali-mockup-diya:active { transform: scale(0.96); }
+
+/* Quiet firework that blooms behind the diya */
+.diwali-burst {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 0;
+  height: 0;
+  z-index: -1;
+  pointer-events: none;
+  animation: diwaliBurstLife 1.1s linear forwards;
+}
+
+@keyframes diwaliBurstLife { to { opacity: 0; } }
+
+.diwali-burst-streak {
+  position: absolute;
+  left: -1px;
+  top: -5px;
+  width: 2px;
+  height: 10px;
+  border-radius: 2px;
+  background: #E8A53A;
+  opacity: 0;
+  transform: rotate(var(--angle)) translateY(-8px) scaleY(0.4);
+  animation: diwaliStreak 1s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes diwaliStreak {
+  0% { opacity: 0; transform: rotate(var(--angle)) translateY(-8px) scaleY(0.4); }
+  15% { opacity: 0.75; }
+  100% { opacity: 0; transform: rotate(var(--angle)) translateY(calc(var(--reach) * -1)) scaleY(1); }
+}
+
+.diwali-burst-ring {
+  position: absolute;
+  left: -14px;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 165, 58, 0.5);
+  opacity: 0;
+  animation: diwaliRing 0.9s ease-out forwards;
+}
+
+@keyframes diwaliRing {
+  0% { opacity: 0.6; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(2.6); }
+}
+
+.diwali-mockup-diya.diya-left { bottom: -18px; left: -10px; }
+.diwali-mockup-diya.diya-right { bottom: -18px; right: -10px; }
+.diwali-mockup-diya.diya-top { top: -22px; right: 14%; }
+
+.diya-svg .diya-flame {
+  transform-origin: 50% 90%;
+  animation: diyaFlicker 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes diyaFlicker {
+  0% { transform: scale(1, 1) rotate(-2deg); }
+  50% { transform: scale(0.92, 1.08) rotate(2deg); }
+  100% { transform: scale(1.05, 0.96) rotate(-1deg); }
+}
+
+@media (max-width: 960px) {
+  .diwali-mockup-diya.diya-left { left: 0; }
+  .diwali-mockup-diya.diya-right { right: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diwali-sparkle,
+  .diwali-mockup-glow,
+  .diya-svg .diya-flame,
+  .diwali-on .headline-orange-italic,
+  .diwali-on .headline-black-italic,
+  .diwali-on .stacked-mockup-card.card-active { animation: none; }
+  .diwali-burst-streak, .diwali-burst-ring { animation-duration: 0.01s; }
+  .diwali-sparkle { opacity: 0.6; }
+}
+
+/* ── +1 feedback and collected state on hero diyas ── */
+.diwali-collect-pop {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #B45F0C;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: diwaliCollectPop 1.2s ease-out forwards;
+}
+
+@keyframes diwaliCollectPop {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to { opacity: 0; transform: translate(-50%, -30px); }
+}
+
+/* ── Navbar diya menu ── */
+.diya-menu { position: relative; display: inline-flex; }
+.diya-menu.mobile-only { display: none; }
+@media (max-width: 768px) { .diya-menu.mobile-only { display: inline-flex; margin-left: auto; margin-right: 0.5rem; } }
+
+.diya-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 3px 9px 3px 6px;
+  background: rgba(243, 145, 46, 0.08);
+  border: 1px solid rgba(243, 145, 46, 0.35);
+  border-radius: 4px;
+  cursor: pointer;
+  color: #3B1A0A;
+  font-family: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.diya-menu-btn:hover,
+.diya-menu-btn.is-open { background: rgba(243, 145, 46, 0.16); border-color: #F3912E; }
+
+.diya-menu-btn:focus-visible { outline: 2px solid #F3912E; outline-offset: 2px; }
+
+.diya-menu-btn.is-empty .diya-flame { opacity: 0.25; animation: none; }
+
+.diya-menu-count {
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.diya-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 290px;
+  padding: 1rem;
+  background: #fff;
+  color: #1F1A14;
+  border: 1px solid #ECE7DF;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);
+  z-index: 1200;
+  text-align: left;
+  animation: diyaMenuIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes diyaMenuIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.diya-menu-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.diya-menu-title { font-size: 0.85rem; font-weight: 700; }
+.diya-menu-score { font-size: 0.85rem; font-weight: 800; color: #F3912E; font-variant-numeric: tabular-nums; }
+
+.diya-menu-slots { display: flex; gap: 0.6rem; margin-bottom: 0.75rem; }
+
+.diya-menu-slot {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem 0;
+  border: 1px dashed #E0DAD0;
+  border-radius: 6px;
+  background: #FAF8F5;
+}
+
+.diya-menu-slot .diya-flame { opacity: 0.15; animation: none; }
+.diya-menu-slot.is-lit { border: 1px solid rgba(243, 145, 46, 0.5); background: #FFF6E8; }
+.diya-menu-slot.is-lit .diya-flame { opacity: 1; animation: diyaFlicker 1.4s ease-in-out infinite alternate; }
+
+.diya-menu-hint {
+  margin: 0 0 0.75rem;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: #71717A;
+}
+
+.diya-menu-claim,
+.diya-menu-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.diya-menu-claim {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+  color: #fff;
+  background: #F3912E;
+  border: none;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.diya-menu-claim:hover:not(:disabled) { background: #E07E1B; }
+.diya-menu-claim:disabled { background: #F4F4F5; color: #A1A1AA; cursor: not-allowed; }
+
+.diya-menu-coupon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.4rem 0.4rem 0.75rem;
+  border: 1px dashed #F3912E;
+  border-radius: 6px;
+  background: #FFF6E8;
+}
+
+.diya-menu-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.diya-menu-copy {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.74rem;
+  color: #3B1A0A;
+  background: #fff;
+  border: 1px solid #E0DAD0;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .diya-menu-panel { position: fixed; top: 64px; right: 12px; }
+}
+
+.diya-menu-reward {
+  margin: 0 0 0.85rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: #5A3B1C;
+  background: #FFF6E8;
+  border-radius: 6px;
+}
+
+.diya-menu-reward strong { color: #C2570C; }
+
+.diya-menu-visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #C2570C;
+  text-decoration: none;
+}
+
+.diya-menu-visit:hover { text-decoration: underline; }
+
+.diya-menu-steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0.9rem 0 0;
+  padding: 0.75rem 0 0;
+  border-top: 1px solid #F0ECE5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.diya-menu-steps li {
+  counter-increment: step;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: #71717A;
+}
+
+.diya-menu-steps li::before {
+  content: counter(step);
+  flex: none;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.64rem;
+  font-weight: 800;
+  color: #71717A;
+  border: 1px solid #D4D4D8;
+  border-radius: 50%;
+}
+
+.diya-menu-steps li.is-done { color: #1F1A14; }
+.diya-menu-steps li.is-done::before { color: #fff; background: #F3912E; border-color: #F3912E; }

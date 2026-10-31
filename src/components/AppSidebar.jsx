@@ -94,7 +94,7 @@ const NAV_ITEMS = [
     label: 'Practice', 
     badge: 'FREE',
     Icon: PracticeIcon, 
-    targetSection: 'student-section',
+    path: '/practice',
     cardBadge: 'FREE ACCESS',
     cardTitle: 'Coding Practice Sandbox',
     cardDesc: 'Solve 100,000+ interactive challenges across DSA, algorithms, and system design.',
@@ -217,6 +217,8 @@ const AppSidebar = () => {
       setActiveId('dashboard');
     } else if (location.pathname === '/courses') {
       setActiveId('courses');
+    } else if (location.pathname === '/practice') {
+      setActiveId('practice');
     } else if (location.pathname === '/premium') {
       setActiveId('premium');
     } else if (location.pathname === '/feedback') {
@@ -235,6 +237,7 @@ const AppSidebar = () => {
     const handleDrawerClose = () => {
       if (location.pathname === '/') setActiveId('home');
       else if (location.pathname === '/courses') setActiveId('courses');
+      else if (location.pathname === '/practice') setActiveId('practice');
       else if (location.pathname === '/premium') setActiveId('premium');
       else if (location.pathname === '/online-compiler') setActiveId('compiler');
       else if (location.pathname.startsWith('/resume/ats-checker')) setActiveId('ats');

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame, GraduationCap, Building2, ArrowRight, Laptop, CheckSquare } from 'lucide-react';
 import PlacementMarquee from './PlacementMarquee';
+import DiwaliHeroLayer from './DiwaliHeroLayer';
+import Diya from './Diya';
+import FireworkDiya from './FireworkDiya';
 import './ImpactBar.css';
 
 /* ── Floating Orbital Highlights (from Choose How You Want To Experience The Platform) ── */
@@ -220,7 +223,7 @@ const ThanosParagraphReveal = ({ scrollToSection, inView }) => {
   );
 };
 
-const ImpactBar = () => {
+const ImpactBar = ({ diwali = false }) => {
   const sectionRef = useRef(null);
   const mockupContainerRef = useRef(null);
   const [inView, setInView] = useState(false);
@@ -327,7 +330,8 @@ const ImpactBar = () => {
   };
 
   return (
-    <section className="impact-section modern-bento-light-theme" ref={sectionRef}>
+    <section className={`impact-section modern-bento-light-theme ${diwali ? 'diwali-on' : ''}`} ref={sectionRef}>
+      {diwali && <DiwaliHeroLayer />}
       {/* ── Ambient Scribble & Handwriting Watermark Pattern (5-7% Visibility) ── */}
       <div className="hero-scribble-bg-layer" aria-hidden="true">
         {/* Top-Left Cluster: Learn & Code loops */}
@@ -416,6 +420,12 @@ const ImpactBar = () => {
           <div className="hero-left-column">
             
             {/* Main Headline with Rotating Pill Badge */}
+            {diwali && (
+              <div className="diwali-greeting">
+                <Diya size={22} />
+                <span>Shubh Deepawali</span>
+              </div>
+            )}
             <h1 className="impact-headline-main">
               <span className="headline-line-block">
                 <span className="headline-black-italic">AN</span>{' '}
@@ -583,6 +593,15 @@ const ImpactBar = () => {
                 );
               })}
             </div>
+
+            {diwali && (
+              <>
+                <div className="diwali-mockup-glow" aria-hidden="true" />
+                <FireworkDiya id="left" size={54} className="diwali-mockup-diya diya-left" />
+                <FireworkDiya id="right" size={42} className="diwali-mockup-diya diya-right" />
+                <FireworkDiya id="top" size={34} className="diwali-mockup-diya diya-top" />
+              </>
+            )}
 
             <div ref={mockupContainerRef} className="hero-stacked-mockup-showcase">
               {/* 3D Stacked Mockup Inner Deck */}

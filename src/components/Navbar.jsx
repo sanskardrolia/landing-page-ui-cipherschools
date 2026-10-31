@@ -7,6 +7,7 @@ import {
   ChevronDown, Layers, Target, Compass, Cpu, Bot
 } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
+import DiyaCollectMenu from './DiyaCollectMenu';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -448,8 +449,11 @@ const Navbar = () => {
           </div>
           
           <div className="navbar-actions desktop-only">
+            <DiyaCollectMenu />
             <Link to="/login" className="notion-login-btn">Login</Link>
           </div>
+
+          <DiyaCollectMenu className="mobile-only" />
 
           <button 
             className="mobile-menu-btn mobile-only"
