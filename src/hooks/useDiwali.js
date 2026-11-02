@@ -6,6 +6,7 @@ const CLAIMED_KEY = 'cs-diwali-claimed';
 const EVENT = 'cs-diwali-change';
 
 export const DIYA_GOAL = 3;
+export const DIYA_IDS = ['left', 'right', 'top'];
 export const COUPON_CODE = 'DEEPAWALI';
 export const DISCOUNT_LABEL = '70%';
 export const PRO_URL = 'https://pro.cipherschools.com';

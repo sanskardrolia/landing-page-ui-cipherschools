@@ -544,3 +544,157 @@
 
 .diya-menu-steps li.is-done { color: #1F1A14; }
 .diya-menu-steps li.is-done::before { color: #fff; background: #F3912E; border-color: #F3912E; }
+
+/* ===================================================
+   MOBILE — hero diyas + navbar counter
+   =================================================== */
+@media (max-width: 768px) {
+  /* Three diyas sit in a tidy row under the mockup, inside the viewport */
+  .hero-right-column:has(.diwali-mockup-diya) .hero-stacked-mockup-showcase { margin-bottom: 4.6rem; }
+
+  .diwali-mockup-diya.diya-left,
+  .diwali-mockup-diya.diya-right,
+  .diwali-mockup-diya.diya-top {
+    top: auto;
+    bottom: 0.4rem;
+    padding: 6px;
+    width: auto;
+    height: auto;
+    min-width: 0;
+  }
+  .diwali-mockup-diya.diya-left { left: 14%; right: auto; }
+  .diwali-mockup-diya.diya-top { left: calc(50% - 22px); right: auto; }
+  .diwali-mockup-diya.diya-right { right: 14%; left: auto; }
+
+  .diwali-mockup-diya .diya-svg { display: block; width: 46px; height: auto; aspect-ratio: 50 / 40; flex: none; overflow: visible; }
+  .diwali-mockup-diya.diya-top .diya-svg { width: 42px; }
+
+  /* bigger touch target without changing the look */
+  .diwali-mockup-diya::after { content: ''; position: absolute; inset: -8px; }
+
+  .diwali-mockup-diya { filter: drop-shadow(0 0 10px rgba(255, 194, 60, 0.85)); }
+
+  /* Navbar counter: compact, thumb friendly */
+  .diya-menu-btn .diya-svg { height: auto; aspect-ratio: 50 / 40; flex: none; }
+
+  /* Dropdown opens under the floating button and always fits the screen */
+  .diya-menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    max-height: calc(100dvh - 150px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 380px) {
+  .diwali-mockup-diya.diya-left { left: 8%; }
+  .diwali-mockup-diya.diya-right { right: 8%; }
+  .diwali-mockup-diya .diya-svg { width: 40px; }
+  .diwali-mockup-diya.diya-top { left: calc(50% - 22px); }
+  .diwali-mockup-diya.diya-top .diya-svg { width: 36px; }
+}
+
+/* ── Guide: animated cursor tapping a diya ── */
+.diwali-guide { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+
+.diwali-guide-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  min-width: 52px;
+  min-height: 52px;
+  border-radius: 50%;
+  border: 2px solid #F3912E;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  animation: dwGuideRing 2.8s ease-out infinite;
+}
+@keyframes dwGuideRing {
+  0%, 52% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  56% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.1); }
+}
+
+.diwali-guide-cursor {
+  position: absolute;
+  left: 52%;
+  top: 48%;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.35));
+  transform-origin: 0 0;
+  animation: dwGuideCursor 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes dwGuideCursor {
+  0% { opacity: 0; transform: translate(70px, 64px) scale(1); }
+  12% { opacity: 1; }
+  45% { opacity: 1; transform: translate(0, 0) scale(1); }
+  52% { transform: translate(0, 0) scale(0.82); }
+  60% { transform: translate(0, 0) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(0, 0) scale(1); }
+}
+
+.diwali-guide-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: #3B1A0A;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  animation: dwGuideLabel 2.8s ease-in-out infinite;
+}
+.diwali-guide-label::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: #3B1A0A;
+}
+@keyframes dwGuideLabel {
+  0%, 100% { opacity: 0.0; transform: translateX(-50%) translateY(4px); }
+  15%, 85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.diwali-diya-btn.has-guide { filter: drop-shadow(0 0 14px rgba(243, 145, 46, 0.95)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .diwali-guide-ring, .diwali-guide-cursor { animation: none; }
+  .diwali-guide-cursor { opacity: 1; }
+  .diwali-guide-label { animation: none; }
+}
+
+/* ── Inside the mobile hamburger menu ── */
+.diya-menu.is-inline { display: block; width: 100%; margin: 0 0 0.5rem; }
+.diya-menu.is-inline .diya-menu-btn {
+  width: 100%;
+  min-height: 46px;
+  padding: 6px 12px;
+  justify-content: flex-start;
+  gap: 0.6rem;
+  background: rgba(243, 145, 46, 0.1);
+  border-radius: 8px;
+}
+.diya-menu.is-inline .diya-menu-btn .diya-svg { width: 28px; height: auto; aspect-ratio: 50 / 40; flex: none; }
+.diya-menu-inline-label { flex: 1; text-align: left; font-size: 0.92rem; font-weight: 700; color: #3B1A0A; }
+.diya-menu.is-inline .diya-menu-count { font-size: 0.88rem; color: #B85F12; }
+.diya-menu.is-inline .diya-menu-panel {
+  position: static;
+  width: 100%;
+  max-height: none;
+  margin-top: 0.5rem;
+  box-shadow: none;
+  border-color: rgba(243, 145, 46, 0.35);
+}

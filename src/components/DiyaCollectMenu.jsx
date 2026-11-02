@@ -5,12 +5,23 @@ import { useDiyaCollection, DIYA_GOAL, COUPON_CODE, PRO_URL } from '../hooks/use
 import './Diwali.css';
 
 /* Navbar diya button + dropdown showing diyas collected and the coupon claim */
-const DiyaCollectMenu = ({ className = '' }) => {
-  const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const wrapRef = useRef(null);
+const DiyaCollectMenu = ({ className = '', inline = false }) => {
   const { count, claimed, claim } = useDiyaCollection();
   const complete = count >= DIYA_GOAL;
+  /* inside the hamburger menu: start expanded when the coupon is ready to claim */
+  const [open, setOpen] = useState(inline && complete && !claimed);
+  const [copied, setCopied] = useState(false);
+  const wrapRef = useRef(null);
+  const prevCount = useRef(count);
+
+  /* open the pop-up with the claim button as soon as the last diya is collected */
+  useEffect(() => {
+    const justCompleted = prevCount.current < DIYA_GOAL && count >= DIYA_GOAL;
+    prevCount.current = count;
+    if (!justCompleted || claimed) return undefined;
+    const t = setTimeout(() => setOpen(true), 1300);
+    return () => clearTimeout(t);
+  }, [count, claimed]);
 
   useEffect(() => {
     if (!open) return;
@@ -31,7 +42,7 @@ const DiyaCollectMenu = ({ className = '' }) => {
   };
 
   return (
-    <div className={`diya-menu ${className}`} ref={wrapRef}>
+    <div className={`diya-menu ${inline ? 'is-inline' : ''} ${className}`} ref={wrapRef}>
       <button
         type="button"
         className={`diya-menu-btn ${count === 0 ? 'is-empty' : ''} ${open ? 'is-open' : ''}`}
@@ -41,6 +52,7 @@ const DiyaCollectMenu = ({ className = '' }) => {
         aria-label={`Diyas collected: ${count} of ${DIYA_GOAL}`}
       >
         <Diya size={26} />
+        {inline && <span className="diya-menu-inline-label">Deepawali diyas</span>}
         <span className="diya-menu-count">{count}/{DIYA_GOAL}</span>
       </button>
 
@@ -75,7 +87,7 @@ const DiyaCollectMenu = ({ className = '' }) => {
           ) : (
             <button type="button" className="diya-menu-claim" disabled={!complete} onClick={claim}>
               <Gift size={15} />
-              {complete ? 'Claim discount coupon' : 'Collect all to claim coupon'}
+              {complete ? 'Claim now' : 'Collect all to claim coupon'}
             </button>
           )}
 
