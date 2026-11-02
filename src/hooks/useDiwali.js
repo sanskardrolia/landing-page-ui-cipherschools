@@ -7,7 +7,7 @@ const EVENT = 'cs-diwali-change';
 
 export const DIYA_GOAL = 3;
 export const COUPON_CODE = 'DEEPAWALI';
-export const DISCOUNT_LABEL = 'X%'; // placeholder until the final discount is confirmed
+export const DISCOUNT_LABEL = '70%';
 export const PRO_URL = 'https://pro.cipherschools.com';
 
 const read = (key) => {

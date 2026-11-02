@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, Copy, Gift, ArrowUpRight } from 'lucide-react';
 import Diya from './Diya';
-import { useDiyaCollection, DIYA_GOAL, COUPON_CODE, DISCOUNT_LABEL, PRO_URL } from '../hooks/useDiwali';
+import { useDiyaCollection, DIYA_GOAL, COUPON_CODE, PRO_URL } from '../hooks/useDiwali';
 import './Diwali.css';
 
 /* Navbar diya button + dropdown showing diyas collected and the coupon claim */
@@ -46,10 +46,6 @@ const DiyaCollectMenu = ({ className = '' }) => {
 
       {open && (
         <div className="diya-menu-panel" role="dialog" aria-label="Deepawali diyas">
-          <p className="diya-menu-reward">
-            Collect all {DIYA_GOAL} diyas to unlock <strong>{DISCOUNT_LABEL} off</strong> a premium course, a heavy Deepawali discount.
-          </p>
-
           <div className="diya-menu-head">
             <span className="diya-menu-title">Diyas collected</span>
             <span className="diya-menu-score">{count}/{DIYA_GOAL}</span>
@@ -62,12 +58,6 @@ const DiyaCollectMenu = ({ className = '' }) => {
               </span>
             ))}
           </div>
-
-          {!complete && (
-            <p className="diya-menu-hint">
-              Turn on Deepawali mode on the home page and tap the diyas near the hero mockup to collect them.
-            </p>
-          )}
 
           {complete && claimed ? (
             <>
