@@ -1421,3 +1421,15 @@
   .rs-atsb { grid-template-columns: 1fr; padding: 24px 20px; gap: 24px; }
   .rs-atsb-visual { padding: 16px; gap: 16px; }
 }
+
+/* "My Saved Resume" text link under the hero CTAs */
+.rs-hero-saved-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--rs-brand-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.rs-hero-saved-link:hover { color: var(--rs-brand-hover); }

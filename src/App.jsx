@@ -14,6 +14,7 @@ import FeedbackDrawer from './components/FeedbackDrawer';
 import ResumePage from './pages/ResumePage';
 import ResumeBuilderPage from './pages/ResumeBuilderPage';
 import ResumeTemplatesPage from './pages/ResumeTemplatesPage';
+import ResumeSavedPage from './pages/ResumeSavedPage';
 import AtsCheckerPage from './pages/AtsCheckerPage';
 import AtsLandingPage from './pages/AtsLandingPage';
 import CompilerPage from './pages/CompilerPage';
@@ -117,6 +118,7 @@ function App() {
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/resume/templates" element={<ResumeTemplatesPage />} />
             <Route path="/resume/builder" element={<ResumeBuilderPage />} />
+            <Route path="/resume/saved" element={<ResumeSavedPage />} />
             <Route path="/ats-checker" element={<Navigate to="/resume/ats-checker" replace />} />
             <Route path="/ats-checker/scan" element={<Navigate to="/resume/ats-checker/scan" replace />} />
             <Route path="/resume/ats-checker" element={<AtsLandingPage />} />

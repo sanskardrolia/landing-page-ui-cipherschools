@@ -15,6 +15,7 @@ import {
   FileText,
   ScanSearch,
   FolderGit2,
+  Pencil,
   GraduationCap,
   ListPlus,
   Plus,
@@ -48,6 +49,8 @@ import {
   deriveFixes,
   applyFix,
 } from '../utils/resumeAtsBridge';
+import { CURRENT_ID_KEY, getEntry, newResumeId, upsertEntry } from '../utils/resumeLibrary';
+import ResumeFeedbackPanel from '../components/ResumeFeedbackPanel';
 import './ResumeBuilderPage.css';
 
 const STORAGE_KEY = 'cs-resume-builder:v1';
@@ -107,6 +110,68 @@ const builderDocMetrics = (data, template) => {
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const THIS_YEAR = new Date().getFullYear();
 const YEARS = Array.from({ length: THIS_YEAR + 6 - 1980 }, (_, i) => String(THIS_YEAR + 5 - i));
+
+const TITLE_KEY = 'cs-resume-builder:title';
+const DEFAULT_TITLE = 'Edit your resume';
+
+const loadTitle = () => {
+  try {
+    return localStorage.getItem(TITLE_KEY) || DEFAULT_TITLE;
+  } catch {
+    return DEFAULT_TITLE;
+  }
+};
+
+/* Inline-editable heading: click the text or the pencil to rename, Enter/blur saves, Esc cancels */
+const EditableTitle = ({ value, onChange }) => {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.select();
+  }, [editing]);
+
+  const start = () => { setDraft(value); setEditing(true); };
+  const commit = () => {
+    onChange(draft.trim() || DEFAULT_TITLE);
+    setEditing(false);
+  };
+
+  if (editing) {
+    // onMouseDown preventDefault keeps the input focused, so clicking Save/Cancel doesn't trigger the blur-commit first
+    const keepFocus = (e) => e.preventDefault();
+    return (
+      <span className="rb-title-edit">
+        <input
+          ref={inputRef}
+          className="rb-editor-title rb-title-input"
+          value={draft}
+          maxLength={60}
+          aria-label="Resume name"
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commit}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') commit();
+            if (e.key === 'Escape') setEditing(false);
+          }}
+        />
+        <button type="button" className="rb-title-action rb-title-action--save" onMouseDown={keepFocus} onClick={commit} aria-label="Save name">
+          <Check size={12} strokeWidth={2.6} />
+        </button>
+        <button type="button" className="rb-title-action rb-title-action--cancel" onMouseDown={keepFocus} onClick={() => setEditing(false)} aria-label="Cancel renaming">
+          <X size={12} strokeWidth={2.6} />
+        </button>
+      </span>
+    );
+  }
+  return (
+    <button type="button" className="rb-title-btn" onClick={start} aria-label="Rename resume">
+      <h1 className="rb-editor-title">{value}</h1>
+      <Pencil size={13} className="rb-title-pencil" />
+    </button>
+  );
+};
 
 const loadDraft = () => {
   try {
@@ -304,12 +369,29 @@ const PILLAR_LABELS = [
 const ResumeBuilderPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const templateParam = searchParams.get('template');
-  const template = TEMPLATE_IDS.includes(templateParam) ? templateParam : 'beginner';
+  // Opened from "My Saved Resumes" (?id=...): load that specific resume instead of the last draft
+  const [savedEntry] = useState(() => {
+    const id = searchParams.get('id');
+    return id ? getEntry(id) : null;
+  });
+  const [resumeId] = useState(() => {
+    if (savedEntry) return savedEntry.id;
+    try {
+      return localStorage.getItem(CURRENT_ID_KEY) || newResumeId();
+    } catch {
+      return newResumeId();
+    }
+  });
+  const template = TEMPLATE_IDS.includes(templateParam)
+    ? templateParam
+    : (savedEntry && TEMPLATE_IDS.includes(savedEntry.template) ? savedEntry.template : 'beginner');
 
-  const [resume, setResume] = useState(() => loadDraft() || emptyResume());
+  const [resume, setResume] = useState(() => (savedEntry ? { ...emptyResume(), ...savedEntry.resume } : (loadDraft() || emptyResume())));
   const [active, setActive] = useState(0); // open accordion section, -1 = all collapsed
   const [openIds, setOpenIds] = useState(() => new Set([resume.education[0]?.id].filter(Boolean)));
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [resumeTitle, setResumeTitle] = useState(() => (savedEntry ? savedEntry.title : loadTitle()));
+  const [feedbackOpen, setFeedbackOpen] = useState(false); // slide-in feedback form, opened after download
   const sectionRefs = useRef({});
   const scrollTarget = useRef(null);
 
@@ -384,12 +466,19 @@ const ResumeBuilderPage = () => {
     const t = setTimeout(() => {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(resume));
+        localStorage.setItem(CURRENT_ID_KEY, resumeId);
+        localStorage.setItem(TITLE_KEY, resumeTitle);
       } catch {
         /* storage unavailable: keep working in memory */
       }
+      // Keep the "My Saved Resumes" list in sync (skip blank resumes)
+      const p = resume.personal || {};
+      if (p.firstName || p.lastName || p.email) {
+        upsertEntry({ id: resumeId, title: resumeTitle, template, resume });
+      }
     }, 400);
     return () => clearTimeout(t);
-  }, [resume]);
+  }, [resume, resumeTitle, template, resumeId]);
 
   // Lock page scroll behind the mobile preview
   useEffect(() => {
@@ -562,7 +651,24 @@ const ResumeBuilderPage = () => {
     document.title = name ? `${name} - Resume` : 'Resume';
     window.print();
     document.title = prev;
+    // window.print() blocks until the print/save dialog closes, so this opens right after download
+    setFeedbackOpen(true);
   };
+
+  // "Download" from My Saved Resumes arrives as ?download=1: open the print/save dialog once
+  useEffect(() => {
+    if (searchParams.get('download') !== '1') return undefined;
+    const t = setTimeout(() => {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        next.delete('download');
+        return next;
+      }, { replace: true });
+      handleDownload();
+    }, 700);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const resetDraft = () => {
     if (!window.confirm('Clear everything and start a new resume?')) return;
@@ -942,7 +1048,13 @@ const ResumeBuilderPage = () => {
 
           <div className="rb-editor-head">
             <div className="rb-editor-title-row">
-              <h1 className="rb-editor-title">Edit your resume</h1>
+              <EditableTitle
+                value={resumeTitle}
+                onChange={(v) => {
+                  setResumeTitle(v);
+                  try { localStorage.setItem(TITLE_KEY, v); } catch { /* keep in memory */ }
+                }}
+              />
               <label className="rb-template-pick">
                 <span className="rb-template-pick-label">Template</span>
                 <select className="rb-input" value={template} onChange={(e) => setTemplate(e.target.value)}>
@@ -1158,6 +1270,16 @@ const ResumeBuilderPage = () => {
           </div>
         </div>
       )}
+
+      <ResumeFeedbackPanel
+        open={feedbackOpen}
+        onClose={() => setFeedbackOpen(false)}
+        prefill={{
+          name: fullName(resume.personal),
+          email: resume.personal.email,
+          phone: resume.personal.phone
+        }}
+      />
 
       {/* ── Print-only full-size copy ── */}
       <div className="rb-print" aria-hidden="true">

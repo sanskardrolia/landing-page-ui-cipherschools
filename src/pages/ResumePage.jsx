@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   ArrowRight,
   ChevronRight,
@@ -150,6 +150,8 @@ const ResumePage = () => {
               <span>Check My ATS Score</span>
             </button>
           </div>
+
+          <Link to="/resume/saved" className="rs-hero-saved-link">My Saved Resume</Link>
 
           <p className="rs-hero-note">Free · No watermark · Unlimited PDF downloads</p>
         </div>

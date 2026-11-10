@@ -1511,3 +1511,70 @@ select.rb-input {
     break-after: avoid;
   }
 }
+
+/* Inline-editable resume title */
+.rb-title-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: text;
+  font: inherit;
+  text-align: left;
+}
+.rb-title-btn .rb-editor-title { margin: 0; }
+.rb-title-pencil { color: var(--rb-faint); flex-shrink: 0; transition: color 0.15s ease; }
+.rb-title-btn:hover { background: var(--rb-surface-2); border-color: var(--rb-line); }
+.rb-title-btn:hover .rb-title-pencil { color: var(--rb-brand); }
+.rb-title-input {
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--rb-ink);
+  padding: 2px 8px;
+  margin: -2px -8px;
+  border: 1px solid var(--rb-brand);
+  border-radius: 4px;
+  background: var(--rb-surface);
+  box-shadow: 0 0 0 3px var(--rb-brand-soft);
+  min-width: 220px;
+  max-width: 100%;
+}
+.rb-title-input:focus { outline: none; }
+
+.rb-title-edit { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rb-title-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 4px;
+  border: 1px solid var(--rb-line-strong);
+  background: var(--rb-surface);
+  color: var(--rb-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.rb-title-action:hover { background: var(--rb-surface-2); color: var(--rb-ink); border-color: var(--rb-ink); }
+.rb-title-action--save { color: var(--rb-good); }
+
+/* Smaller rename controls */
+.rb-title-input { font-size: 1.1rem; padding: 1px 8px; min-width: 180px; }
+.rb-title-action {
+  height: 24px;
+  padding: 0 7px;
+  gap: 3px;
+  font-size: 0.74rem;
+}
+.rb-title-action--save { width: 24px; padding: 0; justify-content: center; }
+.rb-title-action svg { width: 12px; height: 12px; }
+
+/* Spacing + icon-only cancel */
+.rb-title-edit { gap: 10px; }
+.rb-title-action--cancel { width: 24px; padding: 0; justify-content: center; }
