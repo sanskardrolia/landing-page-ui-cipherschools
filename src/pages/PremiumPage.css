@@ -118,7 +118,7 @@
 .pricing-card-surface {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 20px;
+  border-radius: 4px;
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
@@ -876,7 +876,7 @@
 .proof-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 24px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
   display: flex;
@@ -983,7 +983,7 @@
 .faq-item-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 18px 20px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1525,7 +1525,7 @@
 .picker-card {
   background: #FFFFFF;
   border: 1.5px solid #E2E8F0;
-  border-radius: 14px;
+  border-radius: 4px;
   padding: 16px 16px 14px 16px;
   cursor: pointer;
   transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2656,7 +2656,7 @@
 .syllabus-module-card {
   background: #F8FAFC;
   border: 1.5px solid #E2E8F0;
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 14px 16px;
   transition: all 0.15s ease;
 }
@@ -2829,3 +2829,640 @@
   }
 }
 
+
+/* Sub-items under a module (e.g. Computer Fundamentals) */
+.feature-item.feat-sub {
+  margin-left: 28px;
+  opacity: 0.85;
+}
+.feature-item.feat-sub .feature-check-icon {
+  transform: scale(0.85);
+}
+
+.feature-item.feat-sub2 {
+  margin-left: 52px;
+  opacity: 0.75;
+}
+.feature-item.feat-sub2 .feature-check-icon {
+  transform: scale(0.75);
+}
+
+/* Important pointer highlight */
+.feature-text.feat-key {
+  font-weight: 700;
+  color: #0F172A;
+  background: color-mix(in srgb, var(--key-color, #F3912E) 16%, transparent);
+  box-shadow: inset 0 -2px 0 var(--key-color, #F3912E);
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+/* Excluded features (not in this plan) */
+.feature-group-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #94A3B8;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed #E2E8F0;
+}
+.feature-item.feat-excluded .feature-check-icon {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+.feature-item.feat-excluded .feature-text {
+  color: #94A3B8;
+  text-decoration: line-through;
+  text-decoration-color: #CBD5E1;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PLAN CARDS — unified Notion-style light theme
+   (identical treatment for Core / Plus / Ultra)
+   ───────────────────────────────────────────────────────────── */
+.pricing-cards-grid { gap: 20px; }
+
+.pricing-card-surface,
+.pricing-card-surface.popular-card {
+  background: #FFFFFF;
+  border: 1px solid #E9E9E7;
+  border-radius: 4px;
+  padding: 28px 24px 24px;
+  box-shadow: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.pricing-card-surface:hover,
+.pricing-card-surface.popular-card:hover {
+  transform: none;
+  border-color: #D3D1CB;
+  box-shadow: 0 1px 2px rgba(15, 15, 15, 0.04);
+}
+
+.pricing-card-surface .plan-header { margin-bottom: 18px; }
+.pricing-card-surface .plan-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #37352F;
+  letter-spacing: -0.01em;
+}
+.pricing-card-surface .plan-title-row svg {
+  color: #9B9A97 !important;
+  width: 18px;
+  height: 18px;
+}
+
+/* Price: flat, no tinted box */
+.pricing-card-surface .plan-price-block,
+.pricing-card-surface.popular-card .plan-price-block {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.pricing-card-surface .price-figure {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #37352F;
+  letter-spacing: -0.03em;
+}
+.pricing-card-surface .price-period { color: #787774; font-weight: 500; }
+.pricing-card-surface .price-commitment-badge {
+  color: #37352F;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.pricing-card-surface .price-total-billed {
+  color: #787774;
+  font-weight: 400;
+  font-size: 0.78rem;
+}
+.pricing-card-surface .price-original { color: #9B9A97; }
+.pricing-card-surface .price-discount-tag {
+  background: #EDF3EC;
+  color: #448361;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+/* CTA: one identical button on every card */
+.pricing-card-surface .plan-cta-btn,
+.pricing-card-surface .btn-outline,
+.pricing-card-surface .btn-primary,
+.pricing-card-surface .btn-slate {
+  background: #2383E2;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  transform: none;
+}
+.pricing-card-surface .plan-cta-btn:hover {
+  background: #0B6E99;
+  transform: none;
+  box-shadow: none;
+}
+
+.pricing-card-surface .plan-card-divider {
+  background: #E9E9E7;
+  margin-bottom: 16px;
+}
+.pricing-card-surface .plan-inherited-banner {
+  background: #F7F7F5;
+  color: #37352F;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.pricing-card-surface .plan-inherited-banner svg { color: #787774; }
+
+/* Features */
+.pricing-card-surface .plan-features-list { gap: 8px; }
+.pricing-card-surface .feature-item.feat-highlight {
+  background: transparent;
+  padding: 0;
+  margin-left: 0;
+}
+.pricing-card-surface .feature-item.feat-sub { margin-left: 28px; }
+.pricing-card-surface .feature-item.feat-sub2 { margin-left: 52px; }
+.pricing-card-surface .feature-check-icon,
+.pricing-card-surface.popular-card .feature-check-icon {
+  background: transparent;
+  color: #448361;
+  width: 18px;
+  height: 18px;
+}
+.pricing-card-surface .feature-item.feat-excluded .feature-check-icon {
+  background: transparent;
+  color: #E03E3E;
+}
+.pricing-card-surface .feature-text {
+  color: #37352F;
+  font-size: 0.86rem;
+}
+.pricing-card-surface .feature-text.feat-bold {
+  color: #37352F;
+  font-weight: 600;
+}
+.pricing-card-surface .feature-item.feat-excluded .feature-text {
+  color: #9B9A97;
+  text-decoration-color: #D3D1CB;
+}
+.pricing-card-surface .feature-group-label {
+  color: #787774;
+  border-top: 1px solid #E9E9E7;
+}
+.pricing-card-surface .plan-footer-assurance {
+  color: #787774;
+  border-top: 1px solid #E9E9E7;
+}
+
+/* ── Brand touch: Plus highlighted, others white / black CTA ── */
+.pricing-card-surface .plan-cta-btn,
+.pricing-card-surface .btn-outline,
+.pricing-card-surface .btn-slate {
+  background: #FFFFFF;
+  color: #37352F;
+  border: 1px solid #D3D1CB;
+}
+.pricing-card-surface .plan-cta-btn:hover,
+.pricing-card-surface .btn-outline:hover,
+.pricing-card-surface .btn-slate:hover {
+  background: #F7F7F5;
+  border-color: #37352F;
+  color: #37352F;
+}
+
+.pricing-card-surface.card-plus,
+.pricing-card-surface.card-plus:hover {
+  border-color: #F3912E;
+  box-shadow: 0 0 0 1px #F3912E;
+}
+.pricing-card-surface.card-plus .plan-title-row svg { color: #F3912E !important; }
+.pricing-card-surface.card-plus .btn-primary,
+.pricing-card-surface.card-plus .plan-cta-btn {
+  background: #F3912E;
+  color: #FFFFFF;
+  border: 1px solid #F3912E;
+}
+.pricing-card-surface.card-plus .btn-primary:hover,
+.pricing-card-surface.card-plus .plan-cta-btn:hover {
+  background: #E07D1C;
+  border-color: #E07D1C;
+  color: #FFFFFF;
+}
+.pricing-card-surface.card-plus .plan-inherited-banner {
+  background: #FEF3E6;
+  color: #B45309;
+}
+.pricing-card-surface.card-plus .plan-inherited-banner svg { color: #F3912E; }
+.pricing-card-surface.card-plus .price-figure { color: #37352F; }
+
+/* Highlight "Billed ₹X upfront" */
+.pricing-card-surface .price-total-billed {
+  align-self: flex-start;
+  background: #FEF3E6;
+  color: #B45309;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  box-shadow: inset 0 -2px 0 #F3912E;
+  margin-top: 4px;
+}
+
+/* (i) info tooltip */
+.info-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 2px;
+  color: #9B9A97;
+  cursor: help;
+  outline: none;
+}
+.info-tip:hover, .info-tip:focus { color: #37352F; }
+.info-tip-box {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: -8px;
+  z-index: 30;
+  width: 220px;
+  background: #FFFFFF;
+  border: 1px solid #E9E9E7;
+  border-radius: 4px;
+  box-shadow: 0 6px 20px rgba(15, 15, 15, 0.12);
+  padding: 12px 14px;
+  text-align: left;
+  cursor: default;
+}
+.info-tip:hover .info-tip-box,
+.info-tip:focus .info-tip-box,
+.info-tip:focus-within .info-tip-box { display: block; }
+.info-tip-title {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #37352F;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #E9E9E7;
+}
+.info-tip-box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.info-tip-box li {
+  font-size: 0.8rem;
+  color: #37352F;
+  line-height: 1.35;
+  padding-left: 12px;
+  position: relative;
+}
+.info-tip-box li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #F3912E;
+}
+
+/* Free plan card + 4-column layout */
+.pricing-card-surface .plan-price-block { min-height: 108px; }
+.pricing-card-surface .price-total-billed.price-free-note {
+  background: #F7F7F5;
+  color: #787774;
+  box-shadow: none;
+  font-weight: 500;
+}
+.pricing-card-surface a.plan-cta-btn { text-decoration: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   Offering tree (module → sub-offerings)
+   ───────────────────────────────────────────────────────────── */
+.pricing-card-surface .plan-features-list { gap: 10px; }
+.pricing-card-surface .feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.pricing-card-surface .feature-item { display: block; }
+.pricing-card-surface .feature-children {
+  list-style: none;
+  margin: 6px 0 2px 9px;
+  padding: 0 0 0 14px;
+  border-left: 1px solid #E9E9E7;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.pricing-card-surface .feature-level-1 > .feature-row .feature-check-icon,
+.pricing-card-surface .feature-level-2 > .feature-row .feature-check-icon {
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+}
+.pricing-card-surface .feature-level-1 > .feature-row .feature-text,
+.pricing-card-surface .feature-level-2 > .feature-row .feature-text {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #5F5E5B;
+}
+.pricing-card-surface .feature-level-2 > .feature-row .feature-text { font-size: 0.8rem; color: #787774; }
+.feature-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #B8B6B0;
+  display: block;
+}
+.pricing-card-surface .feature-item.feat-excluded > .feature-row .feature-text {
+  color: #9B9A97;
+  text-decoration: line-through;
+  text-decoration-color: #D3D1CB;
+  font-weight: 400;
+}
+.pricing-card-surface .feature-item.feat-excluded > .feature-row .feature-check-icon { color: #E03E3E; }
+.pricing-card-surface .feature-group {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid #E9E9E7;
+  display: block;
+}
+.pricing-card-surface .feature-group .feature-group-label {
+  border-top: none;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.pricing-card-surface .feature-group > .plan-features-list { margin: 0; }
+.pricing-card-surface .feat-extension {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed #E9E9E7;
+}
+
+.pricing-card-surface .feature-group > .plan-features-list { margin-top: 0; }
+
+/* Each card hugs its own content (no stretching to match tallest card) */
+.pricing-cards-grid { align-items: start; }
+.pricing-card-surface .plan-features-list { flex: 0 0 auto; }
+
+/* ─────────────────────────────────────────────────────────────
+   Individual modules — bento grid
+   ───────────────────────────────────────────────────────────── */
+.module-bento-section { margin-bottom: 72px; }
+.module-bento-header { text-align: center; margin-bottom: 28px; }
+.module-bento-kicker {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #F3912E;
+  margin-bottom: 8px;
+}
+.module-bento-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #37352F;
+  letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.module-bento-sub { font-size: 0.95rem; color: #787774; margin: 0; }
+
+.module-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+.module-bento-card {
+  background: #FFFFFF;
+  border: 1px solid #E9E9E7;
+  border-radius: 4px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.module-bento-card:hover { border-color: #D3D1CB; background: #FBFBFA; }
+.module-bento-card.span-2 { grid-column: span 2; }
+.module-bento-card.span-3 { grid-column: span 3; }
+.module-bento-card.span-4 { grid-column: span 4; }
+.module-bento-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.module-bento-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #F7F7F5;
+  color: #37352F;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.module-bento-num { font-size: 0.75rem; font-weight: 600; color: #B8B6B0; }
+.module-bento-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #37352F;
+  margin: 0;
+  line-height: 1.3;
+}
+.module-bento-note { font-size: 0.82rem; color: #787774; margin: 0; }
+.module-bento-includes {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.module-bento-includes li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: #5F5E5B;
+  background: #F7F7F5;
+  border-radius: 3px;
+  padding: 3px 8px;
+}
+.module-bento-includes li svg { color: #F3912E; }
+
+@media (max-width: 900px) {
+  .module-bento-grid { grid-template-columns: repeat(2, 1fr); }
+  .module-bento-card.span-2,
+  .module-bento-card.span-3,
+  .module-bento-card.span-4 { grid-column: span 1; }
+  .module-bento-card:first-child { grid-column: span 2; }
+}
+@media (max-width: 560px) {
+  .module-bento-grid { grid-template-columns: 1fr; }
+  .module-bento-card:first-child { grid-column: span 1; }
+  .module-bento-title { font-size: 1.4rem; }
+}
+
+.module-bento-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.module-bento-includes { margin-bottom: 4px; }
+.module-bento-price { display: flex; align-items: baseline; gap: 6px; }
+.module-price-figure {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #37352F;
+  letter-spacing: -0.02em;
+}
+.module-price-note { font-size: 0.74rem; color: #9B9A97; }
+.module-buy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  color: #37352F;
+  border: 1px solid #D3D1CB;
+  border-radius: 4px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.module-buy-btn:hover { background: #F7F7F5; border-color: #37352F; }
+
+/* ── Founder quote (below pricing cards) ── */
+.pricing-col { min-width: 0; }
+.founder-quote {
+  margin: 64px 0 0;
+  padding: 0 0 0 28px;
+}
+@media (max-width: 1024px) {
+  .founder-quote { margin: 40px 0 16px; }
+}
+.founder-quote-logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin-bottom: 14px;
+}
+.founder-quote-text {
+  position: relative;
+  margin: 0;
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+  line-height: 1.2;
+  color: #111;
+  letter-spacing: -0.01em;
+}
+.founder-quote-text--long {
+  font-size: clamp(1.35rem, 2.2vw, 1.65rem);
+  line-height: 1.3;
+}
+.founder-quote-mark {
+  position: absolute;
+  left: -0.5em;
+}
+.founder-quote-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+.founder-quote-name { color: #111; }
+.founder-quote-role { color: #8A8A8A; }
+
+/* ── Sticky plan heads: name, price and CTA stay pinned while features scroll,
+      released when the pricing grid ends (just before "Six Modules") ── */
+.pricing-cards-grid { align-items: stretch; }
+.pricing-col { display: flex; flex-direction: column; }
+
+.pricing-card-surface.plan-part-head {
+  position: sticky;
+  top: 64px; /* clears the fixed top navbar */
+  z-index: 5;
+  border-bottom: 1px solid #E9E9E7;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding-bottom: 24px;
+}
+.pricing-card-surface.plan-part-body {
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding-top: 20px;
+}
+.pricing-card-surface.plan-part-head:hover,
+.pricing-card-surface.plan-part-body:hover { border-color: #E9E9E7; box-shadow: none; }
+.pricing-card-surface.plan-part-head:hover { border-bottom-color: #E9E9E7; }
+
+/* Plus: orange outline drawn as a 2px border so the seam between parts stays clean */
+.pricing-card-surface.card-plus.plan-part-head,
+.pricing-card-surface.card-plus.plan-part-head:hover,
+.pricing-card-surface.card-plus.plan-part-body,
+.pricing-card-surface.card-plus.plan-part-body:hover {
+  border: 2px solid #F3912E;
+  box-shadow: none;
+}
+.pricing-card-surface.card-plus.plan-part-head,
+.pricing-card-surface.card-plus.plan-part-head:hover { border-bottom: 1px solid #F6D3AE; }
+.pricing-card-surface.card-plus.plan-part-body,
+.pricing-card-surface.card-plus.plan-part-body:hover { border-top: none; }
+
+@media (max-width: 1024px) {
+  .pricing-card-surface.plan-part-head { position: static; }
+}
+
+/* ── Bento card pattern: a faint dot texture that fades out
+      from the top-right corner so the text side stays clean ── */
+.module-bento-card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  --pat: rgba(55, 53, 47, 0.13);
+}
+.module-bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(120% 140% at 100% 0%, #000 0%, rgba(0,0,0,0.35) 45%, transparent 75%);
+          mask-image: radial-gradient(120% 140% at 100% 0%, #000 0%, rgba(0,0,0,0.35) 45%, transparent 75%);
+  transition: opacity 0.2s ease;
+}
+.module-bento-card:hover { --pat: rgba(243, 145, 46, 0.28); }
+
+/* One shared pattern for every card: a soft dot grid */
+.module-bento-card::before {
+  background-image: radial-gradient(var(--pat) 1.2px, transparent 1.6px);
+  background-size: 14px 14px;
+}
+
+.module-bento-icon { position: relative; box-shadow: 0 0 0 1px #E9E9E7; background: #FFFFFF; }

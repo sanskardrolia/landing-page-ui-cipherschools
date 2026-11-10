@@ -1,356 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Crown, Sparkles, Check, Flame, Coffee, Zap, ShieldCheck, 
   ArrowRight, ChevronDown, ChevronUp, Star, Award, CheckCircle2,
   Clock, X, Heart, HelpCircle, Code2, Terminal, Bot, Laptop,
   RotateCcw, PlayCircle, Unlock, RefreshCw, BookOpen, Layers,
-  Database, BarChart2, Workflow
+  Database, BarChart2, Workflow, Info
 } from 'lucide-react';
 import './PremiumPage.css';
 
-/* ── 6-Month Commitment Plans Data (20% Discount) ── */
-const PLANS_6M_DATA = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    badge: 'ESSENTIAL FOUNDATION • 20% OFF',
-    isPopular: false,
-    duration: '6m',
-    durationMonths: 6,
-    durationLabel: '6 Months',
-    commitmentText: 'with a commitment of 6 months',
-    price: 1194, // 20% off ₹249/mo (₹199 x 6)
-    priceFormatted: '₹1,194',
-    monthlyPrice: 199,
-    monthlyPriceFormatted: '₹199',
-    originalPrice: '₹1,494',
-    originalMonthlyPrice: '₹249',
-    discount: '20% OFF',
-    period: 'mon',
-    dailyCost: 6,
-    dailyText: '~₹6 / day',
-    chaiComparison: 'Cheaper than 1 cutting chai + biscuit ☕🍪',
-    pitch: 'Perfect for foundational prep, core DSA mastery & cracking your first coding rounds.',
-    accentColor: '#3B82F6',
-    extensionCost: 99,
-    extensionFormatted: '₹99/mon',
-    features: [
-      { text: 'Access to Any 2 Premium Courses of your choice', bold: true },
-      { text: '500+ exclusive DSA challenges', bold: true },
-      { text: '200+ SQL problems', bold: true },
-      { text: '3 AI Mock Interview Access Company / Role Based', bold: true },
-      { text: 'Future extension at ~40% cost (₹99/mon)', bold: true }
-    ],
-    ctaText: 'Choose Starter Plan',
-    ctaVariant: 'outline'
-  },
-  {
-    id: 'plus',
-    name: 'Plus',
-    badge: '🔥 MOST POPULAR • 20% OFF',
-    isPopular: true,
-    duration: '6m',
-    durationMonths: 6,
-    durationLabel: '6 Months',
-    commitmentText: 'with a commitment of 6 months',
-    price: 2400, // 20% off ₹500/mo (₹400 x 6)
-    priceFormatted: '₹2,400',
-    monthlyPrice: 400,
-    monthlyPriceFormatted: '₹400',
-    originalPrice: '₹3,000',
-    originalMonthlyPrice: '₹500',
-    discount: '20% OFF',
-    period: 'mon',
-    dailyCost: 13,
-    dailyText: '~₹13 / day',
-    chaiComparison: 'Less than a college canteen cutting chai ☕',
-    pitch: 'The sweet spot for cracking Tier-1 product firms, high-growth startups & FAANG.',
-    accentColor: '#F3912E',
-    extensionCost: 200,
-    extensionFormatted: '₹200/mon',
-    inheritedLabel: 'Everything from Starter, plus:',
-    features: [
-      { text: 'Access to Any 3 Premium Courses of your choice', bold: true, highlight: true },
-      { text: 'Plus 1,000 exclusive DSA challenges', bold: true, highlight: true },
-      { text: '400+ SQL problems', bold: true, highlight: true },
-      { text: '5 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '2 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'System Design Proctored Test', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹200/mon)', bold: true }
-    ],
-    ctaText: 'Claim Plus Access',
-    ctaVariant: 'primary'
-  },
-  {
-    id: 'compete',
-    name: 'Compete',
-    badge: '👑 ULTIMATE ACCELERATOR • 20% OFF',
-    isPopular: false,
-    duration: '6m',
-    durationMonths: 6,
-    durationLabel: '6 Months',
-    commitmentText: 'with a commitment of 6 months',
-    price: 3360, // 20% off ₹700/mo (₹560 x 6)
-    priceFormatted: '₹3,360',
-    monthlyPrice: 560,
-    monthlyPriceFormatted: '₹560',
-    originalPrice: '₹4,200',
-    originalMonthlyPrice: '₹700',
-    discount: '20% OFF',
-    period: 'mon',
-    dailyCost: 18,
-    dailyText: '~₹18 / day',
-    chaiComparison: '1 evening tea + canteen samosa ☕🥟',
-    pitch: 'All-inclusive full placement arsenal covering every round from aptitude to final interview.',
-    accentColor: '#10B981',
-    extensionCost: 280,
-    extensionFormatted: '₹280/mon',
-    inheritedLabel: 'Everything from Plus & Starter, plus:',
-    features: [
-      { text: 'Access to Any 5 Premium Courses of your choice', bold: true, highlight: true },
-      { text: '2,000+ exclusive DSA challenges', bold: true, highlight: true },
-      { text: '10 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '4 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'Full System Design Proctored Curriculum', bold: true, highlight: true },
-      { text: 'Aptitude, Verbal & Psychometric Tests', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹280/mon)', bold: true }
-    ],
-    ctaText: 'Go All-In with Compete',
-    ctaVariant: 'slate'
-  }
+/* ── Topic lists shown in the (i) hover tooltip next to DSA ── */
+const DSA_INFO_CORE = {
+  title: 'Data Structure & Algorithms',
+  topics: ['Arrays', 'Strings', 'Recurssion', 'LinkedList', 'Stack', 'Queue', 'Tree', 'Binary Tree', 'Graph']
+};
+const DSA_INFO_PLUS = {
+  title: 'Data Structure & Algorithms',
+  topics: ['Arrays', 'Strings', 'Hashing', 'Recurssion', 'LinkedList', 'Stack', 'Queue', 'Tree', 'Binary Tree', 'Heaps', 'Graph', 'Dynamic Programming']
+};
+
+/* ── Individual modules (bento grid) ──
+   Pricing tiers: ₹1,599 foundational · ₹2,000 specialised · ₹2,500 flagship / full-build */
+const MODULE_INCLUDES = [
+  { label: 'Lectures', icon: PlayCircle },
+  { label: 'Practice Questions', icon: Terminal },
+  { label: 'Proctored Test', icon: ShieldCheck }
+];
+const MODULE_CARDS = [
+  { id: 'dsa', price: 2500, title: 'Data Structure & Algorithm', icon: Workflow, span: 'span-4' },
+  { id: 'cf', price: 1599, title: 'Computer Fundamentals', note: 'OS, CN, OOPs', icon: Laptop, span: 'span-2' },
+  { id: 'dbms', price: 1599, title: 'Database Management & System', icon: Database, span: 'span-2' },
+  { id: 'mern', price: 2500, title: 'Development', note: 'MERN Stack', icon: Layers, span: 'span-4' },
+  { id: 'sd', price: 2000, title: 'System Design', icon: BarChart2, span: 'span-3' },
+  { id: 'genai', price: 2000, title: 'Generative A.I.', icon: Bot, span: 'span-3' }
 ];
 
-/* ── 3-Month Commitment Plans Data (10% Discount) ── */
-const PLANS_3M_DATA = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    badge: '⚡ 3-MONTH FAST-TRACK • 10% OFF',
-    isPopular: false,
-    duration: '3m',
-    durationMonths: 3,
-    durationLabel: '3 Months',
-    commitmentText: 'with a commitment of 3 months',
-    price: 672, // 10% off ₹249/mo (₹224 x 3)
-    priceFormatted: '₹672',
-    monthlyPrice: 224,
-    monthlyPriceFormatted: '₹224',
-    originalPrice: '₹747',
-    originalMonthlyPrice: '₹249',
-    discount: '10% OFF',
-    period: 'mon',
-    dailyCost: 7,
-    dailyText: '~₹7 / day',
-    chaiComparison: 'Less than 1 single cutting chai ☕',
-    pitch: 'Fast-track 90-day foundational sprint. Perfect for targeted semester or internship prep.',
-    accentColor: '#3B82F6',
-    extensionCost: 99,
-    extensionFormatted: '₹99/mon',
-    features: [
-      { text: 'Access to Any 2 Premium Courses of your choice', bold: true },
-      { text: '500+ exclusive DSA challenges', bold: true },
-      { text: '200+ SQL problems', bold: true },
-      { text: '3 AI Mock Interview Access Company / Role Based', bold: true },
-      { text: 'Future extension at ~40% cost (₹99/mon)', bold: true }
-    ],
-    ctaText: 'Choose 3-Month Starter',
-    ctaVariant: 'outline'
-  },
-  {
-    id: 'plus',
-    name: 'Plus',
-    badge: '🔥 3-MONTH FAST-TRACK • 10% OFF',
-    isPopular: true,
-    duration: '3m',
-    durationMonths: 3,
-    durationLabel: '3 Months',
-    commitmentText: 'with a commitment of 3 months',
-    price: 1350, // 10% off ₹500/mo (₹450 x 3)
-    priceFormatted: '₹1,350',
-    monthlyPrice: 450,
-    monthlyPriceFormatted: '₹450',
-    originalPrice: '₹1,500',
-    originalMonthlyPrice: '₹500',
-    discount: '10% OFF',
-    period: 'mon',
-    dailyCost: 15,
-    dailyText: '~₹15 / day',
-    chaiComparison: '1 hot cutting chai with bun muska ☕🥪',
-    pitch: 'The highest-intensity 90-day sprint for product firms, DSA & system design rounds.',
-    accentColor: '#F3912E',
-    extensionCost: 200,
-    extensionFormatted: '₹200/mon',
-    inheritedLabel: 'Everything from Starter, plus:',
-    features: [
-      { text: 'Access to Any 3 Premium Courses of your choice', bold: true, highlight: true },
-      { text: 'Plus 1,000 exclusive DSA challenges', bold: true, highlight: true },
-      { text: '400+ SQL problems', bold: true, highlight: true },
-      { text: '5 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '2 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'System Design Proctored Test', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹200/mon)', bold: true }
-    ],
-    ctaText: 'Claim 3-Month Plus Access',
-    ctaVariant: 'primary'
-  },
-  {
-    id: 'compete',
-    name: 'Compete',
-    badge: '👑 3-MONTH FAST-TRACK • 10% OFF',
-    isPopular: false,
-    duration: '3m',
-    durationMonths: 3,
-    durationLabel: '3 Months',
-    commitmentText: 'with a commitment of 3 months',
-    price: 1890, // 10% off ₹700/mo (₹630 x 3)
-    priceFormatted: '₹1,890',
-    monthlyPrice: 630,
-    monthlyPriceFormatted: '₹630',
-    originalPrice: '₹2,100',
-    originalMonthlyPrice: '₹700',
-    discount: '10% OFF',
-    period: 'mon',
-    dailyCost: 21,
-    dailyText: '~₹21 / day',
-    chaiComparison: '1 plate hot canteen poha or tea ☕🥪',
-    pitch: 'The full placement powerhouse in a concentrated 90-day bootcamp sprint.',
-    accentColor: '#10B981',
-    extensionCost: 280,
-    extensionFormatted: '₹280/mon',
-    inheritedLabel: 'Everything from Plus & Starter, plus:',
-    features: [
-      { text: 'Access to Any 5 Premium Courses of your choice', bold: true, highlight: true },
-      { text: '2,000+ exclusive DSA challenges', bold: true, highlight: true },
-      { text: '10 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '4 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'Full System Design Proctored Curriculum', bold: true, highlight: true },
-      { text: 'Aptitude, Verbal & Psychometric Tests', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹280/mon)', bold: true }
-    ],
-    ctaText: 'Go All-In for 3 Months',
-    ctaVariant: 'slate'
-  }
-];
+/* ── Shared offering building blocks (module → sub-offerings tree) ── */
+const aiAssistedTest = () => ({ text: 'AI Assisted Test', children: [{ text: 'Approach Based' }, { text: 'AI Literacy Based' }] });
+const proctoredTest = () => ({ text: 'Proctored AI Assisted Test (Industry Standard)', children: [{ text: 'Debugging Test' }, { text: 'Vibe Coding Test' }] });
+const GENERIC_AND_COMPANY = 'Test Type: Generic + Company Specific';
+const recordedLectures = () => ({ text: 'Recorded Lectures' });
 
-/* ── 1-Month Commitment Plans Data (Base Monthly Rates) ── */
-const PLANS_1M_DATA = [
-  {
-    id: 'starter',
-    name: 'Starter',
-    badge: '⚡ 1-MONTH SPRINT',
-    isPopular: false,
-    duration: '1m',
-    durationMonths: 1,
-    durationLabel: '1 Month',
-    commitmentText: 'with a commitment of 1 month',
-    price: 249,
-    priceFormatted: '₹249',
-    monthlyPrice: 249,
-    monthlyPriceFormatted: '₹249',
-    originalPrice: '₹349',
-    originalMonthlyPrice: '₹349',
-    discount: 'BASE RATE',
-    period: 'mon',
-    dailyCost: 8,
-    dailyText: '~₹8 / day',
-    chaiComparison: 'Literally half a cup of cutting chai ☕',
-    pitch: 'Flexible 30-day foundational burst. Solve DSA problems & explore premium programs.',
-    accentColor: '#3B82F6',
-    extensionCost: 99,
-    extensionFormatted: '₹99/mon',
-    features: [
-      { text: 'Access to Any 2 Premium Courses of your choice', bold: true },
-      { text: '500+ exclusive DSA challenges', bold: true },
-      { text: '200+ SQL problems', bold: true },
-      { text: '3 AI Mock Interview Access Company / Role Based', bold: true },
-      { text: 'Future extension at ~40% cost (₹99/mon)', bold: true }
-    ],
-    ctaText: 'Choose 1-Month Starter',
-    ctaVariant: 'outline'
-  },
-  {
-    id: 'plus',
-    name: 'Plus',
-    badge: '🔥 1-MONTH INTENSIVE',
-    isPopular: true,
-    duration: '1m',
-    durationMonths: 1,
-    durationLabel: '1 Month',
-    commitmentText: 'with a commitment of 1 month',
-    price: 500,
-    priceFormatted: '₹500',
-    monthlyPrice: 500,
-    monthlyPriceFormatted: '₹500',
-    originalPrice: '₹699',
-    originalMonthlyPrice: '₹699',
-    discount: 'BASE RATE',
-    period: 'mon',
-    dailyCost: 16,
-    dailyText: '~₹16 / day',
-    chaiComparison: '1 tapri cutting tea + Parle-G ☕🍪',
-    pitch: 'Targeted 30-day burst with AI mock interviews & product proctored assessments.',
-    accentColor: '#F3912E',
-    extensionCost: 200,
-    extensionFormatted: '₹200/mon',
-    inheritedLabel: 'Everything from Starter, plus:',
-    features: [
-      { text: 'Access to Any 3 Premium Courses of your choice', bold: true, highlight: true },
-      { text: 'Plus 1,000 exclusive DSA challenges', bold: true, highlight: true },
-      { text: '400+ SQL problems', bold: true, highlight: true },
-      { text: '5 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '2 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'System Design Proctored Test', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹200/mon)', bold: true }
-    ],
-    ctaText: 'Claim 1-Month Plus Access',
-    ctaVariant: 'primary'
-  },
-  {
-    id: 'compete',
-    name: 'Compete',
-    badge: '👑 1-MONTH POWER PASS',
-    isPopular: false,
-    duration: '1m',
-    durationMonths: 1,
-    durationLabel: '1 Month',
-    commitmentText: 'with a commitment of 1 month',
-    price: 700,
-    priceFormatted: '₹700',
-    monthlyPrice: 700,
-    monthlyPriceFormatted: '₹700',
-    originalPrice: '₹999',
-    originalMonthlyPrice: '₹999',
-    discount: 'BASE RATE',
-    period: 'mon',
-    dailyCost: 23,
-    dailyText: '~₹23 / day',
-    chaiComparison: '1 canteen samosa or hot filter coffee 🥟☕',
-    pitch: 'Full unrestricted placement suite for urgent upcoming interview preparation.',
-    accentColor: '#10B981',
-    extensionCost: 280,
-    extensionFormatted: '₹280/mon',
-    inheritedLabel: 'Everything from Plus & Starter, plus:',
-    features: [
-      { text: 'Access to Any 5 Premium Courses of your choice', bold: true, highlight: true },
-      { text: '2,000+ exclusive DSA challenges', bold: true, highlight: true },
-      { text: '10 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '4 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'Full System Design Proctored Curriculum', bold: true, highlight: true },
-      { text: 'Aptitude, Verbal & Psychometric Tests', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹280/mon)', bold: true }
-    ],
-    ctaText: 'Go All-In for 1 Month',
-    ctaVariant: 'slate'
-  }
+const dsaAdvancedModule = (info) => ({
+  text: 'DSA Advanced Module',
+  info,
+  children: [recordedLectures(), aiAssistedTest(), { text: GENERIC_AND_COMPANY }, { text: '1500 Questions + 30 new questions/mon' }]
+});
+const mernModule = () => ({ text: 'Full Stack Development [MERN] Module', children: [recordedLectures(), proctoredTest(), { text: GENERIC_AND_COMPANY }] });
+const jfsModule = () => ({ text: 'Full Stack Development [JFS] Module', children: [recordedLectures(), proctoredTest(), { text: GENERIC_AND_COMPANY }] });
+const devopsModule = () => ({ text: 'DevOps & Cloud Computing Module', children: [recordedLectures()] });
+const systemDesignModule = () => ({ text: 'System Design Module', children: [recordedLectures()] });
+const genAiModule = () => ({ text: 'Generative A.I. Module', children: [recordedLectures()] });
+const commBehaviouralModule = () => ({ text: 'Communication & Behavioural Module', children: [recordedLectures()] });
+
+/* Everything Plus adds on top of Core (reused as Plus's list and Core's "not included" list) */
+const plusOnlyModules = (info) => [
+  dsaAdvancedModule(info),
+  mernModule(),
+  jfsModule(),
+  devopsModule(),
+  systemDesignModule(),
+  genAiModule(),
+  commBehaviouralModule()
 ];
 
 /* ── 12-Month Commitment Plans Data (Max 30% Discount) ── */
-const PLANS_12M_DATA = [
+export const PLANS_12M_DATA = [
   {
     id: 'starter',
-    name: 'Starter',
-    badge: '🌱 1-YEAR PLACEMENT FOUNDATION • 30% OFF',
+    name: 'Core',
     isPopular: false,
     duration: '12m',
     durationMonths: 12,
@@ -372,19 +90,31 @@ const PLANS_12M_DATA = [
     extensionCost: 99,
     extensionFormatted: '₹99/mon',
     features: [
-      { text: 'Access to Any 2 Premium Courses of your choice', bold: true },
-      { text: '500+ exclusive DSA challenges', bold: true },
-      { text: '200+ SQL problems', bold: true },
-      { text: '3 AI Mock Interview Access Company / Role Based', bold: true },
-      { text: 'Future extension at ~40% cost (₹99/mon)', bold: true }
+      {
+        text: 'Computer Fundamentals Module',
+        children: [recordedLectures(), { text: 'Operating System' }, { text: 'Computer Networks' }, { text: 'OOPs & Programming Language' }]
+      },
+      { text: 'DBMS Module', children: [recordedLectures()] },
+      {
+        text: 'Data Structures & Algorithms Module',
+        info: DSA_INFO_CORE,
+        children: [
+          recordedLectures(),
+          aiAssistedTest(),
+          { text: 'Test Type: Generic' },
+          { text: '1000 Questions + 15 new questions/mon' },
+          { text: 'Company Specific Tests', excluded: true }
+        ]
+      },
+      { text: 'Generic Mock Interview' },
+      { text: 'Future extension at ~40% cost (₹99/mon)', extension: true }
     ],
-    ctaText: 'Choose 1-Year Starter',
+    ctaText: 'Choose 1-Year Core',
     ctaVariant: 'outline'
   },
   {
     id: 'plus',
     name: 'Plus',
-    badge: '🔥 1-YEAR CAREER CATALYST • 30% OFF',
     isPopular: true,
     duration: '12m',
     durationMonths: 12,
@@ -405,72 +135,56 @@ const PLANS_12M_DATA = [
     accentColor: '#F3912E',
     extensionCost: 200,
     extensionFormatted: '₹200/mon',
-    inheritedLabel: 'Everything from Starter, plus:',
+    inheritedLabel: 'All in Core, plus:',
     features: [
-      { text: 'Access to Any 3 Premium Courses of your choice', bold: true, highlight: true },
-      { text: 'Plus 1,000 exclusive DSA challenges', bold: true, highlight: true },
-      { text: '400+ SQL problems', bold: true, highlight: true },
-      { text: '5 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '2 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'System Design Proctored Test', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹200/mon)', bold: true }
+      ...plusOnlyModules(DSA_INFO_PLUS),
+      { text: 'Company Specific Mock Interview' },
+      { text: 'Future extension at ~40% cost (₹200/mon)', extension: true }
     ],
     ctaText: 'Claim 1-Year Plus Access',
     ctaVariant: 'primary'
-  },
-  {
-    id: 'compete',
-    name: 'Compete',
-    badge: '👑 1-YEAR ULTIMATE FELLOWSHIP • 30% OFF',
-    isPopular: false,
-    duration: '12m',
-    durationMonths: 12,
-    durationLabel: '12 Months',
-    commitmentText: 'with a commitment of 12 months',
-    price: 5880, // 30% off ₹700/mo (₹490 x 12)
-    priceFormatted: '₹5,880',
-    monthlyPrice: 490,
-    monthlyPriceFormatted: '₹490',
-    originalPrice: '₹8,400',
-    originalMonthlyPrice: '₹700',
-    discount: '30% OFF',
-    period: 'mon',
-    dailyCost: 16,
-    dailyText: '~₹16 / day',
-    chaiComparison: 'Just 1 tapri tea with a friend ☕',
-    pitch: 'The gold-standard 365-day placement program covering every FAANG & Tier-1 assessment.',
-    accentColor: '#10B981',
-    extensionCost: 280,
-    extensionFormatted: '₹280/mon',
-    inheritedLabel: 'Everything from Plus & Starter, plus:',
-    features: [
-      { text: 'Access to Any 5 Premium Courses of your choice', bold: true, highlight: true },
-      { text: '2,000+ exclusive DSA challenges', bold: true, highlight: true },
-      { text: '10 AI Mock Interview Access Company / Role Based', bold: true, highlight: true },
-      { text: '4 Company Specific Test / weekly', bold: true, highlight: true },
-      { text: 'Full System Design Proctored Curriculum', bold: true, highlight: true },
-      { text: 'Aptitude, Verbal & Psychometric Tests', bold: true, highlight: true },
-      { text: 'Future extension at ~40% cost (₹280/mon)', bold: true }
-    ],
-    ctaText: 'Go All-In for 1 Year',
-    ctaVariant: 'slate'
   }
 ];
 
-const PLANS_BY_DURATION = {
-  '1m': PLANS_1M_DATA,
-  '3m': PLANS_3M_DATA,
-  '6m': PLANS_6M_DATA,
-  '12m': PLANS_12M_DATA,
+const PLANS_DATA = PLANS_12M_DATA;
+
+/* URL slug for each checkout-able plan id (Core's internal id is 'starter') */
+export const PLAN_SLUGS = { starter: 'core', plus: 'plus' };
+
+/* ── Founder quotes shown under specific plan cards (keyed by plan id) ── */
+const FOUNDER_QUOTES = {
+  free: 'You can start from FREE.',
+  starter: "If you need a path, roadmap, personalization and guidance, it's fair to upgrade to what we build for learners.",
 };
 
-const PLANS_DATA = PLANS_6M_DATA;
+/* ── Free plan (rendered before Core; not part of checkout plans) ── */
+const FREE_PLAN = {
+  id: 'free',
+  name: 'Free',
+  isFree: true,
+  startsAt: 'Starts at ₹0/-',
+  features: [
+    { text: 'Limited access to content' },
+    { text: '300 Practice questions' },
+    {
+      header: 'Not included in Free',
+      excluded: true,
+      items: [
+        { text: 'Personalization' },
+        { text: 'Roadmap' },
+        { text: 'Modern Test (AI Assisted)' },
+        { text: 'System Design' }
+      ]
+    }
+  ],
+  ctaText: 'Start for Free'
+};
 
 /* ── FAQs ── */
 const FAQS = [
   {
     q: 'How do duration commitment discounts work?',
-    a: 'You can choose between flexible 1-Month access (Starter ₹249/mo, Plus ₹500/mo, Compete ₹700/mo), or save with multi-month commitments: 3 Months gets 10% OFF, 6 Months gets 20% OFF, and 12 Months gets our MAX 30% OFF across all plans (Starter from ₹174/mon, Plus from ₹350/mon, Compete from ₹490/mon).'
+    a: 'All plans are a 12-month commitment with our MAX 30% OFF: Core at ₹174/mon and Plus at ₹350/mon.'
   },
   {
     q: 'What happens after my commitment plan ends?',
@@ -478,18 +192,18 @@ const FAQS = [
   },
   {
     q: 'Can I extend my subscription after my plan ends?',
-    a: 'Yes! Whenever you need more active AI mock interviews, new proctored exam attempts, or cloud sandbox execution, you can extend your full active subscription anytime at near 40% of base rate (Starter: ₹99/mon, Plus: ₹200/mon, Compete: ₹280/mon).'
+    a: 'Yes! Whenever you need more active AI mock interviews, new proctored exam attempts, or cloud sandbox execution, you can extend your full active subscription anytime at near 40% of base rate (Core: ₹99/mon, Plus: ₹200/mon).'
   },
   {
     q: 'How does the plan validity work?',
-    a: 'Your access begins the moment your payment completes and stays active for your full selected duration (30, 90, 180, or 365 days). You get unlimited access to practice sandboxes, recorded modules, and scheduled mock interviews throughout this period.'
+    a: 'Your access begins the moment your payment completes and stays active for your full selected duration (365 days). You get unlimited access to practice sandboxes, recorded modules, and scheduled mock interviews throughout this period.'
   },
   {
     q: 'What is the quirky chai/daily math you mentioned?',
-    a: 'We calculated the daily cost: Starter is only ~₹5–₹8/day, Plus is ~₹11–₹16/day, and Compete is ~₹16–₹23/day. Most college students spend more on a single cutting chai or canteen snack than the cost of landing a 12+ LPA software role!'
+    a: 'We calculated the daily cost: Core is only ~₹5–₹8/day, and Plus is ~₹11–₹16/day. Most college students spend more on a single cutting chai or canteen snack than the cost of landing a 12+ LPA software role!'
   },
   {
-    q: 'Can I upgrade from Starter to Plus or Compete later?',
+    q: 'Can I upgrade from Core to Plus later?',
     a: 'Yes! You can upgrade at any time during your plan. You will only pay the prorated price difference, and your features will unlock instantly.'
   },
   {
@@ -498,7 +212,7 @@ const FAQS = [
   }
 ];
 
-/* ── Program Selection Options (Upto 2 in Starter, 3 in Plus, 5 in Compete • Extra at ₹399/ea) ── */
+/* ── Program Selection Options (Upto 2 in Core, 3 in Plus • Extra at ₹399/ea) ── */
 const EXTRA_COURSE_PRICE = 399;
 
 const PROGRAM_OPTIONS = [
@@ -979,10 +693,52 @@ const PROGRAM_OPTIONS = [
   }
 ];
 
+/* ── Recursive offering tree: module → sub-offerings (excluded state inherits downward) ── */
+export const FeatureTree = ({ nodes, level = 0, excluded = false }) => (
+  <ul className={level === 0 ? 'plan-features-list' : 'feature-children'}>
+    {nodes.map((node, idx) => {
+      const isExcluded = excluded || !!node.excluded;
+      if (node.header !== undefined) {
+        return (
+          <li key={idx} className="feature-group">
+            {node.header && <div className="feature-group-label">{node.header}</div>}
+            <FeatureTree nodes={node.items} level={0} excluded={node.excluded} />
+          </li>
+        );
+      }
+      return (
+        <li
+          key={idx}
+          className={`feature-item feature-level-${level} ${isExcluded ? 'feat-excluded' : ''} ${node.extension ? 'feat-extension' : ''}`}
+        >
+          <div className="feature-row">
+            <span className="feature-check-icon">
+              {isExcluded ? <X size={level === 0 ? 14 : 11} strokeWidth={2.8} /> : (level === 0 ? <Check size={14} strokeWidth={2.8} /> : <span className="feature-dot" />)}
+            </span>
+            <span className={`feature-text ${level === 0 ? 'feat-bold' : ''}`}>{node.text}</span>
+            {node.info && (
+              <span className="info-tip" tabIndex={0} aria-label={`${node.info.title} topics`}>
+                <Info size={14} />
+                <span className="info-tip-box" role="tooltip">
+                  <span className="info-tip-title">{node.info.title}</span>
+                  <ul>
+                    {node.info.topics.map((t) => <li key={t}>{t}</li>)}
+                  </ul>
+                </span>
+              </span>
+            )}
+          </div>
+          {node.children && <FeatureTree nodes={node.children} level={level + 1} excluded={isExcluded} />}
+        </li>
+      );
+    })}
+  </ul>
+);
+
 const getMaxCoursesForPlan = (planId) => {
   if (planId === 'compete') return 5;
   if (planId === 'plus') return 3;
-  return 2; // Starter
+  return 2; // Core
 };
 
 const getDefaultProgramsForPlan = (planId) => {
@@ -998,9 +754,9 @@ const COMPARISON_GROUPS = [
     features: [
       {
         name: 'Access to Premium Courses Included',
-        desc: 'Choose from Full Stack, DBMS, Cloud & DevOps, DSA, Gen AI, Data Science, Prompt Eng & FDE (Add more at ₹399/course)',
-        starter: '2 Included (Extra ₹399/ea)',
-        plus: '3 Included (Extra ₹399/ea)',
+        desc: 'Core: Computer Fundamentals, DBMS, DSA. Plus: all of Core + DSA Advanced, MERN, JFS, DevOps & Cloud, System Design, Gen AI, Communication & Behavioural',
+        starter: '3 Core Modules',
+        plus: 'All 10 Modules',
         compete: '5 Included (Extra ₹399/ea)',
         starterType: 'badge-highlight',
         plusType: 'badge-highlight',
@@ -1191,40 +947,9 @@ const renderComparisonCell = (feat, planKey) => {
   return <span className="table-plain-text">{val}</span>;
 };
 
-const DURATION_PILL_OPTIONS = [
-  { 
-    id: '1m', 
-    title: '1 Month', 
-    sub: 'From ₹249/mon • Flexible', 
-    discountBadge: null,
-    badgeClass: '' 
-  },
-  { 
-    id: '3m', 
-    title: '3 Months', 
-    sub: 'From ₹224/mon • Fast-Track', 
-    discountBadge: '10% OFF',
-    badgeClass: 'badge-upon-green' 
-  },
-  { 
-    id: '6m', 
-    title: '6 Months', 
-    sub: 'From ₹199/mon • Full Runway', 
-    discountBadge: '🔥 20% OFF',
-    badgeClass: 'badge-upon-orange' 
-  },
-  { 
-    id: '12m', 
-    title: '12 Months', 
-    sub: 'From ₹174/mon • 1-Year Track', 
-    discountBadge: '30% OFF',
-    badgeClass: 'badge-upon-purple' 
-  },
-];
-
 const PremiumPage = () => {
+  const navigate = useNavigate();
   const [activeFaq, setActiveFaq] = useState(null);
-  const [selectedDuration, setSelectedDuration] = useState('6m'); // '6m' or '3m'
   
   // Checkout Modal State
   const [selectedPlanForModal, setSelectedPlanForModal] = useState(null);
@@ -1245,10 +970,20 @@ const PremiumPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  /* Plan CTAs open the dedicated plan-details page. The state flag is what
+     lets that page render; visiting its URL directly bounces back here. */
   const handleOpenCheckout = (planOrId) => {
+    const planId = typeof planOrId === 'string' ? planOrId : planOrId?.id;
+    const slug = PLAN_SLUGS[planId];
+    if (!slug) return;
+    navigate(`/premium/checkout/${slug}`, { state: { fromPremiumCta: true } });
+  };
+
+  // Previous in-page checkout modal (no longer opened by the plan CTAs)
+  const openCheckoutModal = (planOrId) => {
     let plan = planOrId;
     if (typeof planOrId === 'string') {
-      plan = activePlans.find(p => p.id === planOrId) || PLANS_6M_DATA.find(p => p.id === planOrId);
+      plan = activePlans.find(p => p.id === planOrId) || PLANS_12M_DATA.find(p => p.id === planOrId);
     }
     setSelectedPlanForModal(plan);
     setSelectedPrograms(getDefaultProgramsForPlan(plan?.id));
@@ -1257,15 +992,6 @@ const PremiumPage = () => {
     setDiscountAmount(0);
     setIsSuccessState(false);
     setViewingSyllabusProgram(null);
-  };
-
-  const switchModalDuration = (targetDuration) => {
-    if (!selectedPlanForModal) return;
-    const targetList = PLANS_BY_DURATION[targetDuration] || PLANS_6M_DATA;
-    const matchedPlan = targetList.find(p => p.id === selectedPlanForModal.id);
-    if (matchedPlan) {
-      setSelectedPlanForModal(matchedPlan);
-    }
   };
 
   const handleCloseCheckout = () => {
@@ -1313,29 +1039,16 @@ const PremiumPage = () => {
     setIsSuccessState(true);
   };
 
-  const activePlans = PLANS_BY_DURATION[selectedDuration] || PLANS_6M_DATA;
+  const activePlans = PLANS_12M_DATA;
 
   return (
     <div className="premium-page-viewport">
       <div className="premium-page-container">
 
-        {/* ── Breadcrumb ── */}
-        <div className="premium-breadcrumb">
-          <Link to="/" className="breadcrumb-nav-link">Home</Link>
-          <span className="breadcrumb-separator">/</span>
-          <span className="breadcrumb-active-tag">Premium Plans</span>
-        </div>
-
         {/* ── Hero Section ── */}
         <div className="premium-hero-box">
-          <div className="premium-hero-badge">
-            <Crown size={15} className="hero-crown-icon" />
-            <span>CIPHERSCHOOLS PREMIUM • CAREER SPRINTS</span>
-          </div>
-
           <h1 className="premium-hero-title">
-            Level Up Your Tech Career.<br />
-            <span className="text-gradient-orange">For Less Than A Cup Of Chai A Day.</span>
+            A Plan for Every Learner
           </h1>
 
           <p className="premium-hero-sub">
@@ -1343,55 +1056,43 @@ const PremiumPage = () => {
           </p>
         </div>
 
-        {/* ── Pill-Shaped Duration Switcher with Floating Upon-Badges ── */}
-        <div className="duration-selector-wrap">
-          <div className="duration-toggle-pillbox">
-            {DURATION_PILL_OPTIONS.map((opt) => {
-              const isActive = selectedDuration === opt.id;
-              return (
-                <button 
-                  key={opt.id}
-                  type="button"
-                  className={`duration-tab-btn ${isActive ? 'active' : ''}`}
-                  onClick={() => setSelectedDuration(opt.id)}
-                >
-                  {opt.discountBadge && (
-                    <span className={`duration-upon-badge ${opt.badgeClass}`}>
-                      {opt.discountBadge}
-                    </span>
-                  )}
-                  <span className="duration-tab-title">{opt.title}</span>
-                  <span className="duration-tab-tag">{opt.sub}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* ── 3 Pricing Cards Grid ── */}
         <div className="pricing-cards-section">
           <div className="pricing-cards-grid">
-            {activePlans.map((plan) => (
-              <div 
-                key={plan.id}
-                className={`pricing-card-surface ${plan.isPopular ? 'popular-card' : ''} card-${plan.id}`}
+            {[FREE_PLAN, ...activePlans].map((plan) => (
+              <div key={plan.id} className={`pricing-col pricing-col-${plan.id}`}>
+              {/* Sticky top: name, price and CTA stay pinned while the features scroll */}
+              <div
+                className={`pricing-card-surface plan-part-head ${plan.isPopular ? 'popular-card' : ''} card-${plan.id}`}
               >
-                {/* Popular / Tier Ribbon */}
-                <div className={`plan-ribbon ${plan.isPopular ? 'ribbon-popular' : ''}`}>
-                  {plan.badge}
-                </div>
-
                 {/* Plan Header */}
                 <div className="plan-header">
                   <div className="plan-title-row">
                     <h3 className="plan-name">{plan.name}</h3>
-                    {plan.id === 'compete' && <Crown size={20} className="text-emerald-500" />}
                     {plan.id === 'plus' && <Flame size={20} className="text-orange-500" />}
                     {plan.id === 'starter' && <Zap size={20} className="text-blue-500" />}
                   </div>
-                  <p className="plan-pitch">{plan.pitch}</p>
                 </div>
 
+                {plan.isFree ? (
+                  <>
+                    <div className="plan-price-block">
+                      <div className="price-main-line">
+                        <span className="price-figure">₹0</span>
+                        <span className="price-period">/-</span>
+                      </div>
+                      <div className="price-commitment-line">
+                        <span className="price-commitment-badge">{plan.startsAt}</span>
+                        <span className="price-total-billed price-free-note">No card required</span>
+                      </div>
+                    </div>
+                    <Link to="/login" className="plan-cta-btn btn-outline">
+                      <span>{plan.ctaText}</span>
+                      <ArrowRight size={16} />
+                    </Link>
+                  </>
+                ) : (
+                  <>
                 {/* Price Block */}
                 <div className="plan-price-block">
                   <div className="price-main-line">
@@ -1406,13 +1107,6 @@ const PremiumPage = () => {
                     <span className="price-original">{plan.originalMonthlyPrice}/mon</span>
                     <span className="price-discount-tag">{plan.discount}</span>
                   </div>
-                  
-                  {/* Quirky Daily Tag */}
-                  <div className="plan-daily-pill">
-                    <Coffee size={13} />
-                    <span className="daily-bold">{plan.dailyText}</span>
-                    <span className="daily-note">• {plan.chaiComparison}</span>
-                  </div>
                 </div>
 
                 {/* CTA Button */}
@@ -1424,8 +1118,13 @@ const PremiumPage = () => {
                   <ArrowRight size={16} />
                 </button>
 
-                {/* Divider */}
-                <div className="plan-card-divider"></div>
+                  </>
+                )}
+              </div>
+
+              <div
+                className={`pricing-card-surface plan-part-body ${plan.isPopular ? 'popular-card' : ''} card-${plan.id}`}
+              >
 
                 {/* Features Header */}
                 {plan.inheritedLabel && (
@@ -1436,18 +1135,7 @@ const PremiumPage = () => {
                 )}
 
                 {/* Features List */}
-                <ul className="plan-features-list">
-                  {plan.features.map((feat, idx) => (
-                    <li key={idx} className={`feature-item ${feat.highlight ? 'feat-highlight' : ''}`}>
-                      <div className="feature-check-icon">
-                        <Check size={14} strokeWidth={2.8} />
-                      </div>
-                      <span className={`feature-text ${feat.bold ? 'feat-bold' : ''}`}>
-                        {feat.text}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <FeatureTree nodes={plan.features} />
 
                 {/* Footer Assurance */}
                 <div className="plan-footer-assurance">
@@ -1455,121 +1143,63 @@ const PremiumPage = () => {
                   <span>Instant access • 100% money-back 7-day guarantee</span>
                 </div>
               </div>
+
+              {/* Founder quote — sits under the Free and Core cards */}
+              {FOUNDER_QUOTES[plan.id] && (
+                <figure className="founder-quote">
+                  <blockquote className={`founder-quote-text${FOUNDER_QUOTES[plan.id].length > 40 ? ' founder-quote-text--long' : ''}`}>
+                    <span className="founder-quote-mark">“</span>{FOUNDER_QUOTES[plan.id]}”
+                  </blockquote>
+                  <figcaption className="founder-quote-meta">
+                    <span className="founder-quote-name">Anurag</span>
+                    <span className="founder-quote-role">Founder, CipherSchools</span>
+                  </figcaption>
+                </figure>
+              )}
+              </div>
             ))}
           </div>
         </div>
 
-        {/* ── Feature Comparison Table Section (Cross & Tick Format) ── */}
-        <div className="plan-comparison-section" id="compare-plans">
-          <div className="comparison-header">
-            <span className="comparison-kicker">DETAILED BREAKDOWN</span>
-            <h2 className="comparison-title">Compare All Features Side-by-Side</h2>
-            <p className="comparison-sub">
-              A transparent look at what is included and what is not included across Starter, Plus, and Compete.
-            </p>
+        {/* ── Individual Modules (Bento Grid) ── */}
+        <div className="module-bento-section">
+          <div className="module-bento-header">
+            <h2 className="module-bento-title">Six Modules. Everything You Need to Get Hired.</h2>
+            <p className="module-bento-sub">Every module comes with lectures, practice questions and a proctored test.</p>
           </div>
-
-          <div className="comparison-table-card">
-            <div className="comparison-table-wrapper">
-              <table className="comparison-table">
-                <thead>
-                  <tr>
-                    <th className="th-feature-col">
-                      <span className="th-feature-heading">Features & Deliverables</span>
-                      <span className="th-feature-sub">Everything included in your enrollment</span>
-                    </th>
-                    <th className="th-plan-col">
-                      <div className="th-plan-box">
-                        <span className="th-plan-badge badge-starter">FOUNDATION</span>
-                        <h4 className="th-plan-name">Starter</h4>
-                        <div className="th-plan-price">
-                          {activePlans.find(p => p.id === 'starter')?.monthlyPriceFormatted}
-                          <span className="th-plan-period">/ mon</span>
-                        </div>
-                        <div className="th-plan-commitment">
-                          with {activePlans.find(p => p.id === 'starter')?.durationLabel} commitment ({activePlans.find(p => p.id === 'starter')?.priceFormatted})
-                        </div>
-                        <button 
-                          type="button" 
-                          className="th-plan-cta btn-starter"
-                          onClick={() => handleOpenCheckout('starter')}
-                        >
-                          Choose Starter
-                        </button>
-                      </div>
-                    </th>
-                    <th className="th-plan-col th-plus-highlight">
-                      <div className="th-plan-box">
-                        <span className="th-plan-badge badge-plus">🔥 MOST POPULAR</span>
-                        <h4 className="th-plan-name">Plus</h4>
-                        <div className="th-plan-price">
-                          {activePlans.find(p => p.id === 'plus')?.monthlyPriceFormatted}
-                          <span className="th-plan-period">/ mon</span>
-                        </div>
-                        <div className="th-plan-commitment">
-                          with {activePlans.find(p => p.id === 'plus')?.durationLabel} commitment ({activePlans.find(p => p.id === 'plus')?.priceFormatted})
-                        </div>
-                        <button 
-                          type="button" 
-                          className="th-plan-cta btn-plus"
-                          onClick={() => handleOpenCheckout('plus')}
-                        >
-                          Claim Plus Access
-                        </button>
-                      </div>
-                    </th>
-                    <th className="th-plan-col">
-                      <div className="th-plan-box">
-                        <span className="th-plan-badge badge-compete">👑 ALL-IN-ONE</span>
-                        <h4 className="th-plan-name">Compete</h4>
-                        <div className="th-plan-price">
-                          {activePlans.find(p => p.id === 'compete')?.monthlyPriceFormatted}
-                          <span className="th-plan-period">/ mon</span>
-                        </div>
-                        <div className="th-plan-commitment">
-                          with {activePlans.find(p => p.id === 'compete')?.durationLabel} commitment ({activePlans.find(p => p.id === 'compete')?.priceFormatted})
-                        </div>
-                        <button 
-                          type="button" 
-                          className="th-plan-cta btn-compete"
-                          onClick={() => handleOpenCheckout('compete')}
-                        >
-                          Go Compete
-                        </button>
-                      </div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {COMPARISON_GROUPS.map((group, gIdx) => (
-                    <React.Fragment key={gIdx}>
-                      <tr className="tr-category-row">
-                        <td colSpan={4} className="td-category-cell">
-                          <span>{group.category}</span>
-                        </td>
-                      </tr>
-                      {group.features.map((feat, fIdx) => (
-                        <tr key={fIdx} className="tr-feature-row">
-                          <td className="td-feature-info">
-                            <span className="feature-name">{feat.name}</span>
-                            {feat.desc && <span className="feature-desc">{feat.desc}</span>}
-                          </td>
-                          <td className="td-plan-val td-val-starter">
-                            {renderComparisonCell(feat, 'starter')}
-                          </td>
-                          <td className="td-plan-val td-val-plus td-plus-cell-highlight">
-                            {renderComparisonCell(feat, 'plus')}
-                          </td>
-                          <td className="td-plan-val td-val-compete">
-                            {renderComparisonCell(feat, 'compete')}
-                          </td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="module-bento-grid">
+            {MODULE_CARDS.map((mod, i) => {
+              const ModIcon = mod.icon;
+              return (
+                <div key={mod.id} className={`module-bento-card ${mod.span}`}>
+                  <div className="module-bento-top">
+                    <span className="module-bento-icon"><ModIcon size={18} /></span>
+                    <span className="module-bento-num">{String(i + 1).padStart(2, '0')}</span>
+                  </div>
+                  <h3 className="module-bento-name">{mod.title}</h3>
+                  {mod.note && <p className="module-bento-note">{mod.note}</p>}
+                  <ul className="module-bento-includes">
+                    {MODULE_INCLUDES.map(({ label, icon: Icon }) => (
+                      <li key={label}><Icon size={13} /><span>{label}</span></li>
+                    ))}
+                  </ul>
+                  <div className="module-bento-footer">
+                    <div className="module-bento-price">
+                      <span className="module-price-figure">₹{mod.price.toLocaleString('en-IN')}</span>
+                      <span className="module-price-note">one-time</span>
+                    </div>
+                    <Link
+                      to="/login"
+                      state={{ module: mod.id, price: mod.price }}
+                      className="module-buy-btn"
+                    >
+                      Buy Now
+                      <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -1591,7 +1221,7 @@ const PremiumPage = () => {
                 </div>
               </div>
               <p className="proof-quote">
-                "The 10 AI Mock interviews in the Compete plan felt just like my real AWS bar-raiser round. The instant feedback on edge-cases was priceless."
+                "The AI Mock interviews in the Plus plan felt just like my real AWS bar-raiser round. The instant feedback on edge-cases was priceless."
               </p>
               <div className="proof-rating">
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
@@ -1599,7 +1229,7 @@ const PremiumPage = () => {
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
-                <span className="rating-tag">Compete Plan Member</span>
+                <span className="rating-tag">Plus Plan Member</span>
               </div>
             </div>
 
@@ -1641,7 +1271,7 @@ const PremiumPage = () => {
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
                 <Star size={14} fill="#F3912E" stroke="#F3912E" />
-                <span className="rating-tag">Compete Plan Member</span>
+                <span className="rating-tag">Plus Plan Member</span>
               </div>
             </div>
           </div>
@@ -1701,12 +1331,6 @@ const PremiumPage = () => {
                 <span>Get Plus Plan ({activePlans[1]?.monthlyPriceFormatted}/mon • {activePlans[1]?.durationLabel})</span>
                 <ArrowRight size={16} />
               </button>
-              <button 
-                className="btn-banner-secondary"
-                onClick={() => handleOpenCheckout(activePlans[2])}
-              >
-                <span>Go All-In with Compete ({activePlans[2]?.monthlyPriceFormatted}/mon • {activePlans[2]?.durationLabel})</span>
-              </button>
             </div>
           </div>
         </div>
@@ -1733,40 +1357,6 @@ const PremiumPage = () => {
                         <span>Selected Plan: <strong>{selectedPlanForModal.name}</strong></span>
                       </div>
 
-                      {/* Modal Duration Switcher */}
-                      <div className="modal-duration-pills">
-                        <button
-                          type="button"
-                          className={`modal-duration-pill ${selectedPlanForModal.duration === '1m' ? 'active' : ''}`}
-                          onClick={() => switchModalDuration('1m')}
-                        >
-                          <span>1 Month</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`modal-duration-pill ${selectedPlanForModal.duration === '3m' ? 'active' : ''}`}
-                          onClick={() => switchModalDuration('3m')}
-                        >
-                          <span>3 Months</span>
-                          <span className="modal-pill-discount">10% OFF</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`modal-duration-pill ${selectedPlanForModal.duration === '6m' ? 'active' : ''}`}
-                          onClick={() => switchModalDuration('6m')}
-                        >
-                          <span>6 Months</span>
-                          <span className="modal-pill-discount modal-pill-orange">20% OFF</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`modal-duration-pill ${selectedPlanForModal.duration === '12m' ? 'active' : ''}`}
-                          onClick={() => switchModalDuration('12m')}
-                        >
-                          <span>12 Months</span>
-                          <span className="modal-pill-discount modal-pill-purple">30% OFF</span>
-                        </button>
-                      </div>
                     </div>
 
                     <h3 className="checkout-title">
@@ -1912,7 +1502,7 @@ const PremiumPage = () => {
                     {/* Right: Program Picker & Student Information */}
                     <div className="checkout-form-box">
                       
-                      {/* Step 1: Course Selection (Upto 2 in Starter, 3 in Plus, 5 in Compete • Extra at ₹399/ea) */}
+                      {/* Step 1: Course Selection (Upto 2 in Core, 3 in Plus • Extra at ₹399/ea) */}
                       <div className="modal-program-picker">
                         <div className="picker-header">
                           <div>

@@ -100,7 +100,7 @@
 
 .hero-banner-container {
   position: relative;
-  border-radius: 16px;
+  border-radius: 4px;
   min-height: 380px;
   padding: 56px 64px;
   display: flex;
@@ -199,7 +199,7 @@
 .tilted-card {
   position: absolute;
   background: #FFFFFF;
-  border-radius: 14px;
+  border-radius: 4px;
   box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.8);
   overflow: hidden;
   transition: transform 0.4s ease;
@@ -487,7 +487,7 @@
   flex: 0 0 228px;
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -882,7 +882,7 @@
 
 .resume-purple-banner {
   background: linear-gradient(135deg, #581C87 0%, #6D28D9 100%);
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 34px 44px;
   display: flex;
   align-items: center;
@@ -1006,7 +1006,7 @@
 .alumni-feature-card {
   background: #FFFFFF;
   border: 1.5px solid #FDBA74;
-  border-radius: 16px;
+  border-radius: 4px;
   padding: 30px 36px;
   display: flex;
   align-items: center;
@@ -1089,7 +1089,7 @@
   width: 100%;
   height: 180px;
   background: #0F172A;
-  border-radius: 12px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -1212,3 +1212,84 @@
     font-size: 1.35rem;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Premium plan promo cards (mixed into course rows)
+   ───────────────────────────────────────────────────────────── */
+.plan-promo-card { text-decoration: none; color: inherit; }
+.plan-promo-thumb {
+  height: 100%;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+  /* same soft dot texture as the premium page module cards */
+  background-image: radial-gradient(rgba(55, 53, 47, 0.14) 1.2px, transparent 1.6px);
+  background-size: 14px 14px;
+}
+.plan-promo-kicker {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.plan-promo-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.plan-promo-price { font-size: 0.8rem; font-weight: 700; }
+.plan-promo-price em { font-style: normal; font-weight: 500; opacity: 0.7; }
+
+/* Core — light, calm */
+.plan-promo-core .plan-promo-thumb { background-color: #F7F7F5; color: #37352F; }
+.plan-promo-core .plan-promo-name svg { color: #F3912E; }
+
+/* Plus — the highlighted one: dark with orange accent */
+.plan-promo-plus { border-color: #F3912E; }
+.plan-promo-plus .plan-promo-thumb {
+  background-color: #1C1917;
+  background-image: radial-gradient(rgba(243, 145, 46, 0.35) 1.2px, transparent 1.6px);
+  color: #FFFFFF;
+}
+.plan-promo-plus .plan-promo-name svg { color: #F3912E; }
+.plan-promo-plus .plan-promo-price { color: #F3912E; }
+.plan-promo-plus:hover { border-color: #EA580C; }
+
+.plan-promo-tag { color: #37352F; background: #F1F1EF; }
+.plan-promo-plus .plan-promo-tag { color: #EA580C; background: #FFF7ED; }
+
+.plan-promo-footer {
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #37352F;
+  padding-top: 12px;
+}
+.plan-promo-plus .plan-promo-footer { color: #EA580C; }
+.plan-promo-card:hover .plan-promo-footer svg { transform: translateX(3px); }
+.plan-promo-footer svg { transition: transform 0.2s ease; }
+
+/* ── "Upgrade to Core / Plus" pills in the domain bar ── */
+.category-upgrade-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.category-upgrade-pill.upgrade-core { color: #1E293B; }
+.category-upgrade-pill.upgrade-core svg { color: #F3912E; }
+.category-upgrade-pill.upgrade-plus {
+  background: #FFF7ED;
+  border-color: #F3912E;
+  color: #C2410C;
+}
+.category-upgrade-pill.upgrade-plus svg { color: #F3912E; }
+.category-upgrade-pill.upgrade-plus:hover { background: #FFEDD5; border-color: #EA580C; }

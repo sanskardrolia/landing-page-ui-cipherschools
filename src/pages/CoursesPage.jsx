@@ -1,9 +1,68 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   ChevronLeft, ChevronRight, ChevronDown, Play, CheckCircle2, 
-  ArrowRight, Video, Clock, User, Bookmark, Sparkles, Star, X
+  ArrowRight, Video, Clock, User, Bookmark, Sparkles, Star, X, Flame, Zap
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './CoursesPage.css';
+
+/* ── Premium plan promo cards (shown inside the course rows, styled like course cards) ── */
+const PLAN_PROMOS = [
+  {
+    id: 'core',
+    name: 'Core',
+    Icon: Zap,
+    tag: 'Premium · Core',
+    title: 'CS Fundamentals, DBMS & DSA in one guided path',
+    stats: [['Modules', '3'], ['Price', '₹174/mon']],
+    cta: 'Explore Core'
+  },
+  {
+    id: 'plus',
+    name: 'Plus',
+    Icon: Flame,
+    tag: 'Premium · Plus',
+    title: 'Full Stack, System Design, GenAI & mock interviews',
+    stats: [['Modules', '7 + Core'], ['Price', '₹350/mon']],
+    cta: 'Explore Plus'
+  }
+];
+
+/* Pick, once per page load, which row gets which plan and where it lands.
+   3rd or 4th card: never leading the row, and always fully visible without scrolling it. */
+const pickPromoPlacement = () => {
+  const [a, b] = Math.random() < 0.5 ? PLAN_PROMOS : [...PLAN_PROMOS].reverse();
+  const slot = () => 2 + Math.floor(Math.random() * 2);
+  return { recommended: { promo: a, at: slot() }, following: { promo: b, at: slot() } };
+};
+
+const PlanPromoCard = ({ plan }) => {
+  const { Icon } = plan;
+  return (
+    <Link to="/premium" className={`course-card-item plan-promo-card plan-promo-${plan.id}`}>
+      <div className="card-thumb-frame">
+        <div className="plan-promo-thumb">
+          <span className="plan-promo-kicker">CipherSchools Premium</span>
+          <span className="plan-promo-name"><Icon size={18} /> {plan.name}</span>
+          <span className="plan-promo-price">{plan.stats[1][1]}<em> · 12 months</em></span>
+        </div>
+      </div>
+      <div className="card-content-area">
+        <span className="card-category-tag plan-promo-tag">{plan.tag}</span>
+        <h3 className="course-card-title">{plan.title}</h3>
+        <div className="course-card-stats">
+          {plan.stats.map(([k, v]) => (
+            <span key={k}>{k}: <strong>{v}</strong></span>
+          ))}
+        </div>
+        <div className="course-instructor-footer plan-promo-footer">
+          <span>{plan.cta}</span>
+          <ArrowRight size={14} />
+        </div>
+      </div>
+    </Link>
+  );
+};
 
 /* ── Category Filter Options ── */
 const CATEGORIES = [
@@ -300,6 +359,7 @@ const CoursesPage = () => {
   const [activeLectureTab, setActiveLectureTab] = useState(1);
   const [sortFilter, setSortFilter] = useState('Popular');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [promoPlacement] = useState(pickPromoPlacement);
 
   const categoriesRowRef = useRef(null);
   const recommendedRowRef = useRef(null);
@@ -337,13 +397,25 @@ const CoursesPage = () => {
         <section className="courses-category-section">
           <div className="category-scroll-container" ref={categoriesRowRef}>
             {CATEGORIES.map((cat) => (
+              <React.Fragment key={cat}>
               <button
-                key={cat}
                 className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat}
               </button>
+              {/* Upgrade pills sit among the domains, within the first visible stretch of the bar */}
+              {cat === 'Game Development' && (
+                <Link to="/premium" className="category-pill-btn category-upgrade-pill upgrade-core">
+                  <Zap size={14} /> Upgrade to Core
+                </Link>
+              )}
+              {cat === 'Data Structures' && (
+                <Link to="/premium" className="category-pill-btn category-upgrade-pill upgrade-plus">
+                  <Flame size={14} /> Upgrade to Plus
+                </Link>
+              )}
+              </React.Fragment>
             ))}
           </div>
           <button 
@@ -452,8 +524,10 @@ const CoursesPage = () => {
 
           <div className="cards-slider-wrapper">
             <div className="cards-row" ref={recommendedRowRef}>
-              {RECOMMENDED_COURSES.map((course) => (
-                <div key={course.id} className="course-card-item">
+              {RECOMMENDED_COURSES.map((course, idx) => (
+                <React.Fragment key={course.id}>
+                {idx === promoPlacement.recommended.at && <PlanPromoCard plan={promoPlacement.recommended.promo} />}
+                <div className="course-card-item">
                   <div className="card-thumb-frame">
                     <CourseThumbnail type={course.thumbType} />
                   </div>
@@ -499,6 +573,7 @@ const CoursesPage = () => {
 
                   </div>
                 </div>
+                </React.Fragment>
               ))}
             </div>
 
@@ -620,8 +695,10 @@ const CoursesPage = () => {
 
           <div className="cards-slider-wrapper">
             <div className="cards-row" ref={followingRowRef}>
-              {FOLLOWING_COURSES.map((course) => (
-                <div key={course.id} className="course-card-item">
+              {FOLLOWING_COURSES.map((course, idx) => (
+                <React.Fragment key={course.id}>
+                {idx === promoPlacement.following.at && <PlanPromoCard plan={promoPlacement.following.promo} />}
+                <div className="course-card-item">
                   <div className="card-thumb-frame">
                     <CourseThumbnail type={course.thumbType} />
                   </div>
@@ -659,6 +736,7 @@ const CoursesPage = () => {
 
                   </div>
                 </div>
+                </React.Fragment>
               ))}
             </div>
 

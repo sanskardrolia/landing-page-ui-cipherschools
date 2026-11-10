@@ -7,6 +7,9 @@ import LoginPage from './pages/LoginPage';
 import CoursesPage from './pages/CoursesPage';
 import GuideMePage from './pages/GuideMePage';
 import PremiumPage from './pages/PremiumPage';
+import PlanCheckoutPage from './pages/PlanCheckoutPage';
+import PlanPaymentPage from './pages/PlanPaymentPage';
+import LearnerDashboardPage from './pages/LearnerDashboardPage';
 import FeedbackDrawer from './components/FeedbackDrawer';
 import ResumePage from './pages/ResumePage';
 import ResumeBuilderPage from './pages/ResumeBuilderPage';
@@ -32,7 +35,7 @@ function App() {
   const isResumeBuilder = location.pathname.startsWith('/resume/builder');
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname.startsWith('/premium/checkout') || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -89,6 +92,11 @@ function App() {
     return <LoginPage />;
   }
 
+  // Learner dashboard is full-screen (own course sidebar); it self-guards on a paid enrollment
+  if (location.pathname === '/dashboard') {
+    return <LearnerDashboardPage />;
+  }
+
   return (
     <>
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
@@ -102,6 +110,8 @@ function App() {
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/practice" element={<PracticePage />} />
             <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/premium/checkout/:planSlug" element={<PlanCheckoutPage />} />
+            <Route path="/premium/checkout/:planSlug/payment" element={<PlanPaymentPage />} />
             <Route path="/guide-me" element={<GuideMePage />} />
             <Route path="/guide" element={<GuideMePage />} />
             <Route path="/resume" element={<ResumePage />} />

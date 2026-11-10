@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { getEnrollment } from '../utils/enrollment';
 import { 
   RiHome5Fill, 
   RiVipCrown2Fill,
@@ -151,8 +152,8 @@ const NAV_ITEMS = [
     path: '/premium',
     cardBadge: 'PAID PLANS',
     cardTitle: 'CipherSchools Premium',
-    cardDesc: 'Starter, Plus & Compete plans with 2,000+ DSA, 10 AI Mock Interviews & System Design from ~₹22/day.',
-    cardTags: ['Starter (₹3,999)', 'Plus (₹4,599)', 'Compete (₹6,999)']
+    cardDesc: 'Core, Plus & Ultra plans with 2,000+ DSA, 10 AI Mock Interviews & System Design from ~₹22/day.',
+    cardTags: ['Core (₹3,999)', 'Plus (₹4,599)', 'Ultra (₹6,999)']
   },
   { 
     id: 'dashboard', 
@@ -260,6 +261,11 @@ const AppSidebar = () => {
     }
     if (item.id === 'feedback') {
       window.dispatchEvent(new CustomEvent('open-feedback-drawer'));
+      return;
+    }
+    // Paid learners go straight to their dashboard; everyone else to login
+    if (item.id === 'dashboard' && getEnrollment()) {
+      navigate('/dashboard');
       return;
     }
     if (item.path) {
