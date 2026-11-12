@@ -28,7 +28,7 @@ import './App.css';
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   useSmoothScroll();
 
@@ -94,7 +94,7 @@ function App() {
   }
 
   // Learner dashboard is full-screen (own course sidebar); it self-guards on a paid enrollment
-  if (location.pathname === '/dashboard') {
+  if (location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard/')) {
     return <LearnerDashboardPage />;
   }
 

@@ -3466,3 +3466,11 @@
 }
 
 .module-bento-icon { position: relative; box-shadow: 0 0 0 1px #E9E9E7; background: #FFFFFF; }
+
+/* ── Compact plan heads (~20% shorter): trims stacked padding/margins ── */
+.pricing-card-surface.plan-part-head { padding-top: 24px; padding-bottom: 20px; }
+.pricing-card-surface.plan-part-head .plan-header { margin-bottom: 12px; }
+.pricing-card-surface.plan-part-head .plan-price-block { min-height: 0; margin-bottom: 16px; }
+.pricing-card-surface.plan-part-head .price-main-line { line-height: 1; margin-bottom: 8px; }
+.pricing-card-surface.plan-part-head .price-sub-line { margin-bottom: 0; }
+.pricing-card-surface.plan-part-head .plan-cta-btn { margin-bottom: 0; }

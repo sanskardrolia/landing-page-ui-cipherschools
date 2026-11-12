@@ -7,24 +7,11 @@ import {
   ChevronDown, Layers, Target, Compass, Cpu, Bot
 } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
-import DiyaCollectMenu from './DiyaCollectMenu';
-import { useDiyaCollection, DIYA_GOAL } from '../hooks/useDiwali';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { count: diyaCount, claimed: diyaClaimed } = useDiyaCollection();
-  const prevDiyaCount = useRef(diyaCount);
-
-  /* on mobile, open the hamburger menu (with the claim button) once the last diya is collected */
-  useEffect(() => {
-    const justCompleted = prevDiyaCount.current < DIYA_GOAL && diyaCount >= DIYA_GOAL;
-    prevDiyaCount.current = diyaCount;
-    if (!justCompleted || diyaClaimed || window.innerWidth > 768) return undefined;
-    const t = setTimeout(() => setMobileMenuOpen(true), 1300);
-    return () => clearTimeout(t);
-  }, [diyaCount, diyaClaimed]);
   const [mobileSubmenu, setMobileSubmenu] = useState(null); // 'students' | 'university' | null
   const [darkMode, setDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState('welcome');
@@ -461,7 +448,6 @@ const Navbar = () => {
           </div>
           
           <div className="navbar-actions desktop-only">
-            <DiyaCollectMenu />
             <Link to="/login" className="notion-login-btn">Login</Link>
           </div>
 
@@ -477,7 +463,6 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="mobile-menu mobile-only animate-fade-in">
-            <DiyaCollectMenu inline />
             <div className="mobile-menu-group">
               <button 
                 onClick={() => setMobileSubmenu(mobileSubmenu === 'students' ? null : 'students')} 

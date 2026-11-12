@@ -49,7 +49,14 @@ const dsaAdvancedModule = (info) => ({
 const mernModule = () => ({ text: 'Full Stack Development [MERN] Module', children: [recordedLectures(), proctoredTest(), { text: GENERIC_AND_COMPANY }] });
 const jfsModule = () => ({ text: 'Full Stack Development [JFS] Module', children: [recordedLectures(), proctoredTest(), { text: GENERIC_AND_COMPANY }] });
 const devopsModule = () => ({ text: 'DevOps & Cloud Computing Module', children: [recordedLectures()] });
-const systemDesignModule = () => ({ text: 'System Design Module', children: [recordedLectures()] });
+const systemDesignModule = () => ({
+  text: 'System Design Module',
+  children: [
+    recordedLectures(),
+    { text: 'Interactive System Design Practice' },
+    { text: 'Interactive System Design Test (Proctored)' }
+  ]
+});
 const genAiModule = () => ({ text: 'Generative A.I. Module', children: [recordedLectures()] });
 const commBehaviouralModule = () => ({ text: 'Communication & Behavioural Module', children: [recordedLectures()] });
 
@@ -62,6 +69,29 @@ const plusOnlyModules = (info) => [
   systemDesignModule(),
   genAiModule(),
   commBehaviouralModule()
+];
+
+/* Ultra = every Plus module, marked "(Extended)", with a higher limit per module.
+   `swap` replaces a Plus sub-line (by its text) with the Ultra figure; `add` appends the extra allowance. */
+const extendModule = (mod, { swap = {}, add = [] } = {}) => ({
+  ...mod,
+  text: mod.text.replace(/ Module$/, ' Module (Extended)'),
+  children: [
+    ...(mod.children || []).map((c) => (swap[c.text] ? { ...c, text: swap[c.text] } : c)),
+    ...add.map((text) => ({ text }))
+  ]
+});
+
+const ultraModules = (info) => [
+  extendModule(dsaAdvancedModule(info), {
+    swap: { '1500 Questions + 30 new questions/mon': '2000 Questions + 50 new questions/mon' }
+  }),
+  extendModule(mernModule(), { add: ['Additional Proctored AI Assisted Tests (Debugging & Vibe Coding)'] }),
+  extendModule(jfsModule(), { add: ['Additional Proctored AI Assisted Tests (Debugging & Vibe Coding)'] }),
+  extendModule(devopsModule(), { add: ['Extended Cloud Sandbox Hours'] }),
+  extendModule(systemDesignModule(), { add: ['Additional Interactive System Design Tests (Proctored)'] }),
+  extendModule(genAiModule(), { add: ['Additional GenAI Project Reviews'] }),
+  extendModule(commBehaviouralModule(), { add: ['Additional 1:1 HR Mock Rounds'] })
 ];
 
 /* ── 12-Month Commitment Plans Data (Max 30% Discount) ── */
@@ -107,7 +137,6 @@ export const PLANS_12M_DATA = [
         ]
       },
       { text: 'Generic Mock Interview' },
-      { text: 'Future extension at ~40% cost (₹99/mon)', extension: true }
     ],
     ctaText: 'Choose 1-Year Core',
     ctaVariant: 'outline'
@@ -139,17 +168,48 @@ export const PLANS_12M_DATA = [
     features: [
       ...plusOnlyModules(DSA_INFO_PLUS),
       { text: 'Company Specific Mock Interview' },
-      { text: 'Future extension at ~40% cost (₹200/mon)', extension: true }
     ],
     ctaText: 'Claim 1-Year Plus Access',
     ctaVariant: 'primary'
+  },
+  {
+    id: 'compete',
+    name: 'Ultra',
+    isPopular: false,
+    duration: '12m',
+    durationMonths: 12,
+    durationLabel: '12 Months',
+    commitmentText: 'with a commitment of 12 months',
+    price: 5880, // 30% off ₹700/mo (₹490 x 12)
+    priceFormatted: '₹5,880',
+    monthlyPrice: 490,
+    monthlyPriceFormatted: '₹490',
+    originalPrice: '₹8,400',
+    originalMonthlyPrice: '₹700',
+    discount: '30% OFF',
+    period: 'mon',
+    dailyCost: 16,
+    dailyText: '~₹16 / day',
+    chaiComparison: 'Just 1 tapri tea with a friend ☕',
+    pitch: 'The gold-standard 365-day placement program covering every FAANG & Tier-1 assessment.',
+    accentColor: '#10B981',
+    extensionCost: 280,
+    extensionFormatted: '₹280/mon',
+    inheritedLabel: 'All in Plus, with higher limits:',
+    // Ultra = Plus offerings, extended (each line tied to a Plus offering — see ultraModules)
+    features: [
+      ...ultraModules(DSA_INFO_PLUS),
+      { text: 'Company Specific Mock Interview (Extended)' },
+    ],
+    ctaText: 'Go All-In for 1 Year',
+    ctaVariant: 'slate'
   }
 ];
 
 const PLANS_DATA = PLANS_12M_DATA;
 
 /* URL slug for each checkout-able plan id (Core's internal id is 'starter') */
-export const PLAN_SLUGS = { starter: 'core', plus: 'plus' };
+export const PLAN_SLUGS = { starter: 'core', plus: 'plus', compete: 'ultra' };
 
 /* ── Founder quotes shown under specific plan cards (keyed by plan id) ── */
 const FOUNDER_QUOTES = {
@@ -157,34 +217,11 @@ const FOUNDER_QUOTES = {
   starter: "If you need a path, roadmap, personalization and guidance, it's fair to upgrade to what we build for learners.",
 };
 
-/* ── Free plan (rendered before Core; not part of checkout plans) ── */
-const FREE_PLAN = {
-  id: 'free',
-  name: 'Free',
-  isFree: true,
-  startsAt: 'Starts at ₹0/-',
-  features: [
-    { text: 'Limited access to content' },
-    { text: '300 Practice questions' },
-    {
-      header: 'Not included in Free',
-      excluded: true,
-      items: [
-        { text: 'Personalization' },
-        { text: 'Roadmap' },
-        { text: 'Modern Test (AI Assisted)' },
-        { text: 'System Design' }
-      ]
-    }
-  ],
-  ctaText: 'Start for Free'
-};
-
 /* ── FAQs ── */
 const FAQS = [
   {
     q: 'How do duration commitment discounts work?',
-    a: 'All plans are a 12-month commitment with our MAX 30% OFF: Core at ₹174/mon and Plus at ₹350/mon.'
+    a: 'All plans are a 12-month commitment with our MAX 30% OFF: Core at ₹174/mon, Plus at ₹350/mon and Ultra at ₹490/mon.'
   },
   {
     q: 'What happens after my commitment plan ends?',
@@ -192,7 +229,7 @@ const FAQS = [
   },
   {
     q: 'Can I extend my subscription after my plan ends?',
-    a: 'Yes! Whenever you need more active AI mock interviews, new proctored exam attempts, or cloud sandbox execution, you can extend your full active subscription anytime at near 40% of base rate (Core: ₹99/mon, Plus: ₹200/mon).'
+    a: 'Yes! Whenever you need more active AI mock interviews, new proctored exam attempts, or cloud sandbox execution, you can extend your full active subscription anytime at near 40% of base rate (Core: ₹99/mon, Plus: ₹200/mon, Ultra: ₹280/mon).'
   },
   {
     q: 'How does the plan validity work?',
@@ -200,10 +237,10 @@ const FAQS = [
   },
   {
     q: 'What is the quirky chai/daily math you mentioned?',
-    a: 'We calculated the daily cost: Core is only ~₹5–₹8/day, and Plus is ~₹11–₹16/day. Most college students spend more on a single cutting chai or canteen snack than the cost of landing a 12+ LPA software role!'
+    a: 'We calculated the daily cost: Core is only ~₹5–₹8/day, Plus is ~₹11–₹16/day, and Ultra is ~₹16–₹23/day. Most college students spend more on a single cutting chai or canteen snack than the cost of landing a 12+ LPA software role!'
   },
   {
-    q: 'Can I upgrade from Core to Plus later?',
+    q: 'Can I upgrade from Core to Plus or Ultra later?',
     a: 'Yes! You can upgrade at any time during your plan. You will only pay the prorated price difference, and your features will unlock instantly.'
   },
   {
@@ -1059,7 +1096,7 @@ const PremiumPage = () => {
         {/* ── 3 Pricing Cards Grid ── */}
         <div className="pricing-cards-section">
           <div className="pricing-cards-grid">
-            {[FREE_PLAN, ...activePlans].map((plan) => (
+            {activePlans.map((plan) => (
               <div key={plan.id} className={`pricing-col pricing-col-${plan.id}`}>
               {/* Sticky top: name, price and CTA stay pinned while the features scroll */}
               <div
@@ -1071,28 +1108,10 @@ const PremiumPage = () => {
                     <h3 className="plan-name">{plan.name}</h3>
                     {plan.id === 'plus' && <Flame size={20} className="text-orange-500" />}
                     {plan.id === 'starter' && <Zap size={20} className="text-blue-500" />}
+                    {plan.id === 'compete' && <Crown size={20} className="text-emerald-500" />}
                   </div>
                 </div>
 
-                {plan.isFree ? (
-                  <>
-                    <div className="plan-price-block">
-                      <div className="price-main-line">
-                        <span className="price-figure">₹0</span>
-                        <span className="price-period">/-</span>
-                      </div>
-                      <div className="price-commitment-line">
-                        <span className="price-commitment-badge">{plan.startsAt}</span>
-                        <span className="price-total-billed price-free-note">No card required</span>
-                      </div>
-                    </div>
-                    <Link to="/login" className="plan-cta-btn btn-outline">
-                      <span>{plan.ctaText}</span>
-                      <ArrowRight size={16} />
-                    </Link>
-                  </>
-                ) : (
-                  <>
                 {/* Price Block */}
                 <div className="plan-price-block">
                   <div className="price-main-line">
@@ -1117,9 +1136,6 @@ const PremiumPage = () => {
                   <span>{plan.ctaText}</span>
                   <ArrowRight size={16} />
                 </button>
-
-                  </>
-                )}
               </div>
 
               <div
@@ -1330,6 +1346,12 @@ const PremiumPage = () => {
               >
                 <span>Get Plus Plan ({activePlans[1]?.monthlyPriceFormatted}/mon • {activePlans[1]?.durationLabel})</span>
                 <ArrowRight size={16} />
+              </button>
+              <button 
+                className="btn-banner-secondary"
+                onClick={() => handleOpenCheckout(activePlans[2])}
+              >
+                <span>Go All-In with Ultra ({activePlans[2]?.monthlyPriceFormatted}/mon • {activePlans[2]?.durationLabel})</span>
               </button>
             </div>
           </div>

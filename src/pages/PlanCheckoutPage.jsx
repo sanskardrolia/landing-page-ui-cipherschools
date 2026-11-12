@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, ArrowRight, Check, Flame, Lock, ShieldCheck, Sparkles, Zap
+  ArrowLeft, ArrowRight, Check, Crown, Flame, Lock, ShieldCheck, Sparkles, Zap
 } from 'lucide-react';
 import { PLANS_12M_DATA, PLAN_SLUGS, FeatureTree } from './PremiumPage';
 import './PremiumPage.css';
@@ -67,7 +67,7 @@ const PlanCheckoutPage = () => {
     });
   };
 
-  const PlanIcon = plan.id === 'plus' ? Flame : Zap;
+  const PlanIcon = plan.id === 'plus' ? Flame : plan.id === 'compete' ? Crown : Zap;
 
   return (
     <div className="premium-page-viewport plan-checkout-viewport">
