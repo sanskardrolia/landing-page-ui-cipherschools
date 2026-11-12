@@ -6,8 +6,17 @@
 
 const KEY = 'cs_dash_preview';
 
+const SPLASH_KEY = 'cs_dash_preview_splash';
+
+// Entering preview also queues the one-time crack-wall splash
 export const startPreview = () => {
-  try { sessionStorage.setItem(KEY, '1'); } catch { /* storage blocked */ }
+  try { sessionStorage.setItem(KEY, '1'); sessionStorage.setItem(SPLASH_KEY, '1'); } catch { /* storage blocked */ }
+};
+export const wantsSplash = () => {
+  try { return sessionStorage.getItem(SPLASH_KEY) === '1'; } catch { return false; }
+};
+export const clearSplash = () => {
+  try { sessionStorage.removeItem(SPLASH_KEY); } catch { /* storage blocked */ }
 };
 export const endPreview = () => {
   try { sessionStorage.removeItem(KEY); } catch { /* storage blocked */ }

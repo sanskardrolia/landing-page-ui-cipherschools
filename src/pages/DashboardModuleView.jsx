@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, ChevronRight, Circle, CircleCheck, CirclePlay,
-  ClipboardCheck, ExternalLink, Layers, ListChecks, Lock, Mic, Monitor, Sparkles,
+  ClipboardCheck, ExternalLink, ListChecks, Lock, Mic, Monitor, Sparkles,
   Timer, X
 } from 'lucide-react';
 import {
   DEV_TRACKS, TEST_UNLOCK_AT, findModule, moduleUnlocked, requiredPlanFor, subjectLectures, allLectures
 } from '../data/learnerModules';
-import { MODULE_ICONS } from '../data/moduleIcons';
+import ModuleIcon from '../components/ModuleIcon';
 import { WORKSPACE_KINDS, practiceForUnit, problemOfTheDay } from '../data/practiceBank';
 import { ADDITIONAL_META, stageTests } from '../data/testBank';
 
@@ -47,7 +47,6 @@ const ModuleView = ({ ctx }) => {
   const isExt = extended && mod.tier !== 'core'; // Ultra's higher limits apply to Plus & Ultra modules
   const subject = mod.subjects.find((s) => s.id === subjectId) || mod.subjects[0];
 
-  const Icon = MODULE_ICONS[mod.icon] || Layers;
   const lectures = allLectures(mod);
   const watchedCount = lectures.filter((l) => progress.watched[l.id]).length;
 
@@ -60,7 +59,7 @@ const ModuleView = ({ ctx }) => {
       </nav>
 
       <header className="dx-mod-head">
-        <span className="dx-mc-icon dx-mc-icon-lg"><Icon size={22} /></span>
+        <span className="dx-mc-icon dx-mc-icon-lg"><ModuleIcon mod={mod} size={22} /></span>
         <div className="dx-mod-head-text">
           <h1>
             {mod.title}
@@ -660,7 +659,6 @@ const lockedReason = (mod, ctx) => {
 };
 
 const LockedModule = ({ mod, ctx }) => {
-  const Icon = MODULE_ICONS[mod.icon] || Layers;
   const lectures = allLectures(mod);
   return (
     <div className="dx-module">
@@ -670,7 +668,7 @@ const LockedModule = ({ mod, ctx }) => {
         <span>{mod.title}</span>
       </nav>
       <div className="dx-card dx-locked">
-        <span className="dx-mc-icon dx-mc-icon-lg"><Icon size={22} /></span>
+        <span className="dx-mc-icon dx-mc-icon-lg"><ModuleIcon mod={mod} size={22} /></span>
         <h1>{mod.title}</h1>
         <p className="dx-muted">{lockedReason(mod, ctx)}</p>
         <ul className="dx-locked-list">

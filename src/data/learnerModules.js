@@ -164,7 +164,7 @@ const devModule = (id, title, short, units) => ({
   tier: 'plus',
   title,
   short,
-  icon: 'layers',
+  icon: 'code',
   subjects: [subject(title, units)],
   practice: [
     { kind: 'debugging', label: 'Debugging Practice', perUnit: 6, extendedPerUnit: 10 },

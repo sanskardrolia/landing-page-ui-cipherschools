@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  Activity, ArrowRight, ChevronDown, CircleCheck, CirclePlay, Eye, Crown, Flame, House, Layers, LayoutDashboard,
+  Activity, ArrowRight, ChevronDown, CircleCheck, CirclePlay, Eye, Crown, Flame, House, LayoutDashboard,
   Lock, Menu, Moon, PanelLeft, RotateCcw, Search, Sparkles, Sun, Terminal, Users, X, Zap
 } from 'lucide-react';
 import { getEnrollment } from '../utils/enrollment';
@@ -9,15 +9,16 @@ import { useLearnerProgress } from '../utils/learnerProgress';
 import {
   MODULES, PLAN_LABELS, TIER_LABELS, allLectures, isExtendedPlan, moduleUnlocked, requiredPlanFor, subjectLectures
 } from '../data/learnerModules';
-import { MODULE_ICONS } from '../data/moduleIcons';
+import ModuleIcon from '../components/ModuleIcon';
 import ModuleView from './DashboardModuleView';
 import DashboardPlayer from './DashboardPlayer';
 import DashboardWorkspace from './DashboardWorkspace';
 import DashboardMentorship from './DashboardMentorship';
 import { mentorCreditsLeft } from '../utils/mentorship';
 import { learningStats } from '../utils/learningStats';
-import { PREVIEW_ENROLLMENT, PREVIEW_PROGRESS, endPreview, isPreviewOn } from '../utils/preview';
+import { PREVIEW_ENROLLMENT, PREVIEW_PROGRESS, clearSplash, endPreview, isPreviewOn, wantsSplash } from '../utils/preview';
 import DashboardPreviewPlans from './DashboardPreviewPlans';
+import DashboardPreviewSplash from './DashboardPreviewSplash';
 
 const noop = () => {};
 import DashboardActivity from './DashboardActivity';
@@ -39,12 +40,16 @@ const greeting = () => {
 };
 
 const THEME_KEY = 'cs_dash_theme';
+// Light by default on first visit; dark only once the learner has chosen it
 const readTheme = () => {
-  try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch { return 'dark'; }
+  try { return localStorage.getItem(THEME_KEY) === 'dark' ? 'dark' : 'light'; } catch { return 'light'; }
 };
 
 /* Same plan icons as the pricing cards: Core ⚡ · Plus 🔥 · Ultra 👑 */
 const TIER_ICONS = { core: Zap, plus: Flame, ultra: Crown };
+
+// Preview only: say what each higher tier carries over
+const PREVIEW_TIER_NOTE = { plus: '(includes Core)', ultra: '(includes Core & Plus)' };
 
 const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 
@@ -56,6 +61,10 @@ const LearnerDashboardPage = () => {
   const learner = useLearnerProgress();
   const { progress, toggle, set } = preview ? { progress: PREVIEW_PROGRESS, toggle: noop, set: noop } : learner;
   const [purchase, setPurchase] = useState(null); // preview only: { mod?, target? } while the plan pop-up is open
+  // Crack-wall splash, once per "Experience before you pay" entry
+  const [splash, setSplash] = useState(() => preview && wantsSplash());
+  const endSplash = useCallback(() => setSplash(false), []);
+  useEffect(() => { if (splash) clearSplash(); }, [splash]);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [upgrade, setUpgrade] = useState(null); // { target } while the upgrade pop-up is open
@@ -82,7 +91,10 @@ const LearnerDashboardPage = () => {
   const ctx = {
     enrollment, planId, extended: isExtendedPlan(planId), devTrack: enrollment.devTrack, progress, toggle, set,
     preview,
-    openUpgrade: preview ? (target) => setPurchase({ target }) : (target) => setUpgrade({ target }),
+    // Preview: a plain "Get plan" goes to the premium page's plan comparison; a locked item asks for its plan
+    openUpgrade: preview
+      ? (target) => (target ? setPurchase({ target }) : navigate('/premium#plans'))
+      : (target) => setUpgrade({ target }),
     lockedTap: (mod) => setPurchase({ mod })
   };
   const exitPreview = () => { endPreview(); navigate('/premium'); };
@@ -116,6 +128,7 @@ const LearnerDashboardPage = () => {
       </div>
 
       {upgrade && <DashboardUpgrade ctx={ctx} initialTarget={upgrade.target} onClose={() => setUpgrade(null)} />}
+      {splash && <DashboardPreviewSplash onDone={endSplash} />}
       {purchase && <DashboardPreviewPlans mod={purchase.mod} target={purchase.target} onClose={() => setPurchase(null)} />}
     </div>
   );
@@ -191,12 +204,14 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
                 aria-expanded={open[tier]}
               >
                 <TierIcon tier={tier} />
-                <span className="dx-label">{TIER_LABELS[tier]}</span>
+                <span className="dx-label">
+                  {TIER_LABELS[tier]}
+                  {ctx.preview && PREVIEW_TIER_NOTE[tier] && <em className="dx-tier-note">{PREVIEW_TIER_NOTE[tier]}</em>}
+                </span>
                 {tier === 'ultra' && !extended && <Lock size={12} className="dx-label dx-nav-lock" />}
                 <ChevronDown size={14} className={`dx-chev dx-label ${open[tier] ? 'up' : ''}`} />
               </button>
               {open[tier] && mods.map((m) => {
-                const Icon = MODULE_ICONS[m.icon] || Layers;
                 const unlocked = !ctx.preview && moduleUnlocked(m, planId, ctx.devTrack);
                 const showSubjects = unlocked || ctx.preview; // preview: show everything, locked
                 const mp = moduleProgress(m, progress);
@@ -206,7 +221,7 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
                 return (
                   <div key={m.id} className="dx-nav-module">
                     <NavLink to={modPath} className={`dx-nav-item ${unlocked ? '' : 'locked'}`} title={m.title} onClick={onClose}>
-                      <Icon size={18} />
+                      <ModuleIcon mod={m} />
                       <span className="dx-label dx-nav-text">{m.title}</span>
                       {unlocked
                         ? (mp.pct > 0 && <span className="dx-label dx-nav-pct">{mp.pct}%</span>)
@@ -400,7 +415,7 @@ const Overview = ({ ctx }) => {
         {ctx.preview && ['core', 'plus', 'ultra'].map((tier) => (
           <div key={tier}>
             <div className="dx-section-head">
-              <h2><TierIcon tier={tier} /> {TIER_LABELS[tier]}</h2>
+              <h2><TierIcon tier={tier} /> {TIER_LABELS[tier]}{PREVIEW_TIER_NOTE[tier] && <em className="dx-tier-note">{PREVIEW_TIER_NOTE[tier]}</em>}</h2>
               <span className="dx-rule" />
             </div>
             <div className="dx-module-grid">
@@ -498,7 +513,6 @@ const Overview = ({ ctx }) => {
 // `locked` is the plan name that unlocks this module ("Plus" / "Ultra"), or falsy when unlocked.
 // `highlight` marks the module the learner should start (or continue) with.
 const ModuleCard = ({ mod, progress, locked, highlight }) => {
-  const Icon = MODULE_ICONS[mod.icon] || Layers;
   const mp = moduleProgress(mod, progress);
   const meta = (
     <div className="dx-mc-meta">
@@ -512,7 +526,7 @@ const ModuleCard = ({ mod, progress, locked, highlight }) => {
     return (
       <Link to={`/dashboard/m/${mod.id}`} className="dx-card dx-module-card locked">
         <div className="dx-mc-top">
-          <span className="dx-mc-icon"><Icon size={18} /></span>
+          <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
           <span className="dx-badge"><Lock size={12} /> {locked}</span>
         </div>
         <h3>{mod.title}</h3>
@@ -534,7 +548,7 @@ const ModuleCard = ({ mod, progress, locked, highlight }) => {
   return (
     <div className={`dx-card dx-module-card ${highlight ? 'is-next' : ''} ${state === 'done' ? 'is-done' : ''}`}>
       <div className="dx-mc-top">
-        <span className="dx-mc-icon"><Icon size={18} /></span>
+        <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
         {highlight && <span className="dx-mc-flag">{state === 'new' ? 'Start here' : 'Continue here'}</span>}
         {state === 'done' && <span className="dx-mc-done"><CircleCheck size={13} /> Completed</span>}
       </div>
