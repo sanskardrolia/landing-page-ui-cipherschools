@@ -97,8 +97,8 @@ const LearnerDashboardPage = () => {
         {preview && (
           <div className="dx-pv-bar" role="status">
             <Eye size={16} />
-            <span><strong>Preview mode.</strong> Explore everything in Core, Plus and Ultra. Tap anything to see how to unlock it.</span>
-            <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => setPurchase({})}>See plans</button>
+            <span><strong>Preview</strong> · everything is locked, tap anything to unlock</span>
+            <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => navigate('/premium#plans')}>See plans</button>
             <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={exitPreview}>Exit preview</button>
           </div>
         )}
@@ -154,7 +154,8 @@ const initialsOf = (name) => name.trim().split(/\s+/).map((w) => w[0]).slice(0, 
 const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
   const { planId, extended, progress, enrollment } = ctx;
   const learnerName = enrollment.learner?.name?.trim() || 'Learner';
-  const [open, setOpen] = useState({ core: true, plus: true, ultra: true });
+  // Preview starts with only Core expanded, so the sidebar stays calm; Plus & Ultra open on tap
+  const [open, setOpen] = useState(() => ({ core: true, plus: !ctx.preview, ultra: !ctx.preview }));
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
@@ -386,7 +387,7 @@ const Overview = ({ ctx }) => {
           {ctx.preview ? (
             <>
               <h1>Welcome, explorer <span aria-hidden="true">👋</span></h1>
-              <p>This is the full CipherSchools Premium dashboard: every module, lecture, practice set, test and mock interview. Look around, then pick a plan to unlock it.</p>
+              <p>Every module in Core, Plus and Ultra.</p>
             </>
           ) : (
             <>
@@ -401,7 +402,6 @@ const Overview = ({ ctx }) => {
             <div className="dx-section-head">
               <h2><TierIcon tier={tier} /> {TIER_LABELS[tier]}</h2>
               <span className="dx-rule" />
-              <span className="dx-muted dx-small">{tier === 'core' ? 'In every plan' : tier === 'plus' ? 'Plus & Ultra' : 'Ultra only'}</span>
             </div>
             <div className="dx-module-grid">
               {MODULES.filter((m) => m.tier === tier).map((m) => (
@@ -450,6 +450,7 @@ const Overview = ({ ctx }) => {
       </div>
 
       <aside className="dx-ov-rail">
+        {!ctx.preview && (
         <section className="dx-card dx-ring-card">
           <h3>Learning Progress</h3>
           <div className="dx-stat-grid">
@@ -465,15 +466,16 @@ const Overview = ({ ctx }) => {
           </div>
           <p className="dx-muted dx-small">Across your unlocked modules.</p>
         </section>
+        )}
 
         {ctx.preview ? (
           <section className="dx-card dx-plan-card">
             <span className="dx-kicker">Preview</span>
-            <h3>Everything is locked</h3>
-            <p className="dx-muted dx-small">Plans start at ₹174/month, billed yearly, with a 7-day money-back guarantee.</p>
-            <button type="button" className="dx-btn dx-btn-primary" onClick={() => ctx.openUpgrade()}>
+            <h3>From ₹174/month</h3>
+            <p className="dx-muted dx-small">7-day money-back guarantee</p>
+            <Link to="/premium#plans" className="dx-btn dx-btn-primary">
               See plans <ArrowRight size={15} />
-            </button>
+            </Link>
           </section>
         ) : (
         <section className="dx-card dx-plan-card">
@@ -516,7 +518,6 @@ const ModuleCard = ({ mod, progress, locked, highlight }) => {
         <h3>{mod.title}</h3>
         <p className="dx-muted dx-small">{mod.short}</p>
         {meta}
-        <span className="dx-mc-explore">Explore module <ArrowRight size={14} /></span>
       </Link>
     );
   }

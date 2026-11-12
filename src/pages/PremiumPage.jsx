@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, BadgePercent, BarChart2, Bot, Check, ChevronDown, ClipboardCheck, Clock, Code2, Crown, Database, Eye,
   Flame, Info, Laptop, Layers, Lock, Maximize2, Mic, PlayCircle, RefreshCw, ShieldCheck, Sparkles, Star, Terminal,
@@ -578,7 +578,23 @@ const PremiumPage = () => {
   const [left, setLeft] = useState(msLeft);
   const plansRef = useRef(null);
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const location = useLocation();
+  // Land at the top, or on the plan comparison when linked as /premium#plans (e.g. from dashboard preview)
+  useEffect(() => {
+    if (location.hash !== '#plans') { window.scrollTo(0, 0); return undefined; }
+    // The page is still settling after the route change (layout, other scroll resets),
+    // so keep nudging towards the plans for a moment until we're there.
+    let tries = 0;
+    const t = setInterval(() => {
+      const el = plansRef.current;
+      tries += 1;
+      if (!el) return;
+      const target = el.getBoundingClientRect().top + window.scrollY - 72;
+      if (Math.abs(window.scrollY - target) < 8 || tries > 12) { clearInterval(t); return; }
+      window.scrollTo({ top: target });
+    }, 120);
+    return () => clearInterval(t);
+  }, [location.hash]);
 
   // Offer countdown
   useEffect(() => {

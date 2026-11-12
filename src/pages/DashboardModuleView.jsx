@@ -65,7 +65,7 @@ const ModuleView = ({ ctx }) => {
           <h1>
             {mod.title}
           </h1>
-          <p className="dx-muted">{mod.short} · {lectures.length} lectures · {watchedCount} watched</p>
+          <p className="dx-muted">{mod.short} · {lectures.length} lectures{!ctx.preview && ` · ${watchedCount} watched`}</p>
         </div>
         <div className="dx-mod-progress">
           <span>{pct(watchedCount, lectures.length)}%</span>
@@ -483,9 +483,7 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
                       <span>{r.count}</span>
                       {isExt && <span className="dx-ext-tag">2 attempts</span>}
                     </div>
-                    {ctx.preview
-                      ? <div className="dx-treason"><Lock size={12} /> Unlocks with a plan</div>
-                      : !r.unlocked && <div className="dx-treason"><Lock size={12} /> {r.reason}</div>}
+                    {!ctx.preview && !r.unlocked && <div className="dx-treason"><Lock size={12} /> {r.reason}</div>}
                   </td>
                   <td><span className="dx-chip-type">{r.testType}</span></td>
                   <td><span className="dx-chip-format">{r.format}</span></td>
@@ -605,7 +603,7 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
                 <div className="dx-gate">
                   <div className="dx-progress"><span style={{ width: `${pct(watched, scope.lectures.length)}%` }} /></div>
                   <p className="dx-small dx-muted">
-                    {ctx.preview ? 'Locked · unlocks with a plan' : `${watched}/${scope.lectures.length} lectures watched — finish all to unlock`}
+                    {ctx.preview ? 'Locked' : `${watched}/${scope.lectures.length} lectures watched — finish all to unlock`}
                   </p>
                 </div>
               ) : booked ? (

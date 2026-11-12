@@ -1843,3 +1843,13 @@
 @media (max-width: 480px) {
   .dx-preview .dx-top .dx-stat-pill, .dx-preview .dx-top .dx-top-divider { display: none; }
 }
+/* Preview: fewer words — the locks and the pop-up carry the message */
+.dx-preview .dx-panel-intro { display: none; }
+.dx-preview .dx-tab-panel { padding-top: 6px; }
+.dx-preview .dx-gate .dx-progress { display: none; }
+.dx-preview .dx-top .dx-stat-pill, .dx-preview .dx-top .dx-stat-pill + .dx-top-divider { display: none; }
+/* Preview: drop columns and counters that only say "nothing yet" */
+.dx-preview .dx-ttable th:nth-child(5), .dx-preview .dx-ttable td:nth-child(5),
+.dx-preview .dx-ttable th:nth-child(6), .dx-preview .dx-ttable td:nth-child(6),
+.dx-preview .dx-ttable th:nth-child(7), .dx-preview .dx-ttable td:nth-child(7) { display: none; }
+.dx-preview .dx-mod-progress, .dx-preview .dx-subject-pct, .dx-preview .dx-unit-meta { display: none; }
