@@ -34,6 +34,8 @@ function App() {
 
   const isLoginPage = location.pathname === '/login';
   const isResumeBuilder = location.pathname.startsWith('/resume/builder');
+  // Checkout payment is a single-screen page: no site footer under it
+  const hideFooter = isResumeBuilder || /^\/premium\/checkout\/[^/]+\/payment$/.test(location.pathname);
 
   useEffect(() => {
     if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname.startsWith('/premium/checkout') || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
@@ -129,8 +131,8 @@ function App() {
           </Routes>
         </main>
         {/* The editor keeps the navbar and sidebar but has no footer */}
-        {!isResumeBuilder && <Footer />}
-        {!isResumeBuilder && <BackToTop />}
+        {!hideFooter && <Footer />}
+        {!hideFooter && <BackToTop />}
       </div>
     </>
   );

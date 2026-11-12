@@ -20,9 +20,13 @@ export const DEMO_VIDEO_SRC = '/media/hero-video.mp4';
 /* Which plans unlock which tier of modules (plan ids from PremiumPage) */
 export const PLAN_TIERS = {
   starter: ['core'],
-  plus: ['core', 'plus'],
-  compete: ['core', 'plus'] // Ultra: same modules as Plus, with extended limits
+  plus: ['core', 'plus'],          // Plus includes ONE Full Stack track (see DEV_TRACKS)
+  compete: ['core', 'plus', 'ultra'] // Ultra: everything, both tracks, Ultra modules, higher limits
 };
+
+/* Plus learners pick one Full Stack track at checkout; Ultra gets both */
+export const DEV_TRACKS = ['mern', 'jfs'];
+export const DEV_TRACK_LABELS = { mern: 'MERN (MongoDB, Express, React, Node)', jfs: 'JFS (Java, Spring Boot, React)' };
 export const PLAN_LABELS = { starter: 'Core', plus: 'Plus', compete: 'Ultra' };
 export const isExtendedPlan = (planId) => planId === 'compete';
 
@@ -47,23 +51,23 @@ const computerFundamentals = {
   short: 'OS, CN & OOPs',
   icon: 'cpu',
   subjects: [
-    subject('Operating System', [
+    subject('Operating Systems', [
       unit('Introduction to OS', ['What an OS does', 14], ['Kernel, Shell & System Calls', 18]),
       unit('Process Management', ['Processes vs Threads', 18], ['CPU Scheduling Algorithms', 26], ['Context Switching', 12]),
       unit('Synchronization', ['Critical Section & Mutex', 20], ['Semaphores', 22], ['Classic Problems', 24]),
       unit('Deadlocks', ['Conditions & Detection', 18], ["Banker's Algorithm", 22]),
       unit('Memory Management', ['Paging & Segmentation', 24], ['Virtual Memory & Page Replacement', 26])
-    ]),
+    ], { id: 'operating-system' }), // id kept from the old title so saved progress still matches
     subject('Computer Networks', [
       unit('Network Models', ['OSI vs TCP/IP', 20], ['Data Encapsulation', 14]),
       unit('Application Layer', ['HTTP, DNS & DHCP', 24], ['Email & FTP', 16]),
       unit('Transport Layer', ['TCP vs UDP', 18], ['Flow & Congestion Control', 24]),
       unit('Network Layer', ['IP Addressing & Subnetting', 26], ['Routing Basics', 20])
     ]),
-    subject('OOPs & Programming Language', [
+    subject('Programming Language & OOPs', [
       unit('OOP Pillars', ['Classes & Objects', 16], ['Encapsulation & Abstraction', 18], ['Inheritance', 20], ['Polymorphism', 20]),
       unit('Language Internals', ['Memory: Stack vs Heap', 16], ['Exceptions', 14], ['SOLID Principles', 22])
-    ])
+    ], { id: 'oops-programming-language' })
   ],
   practice: [
     { kind: 'mcq', label: 'MCQ Practice', perUnit: 15 }
@@ -277,21 +281,52 @@ const commBehavioural = {
   interview: { label: 'HR Mock Interview', perSubject: false, mins: 30 }
 };
 
-/* Order = sidebar order: Core first, then Plus */
+/* ══════════════════════════ ULTRA TIER ══════════════════════════ */
+
+const dsaMastery = {
+  id: 'dsa-mastery',
+  tier: 'ultra',
+  title: 'DSA Mastery',
+  short: 'Hard problems & interview-level patterns',
+  icon: 'workflow',
+  subjects: [
+    subject('DSA Mastery', [
+      unit('Hashing Mastery', ['Hard Hashing Patterns', 28], ['Sliding Window + Hashing', 26]),
+      unit('Heaps Mastery', ['Two-Heap Techniques', 26], ['K-way Merge in Interviews', 24]),
+      unit('Graph Mastery', ['Shortest Paths with Constraints', 30], ['Bridges & Articulation Points', 28]),
+      unit('DP Mastery', ['Interval DP', 32], ['Bitmask DP', 30], ['DP Optimisations', 28]),
+      unit('Greedy Mastery', ['Exchange Arguments', 24], ['Scheduling Problems', 26])
+    ])
+  ],
+  practice: [
+    { kind: 'coding', label: 'Hard Problem Sets', perUnit: 2 }
+  ],
+  tests: [
+    { kind: 'ai', label: 'A.I. Assisted Test', questions: 3, mins: 75 },
+    { kind: 'approach', label: 'Approach Based Coding Test', questions: 4, mins: 90 },
+    { kind: 'company', label: 'Company Specific Test', questions: 3, mins: 90 }
+  ],
+  interview: { label: 'DSA Mastery Mock Interview', perSubject: false, mins: 60 }
+};
+
+/* Order = sidebar order: Core, then Plus, then Ultra */
 export const MODULES = [
   computerFundamentals, dbms, dsa,
-  dsaAdvanced, mern, jfs, devops, systemDesign, genai, commBehavioural
+  dsaAdvanced, mern, jfs, devops, systemDesign, genai, commBehavioural,
+  dsaMastery
 ];
 
-export const TIER_LABELS = { core: 'Core Modules', plus: 'Plus Modules', ultra: 'Ultra' };
+export const TIER_LABELS = { core: 'Core Modules', plus: 'Plus Modules', ultra: 'Ultra Modules' };
 
-/* Ultra adds no new modules — it extends the Plus ones. These are its extras,
-   shown as a third sidebar group (locked unless the learner is on Ultra). */
-export const ULTRA_SECTIONS = [
-  { id: 'extended-practice', title: 'Extended Practice', short: 'An extra Hard problem in every DSA Advanced unit', icon: 'sparkles' },
-  { id: 'extra-attempts', title: 'Extra Test Attempts', short: 'A second attempt on every Plus-module test', icon: 'clipboard' },
-  { id: 'mock-round-2', title: 'Round 2 Mock Interviews', short: 'A second interview round in each Plus module', icon: 'mic' }
+/* 1:1 Mentorship (Ultra) — meeting credits.
+   PLACEHOLDER credit-pack prices; set the real ones before launch. */
+export const MENTOR_CREDITS_INCLUDED = 3;
+export const CREDIT_PACKS = [
+  { id: 'one', credits: 1, price: 499 },
+  { id: 'three', credits: 3, price: 1299 },
+  { id: 'five', credits: 5, price: 1999 }
 ];
+export const MENTOR_FOCUS = ['DSA & Problem Solving', 'Full Stack Development', 'System Design', 'Career, Resume & Interviews'];
 
 /* ── derived helpers ── */
 export const allLectures = (mod) =>
@@ -299,6 +334,15 @@ export const allLectures = (mod) =>
 
 export const subjectLectures = (subj) => subj.units.flatMap((u) => u.lectures);
 
-export const moduleUnlocked = (mod, planId) => (PLAN_TIERS[planId] || []).includes(mod.tier);
+export const moduleUnlocked = (mod, planId, devTrack) => {
+  if (!(PLAN_TIERS[planId] || []).includes(mod.tier)) return false;
+  // Plus: only the Full Stack track chosen at checkout (older Plus enrollments default to MERN)
+  if (planId === 'plus' && DEV_TRACKS.includes(mod.id)) return mod.id === (devTrack || 'mern');
+  return true;
+};
+
+/* Lowest plan that would unlock this module for this learner */
+export const requiredPlanFor = (mod, planId) =>
+  mod.tier === 'ultra' || (planId === 'plus' && DEV_TRACKS.includes(mod.id)) ? 'compete' : 'plus';
 
 export const findModule = (id) => MODULES.find((m) => m.id === id) || null;

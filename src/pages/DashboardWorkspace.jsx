@@ -25,7 +25,7 @@ const DashboardWorkspace = ({ ctx }) => {
   const { moduleId, itemId } = useParams();
   const { planId, progress, set } = ctx;
   const mod = findModule(moduleId);
-  const isExt = isExtendedPlan(planId) && mod?.tier === 'plus';
+  const isExt = isExtendedPlan(planId) && mod?.tier !== 'core';
   const found = mod ? findPracticeItem(mod, itemId, isExt) : null;
   const item = found?.item;
 
@@ -73,7 +73,7 @@ const DashboardWorkspace = ({ ctx }) => {
   }, []);
 
   if (!mod) return <Navigate to="/dashboard" replace />;
-  if (!moduleUnlocked(mod, planId)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
+  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
   if (!item || !WORKSPACE_KINDS.includes(item.kind)) return <Navigate to={`/dashboard/m/${mod.id}?tab=practice`} replace />;
 
   const solved = !!progress.practice[item.id];
@@ -150,7 +150,6 @@ const DashboardWorkspace = ({ ctx }) => {
               </div>
               <div className="dx-tags dx-problem-tags">
                 {solved && <span className="dx-tag dx-tag-ok"><CircleCheck size={13} /> Solved</span>}
-                {item.extended && <span className="dx-ext-tag">Extended</span>}
                 {(item.companies || []).map((c) => <span key={c} className="dx-tag">{c}</span>)}
               </div>
 

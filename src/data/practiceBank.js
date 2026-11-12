@@ -112,10 +112,7 @@ const DSA_ADV = {
       [ex('words = ["eat","tea","tan","ate","nat","bat"]', '[["eat","tea","ate"],["tan","nat"],["bat"]]')]),
     C('Subarray Sum Equals K', 'Medium', ['Microsoft', 'Flipkart'], 'subarraySum', [['nums', 'int[]'], ['k', 'int']], 'int',
       'Count the contiguous subarrays whose sum equals k.',
-      [ex('nums = [1, 1, 1], k = 2', '2')]),
-    { ...C('Count Distinct in Every Window', 'Hard', ['Goldman Sachs'], 'distinctInWindows', [['nums', 'int[]'], ['k', 'int']], 'int[]',
-      'For every window of size k, return the number of distinct elements in it.',
-      [ex('nums = [1, 2, 1, 3, 4, 2, 3], k = 4', '[3, 4, 4, 3]')]), extended: true }
+      [ex('nums = [1, 1, 1], k = 2', '2')])
   ],
   heaps: [
     C('Kth Largest Element', 'Medium', ['Amazon', 'Meta'], 'findKthLargest', [['nums', 'int[]'], ['k', 'int']], 'int',
@@ -126,10 +123,7 @@ const DSA_ADV = {
       [ex('nums = [1, 1, 1, 2, 2, 3], k = 2', '[1, 2]')]),
     C('Find Median from Data Stream', 'Hard', ['Microsoft', 'Uber'], 'runningMedian', [['stream', 'int[]']], 'double[]',
       'Return the median after each number of the stream is added.',
-      [ex('stream = [5, 15, 1, 3]', '[5.0, 10.0, 5.0, 4.0]')]),
-    { ...C('Merge Intervals by Priority', 'Hard', ['Atlassian'], 'minMeetingRooms', [['intervals', 'int[][]']], 'int',
-      'Return the minimum number of rooms needed to hold all the meetings.',
-      [ex('intervals = [[0, 30], [5, 10], [15, 20]]', '2')]), extended: true }
+      [ex('stream = [5, 15, 1, 3]', '[5.0, 10.0, 5.0, 4.0]')])
   ],
   'advanced-graphs': [
     C("Network Delay Time", 'Medium', ['Amazon'], 'networkDelayTime', [['times', 'int[][]'], ['n', 'int'], ['k', 'int']], 'int',
@@ -140,10 +134,7 @@ const DSA_ADV = {
       [ex('n = 2, prereqs = [[1, 0]]', '[0, 1]')]),
     C('Redundant Connection', 'Medium', ['Microsoft'], 'findRedundantConnection', [['edges', 'int[][]']], 'int[]',
       'A tree had one extra edge added. Return the edge that can be removed to make it a tree again.',
-      [ex('edges = [[1,2],[1,3],[2,3]]', '[2, 3]')]),
-    { ...C('Cheapest Flights Within K Stops', 'Hard', ['Uber', 'Airbnb'], 'findCheapestPrice', [['n', 'int'], ['flights', 'int[][]'], ['src', 'int'], ['dst', 'int'], ['k', 'int']], 'int',
-      'Return the cheapest price from src to dst with at most k stops, or -1.',
-      [ex('n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1', '200')]), extended: true }
+      [ex('edges = [[1,2],[1,3],[2,3]]', '[2, 3]')])
   ],
   'dynamic-programming': [
     C('Climbing Stairs', 'Easy', ['Amazon'], 'climbStairs', [['n', 'int']], 'int',
@@ -154,10 +145,7 @@ const DSA_ADV = {
       [ex('a = "abcde", b = "ace"', '3')]),
     C('Edit Distance', 'Hard', ['Amazon', 'Google'], 'minDistance', [['a', 'string'], ['b', 'string']], 'int',
       'Return the minimum insert, delete or replace operations to turn a into b.',
-      [ex('a = "horse", b = "ros"', '3')]),
-    { ...C('Burst Balloons', 'Hard', ['Google'], 'maxCoins', [['nums', 'int[]']], 'int',
-      'Bursting balloon i earns nums[i-1] × nums[i] × nums[i+1]. Return the maximum coins obtainable.',
-      [ex('nums = [3, 1, 5, 8]', '167')]), extended: true }
+      [ex('a = "horse", b = "ros"', '3')])
   ],
   greedy: [
     C('Jump Game', 'Medium', ['Amazon'], 'canJump', [['nums', 'int[]']], 'bool',
@@ -168,10 +156,52 @@ const DSA_ADV = {
       [ex('intervals = [[1,2],[2,3],[3,4],[1,3]]', '1')]),
     C('Gas Station', 'Medium', ['Flipkart'], 'canCompleteCircuit', [['gas', 'int[]'], ['cost', 'int[]']], 'int',
       'Return the starting station index that lets you travel the circuit once, or -1.',
-      [ex('gas = [1,2,3,4,5], cost = [3,4,5,1,2]', '3')]),
-    { ...C('Minimum Platforms', 'Hard', ['Goldman Sachs'], 'minPlatforms', [['arrivals', 'int[]'], ['departures', 'int[]']], 'int',
+      [ex('gas = [1,2,3,4,5], cost = [3,4,5,1,2]', '3')])
+  ]
+};
+
+
+/* ── Ultra: DSA Mastery (Hard problem sets, one unit per DSA Advanced topic) ── */
+const DSA_MASTERY = {
+  'hashing-mastery': [
+    C('Count Distinct in Every Window', 'Hard', ['Goldman Sachs'], 'distinctInWindows', [['nums', 'int[]'], ['k', 'int']], 'int[]',
+      'For every window of size k, return the number of distinct elements in it.',
+      [ex('nums = [1, 2, 1, 3, 4, 2, 3], k = 4', '[3, 4, 4, 3]')]),
+    C('Longest Substring With At Most K Distinct', 'Hard', ['Amazon'], 'longestKDistinct', [['s', 'string'], ['k', 'int']], 'int',
+      'Return the length of the longest substring that contains at most k distinct characters.',
+      [ex('s = "eceba", k = 2', '3')])
+  ],
+  'heaps-mastery': [
+    C('Merge Intervals by Priority', 'Hard', ['Atlassian'], 'minMeetingRooms', [['intervals', 'int[][]']], 'int',
+      'Return the minimum number of rooms needed to hold all the meetings.',
+      [ex('intervals = [[0, 30], [5, 10], [15, 20]]', '2')]),
+    C('Smallest Range Covering K Lists', 'Hard', ['Google'], 'smallestRange', [['lists', 'int[][]']], 'int[]',
+      'Each list is sorted. Return the smallest range [a, b] that includes at least one number from every list.',
+      [ex('lists = [[4,10,15,24,26],[0,9,12,20],[5,18,22,30]]', '[20, 24]')])
+  ],
+  'graph-mastery': [
+    C('Cheapest Flights Within K Stops', 'Hard', ['Uber', 'Airbnb'], 'findCheapestPrice', [['n', 'int'], ['flights', 'int[][]'], ['src', 'int'], ['dst', 'int'], ['k', 'int']], 'int',
+      'Return the cheapest price from src to dst with at most k stops, or -1.',
+      [ex('n = 3, flights = [[0,1,100],[1,2,100],[0,2,500]], src = 0, dst = 2, k = 1', '200')]),
+    C('Critical Connections in a Network', 'Hard', ['Amazon', 'Microsoft'], 'criticalConnections', [['n', 'int'], ['connections', 'int[][]']], 'int[][]',
+      'Return every connection whose removal disconnects the network.',
+      [ex('n = 4, connections = [[0,1],[1,2],[2,0],[1,3]]', '[[1, 3]]')])
+  ],
+  'dp-mastery': [
+    C('Burst Balloons', 'Hard', ['Google'], 'maxCoins', [['nums', 'int[]']], 'int',
+      'Bursting balloon i earns nums[i-1] × nums[i] × nums[i+1]. Return the maximum coins obtainable.',
+      [ex('nums = [3, 1, 5, 8]', '167')]),
+    C('Minimum Cost to Cut a Stick', 'Hard', ['Google'], 'minCost', [['n', 'int'], ['cuts', 'int[]']], 'int',
+      'Cutting a stick costs its current length. Return the minimum total cost to make all the cuts.',
+      [ex('n = 7, cuts = [1, 3, 4, 5]', '16')])
+  ],
+  'greedy-mastery': [
+    C('Minimum Platforms', 'Hard', ['Goldman Sachs'], 'minPlatforms', [['arrivals', 'int[]'], ['departures', 'int[]']], 'int',
       'Return the minimum number of railway platforms needed so no train waits.',
-      [ex('arrivals = [900, 940, 950], departures = [910, 1200, 1120]', '2')]), extended: true }
+      [ex('arrivals = [900, 940, 950], departures = [910, 1200, 1120]', '2')]),
+    C('IPO — Maximise Capital', 'Hard', ['Uber'], 'findMaximizedCapital', [['k', 'int'], ['w', 'int'], ['profits', 'int[]'], ['capital', 'int[]']], 'int',
+      'Pick at most k projects you can afford with your current capital to maximise final capital.',
+      [ex('k = 2, w = 0, profits = [1,2,3], capital = [0,1,1]', '4')])
   ]
 };
 
@@ -287,7 +317,7 @@ const DBMS_SQL = {
   ]
 };
 
-const BANK = { dsa: DSA, 'dsa-advanced': DSA_ADV, mern: MERN, jfs: JFS, dbms: DBMS_SQL };
+const BANK = { dsa: DSA, 'dsa-advanced': DSA_ADV, 'dsa-mastery': DSA_MASTERY, mern: MERN, jfs: JFS, dbms: DBMS_SQL };
 
 /* Generated sets for non-coding practice kinds */
 const SET_META = {

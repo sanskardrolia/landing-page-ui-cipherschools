@@ -54,7 +54,7 @@ const DashboardPlayer = ({ ctx }) => {
   }, [ended, autoNext, next, mod, navigate]);
 
   if (!mod) return <Navigate to="/dashboard" replace />;
-  if (!moduleUnlocked(mod, planId)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
+  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
   if (!current) return <Navigate to={`/dashboard/m/${mod.id}?tab=watch`} replace />;
 
   const subject = mod.subjects.find((s) => s.id === current.subjectId);

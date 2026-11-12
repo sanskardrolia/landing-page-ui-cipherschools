@@ -17,6 +17,7 @@ const T = (key, testType, format, mins, questions, noun = 'Questions') => ({ key
 const STAGE_RULES = {
   dsa: () => [T('ai', 'A.I. Assisted', 'Coding', 45, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 30, 3, 'Problems')],
   'dsa-advanced': () => [T('ai', 'A.I. Assisted', 'Coding', 60, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 40, 3, 'Problems')],
+  'dsa-mastery': () => [T('ai', 'A.I. Assisted', 'Coding', 75, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 50, 3, 'Problems')],
   mern: () => [T('debugging', 'Debugging', 'Coding', 30, 3, 'Bugs'), T('vibe', 'Vibe Coding', 'Build Task', 45, 1, 'Task')],
   jfs: () => [T('debugging', 'Debugging', 'Coding', 30, 3, 'Bugs'), T('vibe', 'Vibe Coding', 'Build Task', 45, 1, 'Task')],
   dbms: (unit) => (unit.id === 'sql'

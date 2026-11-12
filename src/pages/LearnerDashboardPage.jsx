@@ -1,19 +1,27 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowRight, ChevronDown, CirclePlay, ClipboardCheck, Crown, House, Layers, LayoutDashboard,
-  Lock, Menu, Mic, Moon, PanelLeft, Search, Sparkles, Sun, Terminal, X
+  Activity, ArrowRight, ChevronDown, CircleCheck, CirclePlay, Eye, Crown, Flame, House, Layers, LayoutDashboard,
+  Lock, Menu, Moon, PanelLeft, RotateCcw, Search, Sparkles, Sun, Terminal, Users, X, Zap
 } from 'lucide-react';
 import { getEnrollment } from '../utils/enrollment';
 import { useLearnerProgress } from '../utils/learnerProgress';
 import {
-  MODULES, PLAN_LABELS, TIER_LABELS, ULTRA_SECTIONS, allLectures, isExtendedPlan, moduleUnlocked
+  MODULES, PLAN_LABELS, TIER_LABELS, allLectures, isExtendedPlan, moduleUnlocked, requiredPlanFor, subjectLectures
 } from '../data/learnerModules';
 import { MODULE_ICONS } from '../data/moduleIcons';
 import ModuleView from './DashboardModuleView';
 import DashboardPlayer from './DashboardPlayer';
 import DashboardWorkspace from './DashboardWorkspace';
-import DashboardUltra from './DashboardUltra';
+import DashboardMentorship from './DashboardMentorship';
+import { mentorCreditsLeft } from '../utils/mentorship';
+import { learningStats } from '../utils/learningStats';
+import { PREVIEW_ENROLLMENT, PREVIEW_PROGRESS, endPreview, isPreviewOn } from '../utils/preview';
+import DashboardPreviewPlans from './DashboardPreviewPlans';
+
+const noop = () => {};
+import DashboardActivity from './DashboardActivity';
+import DashboardUpgrade from './DashboardUpgrade';
 import './LearnerDashboardPage.css';
 
 /* ══════════════════════════════════════════════════════════════
@@ -35,14 +43,22 @@ const readTheme = () => {
   try { return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'; } catch { return 'dark'; }
 };
 
-const ULTRA_ICONS = { sparkles: Sparkles, clipboard: ClipboardCheck, mic: Mic };
+/* Same plan icons as the pricing cards: Core ⚡ · Plus 🔥 · Ultra 👑 */
+const TIER_ICONS = { core: Zap, plus: Flame, ultra: Crown };
 
 const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 
 const LearnerDashboardPage = () => {
-  const [enrollment] = useState(getEnrollment);
-  const { progress, toggle, set } = useLearnerProgress();
+  const [realEnrollment] = useState(getEnrollment);
+  // Guests who chose "Experience before you pay" get the full dashboard with everything locked
+  const [preview] = useState(() => !realEnrollment && isPreviewOn());
+  const enrollment = realEnrollment || (preview ? PREVIEW_ENROLLMENT : null);
+  const learner = useLearnerProgress();
+  const { progress, toggle, set } = preview ? { progress: PREVIEW_PROGRESS, toggle: noop, set: noop } : learner;
+  const [purchase, setPurchase] = useState(null); // preview only: { mod?, target? } while the plan pop-up is open
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [upgrade, setUpgrade] = useState(null); // { target } while the upgrade pop-up is open
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState(readTheme);
   const location = useLocation();
@@ -61,26 +77,46 @@ const LearnerDashboardPage = () => {
   const onPlayer = /^\/dashboard\/m\/[^/]+\/(watch|practice)\//.test(location.pathname);
 
   const planId = enrollment.planId;
-  const ctx = { enrollment, planId, extended: isExtendedPlan(planId), progress, toggle, set };
+  // openUpgrade(target?) opens the upgrade pop-up, optionally pre-selecting a plan id.
+  // In preview, it and lockedTap(mod) open the plan pop-up instead.
+  const ctx = {
+    enrollment, planId, extended: isExtendedPlan(planId), devTrack: enrollment.devTrack, progress, toggle, set,
+    preview,
+    openUpgrade: preview ? (target) => setPurchase({ target }) : (target) => setUpgrade({ target }),
+    lockedTap: (mod) => setPurchase({ mod })
+  };
+  const exitPreview = () => { endPreview(); navigate('/premium'); };
 
   return (
-    <div className={`dx ${collapsed || onPlayer ? 'dx-collapsed' : ''} ${theme === 'light' ? 'dx-light' : ''}`}>
+    <div className={`dx ${collapsed || onPlayer ? 'dx-collapsed' : ''} ${theme === 'light' ? 'dx-light' : ''} ${preview ? 'dx-preview' : ''}`}>
       <Sidebar ctx={ctx} onCollapse={() => setCollapsed((v) => !v)} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       {mobileOpen && <div className="dx-scrim" onClick={() => setMobileOpen(false)} />}
 
       <div className="dx-main">
         <TopBar ctx={ctx} onMenu={() => setMobileOpen(true)} theme={theme} onToggleTheme={toggleTheme} />
+        {preview && (
+          <div className="dx-pv-bar" role="status">
+            <Eye size={16} />
+            <span><strong>Preview mode.</strong> Explore everything in Core, Plus and Ultra. Tap anything to see how to unlock it.</span>
+            <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => setPurchase({})}>See plans</button>
+            <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={exitPreview}>Exit preview</button>
+          </div>
+        )}
         <main className="dx-page">
           <Routes>
             <Route path="/dashboard" element={<Overview ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId" element={<ModuleRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/watch/:lectureId" element={<PlayerRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/practice/:itemId" element={<WorkspaceRoute ctx={ctx} />} />
-            <Route path="/dashboard/ultra/:sectionId" element={<DashboardUltra ctx={ctx} />} />
+            <Route path="/dashboard/mentorship" element={<DashboardMentorship ctx={ctx} />} />
+            <Route path="/dashboard/activity" element={<DashboardActivity ctx={ctx} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>
       </div>
+
+      {upgrade && <DashboardUpgrade ctx={ctx} initialTarget={upgrade.target} onClose={() => setUpgrade(null)} />}
+      {purchase && <DashboardPreviewPlans mod={purchase.mod} target={purchase.target} onClose={() => setPurchase(null)} />}
     </div>
   );
 };
@@ -93,13 +129,15 @@ const ModuleRoute = ({ ctx }) => {
 
 // Keyed by lecture so the "ended / up next" state resets for every video
 const PlayerRoute = ({ ctx }) => {
-  const { lectureId } = useParams();
+  const { moduleId, lectureId } = useParams();
+  if (ctx.preview) return <Navigate to={`/dashboard/m/${moduleId}`} replace />;
   return <DashboardPlayer key={lectureId} ctx={ctx} />;
 };
 
 // Keyed by item so code, console and submissions load fresh for each problem
 const WorkspaceRoute = ({ ctx }) => {
-  const { itemId } = useParams();
+  const { moduleId, itemId } = useParams();
+  if (ctx.preview) return <Navigate to={`/dashboard/m/${moduleId}?tab=practice`} replace />;
   return <DashboardWorkspace key={itemId} ctx={ctx} />;
 };
 
@@ -111,9 +149,14 @@ const moduleProgress = (mod, progress) => {
   return { done, total: lectures.length, pct: pct(done, lectures.length) };
 };
 
+const initialsOf = (name) => name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
+
 const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
-  const { planId, extended, progress } = ctx;
+  const { planId, extended, progress, enrollment } = ctx;
+  const learnerName = enrollment.learner?.name?.trim() || 'Learner';
   const [open, setOpen] = useState({ core: true, plus: true, ultra: true });
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
 
   return (
     <aside className={`dx-side ${mobileOpen ? 'open' : ''}`} aria-label="Dashboard navigation">
@@ -136,7 +179,7 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
           <span className="dx-label">Dashboard</span>
         </NavLink>
 
-        {['core', 'plus'].map((tier) => {
+        {['core', 'plus', 'ultra'].map((tier) => {
           const mods = MODULES.filter((m) => m.tier === tier);
           return (
             <div key={tier} className="dx-nav-group">
@@ -146,65 +189,102 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
                 onClick={() => setOpen((o) => ({ ...o, [tier]: !o[tier] }))}
                 aria-expanded={open[tier]}
               >
+                <TierIcon tier={tier} />
                 <span className="dx-label">{TIER_LABELS[tier]}</span>
-                {tier === 'plus' && extended && <span className="dx-ext-tag dx-label">Extended</span>}
+                {tier === 'ultra' && !extended && <Lock size={12} className="dx-label dx-nav-lock" />}
                 <ChevronDown size={14} className={`dx-chev dx-label ${open[tier] ? 'up' : ''}`} />
               </button>
               {open[tier] && mods.map((m) => {
                 const Icon = MODULE_ICONS[m.icon] || Layers;
-                const unlocked = moduleUnlocked(m, planId);
+                const unlocked = !ctx.preview && moduleUnlocked(m, planId, ctx.devTrack);
+                const showSubjects = unlocked || ctx.preview; // preview: show everything, locked
                 const mp = moduleProgress(m, progress);
+                const modPath = `/dashboard/m/${m.id}`;
+                const inModule = location.pathname === modPath;
+                const activeSubject = query.get('subject') || m.subjects[0].id;
                 return (
-                  <NavLink key={m.id} to={`/dashboard/m/${m.id}`} className={`dx-nav-item ${unlocked ? '' : 'locked'}`} title={m.title} onClick={onClose}>
-                    <Icon size={18} />
-                    <span className="dx-label dx-nav-text">{m.title}</span>
-                    {unlocked
-                      ? (mp.pct > 0 && <span className="dx-label dx-nav-pct">{mp.pct}%</span>)
-                      : <Lock size={13} className="dx-label dx-nav-lock" />}
-                  </NavLink>
+                  <div key={m.id} className="dx-nav-module">
+                    <NavLink to={modPath} className={`dx-nav-item ${unlocked ? '' : 'locked'}`} title={m.title} onClick={onClose}>
+                      <Icon size={18} />
+                      <span className="dx-label dx-nav-text">{m.title}</span>
+                      {unlocked
+                        ? (mp.pct > 0 && <span className="dx-label dx-nav-pct">{mp.pct}%</span>)
+                        : <Lock size={13} className="dx-label dx-nav-lock" />}
+                    </NavLink>
+
+                    {/* Subjects (e.g. OS / CN / OOPs) as sub-items of a multi-subject module */}
+                    {showSubjects && m.subjects.length > 1 && (
+                      <ul className="dx-nav-sub">
+                        {m.subjects.map((sub) => {
+                          const sl = subjectLectures(sub);
+                          const sp = sl.length ? Math.round((sl.filter((l) => progress.watched[l.id]).length / sl.length) * 100) : 0;
+                          const isActive = inModule && activeSubject === sub.id;
+                          const tab = inModule ? query.get('tab') || 'watch' : 'watch';
+                          return (
+                            <li key={sub.id}>
+                              <Link
+                                to={`${modPath}?tab=${tab}&subject=${sub.id}`}
+                                className={`dx-nav-subitem ${isActive ? 'active' : ''}`}
+                                aria-current={isActive ? 'page' : undefined}
+                                onClick={onClose}
+                              >
+                                <span className="dx-nav-text">{sub.title}</span>
+                                {sp > 0 && <span className="dx-nav-pct">{sp}%</span>}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                  </div>
                 );
               })}
+
+              {/* 1:1 Mentorship lives with the Ultra modules */}
+              {tier === 'ultra' && open.ultra && (
+                <NavLink to="/dashboard/mentorship" className={`dx-nav-item ${extended && !ctx.preview ? '' : 'locked'}`} title="1:1 Mentorship" onClick={onClose}>
+                  <Users size={18} />
+                  <span className="dx-label dx-nav-text">1:1 Mentorship</span>
+                  {extended && !ctx.preview
+                    ? <span className="dx-label dx-nav-pct">{mentorCreditsLeft(progress)} cr</span>
+                    : <Lock size={13} className="dx-label dx-nav-lock" />}
+                </NavLink>
+              )}
             </div>
           );
         })}
 
-        {/* Ultra: extras on top of Plus — locked unless the learner is on Ultra */}
-        <div className="dx-nav-group">
-          <button
-            type="button"
-            className="dx-group-head"
-            onClick={() => setOpen((o) => ({ ...o, ultra: !o.ultra }))}
-            aria-expanded={open.ultra}
-          >
-            <span className="dx-label">{TIER_LABELS.ultra}</span>
-            {!extended && <Lock size={12} className="dx-label dx-nav-lock" />}
-            <ChevronDown size={14} className={`dx-chev dx-label ${open.ultra ? 'up' : ''}`} />
-          </button>
-          {open.ultra && ULTRA_SECTIONS.map((sec) => {
-            const Icon = ULTRA_ICONS[sec.icon] || Crown;
-            return (
-              <NavLink key={sec.id} to={`/dashboard/ultra/${sec.id}`} className={`dx-nav-item ${extended ? '' : 'locked'}`} title={sec.title} onClick={onClose}>
-                <Icon size={18} />
-                <span className="dx-label dx-nav-text">{sec.title}</span>
-                {!extended && <Lock size={13} className="dx-label dx-nav-lock" />}
-              </NavLink>
-            );
-          })}
-        </div>
       </nav>
 
       <div className="dx-side-foot">
         <Link to="/online-compiler" className="dx-nav-item"><Terminal size={18} /><span className="dx-label">Compiler</span></Link>
         <Link to="/courses" className="dx-nav-item"><House size={18} /><span className="dx-label">Back to site</span></Link>
+
+        {/* Profile row: initials · name · plan · upgrade */}
+        <div className="dx-profile">
+          <span className="dx-profile-avatar" title={learnerName}>{initialsOf(learnerName)}</span>
+          <span className="dx-profile-text">
+            <strong>{learnerName}</strong>
+            <span>{ctx.preview ? 'Preview' : `${PLAN_LABELS[planId]} plan`}</span>
+          </span>
+          {(planId !== 'compete' || ctx.preview) && (
+            <button type="button" className="dx-upgrade" onClick={() => { onClose(); ctx.openUpgrade(); }}><Sparkles size={14} /> {ctx.preview ? 'Get plan' : 'Upgrade'}</button>
+          )}
+        </div>
       </div>
     </aside>
   );
 };
 
+const TierIcon = ({ tier }) => {
+  const Icon = TIER_ICONS[tier];
+  return Icon ? <Icon size={13} className={`dx-tier-icon dx-tier-${tier}`} aria-hidden="true" /> : null;
+};
+
 /* ─────────────────────────── Top bar ─────────────────────────── */
 
 const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
-  const { enrollment, planId, progress } = ctx;
+  const { planId, progress } = ctx;
   const navigate = useNavigate();
   const [q, setQ] = useState('');
   const [focus, setFocus] = useState(false);
@@ -218,7 +298,6 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
   const go = (m) => { setQ(''); setFocus(false); navigate(`/dashboard/m/${m.id}`); };
 
   const watchedTotal = Object.keys(progress.watched).length;
-  const initials = (enrollment.learner?.name || 'L').trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
   return (
     <header className="dx-top">
@@ -241,7 +320,7 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
               <li key={m.id}>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(m)}>
                   <span>{m.title}</span>
-                  {!moduleUnlocked(m, planId) && <Lock size={13} />}
+                  {(ctx.preview || !moduleUnlocked(m, planId, ctx.devTrack)) && <Lock size={13} />}
                 </button>
               </li>
             ))}
@@ -250,6 +329,9 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
       </div>
 
       <div className="dx-top-right">
+        <NavLink to="/dashboard/activity" className="dx-activity-btn" title="Activity heatmap">
+          <Activity size={16} /> <span className="dx-activity-label">Activity</span>
+        </NavLink>
         <button
           type="button"
           className="dx-icon-btn dx-theme-btn"
@@ -259,13 +341,14 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
         >
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
         </button>
+        <span className="dx-top-divider" aria-hidden="true" />
         <span className="dx-stat-pill" title="Lectures watched"><CirclePlay size={15} /> {watchedTotal}</span>
-        {planId !== 'compete' ? (
-          <Link to="/premium" className="dx-upgrade"><Sparkles size={15} /> Upgrade</Link>
+        <span className="dx-top-divider" aria-hidden="true" />
+        {planId !== 'compete' || ctx.preview ? (
+          <button type="button" className="dx-upgrade" onClick={() => ctx.openUpgrade()}><Sparkles size={15} /> {ctx.preview ? 'Get a plan' : 'Upgrade'}</button>
         ) : (
           <span className="dx-plan-pill"><Crown size={15} /> Ultra</span>
         )}
-        <span className="dx-avatar" title={enrollment.learner?.name}>{initials}</span>
       </div>
     </header>
   );
@@ -274,12 +357,12 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
 /* ─────────────────────────── Overview ─────────────────────────── */
 
 const Overview = ({ ctx }) => {
-  const { enrollment, planId, extended, progress } = ctx;
+  const { enrollment, planId, progress } = ctx;
   const [hello, sub] = greeting();
   const name = enrollment.learner?.name?.trim() || 'Learner';
 
-  const unlocked = MODULES.filter((m) => moduleUnlocked(m, planId));
-  const locked = MODULES.filter((m) => !moduleUnlocked(m, planId));
+  const unlocked = MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack));
+  const locked = MODULES.filter((m) => !moduleUnlocked(m, planId, ctx.devTrack));
 
   // next unwatched lecture across unlocked modules, in sidebar order
   let next = null;
@@ -288,16 +371,10 @@ const Overview = ({ ctx }) => {
     if (l) { next = { mod: m, lecture: l }; break; }
   }
 
-  const tierStats = ['core', 'plus']
-    .filter((t) => unlocked.some((m) => m.tier === t))
-    .map((t) => {
-      const mods = unlocked.filter((m) => m.tier === t);
-      const total = mods.reduce((a, m) => a + allLectures(m).length, 0);
-      const done = mods.reduce((a, m) => a + allLectures(m).filter((l) => progress.watched[l.id]).length, 0);
-      return { tier: t, label: t === 'core' ? 'Core' : 'Plus', done, total };
-    });
-  const totalAll = tierStats.reduce((a, s) => a + s.total, 0);
-  const doneAll = tierStats.reduce((a, s) => a + s.done, 0);
+  const stats = learningStats(MODULES, ctx);
+  // Where to start: the first unlocked module (sidebar order) that isn't fully watched yet.
+  // It moves on by itself as soon as that module's last lecture is watched.
+  const startHere = unlocked.find((m) => moduleProgress(m, progress).pct < 100)?.id;
 
   const validTill = new Date(enrollment.paidAt);
   validTill.setFullYear(validTill.getFullYear() + 1);
@@ -306,11 +383,35 @@ const Overview = ({ ctx }) => {
     <div className="dx-overview">
       <div className="dx-ov-main">
         <section className="dx-hello">
-          <h1>{hello}, {name} <span aria-hidden="true">👋</span></h1>
-          <p>{sub}</p>
+          {ctx.preview ? (
+            <>
+              <h1>Welcome, explorer <span aria-hidden="true">👋</span></h1>
+              <p>This is the full CipherSchools Premium dashboard: every module, lecture, practice set, test and mock interview. Look around, then pick a plan to unlock it.</p>
+            </>
+          ) : (
+            <>
+              <h1>{hello}, {name} <span aria-hidden="true">👋</span></h1>
+              <p>{sub}</p>
+            </>
+          )}
         </section>
 
-        {next && (
+        {ctx.preview && ['core', 'plus', 'ultra'].map((tier) => (
+          <div key={tier}>
+            <div className="dx-section-head">
+              <h2><TierIcon tier={tier} /> {TIER_LABELS[tier]}</h2>
+              <span className="dx-rule" />
+              <span className="dx-muted dx-small">{tier === 'core' ? 'In every plan' : tier === 'plus' ? 'Plus & Ultra' : 'Ultra only'}</span>
+            </div>
+            <div className="dx-module-grid">
+              {MODULES.filter((m) => m.tier === tier).map((m) => (
+                <ModuleCard key={m.id} mod={m} progress={progress} locked={{ core: 'Core', plus: 'Plus', ultra: 'Ultra' }[tier]} />
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {!ctx.preview && next && (
           <section className="dx-card dx-continue">
             <div>
               <span className="dx-kicker">Continue learning</span>
@@ -323,22 +424,26 @@ const Overview = ({ ctx }) => {
           </section>
         )}
 
-        <div className="dx-section-head">
-          <h2>Your modules</h2>
-          <span className="dx-rule" />
-        </div>
-        <div className="dx-module-grid">
-          {unlocked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} extended={extended && m.tier === 'plus'} />)}
-        </div>
-
-        {locked.length > 0 && (
+        {!ctx.preview && (
           <>
             <div className="dx-section-head">
-              <h2>Unlock with Plus</h2>
+              <h2>Your modules</h2>
               <span className="dx-rule" />
             </div>
             <div className="dx-module-grid">
-              {locked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} locked />)}
+              {unlocked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} highlight={m.id === startHere} />)}
+            </div>
+          </>
+        )}
+
+        {!ctx.preview && locked.length > 0 && (
+          <>
+            <div className="dx-section-head">
+              <h2>{planId === 'starter' ? 'Unlock with Plus & Ultra' : 'Unlock with Ultra'}</h2>
+              <span className="dx-rule" />
+            </div>
+            <div className="dx-module-grid">
+              {locked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} locked={PLAN_LABELS[requiredPlanFor(m, planId)]} />)}
             </div>
           </>
         )}
@@ -347,79 +452,128 @@ const Overview = ({ ctx }) => {
       <aside className="dx-ov-rail">
         <section className="dx-card dx-ring-card">
           <h3>Learning Progress</h3>
-          <div className="dx-ring-wrap">
-            <ProgressRing value={doneAll} total={totalAll} />
-            <ul className="dx-ring-legend">
-              {tierStats.map((s) => (
-                <li key={s.tier}>
-                  <span className={`dx-dot dx-dot-${s.tier}`} />
-                  <span className="dx-legend-label">{s.label}</span>
-                  <span className="dx-legend-val"><strong>{s.done}</strong><span className="dx-muted"> / {s.total}</span></span>
-                </li>
-              ))}
-            </ul>
+          <div className="dx-stat-grid">
+            <StatRing kind="lecture" label="Lectures watched" {...stats.lectures} />
+            <StatRing
+              kind="practice"
+              label="Practice questions"
+              {...stats.practice}
+              sub={`Coding ${stats.practice.coding.done}/${stats.practice.coding.total} · MCQ ${stats.practice.mcq.done}/${stats.practice.mcq.total}`}
+            />
+            <StatRing kind="test" label="Tests taken" {...stats.tests} />
+            <StatRing kind="interview" label="Mock interviews" {...stats.interviews} />
           </div>
-          <p className="dx-muted dx-small">Lectures watched across your unlocked modules.</p>
+          <p className="dx-muted dx-small">Across your unlocked modules.</p>
         </section>
 
+        {ctx.preview ? (
+          <section className="dx-card dx-plan-card">
+            <span className="dx-kicker">Preview</span>
+            <h3>Everything is locked</h3>
+            <p className="dx-muted dx-small">Plans start at ₹174/month, billed yearly, with a 7-day money-back guarantee.</p>
+            <button type="button" className="dx-btn dx-btn-primary" onClick={() => ctx.openUpgrade()}>
+              See plans <ArrowRight size={15} />
+            </button>
+          </section>
+        ) : (
         <section className="dx-card dx-plan-card">
           <span className="dx-kicker">Your plan</span>
-          <h3>{PLAN_LABELS[planId]} {extended && <span className="dx-ext-tag">Extended limits</span>}</h3>
+          <h3>{PLAN_LABELS[planId]}</h3>
+          {planId === 'plus' && <p className="dx-muted dx-small">Full Stack track: <strong>{(ctx.devTrack || 'mern').toUpperCase()}</strong></p>}
           <p className="dx-muted dx-small">Active till {validTill.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
           {planId !== 'compete' && (
-            <Link to="/premium" className="dx-btn dx-btn-ghost">
+            <button type="button" className="dx-btn dx-btn-ghost" onClick={() => ctx.openUpgrade(planId === 'starter' ? 'plus' : 'compete')}>
               {planId === 'starter' ? 'Upgrade to Plus' : 'Go Ultra for higher limits'} <ArrowRight size={15} />
-            </Link>
+            </button>
           )}
         </section>
+        )}
       </aside>
     </div>
   );
 };
 
-const ModuleCard = ({ mod, progress, locked, extended }) => {
+// `locked` is the plan name that unlocks this module ("Plus" / "Ultra"), or falsy when unlocked.
+// `highlight` marks the module the learner should start (or continue) with.
+const ModuleCard = ({ mod, progress, locked, highlight }) => {
   const Icon = MODULE_ICONS[mod.icon] || Layers;
   const mp = moduleProgress(mod, progress);
+  const meta = (
+    <div className="dx-mc-meta">
+      <span>{mp.total} lectures</span>
+      <span>{mod.practice.length} practice {mod.practice.length === 1 ? 'track' : 'tracks'}</span>
+      {mod.tests.length > 0 && <span>{mod.tests.length} {mod.tests.length === 1 ? 'test' : 'tests'}</span>}
+    </div>
+  );
+
+  if (locked) {
+    return (
+      <Link to={`/dashboard/m/${mod.id}`} className="dx-card dx-module-card locked">
+        <div className="dx-mc-top">
+          <span className="dx-mc-icon"><Icon size={18} /></span>
+          <span className="dx-badge"><Lock size={12} /> {locked}</span>
+        </div>
+        <h3>{mod.title}</h3>
+        <p className="dx-muted dx-small">{mod.short}</p>
+        {meta}
+        <span className="dx-mc-explore">Explore module <ArrowRight size={14} /></span>
+      </Link>
+    );
+  }
+
+  const nextLecture = allLectures(mod).find((l) => !progress.watched[l.id]);
+  const state = mp.done === 0 ? 'new' : nextLecture ? 'progress' : 'done';
+  const cta = {
+    new: { label: 'Start learning', to: nextLecture && `/dashboard/m/${mod.id}/watch/${nextLecture.id}` },
+    progress: { label: 'Continue learning', to: nextLecture && `/dashboard/m/${mod.id}/watch/${nextLecture.id}` },
+    done: { label: 'Review module', to: `/dashboard/m/${mod.id}` }
+  }[state];
+
+  // The title link covers the whole card; the CTA sits above it, so there are no nested links
   return (
-    <Link to={`/dashboard/m/${mod.id}`} className={`dx-card dx-module-card ${locked ? 'locked' : ''}`}>
+    <div className={`dx-card dx-module-card ${highlight ? 'is-next' : ''} ${state === 'done' ? 'is-done' : ''}`}>
       <div className="dx-mc-top">
         <span className="dx-mc-icon"><Icon size={18} /></span>
-        {locked ? <span className="dx-badge"><Lock size={12} /> Plus</span> : extended && <span className="dx-ext-tag">Extended</span>}
+        {highlight && <span className="dx-mc-flag">{state === 'new' ? 'Start here' : 'Continue here'}</span>}
+        {state === 'done' && <span className="dx-mc-done"><CircleCheck size={13} /> Completed</span>}
       </div>
-      <h3>{mod.title}</h3>
+      <h3><Link to={`/dashboard/m/${mod.id}`} className="dx-mc-link">{mod.title}</Link></h3>
       <p className="dx-muted dx-small">{mod.short}</p>
-      <div className="dx-mc-meta">
-        <span>{mp.total} lectures</span>
-        <span>{mod.practice.length} practice {mod.practice.length === 1 ? 'track' : 'tracks'}</span>
-        {mod.tests.length > 0 && <span>{mod.tests.length} {mod.tests.length === 1 ? 'test' : 'tests'}</span>}
+      {meta}
+      <div className="dx-progress" aria-label={`${mp.pct}% watched`}>
+        <span style={{ width: `${mp.pct}%` }} />
       </div>
-      {!locked && (
-        <div className="dx-progress" aria-label={`${mp.pct}% watched`}>
-          <span style={{ width: `${mp.pct}%` }} />
-        </div>
-      )}
-    </Link>
+      <div className="dx-mc-foot">
+        <span className="dx-muted dx-small">{mp.done}/{mp.total} watched</span>
+        <Link to={cta.to || `/dashboard/m/${mod.id}`} className={`dx-btn dx-btn-sm dx-mc-cta ${highlight ? 'dx-btn-primary' : 'dx-btn-ghost'}`}>
+          {state === 'done' ? <RotateCcw size={14} /> : <CirclePlay size={14} />} {cta.label}
+        </Link>
+      </div>
+    </div>
   );
 };
 
-const ProgressRing = ({ value, total, size = 150 }) => {
-  const r = (size - 14) / 2;
+// One of the four Learning Progress charts: a ring with done / total and a label
+const StatRing = ({ kind, label, done, total, sub, size = 76 }) => {
+  const r = (size - 10) / 2;
   const c = 2 * Math.PI * r;
-  const p = total ? value / total : 0;
+  const p = total ? done / total : 0;
   return (
-    <div className="dx-ring" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <circle cx={size / 2} cy={size / 2} r={r} className="dx-ring-track" />
-        <circle
-          cx={size / 2} cy={size / 2} r={r} className="dx-ring-fill"
-          strokeDasharray={c} strokeDashoffset={c * (1 - p)}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </svg>
-      <div className="dx-ring-center">
-        <strong>{value}</strong>
-        <span>/ {total}</span>
+    <div className={`dx-stat dx-stat-${kind}`} aria-label={`${label}: ${done} of ${total}`}>
+      <div className="dx-ring" style={{ width: size, height: size }}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+          <circle cx={size / 2} cy={size / 2} r={r} className="dx-ring-track" />
+          <circle
+            cx={size / 2} cy={size / 2} r={r} className="dx-ring-fill"
+            strokeDasharray={c} strokeDashoffset={c * (1 - p)}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          />
+        </svg>
+        <div className="dx-ring-center"><strong>{Math.round(p * 100)}%</strong></div>
       </div>
+      <span className="dx-stat-label">{label}</span>
+      <span className="dx-stat-val"><strong>{done}</strong> / {total}</span>
+      {sub && <span className="dx-stat-sub">{sub}</span>}
     </div>
   );
 };

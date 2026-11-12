@@ -6,7 +6,7 @@ import {
   Timer, X
 } from 'lucide-react';
 import {
-  TEST_UNLOCK_AT, findModule, moduleUnlocked, subjectLectures, allLectures
+  DEV_TRACKS, TEST_UNLOCK_AT, findModule, moduleUnlocked, requiredPlanFor, subjectLectures, allLectures
 } from '../data/learnerModules';
 import { MODULE_ICONS } from '../data/moduleIcons';
 import { WORKSPACE_KINDS, practiceForUnit, problemOfTheDay } from '../data/practiceBank';
@@ -30,14 +30,21 @@ const ModuleView = ({ ctx }) => {
   const { planId, extended, progress } = ctx;
   const mod = findModule(moduleId);
 
-  const [subjectId, setSubjectId] = useState(mod?.subjects[0]?.id); // component is keyed by module id
 
   if (!mod) return <Navigate to="/dashboard" replace />;
-  if (!moduleUnlocked(mod, planId)) return <LockedModule mod={mod} />;
+  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <LockedModule mod={mod} ctx={ctx} />;
 
   const tab = TABS.some((t) => t.id === params.get('tab')) ? params.get('tab') : 'watch';
-  const setTab = (id) => setParams({ tab: id }, { replace: true });
-  const isExt = extended && mod.tier === 'plus';
+  // Tab and subject both live in the URL (?tab=…&subject=…) so the sidebar can link to a subject
+  const setQuery = (patch) => setParams((prev) => {
+    const next = new URLSearchParams(prev);
+    Object.entries(patch).forEach(([k, v]) => next.set(k, v));
+    return next;
+  }, { replace: true });
+  const setTab = (id) => setQuery({ tab: id });
+  const setSubjectId = (id) => setQuery({ subject: id });
+  const subjectId = params.get('subject');
+  const isExt = extended && mod.tier !== 'core'; // Ultra's higher limits apply to Plus & Ultra modules
   const subject = mod.subjects.find((s) => s.id === subjectId) || mod.subjects[0];
 
   const Icon = MODULE_ICONS[mod.icon] || Layers;
@@ -57,7 +64,6 @@ const ModuleView = ({ ctx }) => {
         <div className="dx-mod-head-text">
           <h1>
             {mod.title}
-            {isExt && <span className="dx-ext-tag">Extended</span>}
           </h1>
           <p className="dx-muted">{mod.short} · {lectures.length} lectures · {watchedCount} watched</p>
         </div>
@@ -66,24 +72,6 @@ const ModuleView = ({ ctx }) => {
           <div className="dx-progress"><span style={{ width: `${pct(watchedCount, lectures.length)}%` }} /></div>
         </div>
       </header>
-
-      <div className="dx-tabs" role="tablist">
-        {TABS.map((t, i) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.id}
-            className={`dx-tab ${tab === t.id ? 'active' : ''}`}
-            onClick={() => setTab(t.id)}
-          >
-            <span className="dx-tab-step">{i + 1}</span>
-            <t.Icon size={16} />
-            <span className="dx-tab-long">{t.label}</span>
-            <span className="dx-tab-short">{t.short}</span>
-          </button>
-        ))}
-      </div>
 
       {mod.subjects.length > 1 && (
         <div className="dx-subjects" role="group" aria-label="Subject">
@@ -105,12 +93,44 @@ const ModuleView = ({ ctx }) => {
         </div>
       )}
 
-      {tab === 'watch' && <WatchTab key={subject.id} mod={mod} subject={subject} ctx={ctx} />}
-      {tab === 'practice' && <PracticeTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
-      {tab === 'test' && <TestTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
-      {tab === 'interview' && <InterviewTab mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
+      <div className="dx-tabs" role="tablist">
+        {TABS.map((t, i) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={tab === t.id}
+            className={`dx-tab ${tab === t.id ? 'active' : ''}`}
+            onClick={() => setTab(t.id)}
+          >
+            <span className="dx-tab-step">{i + 1}</span>
+            <t.Icon size={16} />
+            <span className="dx-tab-long">{t.label}</span>
+            <span className="dx-tab-short">{t.short}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Preview: everything stays visible; any tap on content (not unit/test-group toggles) opens the plan pop-up */}
+      <div onClickCapture={ctx.preview ? (e) => previewGuard(e, () => ctx.lockedTap(mod)) : undefined}>
+        {tab === 'watch' && <WatchTab key={subject.id} mod={mod} subject={subject} ctx={ctx} />}
+        {tab === 'practice' && <PracticeTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
+        {tab === 'test' && <TestTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
+        {tab === 'interview' && <InterviewTab mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
+      </div>
     </div>
   );
+};
+
+/* Preview mode: let unit accordions and the test-group switch work, lock every other tap */
+const PREVIEW_FREE = '.dx-unit-head, .dx-test-switch';
+const PREVIEW_ACTION = 'a, button, tr, .dx-card, .dx-lecture';
+const previewGuard = (e, onLocked) => {
+  if (e.target.closest(PREVIEW_FREE)) return;
+  if (!e.target.closest(PREVIEW_ACTION)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  onLocked();
 };
 
 /* ─────────────── 1. Watch ─────────────── */
@@ -118,7 +138,8 @@ const ModuleView = ({ ctx }) => {
 const WatchTab = ({ mod, subject, ctx }) => {
   const { progress, toggle } = ctx;
   const firstOpen = subject.units.find((u) => u.lectures.some((l) => !progress.watched[l.id]))?.id || subject.units[0]?.id;
-  const [open, setOpen] = useState(() => new Set([firstOpen])); // keyed by subject id
+  // Preview shows every unit expanded; otherwise open the first unfinished one
+  const [open, setOpen] = useState(() => new Set(ctx.preview ? subject.units.map((u) => u.id) : [firstOpen])); // keyed by subject id
 
   const flip = (id) => setOpen((s) => {
     const n = new Set(s);
@@ -129,8 +150,10 @@ const WatchTab = ({ mod, subject, ctx }) => {
   return (
     <section className="dx-tab-panel">
       <p className="dx-panel-intro">
-        Watch {subject.title} unit by unit. Open a lecture to play it, or tick the circle to mark it watched — tests unlock at
-        {' '}{Math.round(TEST_UNLOCK_AT * 100)}% and the mock interview when the subject is complete.
+        {ctx.preview
+          ? `Every ${subject.title} lecture, unit by unit. Tap any lecture to see how to unlock it.`
+          : <>Watch {subject.title} unit by unit. Open a lecture to play it, or tick the circle to mark it watched — tests unlock at
+            {' '}{Math.round(TEST_UNLOCK_AT * 100)}% and the mock interview when the subject is complete.</>}
       </p>
       <div className="dx-units">
         {subject.units.map((u, idx) => {
@@ -152,6 +175,9 @@ const WatchTab = ({ mod, subject, ctx }) => {
                     const done = !!progress.watched[l.id];
                     return (
                       <li key={l.id} className={`dx-lecture ${done ? 'done' : ''}`}>
+                        {ctx.preview ? (
+                          <span className="dx-lecture-check dx-pv-lock" aria-label="Locked"><Lock size={15} /></span>
+                        ) : (
                         <button
                           type="button"
                           className="dx-lecture-check"
@@ -161,6 +187,7 @@ const WatchTab = ({ mod, subject, ctx }) => {
                         >
                           {done ? <CircleCheck size={18} className="dx-done-icon" /> : <Circle size={18} />}
                         </button>
+                        )}
                         <Link to={`/dashboard/m/${mod.id}/watch/${l.id}`} className="dx-lecture-link">
                           <CirclePlay size={16} className="dx-lecture-play" />
                           <span className="dx-lecture-title">{l.title}</span>
@@ -190,7 +217,7 @@ export const LevelBadge = ({ level }) => (
 );
 
 // Daily featured problem — DSA modules only; renders nothing elsewhere
-const ProblemOfTheDay = ({ mod, isExt, progress }) => {
+const ProblemOfTheDay = ({ mod, isExt, progress, preview }) => {
   const potd = problemOfTheDay(mod, isExt);
   if (!potd) return null;
   const { item, unit } = potd;
@@ -213,14 +240,13 @@ const ProblemOfTheDay = ({ mod, isExt, progress }) => {
           <LevelBadge level={item.level} />
           <span className="dx-tag">{unit.title}</span>
           {(item.companies || []).map((c) => <span key={c} className="dx-tag">{c}</span>)}
-          {item.extended && <span className="dx-ext-tag">Extended</span>}
         </div>
         <p className="dx-muted dx-small">{item.statement}</p>
       </div>
       <div className="dx-potd-side">
         {solved && <span className="dx-tag dx-tag-ok"><CircleCheck size={13} /> Solved</span>}
         <Link to={`/dashboard/m/${mod.id}/practice/${item.id}`} className={`dx-btn ${solved ? 'dx-btn-ghost' : 'dx-btn-primary'}`}>
-          {solved ? 'Solve again' : 'Solve now'} <ArrowRight size={15} />
+          {preview ? <><Lock size={14} /> Unlock to solve</> : <>{solved ? 'Solve again' : 'Solve now'} <ArrowRight size={15} /></>}
         </Link>
         <span className="dx-muted dx-small">New problem in {resetsIn}</span>
       </div>
@@ -236,7 +262,7 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
 
   const units = subject.units.map((u) => ({ unit: u, items: practiceForUnit(mod, u, isExt) }));
   const firstOpen = units.find((x) => x.items.some((i) => !progress.practice[i.id]))?.unit.id || units[0]?.unit.id;
-  const [open, setOpen] = useState(() => new Set([firstOpen]));
+  const [open, setOpen] = useState(() => new Set(ctx.preview ? units.map((x) => x.unit.id) : [firstOpen]));
   const flip = (id) => setOpen((s) => {
     const n = new Set(s);
     if (n.has(id)) n.delete(id); else n.add(id);
@@ -254,7 +280,7 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
         Practice follows the lectures unit by unit. Watch a unit, then solve its questions here.
       </p>
 
-      <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} />
+      <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} preview={ctx.preview} />
 
       <div className="dx-units">
         {units.map(({ unit: u, items }, idx) => {
@@ -296,12 +322,13 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
                         return (
                           <tr key={item.id} className={done ? 'done' : ''}>
                             <td className="dx-col-status">
-                              {done ? <CircleCheck size={17} className="dx-done-icon" aria-label="Solved" /> : <Circle size={17} className="dx-muted" aria-label="Not solved" />}
+                              {ctx.preview
+                                ? <Lock size={15} className="dx-pv-lock" aria-label="Locked" />
+                                : done ? <CircleCheck size={17} className="dx-done-icon" aria-label="Solved" /> : <Circle size={17} className="dx-muted" aria-label="Not solved" />}
                             </td>
                             <td>
                               <button type="button" className="dx-prow-title" onClick={() => openItem(item)}>
                                 {item.title}
-                                {item.extended && <span className="dx-ext-tag">Extended</span>}
                               </button>
                             </td>
                             <td className="dx-col-level"><LevelBadge level={item.level} /></td>
@@ -456,7 +483,9 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
                       <span>{r.count}</span>
                       {isExt && <span className="dx-ext-tag">2 attempts</span>}
                     </div>
-                    {!r.unlocked && <div className="dx-treason"><Lock size={12} /> {r.reason}</div>}
+                    {ctx.preview
+                      ? <div className="dx-treason"><Lock size={12} /> Unlocks with a plan</div>
+                      : !r.unlocked && <div className="dx-treason"><Lock size={12} /> {r.reason}</div>}
                   </td>
                   <td><span className="dx-chip-type">{r.testType}</span></td>
                   <td><span className="dx-chip-format">{r.format}</span></td>
@@ -468,8 +497,8 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
                   </td>
                   <td className={used > 0 ? 'dx-small' : 'dx-muted'}>{used > 0 ? 'Pending' : 'N/A'}</td>
                   <td className="dx-col-link">
-                    {!r.unlocked ? (
-                      <button type="button" className="dx-btn dx-btn-locked dx-btn-sm" disabled title={r.reason}>
+                    {ctx.preview || !r.unlocked ? (
+                      <button type="button" className="dx-btn dx-btn-locked dx-btn-sm" disabled={!ctx.preview} title={ctx.preview ? 'Unlock with a plan' : r.reason}>
                         Locked <Lock size={14} />
                       </button>
                     ) : left > 0 ? (
@@ -571,11 +600,13 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
                 <h3>{iv.label}{rounds > 1 ? ` · Round ${i + 1}` : ''}</h3>
                 {!complete ? <Lock size={15} className="dx-muted" /> : booked && <CalendarClock size={16} className="dx-done-icon" />}
               </div>
-              <p className="dx-muted dx-small">{scope.name} · {iv.mins} min{isExt && i === 1 ? ' · Extended' : ''}</p>
+              <p className="dx-muted dx-small">{scope.name} · {iv.mins} min{isExt && i === 1 ? ' · Ultra' : ''}</p>
               {!complete ? (
                 <div className="dx-gate">
                   <div className="dx-progress"><span style={{ width: `${pct(watched, scope.lectures.length)}%` }} /></div>
-                  <p className="dx-small dx-muted">{watched}/{scope.lectures.length} lectures watched — finish all to unlock</p>
+                  <p className="dx-small dx-muted">
+                    {ctx.preview ? 'Locked · unlocks with a plan' : `${watched}/${scope.lectures.length} lectures watched — finish all to unlock`}
+                  </p>
                 </div>
               ) : booked ? (
                 <>
@@ -619,7 +650,18 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
 
 /* ─────────────── Locked module ─────────────── */
 
-const LockedModule = ({ mod }) => {
+const TRACK = { mern: 'MERN', jfs: 'JFS' };
+const lockedReason = (mod, ctx) => {
+  if (mod.tier === 'ultra') return 'This module is part of the Ultra plan.';
+  if (DEV_TRACKS.includes(mod.id)) {
+    return ctx.planId === 'plus'
+      ? `Your Plus plan includes the ${TRACK[ctx.devTrack || 'mern']} track. Get both Full Stack tracks with Ultra.`
+      : 'Plus includes one Full Stack track of your choice (MERN or JFS). Ultra includes both.';
+  }
+  return 'This module is part of the Plus plan.';
+};
+
+const LockedModule = ({ mod, ctx }) => {
   const Icon = MODULE_ICONS[mod.icon] || Layers;
   const lectures = allLectures(mod);
   return (
@@ -632,14 +674,16 @@ const LockedModule = ({ mod }) => {
       <div className="dx-card dx-locked">
         <span className="dx-mc-icon dx-mc-icon-lg"><Icon size={22} /></span>
         <h1>{mod.title}</h1>
-        <p className="dx-muted">This module is part of the <strong>Plus</strong> plan.</p>
+        <p className="dx-muted">{lockedReason(mod, ctx)}</p>
         <ul className="dx-locked-list">
           <li><CirclePlay size={15} /> {lectures.length} lectures across {mod.subjects.reduce((a, s) => a + s.units.length, 0)} units</li>
           {mod.practice.map((p) => <li key={p.kind}><ListChecks size={15} /> {p.label}</li>)}
           {mod.tests.map((t) => <li key={t.kind}><ClipboardCheck size={15} /> {t.label}</li>)}
           <li><Mic size={15} /> {mod.interview.label}</li>
         </ul>
-        <Link to="/premium" className="dx-btn dx-btn-primary"><Sparkles size={16} /> Upgrade to unlock</Link>
+        <button type="button" className="dx-btn dx-btn-primary" onClick={() => ctx.openUpgrade(requiredPlanFor(mod, ctx.planId))}>
+          <Sparkles size={16} /> Upgrade to {requiredPlanFor(mod, ctx.planId) === 'compete' ? 'Ultra' : 'Plus'}
+        </button>
       </div>
     </div>
   );
