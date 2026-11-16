@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame, GraduationCap, Building2, ArrowRight, Laptop, CheckSquare } from 'lucide-react';
-import PlacementMarquee from './PlacementMarquee';
 import DiwaliHeroLayer from './DiwaliHeroLayer';
 import Diya from './Diya';
 import FireworkDiya from './FireworkDiya';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { goToSection } from '../utils/sectionNav';
 import './ImpactBar.css';
 
 /* ── Floating Orbital Highlights (from Choose How You Want To Experience The Platform) ── */
@@ -224,6 +225,8 @@ const ThanosParagraphReveal = ({ scrollToSection, inView }) => {
 };
 
 const ImpactBar = ({ diwali = false }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const sectionRef = useRef(null);
   const mockupContainerRef = useRef(null);
   const [inView, setInView] = useState(false);
@@ -304,18 +307,8 @@ const ImpactBar = ({ diwali = false }) => {
     return () => clearInterval(autoTimer);
   }, [isMockupHovered]);
 
-  const scrollToSection = (id) => {
-    if (id === 'university-section') {
-      window.isNavigatingToUniversity = true;
-      setTimeout(() => { window.isNavigatingToUniversity = false; }, 1600);
-    } else {
-      window.isNavigatingToUniversity = false;
-    }
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+  // University sections open /university; student sections scroll here on home
+  const scrollToSection = (id) => goToSection(navigate, location.pathname, id);
 
   const handleOrbitalNodeClick = (item) => {
     if (item.mockupIndex !== null && item.mockupIndex !== undefined) {
@@ -742,9 +735,6 @@ const ImpactBar = ({ diwali = false }) => {
         })()}
 
       </div>
-
-        {/* ── PLACEMENT SUCCESS Marquee Section (Directly Above Bento Grid Frame) ── */}
-        <PlacementMarquee />
 
         {/* ── Modern Light Bento Grid Dock (All-in-One View) ── */}
         <div className={`modern-light-bento-dock ${inView ? 'impact-in-view' : ''}`}>

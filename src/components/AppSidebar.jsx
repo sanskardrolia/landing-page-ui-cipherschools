@@ -21,15 +21,6 @@ const MenuIcon = () => (
   </svg>
 );
 
-// ── Courses Books Icon (3 books, 1 tilted) ──
-const CoursesIcon = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <rect x="3.5" y="4" width="4.2" height="16" rx="0.8" />
-    <rect x="9.5" y="4" width="4.2" height="16" rx="0.8" />
-    <path d="M16.5 4.8L20 19.5C20.1 20 19.8 20.5 19.3 20.6L16.2 21.4C15.7 21.5 15.2 21.2 15.1 20.7L11.6 6C11.5 5.5 11.8 5 12.3 4.9L15.4 4.1C15.9 4 16.4 4.3 16.5 4.8Z" />
-  </svg>
-);
-
 // ── Practice </> Icon ──
 const PracticeIcon = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
@@ -80,15 +71,15 @@ const NAV_ITEMS = [
     cardTags: ['Overview', 'Ecosystem', 'Updates']
   },
   { 
-    id: 'courses', 
-    label: 'Courses', 
-    badge: 'FREE',
-    Icon: CoursesIcon, 
-    path: '/courses',
-    cardBadge: 'FREE ACCESS',
-    cardTitle: 'Structured Courses',
-    cardDesc: 'Comprehensive self-paced video masterclasses covering web dev, cloud, DSA, and modern tech.',
-    cardTags: ['Video Lessons', 'Projects', 'Certificates']
+    id: 'premium', 
+    label: 'Premium', 
+    badge: 'PAID',
+    Icon: RiVipCrown2Fill, 
+    path: '/premium',
+    cardBadge: 'PAID PLANS',
+    cardTitle: 'CipherSchools Premium',
+    cardDesc: 'Core, Plus & Ultra plans: lectures, up to 2,000 DSA questions, proctored tests, mock interviews and mentorship.',
+    cardTags: ['Core ₹174/mo', 'Plus ₹350/mo', 'Ultra ₹490/mo']
   },
   { 
     id: 'practice', 
@@ -145,17 +136,6 @@ const NAV_ITEMS = [
     cardTags: ['Daily Streaks', 'Skill Badges', 'Certificates']
   },
   { 
-    id: 'premium', 
-    label: 'Premium', 
-    badge: 'PAID',
-    Icon: RiVipCrown2Fill, 
-    path: '/premium',
-    cardBadge: 'PAID PLANS',
-    cardTitle: 'CipherSchools Premium',
-    cardDesc: 'Core, Plus & Ultra plans with 2,000+ DSA, 10 AI Mock Interviews & System Design from ~₹22/day.',
-    cardTags: ['Core (₹3,999)', 'Plus (₹4,599)', 'Ultra (₹6,999)']
-  },
-  { 
     id: 'dashboard', 
     label: 'Dashboard', 
     Icon: RiDashboardFill, 
@@ -188,7 +168,7 @@ const NAV_ITEMS = [
 ];
 
 // ── Mobile 5-Icon Navigation Sequence: Home, Courses, Practice, Premium, Dashboard ──
-const MOBILE_NAV_KEYS = ['home', 'courses', 'practice', 'premium', 'dashboard'];
+const MOBILE_NAV_KEYS = ['home', 'premium', 'practice', 'dashboard'];
 const MOBILE_NAV_ITEMS = MOBILE_NAV_KEYS.map(id => NAV_ITEMS.find(item => item.id === id)).filter(Boolean);
 
 const LOGOUT_ITEM = {
@@ -216,8 +196,6 @@ const AppSidebar = () => {
       setActiveId('home');
     } else if (location.pathname === '/login') {
       setActiveId('dashboard');
-    } else if (location.pathname === '/courses') {
-      setActiveId('courses');
     } else if (location.pathname === '/practice') {
       setActiveId('practice');
     } else if (location.pathname === '/premium') {
@@ -237,7 +215,6 @@ const AppSidebar = () => {
   useEffect(() => {
     const handleDrawerClose = () => {
       if (location.pathname === '/') setActiveId('home');
-      else if (location.pathname === '/courses') setActiveId('courses');
       else if (location.pathname === '/practice') setActiveId('practice');
       else if (location.pathname === '/premium') setActiveId('premium');
       else if (location.pathname === '/online-compiler') setActiveId('compiler');

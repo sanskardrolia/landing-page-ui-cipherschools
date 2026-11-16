@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, ChevronRight, Circle, CircleCheck, CirclePlay,
-  ClipboardCheck, ExternalLink, ListChecks, Lock, Mic, Monitor, Sparkles,
+  ClipboardCheck, ExternalLink, ListChecks, Lock, Mic, Monitor,
   Timer, X
 } from 'lucide-react';
 import {
-  DEV_TRACKS, TEST_UNLOCK_AT, findModule, moduleUnlocked, requiredPlanFor, subjectLectures, allLectures
+  TEST_UNLOCK_AT, findModule, moduleUnlocked, subjectLectures, allLectures
 } from '../data/learnerModules';
 import ModuleIcon from '../components/ModuleIcon';
 import { WORKSPACE_KINDS, practiceForUnit, problemOfTheDay } from '../data/practiceBank';
@@ -32,7 +32,8 @@ const ModuleView = ({ ctx }) => {
 
 
   if (!mod) return <Navigate to="/dashboard" replace />;
-  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <LockedModule mod={mod} ctx={ctx} />;
+  // Paid dashboards only list the plan's own modules; a link to any other goes home
+  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to="/dashboard" replace />;
 
   const tab = TABS.some((t) => t.id === params.get('tab')) ? params.get('tab') : 'watch';
   // Tab and subject both live in the URL (?tab=…&subject=…) so the sidebar can link to a subject
@@ -646,44 +647,6 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
 };
 
 /* ─────────────── Locked module ─────────────── */
-
-const TRACK = { mern: 'MERN', jfs: 'JFS' };
-const lockedReason = (mod, ctx) => {
-  if (mod.tier === 'ultra') return 'This module is part of the Ultra plan.';
-  if (DEV_TRACKS.includes(mod.id)) {
-    return ctx.planId === 'plus'
-      ? `Your Plus plan includes the ${TRACK[ctx.devTrack || 'mern']} track. Get both Full Stack tracks with Ultra.`
-      : 'Plus includes one Full Stack track of your choice (MERN or JFS). Ultra includes both.';
-  }
-  return 'This module is part of the Plus plan.';
-};
-
-const LockedModule = ({ mod, ctx }) => {
-  const lectures = allLectures(mod);
-  return (
-    <div className="dx-module">
-      <nav className="dx-crumbs" aria-label="Breadcrumb">
-        <Link to="/dashboard">Dashboard</Link>
-        <ChevronRight size={14} />
-        <span>{mod.title}</span>
-      </nav>
-      <div className="dx-card dx-locked">
-        <span className="dx-mc-icon dx-mc-icon-lg"><ModuleIcon mod={mod} size={22} /></span>
-        <h1>{mod.title}</h1>
-        <p className="dx-muted">{lockedReason(mod, ctx)}</p>
-        <ul className="dx-locked-list">
-          <li><CirclePlay size={15} /> {lectures.length} lectures across {mod.subjects.reduce((a, s) => a + s.units.length, 0)} units</li>
-          {mod.practice.map((p) => <li key={p.kind}><ListChecks size={15} /> {p.label}</li>)}
-          {mod.tests.map((t) => <li key={t.kind}><ClipboardCheck size={15} /> {t.label}</li>)}
-          <li><Mic size={15} /> {mod.interview.label}</li>
-        </ul>
-        <button type="button" className="dx-btn dx-btn-primary" onClick={() => ctx.openUpgrade(requiredPlanFor(mod, ctx.planId))}>
-          <Sparkles size={16} /> Upgrade to {requiredPlanFor(mod, ctx.planId) === 'compete' ? 'Ultra' : 'Plus'}
-        </button>
-      </div>
-    </div>
-  );
-};
 
 /* ─────────────── Dialog (shadcn-style) ─────────────── */
 

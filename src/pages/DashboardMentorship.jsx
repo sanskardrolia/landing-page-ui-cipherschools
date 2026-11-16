@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarClock, ChevronRight, Coins, Crown, Lock, Plus, Sparkles, Users, X } from 'lucide-react';
-import { CREDIT_PACKS, MENTOR_CREDITS_INCLUDED, MENTOR_FOCUS } from '../data/learnerModules';
+import { Link, Navigate } from 'react-router-dom';
+import { CalendarClock, ChevronRight, Coins, Crown, Lock,  Users, X } from 'lucide-react';
+import { CREDIT_PACKS, MENTOR_FOCUS } from '../data/learnerModules';
 import { mentorCredits } from '../utils/mentorship';
 
 /* ══════════════════════════════════════════════════════════════
@@ -72,25 +72,8 @@ const DashboardMentorship = ({ ctx }) => {
     </>
   );
 
-  /* Locked preview for Core / Plus */
-  if (!extended) {
-    return (
-      <div className="dx-module">
-        {header}
-        <div className="dx-mentor-locked">
-          <p className="dx-muted"><Lock size={14} /> 1:1 Mentorship is part of the <strong>Ultra</strong> plan.</p>
-          <ul className="dx-locked-list">
-            <li><Coins size={15} /> {MENTOR_CREDITS_INCLUDED} meeting credits included with Ultra</li>
-            <li><CalendarClock size={15} /> Pick a mentor focus and a time that suits you</li>
-            <li><Plus size={15} /> Buy more credits whenever you need them</li>
-          </ul>
-          <button type="button" className="dx-btn dx-btn-primary" onClick={() => ctx.openUpgrade('compete')}>
-            <Sparkles size={16} /> Upgrade to Ultra
-          </button>
-        </div>
-      </div>
-    );
-  }
+  /* Mentorship is Ultra only; other plans don't see it */
+  if (!extended) return <Navigate to="/dashboard" replace />;
 
   const book = () => {
     if (!slot || credits.left < 1) return;

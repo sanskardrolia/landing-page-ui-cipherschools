@@ -151,9 +151,9 @@ const GuideMeModal = ({ isOpen, onClose }) => {
 
   const handleAction = (pathType) => {
     onClose();
-    // Navigate to courses or scroll smoothly to courses section
-    if (window.location.pathname !== '/courses') {
-      window.location.href = '/courses';
+    // Navigate to the premium plans (courses page was removed) or scroll to top if already there
+    if (window.location.pathname !== '/premium') {
+      window.location.href = '/premium';
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

@@ -3,8 +3,8 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import MainPage from './pages/MainPage';
+import UniversityPage from './pages/UniversityPage';
 import LoginPage from './pages/LoginPage';
-import CoursesPage from './pages/CoursesPage';
 import GuideMePage from './pages/GuideMePage';
 import PremiumPage from './pages/PremiumPage';
 import PlanCheckoutPage from './pages/PlanCheckoutPage';
@@ -38,7 +38,7 @@ function App() {
   const hideFooter = isResumeBuilder || /^\/premium\/checkout\/[^/]+\/payment$/.test(location.pathname);
 
   useEffect(() => {
-    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/courses' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname.startsWith('/premium/checkout') || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
+    if (isLoginPage || location.pathname === '/guide-me' || location.pathname === '/guide' || location.pathname === '/practice' || location.pathname === '/premium' || location.pathname.startsWith('/premium/checkout') || location.pathname === '/feedback' || location.pathname === '/resume' || location.pathname === '/resume/templates' || location.pathname === '/online-compiler' || location.pathname === '/compiler' || location.pathname.startsWith('/resume/ats-checker')) return;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -110,7 +110,7 @@ function App() {
         <main>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses" element={<Navigate to="/premium" replace />} />
             <Route path="/practice" element={<PracticePage />} />
             <Route path="/premium" element={<PremiumPage />} />
             <Route path="/premium/checkout/:planSlug" element={<PlanCheckoutPage />} />
@@ -127,6 +127,7 @@ function App() {
             <Route path="/resume/ats-checker/scan" element={<AtsCheckerPage />} />
             <Route path="/online-compiler" element={<CompilerPage />} />
             <Route path="/compiler" element={<Navigate to="/online-compiler" replace />} />
+            <Route path="/university" element={<UniversityPage />} />
             <Route path="/*" element={<MainPage />} />
           </Routes>
         </main>

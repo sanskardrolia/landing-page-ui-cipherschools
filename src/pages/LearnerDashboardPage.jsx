@@ -7,7 +7,7 @@ import {
 import { getEnrollment } from '../utils/enrollment';
 import { useLearnerProgress } from '../utils/learnerProgress';
 import {
-  MODULES, PLAN_LABELS, TIER_LABELS, allLectures, isExtendedPlan, moduleUnlocked, requiredPlanFor, subjectLectures
+  MODULES, PLAN_LABELS, TIER_LABELS, allLectures, isExtendedPlan, moduleUnlocked, subjectLectures
 } from '../data/learnerModules';
 import ModuleIcon from '../components/ModuleIcon';
 import ModuleView from './DashboardModuleView';
@@ -22,7 +22,6 @@ import DashboardPreviewSplash from './DashboardPreviewSplash';
 
 const noop = () => {};
 import DashboardActivity from './DashboardActivity';
-import DashboardUpgrade from './DashboardUpgrade';
 import './LearnerDashboardPage.css';
 
 /* ══════════════════════════════════════════════════════════════
@@ -47,6 +46,7 @@ const readTheme = () => {
 
 /* Same plan icons as the pricing cards: Core ⚡ · Plus 🔥 · Ultra 👑 */
 const TIER_ICONS = { core: Zap, plus: Flame, ultra: Crown };
+const PLAN_TIER = { starter: 'core', plus: 'plus', compete: 'ultra' }; // plan id → its tier (icon / label)
 
 // Preview only: say what each higher tier carries over
 const PREVIEW_TIER_NOTE = { plus: '(includes Core)', ultra: '(includes Core & Plus)' };
@@ -67,7 +67,6 @@ const LearnerDashboardPage = () => {
   useEffect(() => { if (splash) clearSplash(); }, [splash]);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [upgrade, setUpgrade] = useState(null); // { target } while the upgrade pop-up is open
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState(readTheme);
   const location = useLocation();
@@ -86,15 +85,13 @@ const LearnerDashboardPage = () => {
   const onPlayer = /^\/dashboard\/m\/[^/]+\/(watch|practice)\//.test(location.pathname);
 
   const planId = enrollment.planId;
-  // openUpgrade(target?) opens the upgrade pop-up, optionally pre-selecting a plan id.
-  // In preview, it and lockedTap(mod) open the plan pop-up instead.
+  // Paid dashboards show only the plan bought, so there is no upgrade path inside them.
+  // openUpgrade(target?) and lockedTap(mod) are preview-only.
   const ctx = {
     enrollment, planId, extended: isExtendedPlan(planId), devTrack: enrollment.devTrack, progress, toggle, set,
     preview,
     // Preview: a plain "Get plan" goes to the premium page's plan comparison; a locked item asks for its plan
-    openUpgrade: preview
-      ? (target) => (target ? setPurchase({ target }) : navigate('/premium#plans'))
-      : (target) => setUpgrade({ target }),
+    openUpgrade: (target) => (target ? setPurchase({ target }) : navigate('/premium#plans')),
     lockedTap: (mod) => setPurchase({ mod })
   };
   const exitPreview = () => { endPreview(); navigate('/premium'); };
@@ -127,7 +124,6 @@ const LearnerDashboardPage = () => {
         </main>
       </div>
 
-      {upgrade && <DashboardUpgrade ctx={ctx} initialTarget={upgrade.target} onClose={() => setUpgrade(null)} />}
       {splash && <DashboardPreviewSplash onDone={endSplash} />}
       {purchase && <DashboardPreviewPlans mod={purchase.mod} target={purchase.target} onClose={() => setPurchase(null)} />}
     </div>
@@ -172,6 +168,12 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
 
+  // Preview shows every tier (locked). A paid learner sees only their own plan:
+  // one group named after it, holding every module that plan includes.
+  const navGroups = ctx.preview
+    ? ['core', 'plus', 'ultra'].map((tier) => ({ tier, label: TIER_LABELS[tier], mods: MODULES.filter((m) => m.tier === tier) }))
+    : [{ tier: PLAN_TIER[planId], label: `${PLAN_LABELS[planId]} Modules`, mods: MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack)) }];
+
   return (
     <aside className={`dx-side ${mobileOpen ? 'open' : ''}`} aria-label="Dashboard navigation">
       <div className="dx-brand">
@@ -193,8 +195,7 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
           <span className="dx-label">Dashboard</span>
         </NavLink>
 
-        {['core', 'plus', 'ultra'].map((tier) => {
-          const mods = MODULES.filter((m) => m.tier === tier);
+        {navGroups.map(({ tier, label, mods }) => {
           return (
             <div key={tier} className="dx-nav-group">
               <button
@@ -205,10 +206,10 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
               >
                 <TierIcon tier={tier} />
                 <span className="dx-label">
-                  {TIER_LABELS[tier]}
+                  {label}
                   {ctx.preview && PREVIEW_TIER_NOTE[tier] && <em className="dx-tier-note">{PREVIEW_TIER_NOTE[tier]}</em>}
                 </span>
-                {tier === 'ultra' && !extended && <Lock size={12} className="dx-label dx-nav-lock" />}
+                {ctx.preview && tier === 'ultra' && <Lock size={12} className="dx-label dx-nav-lock" />}
                 <ChevronDown size={14} className={`dx-chev dx-label ${open[tier] ? 'up' : ''}`} />
               </button>
               {open[tier] && mods.map((m) => {
@@ -256,8 +257,8 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
                 );
               })}
 
-              {/* 1:1 Mentorship lives with the Ultra modules */}
-              {tier === 'ultra' && open.ultra && (
+              {/* 1:1 Mentorship lives with the Ultra modules (preview: locked; paid: Ultra only) */}
+              {tier === 'ultra' && open.ultra && (ctx.preview || extended) && (
                 <NavLink to="/dashboard/mentorship" className={`dx-nav-item ${extended && !ctx.preview ? '' : 'locked'}`} title="1:1 Mentorship" onClick={onClose}>
                   <Users size={18} />
                   <span className="dx-label dx-nav-text">1:1 Mentorship</span>
@@ -274,7 +275,7 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
 
       <div className="dx-side-foot">
         <Link to="/online-compiler" className="dx-nav-item"><Terminal size={18} /><span className="dx-label">Compiler</span></Link>
-        <Link to="/courses" className="dx-nav-item"><House size={18} /><span className="dx-label">Back to site</span></Link>
+        <Link to="/" className="dx-nav-item"><House size={18} /><span className="dx-label">Back to site</span></Link>
 
         {/* Profile row: initials · name · plan · upgrade */}
         <div className="dx-profile">
@@ -283,8 +284,8 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
             <strong>{learnerName}</strong>
             <span>{ctx.preview ? 'Preview' : `${PLAN_LABELS[planId]} plan`}</span>
           </span>
-          {(planId !== 'compete' || ctx.preview) && (
-            <button type="button" className="dx-upgrade" onClick={() => { onClose(); ctx.openUpgrade(); }}><Sparkles size={14} /> {ctx.preview ? 'Get plan' : 'Upgrade'}</button>
+          {ctx.preview && (
+            <button type="button" className="dx-upgrade" onClick={() => { onClose(); ctx.openUpgrade(); }}><Sparkles size={14} /> Get plan</button>
           )}
         </div>
       </div>
@@ -308,8 +309,9 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
   const results = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (!s) return [];
-    return MODULES.filter((m) => `${m.title} ${m.short}`.toLowerCase().includes(s)).slice(0, 6);
-  }, [q]);
+    const pool = ctx.preview ? MODULES : MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack));
+    return pool.filter((m) => `${m.title} ${m.short}`.toLowerCase().includes(s)).slice(0, 6);
+  }, [q, ctx.preview, planId, ctx.devTrack]);
 
   const go = (m) => { setQ(''); setFocus(false); navigate(`/dashboard/m/${m.id}`); };
 
@@ -336,7 +338,7 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
               <li key={m.id}>
                 <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(m)}>
                   <span>{m.title}</span>
-                  {(ctx.preview || !moduleUnlocked(m, planId, ctx.devTrack)) && <Lock size={13} />}
+                  {ctx.preview && <Lock size={13} />}
                 </button>
               </li>
             ))}
@@ -360,10 +362,10 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
         <span className="dx-top-divider" aria-hidden="true" />
         <span className="dx-stat-pill" title="Lectures watched"><CirclePlay size={15} /> {watchedTotal}</span>
         <span className="dx-top-divider" aria-hidden="true" />
-        {planId !== 'compete' || ctx.preview ? (
-          <button type="button" className="dx-upgrade" onClick={() => ctx.openUpgrade()}><Sparkles size={15} /> {ctx.preview ? 'Get a plan' : 'Upgrade'}</button>
+        {ctx.preview ? (
+          <button type="button" className="dx-upgrade" onClick={() => ctx.openUpgrade()}><Sparkles size={15} /> Get a plan</button>
         ) : (
-          <span className="dx-plan-pill"><Crown size={15} /> Ultra</span>
+          <span className="dx-plan-pill"><TierIcon tier={PLAN_TIER[planId]} /> {PLAN_LABELS[planId]}</span>
         )}
       </div>
     </header>
@@ -378,7 +380,6 @@ const Overview = ({ ctx }) => {
   const name = enrollment.learner?.name?.trim() || 'Learner';
 
   const unlocked = MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack));
-  const locked = MODULES.filter((m) => !moduleUnlocked(m, planId, ctx.devTrack));
 
   // next unwatched lecture across unlocked modules, in sidebar order
   let next = null;
@@ -451,17 +452,6 @@ const Overview = ({ ctx }) => {
           </>
         )}
 
-        {!ctx.preview && locked.length > 0 && (
-          <>
-            <div className="dx-section-head">
-              <h2>{planId === 'starter' ? 'Unlock with Plus & Ultra' : 'Unlock with Ultra'}</h2>
-              <span className="dx-rule" />
-            </div>
-            <div className="dx-module-grid">
-              {locked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} locked={PLAN_LABELS[requiredPlanFor(m, planId)]} />)}
-            </div>
-          </>
-        )}
       </div>
 
       <aside className="dx-ov-rail">
@@ -498,11 +488,6 @@ const Overview = ({ ctx }) => {
           <h3>{PLAN_LABELS[planId]}</h3>
           {planId === 'plus' && <p className="dx-muted dx-small">Full Stack track: <strong>{(ctx.devTrack || 'mern').toUpperCase()}</strong></p>}
           <p className="dx-muted dx-small">Active till {validTill.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-          {planId !== 'compete' && (
-            <button type="button" className="dx-btn dx-btn-ghost" onClick={() => ctx.openUpgrade(planId === 'starter' ? 'plus' : 'compete')}>
-              {planId === 'starter' ? 'Upgrade to Plus' : 'Go Ultra for higher limits'} <ArrowRight size={15} />
-            </button>
-          )}
         </section>
         )}
       </aside>

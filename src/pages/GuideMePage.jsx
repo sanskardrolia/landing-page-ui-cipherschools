@@ -79,7 +79,7 @@ const GuideMePage = () => {
   }, []);
 
   const handleStartRoadmap = (track) => {
-    navigate('/courses');
+    navigate('/premium');
   };
 
   return (

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowRight, ArrowLeft, ChevronLeft, Sparkles, Bot, Code2, Code, Users, Zap, Coffee, Network, Laptop, Plus, Briefcase, TrendingUp, Target, Wrench, MessageSquare, Rocket, Presentation, Flame, Compass, Globe, RefreshCw, X, CheckCircle2, Play, Lock, User, AlertTriangle, FileText, Clock, BookOpen, Award, HelpCircle, ArrowDown, Menu, Search, Bell, Sun, Home, Calendar, ClipboardList, BarChart2, Folder, Volume2, GraduationCap, ChevronRight, ChevronDown, CornerDownRight, ExternalLink, Brain, BrainCircuit, Cpu, Calculator, Database, Check, Terminal, Layers, UploadCloud, Mic, RotateCcw, Download, UserCheck, MicOff, Video, VideoOff, PhoneOff, Info } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
+import PlacementMarquee from './PlacementMarquee';
 import './ForUniversities.css';
 
 /* ─── Typing animation component ─── */
@@ -1533,6 +1534,9 @@ const ForUniversities = () => {
 
       {/* ─── RESULT SCREEN ─── */}
       <div className={`fu-result-page fu-visible`}>
+
+          {/* ── PLACEMENT SUCCESS marquee (moved from home), right above Training Support Ecosystem ── */}
+          <PlacementMarquee />
 
           {/* ── Apple-Style Master Unified Bento Grid ── */}
           <section id="training-section" ref={refPair} className={`fu-sec fu-apple-bento-section fu-reveal ${visPair ? 'fu-revealed' : ''}`}>

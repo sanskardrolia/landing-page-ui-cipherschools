@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { goToSection } from '../utils/sectionNav';
 import { 
   Menu, X, Search, Bell, Sun, Moon, User, 
-  BookOpen, Code2, Terminal, FileText, Sparkles, 
+  Crown, Code2, Terminal, FileText, Sparkles, 
   GraduationCap, Laptop, CheckCircle2, ArrowRight, 
   ChevronDown, Layers, Target, Compass, Cpu, Bot
 } from 'lucide-react';
@@ -34,21 +35,19 @@ const Navbar = () => {
 
   /* Track Active Section On Scroll */
   useEffect(() => {
-    if (location.pathname === '/courses' || location.pathname === '/premium' || location.pathname === '/guide-me' || location.pathname === '/guide') return;
+    if (location.pathname === '/premium' || location.pathname === '/guide-me' || location.pathname === '/guide') return;
+
+    // /university is its own page (see shownSection below); on home, highlight For Students once reached
+    if (location.pathname === '/university') return;
 
     const checkActiveSection = () => {
       const secStudent = document.getElementById('student-section');
-      const secUniversity = document.getElementById('university-section');
-
-      if (!secStudent || !secUniversity) return;
+      if (!secStudent) return;
 
       const studentTop = secStudent.getBoundingClientRect().top;
-      const uniTop = secUniversity.getBoundingClientRect().top;
       const windowHeight = window.innerHeight;
 
-      if (uniTop <= windowHeight * 0.45) {
-        setActiveSection('university');
-      } else if (studentTop <= windowHeight * 0.55) {
+      if (studentTop <= windowHeight * 0.55) {
         setActiveSection('student');
       } else {
         setActiveSection('welcome');
@@ -61,7 +60,8 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', checkActiveSection);
   }, [location.pathname]);
 
-  const isCoursePage = location.pathname === '/courses';
+  // Which nav item is highlighted: always For University on /university, scroll-based on home
+  const shownSection = location.pathname === '/university' ? 'university' : activeSection;
 
   const toggleTheme = () => {
     const nextMode = !darkMode;
@@ -82,29 +82,11 @@ const Navbar = () => {
     }, 200);
   };
 
+  // Student sections live on /, university sections on /university (see utils/sectionNav)
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
-    if (location.pathname !== '/') {
-      navigate('/');
-      setTimeout(() => {
-        const target = document.getElementById(id);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-      return;
-    }
-    if (id === 'university-section') {
-      window.isNavigatingToUniversity = true;
-      setTimeout(() => { window.isNavigatingToUniversity = false; }, 1600);
-    } else {
-      window.isNavigatingToUniversity = false;
-    }
-    const target = document.getElementById(id);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+    goToSection(navigate, location.pathname, id);
   };
 
   return (
@@ -117,20 +99,6 @@ const Navbar = () => {
               <span className="logo-text">CipherSchools</span>
             </div>
 
-            {/* Interactive Guide Me Button with Revolving Orange Border */}
-            <Link 
-              to="/guide-me"
-              className={`navbar-guide-me-btn ${location.pathname === '/guide-me' ? 'active' : ''}`}
-              title="Let us help you choose your Learning Path"
-              aria-label="Guide Me"
-            >
-              <span className="guide-me-beam-track" aria-hidden="true" />
-              <span className="guide-me-beam-glow" aria-hidden="true" />
-              <span className="guide-me-beam" aria-hidden="true" />
-              <span className="guide-me-inner">
-                <span className="guide-me-text">Guide Me</span>
-              </span>
-            </Link>
           </div>
           
           <div className="navbar-links desktop-only">
@@ -143,7 +111,7 @@ const Navbar = () => {
             >
               <button 
                 onClick={() => scrollToSection('student-section')} 
-                className={`notion-nav-link ${activeSection === 'student' ? 'active' : ''} ${activeDropdown === 'students' ? 'dropdown-open' : ''}`}
+                className={`notion-nav-link ${shownSection === 'student' ? 'active' : ''} ${activeDropdown === 'students' ? 'dropdown-open' : ''}`}
               >
                 <span>For Students</span>
                 <ChevronDown size={13} className={`nav-chevron-icon ${activeDropdown === 'students' ? 'rotated' : ''}`} />
@@ -163,10 +131,10 @@ const Navbar = () => {
                   {/* 4 Cards Grid */}
                   <div className="nav-mega-grid nav-mega-grid-4">
                     
-                    {/* 1. Courses */}
+                    {/* 1. Premium (replaces Courses) */}
                     <div 
                       className="nav-mega-card card-courses"
-                      onClick={() => { setActiveDropdown(null); navigate('/courses'); }}
+                      onClick={() => { setActiveDropdown(null); navigate('/premium'); }}
                     >
                       <div className="nav-card-preview">
                         <div className="nav-card-mini-window">
@@ -182,12 +150,12 @@ const Navbar = () => {
                           </div>
                         </div>
                         <div className="nav-card-icon-badge">
-                          <BookOpen size={16} />
+                          <Crown size={16} />
                         </div>
                       </div>
                       <div className="nav-card-content">
-                        <h4 className="nav-card-title">Courses</h4>
-                        <p className="nav-card-desc">Industry-vetted tracks in Web Dev, DSA, AI & Cloud.</p>
+                        <h4 className="nav-card-title">Premium</h4>
+                        <p className="nav-card-desc">Core, Plus & Ultra plans for DSA, development & placements.</p>
                       </div>
                     </div>
 
@@ -296,7 +264,7 @@ const Navbar = () => {
             >
               <button 
                 onClick={() => scrollToSection('university-section')} 
-                className={`notion-nav-link ${activeSection === 'university' ? 'active' : ''} ${activeDropdown === 'university' ? 'dropdown-open' : ''}`}
+                className={`notion-nav-link ${shownSection === 'university' ? 'active' : ''} ${activeDropdown === 'university' ? 'dropdown-open' : ''}`}
               >
                 <span>For University</span>
                 <ChevronDown size={13} className={`nav-chevron-icon ${activeDropdown === 'university' ? 'rotated' : ''}`} />
@@ -473,11 +441,11 @@ const Navbar = () => {
               </button>
               {mobileSubmenu === 'students' && (
                 <div className="mobile-nested-links">
-                  <div className="mobile-sub-item" onClick={() => { setMobileMenuOpen(false); window.location.href = '/courses'; }}>
-                    <BookOpen size={15} className="text-brand" />
+                  <div className="mobile-sub-item" onClick={() => { setMobileMenuOpen(false); navigate('/premium'); }}>
+                    <Crown size={15} className="text-brand" />
                     <div>
-                      <strong>Courses</strong>
-                      <small>Web Dev, DSA, AI & Cloud tracks</small>
+                      <strong>Premium</strong>
+                      <small>Core, Plus & Ultra plans</small>
                     </div>
                   </div>
                   <div className="mobile-sub-item" onClick={() => scrollToSection('ecosystem')}>

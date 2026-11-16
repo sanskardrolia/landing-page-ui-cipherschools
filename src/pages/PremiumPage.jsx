@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, BadgePercent, BarChart2, Bot, Check, ChevronDown, ClipboardCheck, Clock, Code2, Crown, Database, Eye,
-  Flame, Info, Laptop, Layers, Lock, Maximize2, Mic, PlayCircle, RefreshCw, ShieldCheck, Sparkles, Star, Terminal,
+  Flame, Info, Laptop, Layers, Lock, Maximize2, Mic, PlayCircle, RefreshCw, ShieldCheck, Sparkles, Terminal,
   Users, Workflow, X, Zap
 } from 'lucide-react';
 import { getEnrollment } from '../utils/enrollment';
@@ -383,12 +383,6 @@ const PLATFORM_TABS = [
 const VALUE_COMPARE = [
   { title: 'College fees', price: '₹1,00,000+', per: 'per semester', desc: 'Builds fundamentals, but placement preparation is still on you.' },
   { title: 'Offline coaching & bootcamps', price: '₹25,000+', per: 'per course', desc: 'Fixed batches and one stack at a time.' }
-];
-
-const TESTIMONIALS = [
-  { initials: 'AK', name: 'Aman Kumar', role: 'SDE-1 at Amazon · 28 LPA', plan: 'Plus', quote: 'The mock interviews in the Plus plan felt just like my real bar-raiser round. The instant feedback on edge cases was priceless.' },
-  { initials: 'SP', name: 'Sneha Patel', role: 'Frontend Engineer at Juspay · 18 LPA', plan: 'Plus', quote: 'Plus was the best investment of my 7th semester. Curated DSA problems with topic tags helped me clear 4 back-to-back rounds.' },
-  { initials: 'RS', name: 'Rohan Sharma', role: 'Backend Developer at Razorpay · 22 LPA', plan: 'Plus', quote: 'The System Design proctored test taught me architecture diagrams and caching strategies no other course touched.' }
 ];
 
 const FAQS = [
@@ -905,27 +899,6 @@ const PremiumPage = () => {
         <p className="pr-modules-hint">
           Need three or more? <button type="button" className="pr-link" onClick={scrollToPlans}>Plus includes all of these for {plus.priceFormatted} <ArrowRight size={14} /></button>
         </p>
-      </section>
-
-      {/* ── Testimonials ── */}
-      <section className="pr-section">
-        <div className="pr-head">
-          <span className="pr-pill">Placements</span>
-          <h2>Learners who <span className="pr-hl">made it</span></h2>
-        </div>
-        <div className="pr-testimonials">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="pr-testimonial">
-              <div className="pr-stars" aria-label="5 out of 5">{[0, 1, 2, 3, 4].map((i) => <Star key={i} size={14} />)}</div>
-              <blockquote>“{t.quote}”</blockquote>
-              <figcaption>
-                <span className="pr-avatar">{t.initials}</span>
-                <span><strong>{t.name}</strong><small>{t.role}</small></span>
-                <span className="pr-plan-tag">{t.plan}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
       </section>
 
       {/* ── FAQ ── */}

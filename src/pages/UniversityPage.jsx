@@ -1,9 +1,13 @@
-import React from 'react';
 import ForUniversities from '../components/ForUniversities';
+import { useHashScroll } from '../utils/sectionNav';
 
+/* /university — everything for universities (moved off the home page) */
 const UniversityPage = () => {
+  useHashScroll(); // e.g. /university#lms-section from the navbar
   return (
-    <ForUniversities />
+    <div id="university-section">
+      <ForUniversities />
+    </div>
   );
 };
 

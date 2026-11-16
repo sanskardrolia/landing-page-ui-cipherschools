@@ -11498,3 +11498,9 @@
 
 
 
+
+/* Placement Success marquee (moved from home): the pitch page behind it is
+   dark, so give it the same light surface as the Training Support section below */
+.fu-result-page > .placement-marquee-section {
+  background: #FAFAFA;
+}
