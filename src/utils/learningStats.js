@@ -1,4 +1,4 @@
-import { allLectures, moduleUnlocked } from '../data/learnerModules';
+import { allLectures, moduleUnlocked, subjectExtended, subjectInterview, subjectTests } from '../data/learnerModules';
 import { WORKSPACE_KINDS, practiceForUnit } from '../data/practiceBank';
 import { stageTests } from '../data/testBank';
 
@@ -18,13 +18,14 @@ export const learningStats = (modules, { planId, devTrack, extended, progress })
   const tick = (bucket, isDone) => { bucket.total += 1; if (isDone) bucket.done += 1; };
 
   modules.filter((m) => moduleUnlocked(m, planId, devTrack)).forEach((mod) => {
-    const isExt = extended && mod.tier !== 'core'; // Ultra's higher limits, as on the module page
+    // Ultra's higher limits apply per subject (DSA Advanced yes, Basics no), as on the module page
+    const extOf = (subj) => subjectExtended(extended, mod, subj);
 
     allLectures(mod).forEach((l) => tick(s.lectures, progress.watched[l.id]));
 
     mod.subjects.forEach((subj) => {
       subj.units.forEach((unit) => {
-        practiceForUnit(mod, unit, isExt).forEach((p) => {
+        practiceForUnit(mod, unit, extOf(subj)).forEach((p) => {
           const done = !!progress.practice[p.id];
           tick(s.practice, done);
           tick(WORKSPACE_KINDS.includes(p.kind) ? s.practice.coding : s.practice.mcq, done);
@@ -33,19 +34,28 @@ export const learningStats = (modules, { planId, devTrack, extended, progress })
       stageTests(mod, subj).forEach((t) => tick(s.tests, progress.tests[t.id]?.count > 0));
     });
 
-    // Module-wide tests: one per subject when `perSubject`, else one for the module
-    mod.tests.forEach((t) => {
-      const scopes = t.perSubject ? mod.subjects.map((x) => x.id) : ['module'];
-      scopes.forEach((id) => tick(s.tests, progress.tests[`${mod.id}:${t.kind}:${id}`]?.count > 0));
+    // Additional tests: a subject's own list, else the module's; per subject when `perSubject`
+    const counted = new Set();
+    mod.subjects.forEach((subj) => {
+      subjectTests(mod, subj).forEach((t) => {
+        const id = `${mod.id}:${t.kind}:${t.perSubject ? subj.id : 'module'}`;
+        if (counted.has(id)) return;
+        counted.add(id);
+        tick(s.tests, progress.tests[id]?.count > 0);
+      });
     });
 
-    if (mod.interview) {
-      const scopes = mod.interview.perSubject ? mod.subjects.map((x) => x.id) : ['module'];
-      const rounds = isExt ? 2 : 1;
-      scopes.forEach((id) => {
-        for (let r = 1; r <= rounds; r++) tick(s.interviews, progress.interviews[`${mod.id}:interview:${id}:${r}`]);
-      });
-    }
+    // Mock interviews: a section's own, else the module's; one per section when `perSubject`
+    const scopes = new Map();
+    mod.subjects.forEach((x) => {
+      const iv = subjectInterview(mod, x);
+      if (!iv) return;
+      const id = iv.perSubject ? x.id : 'module';
+      scopes.set(id, (scopes.get(id) || false) || extOf(x));
+    });
+    scopes.forEach((ext, id) => {
+      for (let r = 1; r <= (ext ? 2 : 1); r++) tick(s.interviews, progress.interviews[`${mod.id}:interview:${id}:${r}`]);
+    });
   });
 
   return s;

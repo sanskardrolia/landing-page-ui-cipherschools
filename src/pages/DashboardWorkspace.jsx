@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import {
   ChevronDown, ChevronLeft, ChevronUp, CircleCheck, Clock, Code, GripVertical, Lightbulb, Play, RotateCcw, Sparkles
 } from 'lucide-react';
-import { findModule, isExtendedPlan, moduleUnlocked } from '../data/learnerModules';
+import { findModule, isExtendedPlan, moduleForPlan, moduleUnlocked, subjectExtended } from '../data/learnerModules';
 import { LANGUAGES, WORKSPACE_KINDS, findPracticeItem, starterCode } from '../data/practiceBank';
 import { LevelBadge } from './DashboardModuleView';
 
@@ -24,8 +24,11 @@ const KIND_TITLE = { coding: 'Problem', debugging: 'Debugging', vibe: 'Vibe Codi
 const DashboardWorkspace = ({ ctx }) => {
   const { moduleId, itemId } = useParams();
   const { planId, progress, set } = ctx;
-  const mod = findModule(moduleId);
-  const isExt = isExtendedPlan(planId) && mod?.tier !== 'core';
+  // Preview uses its own short module list; otherwise the module as this plan sees it
+  const mod = ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : moduleForPlan(findModule(moduleId), planId, ctx.devTrack);
+  // Ultra's higher limits depend on the item's subject (DSA Advanced yes, Basics no), so find it first
+  const probe = mod ? findPracticeItem(mod, itemId, isExtendedPlan(planId)) : null;
+  const isExt = probe ? subjectExtended(isExtendedPlan(planId), mod, probe.subject) : false;
   const found = mod ? findPracticeItem(mod, itemId, isExt) : null;
   const item = found?.item;
 
@@ -138,7 +141,7 @@ const DashboardWorkspace = ({ ctx }) => {
           {leftTab === 'problem' ? (
             <article className="dx-problem">
               <nav className="dx-crumbs" aria-label="Breadcrumb">
-                <Link to="/dashboard">Dashboard</Link><span>/</span>
+                <Link to="/dashboard">Overview</Link><span>/</span>
                 <Link to={backTo}>{mod.title}</Link><span>/</span>
                 <Link to={backTo}>{found.unit.title}</Link><span>/</span>
                 <strong>{item.title}</strong>

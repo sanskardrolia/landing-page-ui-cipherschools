@@ -13,6 +13,7 @@ export function useSmoothScroll() {
     let isRunning = false;
     let isTouching = false;
     let lastTouchY = 0;
+    let lastTouchX = 0;
     let isProgrammatic = false;
 
     const SPEED_MULTIPLIER = 0.5; // Exactly half-speed scroll distance
@@ -45,6 +46,19 @@ export function useSmoothScroll() {
         el = el.parentElement;
       }
       return false;
+    };
+
+    // Nearest ancestor that can scroll sideways (tab bars, chip rows, wide tables)
+    const horizontalScroller = (target) => {
+      let el = target;
+      while (el && el !== document.body && el !== document.documentElement) {
+        if (el.nodeType === 1) {
+          const { overflowX } = window.getComputedStyle(el);
+          if ((overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth + 1) return el;
+        }
+        el = el.parentElement;
+      }
+      return null;
     };
 
     const animate = () => {
@@ -82,6 +96,21 @@ export function useSmoothScroll() {
         return;
       }
 
+      // Sideways scrollers: a sideways gesture (trackpad swipe, Shift + wheel) scrolls them natively.
+      // Ones marked data-hscroll also turn a plain up/down wheel into sideways scrolling while they can move.
+      const hs = horizontalScroller(e.target);
+      if (hs) {
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY) || e.shiftKey) return;
+        if (hs.hasAttribute('data-hscroll')) {
+          const max = hs.scrollWidth - hs.clientWidth;
+          if ((e.deltaY > 0 && hs.scrollLeft < max - 1) || (e.deltaY < 0 && hs.scrollLeft > 0)) {
+            e.preventDefault();
+            hs.scrollLeft += e.deltaY;
+            return;
+          }
+        }
+      }
+
       // Prevent native instant jumping so we can apply 50% dampened smooth glide
       e.preventDefault();
 
@@ -103,6 +132,7 @@ export function useSmoothScroll() {
       if (isInsideScrollableModal(e.target)) return;
       isTouching = true;
       lastTouchY = e.touches[0].clientY;
+      lastTouchX = e.touches[0].clientX;
       targetScrollY = window.scrollY;
       currentScrollY = window.scrollY;
     };
@@ -112,8 +142,14 @@ export function useSmoothScroll() {
       if (document.body.style.overflow === 'hidden') return;
 
       const touchY = e.touches[0].clientY;
-      const rawDelta = (lastTouchY - touchY) * SPEED_MULTIPLIER;
+      const touchX = e.touches[0].clientX;
+      const dx = lastTouchX - touchX;
+      const dy = lastTouchY - touchY;
+      lastTouchX = touchX;
       lastTouchY = touchY;
+      // A sideways swipe on a sideways scroller scrolls it natively
+      if (Math.abs(dx) > Math.abs(dy) && horizontalScroller(e.target)) return;
+      const rawDelta = dy * SPEED_MULTIPLIER;
 
       // Prevent high-velocity native swipe bypass
       e.preventDefault();

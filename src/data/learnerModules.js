@@ -48,7 +48,7 @@ const computerFundamentals = {
   id: 'computer-fundamentals',
   tier: 'core',
   title: 'Computer Fundamentals',
-  short: 'OS, CN & OOPs',
+  short: 'OS, CN, DBMS & OOPs',
   icon: 'cpu',
   subjects: [
     subject('Operating Systems', [
@@ -64,42 +64,27 @@ const computerFundamentals = {
       unit('Transport Layer', ['TCP vs UDP', 18], ['Flow & Congestion Control', 24]),
       unit('Network Layer', ['IP Addressing & Subnetting', 26], ['Routing Basics', 20])
     ]),
+    // DBMS used to be its own module; its unit ids (foundations, sql, …) don't clash with the
+    // other subjects, so its practice bank and tests carry over unchanged
+    subject('Database Management System', [
+      unit('Foundations', ['DBMS vs File System', 12], ['ER Model', 22], ['Relational Model & Keys', 20]),
+      unit('SQL', ['DDL & DML', 18], ['Joins', 26], ['Subqueries & Aggregations', 24], ['Views & Indexes', 20]),
+      unit('Normalization', ['Functional Dependencies', 18], ['1NF to BCNF', 26]),
+      unit('Transactions', ['ACID Properties', 16], ['Concurrency Control', 24], ['Recovery', 18])
+    ]),
     subject('Programming Language & OOPs', [
       unit('OOP Pillars', ['Classes & Objects', 16], ['Encapsulation & Abstraction', 18], ['Inheritance', 20], ['Polymorphism', 20]),
       unit('Language Internals', ['Memory: Stack vs Heap', 16], ['Exceptions', 14], ['SOLID Principles', 22])
     ], { id: 'oops-programming-language' })
   ],
   practice: [
-    { kind: 'mcq', label: 'MCQ Practice', perUnit: 15 }
+    { kind: 'mcq', label: 'MCQ Practice', perUnit: 15 },
+    { kind: 'sql', label: 'SQL Query Practice (DBMS)', perUnit: 10 }
   ],
   tests: [
     { kind: 'proctored', label: 'Subject Test (Proctored)', questions: 30, mins: 40, perSubject: true }
   ],
   interview: { label: 'Subject Mock Interview', perSubject: true, mins: 30 }
-};
-
-const dbms = {
-  id: 'dbms',
-  tier: 'core',
-  title: 'DBMS',
-  short: 'Database Management Systems',
-  icon: 'database',
-  subjects: [
-    subject('Database Management System', [
-      unit('Foundations', ['DBMS vs File System', 12], ['ER Model', 22], ['Relational Model & Keys', 20]),
-      unit('SQL', ['DDL & DML', 18], ['Joins', 26], ['Subqueries & Aggregations', 24], ['Views & Indexes', 20]),
-      unit('Normalization', ['Functional Dependencies', 18], ['1NF to BCNF', 26]),
-      unit('Transactions', ['ACID Properties', 16], ['Concurrency Control', 24], ['Recovery', 18])
-    ])
-  ],
-  practice: [
-    { kind: 'mcq', label: 'MCQ Practice', perUnit: 15 },
-    { kind: 'sql', label: 'SQL Query Practice', perUnit: 10 }
-  ],
-  tests: [
-    { kind: 'proctored', label: 'DBMS Test (Proctored)', questions: 35, mins: 45, perSubject: true }
-  ],
-  interview: { label: 'DBMS Mock Interview', perSubject: true, mins: 30 }
 };
 
 const DSA_CORE_TOPICS = [
@@ -112,131 +97,136 @@ const DSA_CORE_TOPICS = [
   unit('Graphs', ['Graph Representation', 18], ['BFS & DFS', 28])
 ];
 
-const dsa = {
-  id: 'dsa',
-  tier: 'core',
-  title: 'Data Structures & Algorithms',
-  short: 'Topic-wise DSA',
-  icon: 'workflow',
-  subjects: [subject('DSA', DSA_CORE_TOPICS)],
+/* DSA is one module with two subjects. Basics is Core; Advanced is a Plus subject,
+   so Core learners only see Basics (see moduleForPlan). Each subject carries its own
+   practice and tests; the module's `practice` lists every kind across both. */
+const DSA_BASICS = subject('Basics', DSA_CORE_TOPICS, {
+  short: 'Topic-wise DSA', // the module's subtitle when Basics is all the plan has
   practice: [
     { kind: 'coding', label: 'Coding Problems', perUnit: 25, extendedPerUnit: 25 }
   ],
   tests: [
-    { kind: 'ai', label: 'A.I. Assisted Test', questions: 3, mins: 60 },
-    { kind: 'approach', label: 'Approach Based Coding Test', questions: 4, mins: 75 },
-    { kind: 'literacy', label: 'A.I. Literacy Based Test', questions: 20, mins: 30 }
-  ],
-  interview: { label: 'DSA Mock Interview', perSubject: false, mins: 45 }
-};
+    { kind: 'ai', label: 'A.I. Assisted Test', questions: 3, mins: 60, perSubject: true },
+    { kind: 'approach', label: 'Approach Based Coding Test', questions: 4, mins: 75, perSubject: true },
+    { kind: 'literacy', label: 'A.I. Literacy Based Test', questions: 20, mins: 30, perSubject: true }
+  ]
+});
 
-/* ══════════════════════════ PLUS TIER ══════════════════════════ */
-
-const dsaAdvanced = {
-  id: 'dsa-advanced',
+const DSA_ADVANCED = subject('Advanced', [
+  unit('Hashing', ['HashMaps in Depth', 20], ['Hashing Patterns', 24]),
+  unit('Heaps', ['Heap Internals', 20], ['Top-K & Merging Patterns', 24]),
+  unit('Advanced Graphs', ['Shortest Paths', 28], ['Topological Sort', 22], ['Union Find', 24]),
+  unit('Dynamic Programming', ['DP Foundations', 26], ['1D & 2D DP', 30], ['DP on Strings', 28], ['DP on Trees', 26]),
+  unit('Greedy', ['Greedy Choice Property', 20], ['Intervals', 22])
+], {
   tier: 'plus',
-  title: 'DSA Advanced',
-  short: 'Hashing, Heaps, DP & more',
-  icon: 'workflow',
-  subjects: [
-    subject('DSA Advanced', [
-      unit('Hashing', ['HashMaps in Depth', 20], ['Hashing Patterns', 24]),
-      unit('Heaps', ['Heap Internals', 20], ['Top-K & Merging Patterns', 24]),
-      unit('Advanced Graphs', ['Shortest Paths', 28], ['Topological Sort', 22], ['Union Find', 24]),
-      unit('Dynamic Programming', ['DP Foundations', 26], ['1D & 2D DP', 30], ['DP on Strings', 28], ['DP on Trees', 26]),
-      unit('Greedy', ['Greedy Choice Property', 20], ['Intervals', 22])
-    ])
-  ],
+  fullTitle: 'DSA Advanced', // how plan comparisons name it
   practice: [
     { kind: 'coding', label: 'Coding Problems', perUnit: 40, extendedPerUnit: 55 },
     { kind: 'company', label: 'Company Specific Problem Sets', perUnit: 15, extendedPerUnit: 25 }
   ],
   tests: [
-    { kind: 'ai', label: 'A.I. Assisted Test', questions: 3, mins: 60 },
-    { kind: 'approach', label: 'Approach Based Coding Test', questions: 4, mins: 75 },
-    { kind: 'company', label: 'Company Specific Test', questions: 3, mins: 90 }
-  ],
-  interview: { label: 'DSA Mock Interview', perSubject: false, mins: 45 }
-};
-
-const devModule = (id, title, short, units) => ({
-  id,
-  tier: 'plus',
-  title,
-  short,
-  icon: 'code',
-  subjects: [subject(title, units)],
-  practice: [
-    { kind: 'debugging', label: 'Debugging Practice', perUnit: 6, extendedPerUnit: 10 },
-    { kind: 'vibe', label: 'Vibe Coding Practice', perUnit: 4, extendedPerUnit: 7 }
-  ],
-  tests: [
-    { kind: 'debugging', label: 'Debugging Test (Proctored)', questions: 5, mins: 60 },
-    { kind: 'vibe', label: 'Vibe Coding Test (Proctored)', questions: 2, mins: 90 }
-  ],
-  interview: { label: 'Development Mock Interview', perSubject: false, mins: 45 }
+    { kind: 'ai', label: 'A.I. Assisted Test', questions: 3, mins: 60, perSubject: true },
+    { kind: 'approach', label: 'Approach Based Coding Test', questions: 4, mins: 75, perSubject: true },
+    { kind: 'company', label: 'Company Specific Test', questions: 3, mins: 90, perSubject: true }
+  ]
 });
 
-const mern = devModule('mern', 'Full Stack Development [MERN]', 'MongoDB, Express, React, Node', [
+const dsa = {
+  id: 'dsa',
+  tier: 'core',
+  title: 'Data Structures & Algorithms',
+  short: 'Basics & Advanced',
+  icon: 'workflow',
+  subjects: [DSA_BASICS, DSA_ADVANCED],
+  practice: [...DSA_BASICS.practice, DSA_ADVANCED.practice[1]],
+  tests: [],
+  interview: { label: 'DSA Mock Interview', perSubject: true, mins: 45 }
+};
+
+/* ══════════════════════════ PLUS TIER ══════════════════════════ */
+
+/* Development is one module with two Full Stack tracks as subjects. Plus includes the one
+   track picked at checkout (`devTrack`); Ultra includes both (see subjectUnlocked). */
+const MERN_TRACK = subject('MERN', [
   unit('Web Foundations', ['HTML & Semantic Markup', 18], ['Modern CSS & Layout', 26], ['JavaScript Essentials', 30]),
   unit('React', ['Components & Props', 22], ['State & Effects', 26], ['Routing & Data Fetching', 28]),
   unit('Node & Express', ['Node Runtime', 20], ['REST APIs with Express', 30], ['Auth & Middleware', 26]),
   unit('MongoDB', ['Documents & Collections', 18], ['Mongoose Modelling', 24]),
   unit('Shipping', ['Deploying a MERN App', 22])
-]);
+], { track: 'mern', fullTitle: 'Full Stack Development [MERN]', short: 'MongoDB, Express, React, Node' });
 
-const jfs = devModule('jfs', 'Full Stack Development [JFS]', 'Java, Spring Boot, React', [
+const JFS_TRACK = subject('JFS', [
   unit('Core Java', ['Java Refresher', 24], ['Collections', 26], ['Streams & Lambdas', 22]),
   unit('Spring Boot', ['Spring Fundamentals', 24], ['Building REST APIs', 30], ['Spring Data JPA', 28], ['Spring Security', 28]),
   unit('Frontend', ['React for Java Devs', 26], ['Connecting to Spring APIs', 22]),
-  unit('Shipping', ['Testing & Deployment', 24])
-]);
+  // own id: MERN also has a "Shipping" unit, and unit ids must be unique within a module
+  { ...unit('Shipping', ['Testing & Deployment', 24]), id: 'jfs-shipping' }
+], { track: 'jfs', fullTitle: 'Full Stack Development [JFS]', short: 'Java, Spring Boot, React' });
 
-const devops = {
-  id: 'devops',
+const development = {
+  id: 'development',
   tier: 'plus',
-  title: 'DevOps & Cloud Computing',
-  short: 'Linux, Docker, CI/CD, Cloud',
-  icon: 'cloud',
-  subjects: [
-    subject('DevOps & Cloud', [
-      unit('Linux & Git', ['Linux for Developers', 22], ['Git Workflows', 20]),
-      unit('Containers', ['Docker Fundamentals', 26], ['Docker Compose', 20], ['Kubernetes Basics', 28]),
-      unit('CI/CD', ['Pipelines with GitHub Actions', 24]),
-      unit('Cloud', ['Core Cloud Services', 26], ['Deploying to the Cloud', 24])
-    ])
+  title: 'Development',
+  short: 'MERN & JFS Full Stack',
+  icon: 'code',
+  subjects: [MERN_TRACK, JFS_TRACK],
+  practice: [
+    { kind: 'debugging', label: 'Debugging Practice', perUnit: 6, extendedPerUnit: 10 },
+    { kind: 'vibe', label: 'Vibe Coding Practice', perUnit: 4, extendedPerUnit: 7 }
   ],
+  tests: [
+    { kind: 'debugging', label: 'Debugging Test (Proctored)', questions: 5, mins: 60, perSubject: true },
+    { kind: 'vibe', label: 'Vibe Coding Test (Proctored)', questions: 2, mins: 90, perSubject: true }
+  ],
+  interview: { label: 'Development Mock Interview', perSubject: true, mins: 45 }
+};
+
+/* Beyond Development: System Design and DevOps & Cloud as two sections of one module.
+   Each keeps its own practice, tests and mock interview; unit ids don't overlap. */
+const SYSTEM_DESIGN = subject('System Design', [
+  unit('Foundations', ['Scalability Basics', 22], ['Load Balancing', 20], ['Caching', 24]),
+  unit('Data', ['SQL vs NoSQL at Scale', 24], ['Sharding & Replication', 26]),
+  unit('High Level Design', ['Design a URL Shortener', 30], ['Design a Chat System', 34], ['Design a News Feed', 32]),
+  unit('Low Level Design', ['LLD Approach', 22], ['Design a Parking Lot', 28])
+], {
+  short: 'HLD & LLD',
+  practice: [
+    { kind: 'sd', label: 'Interactive System Design Practice', perUnit: 2, extendedPerUnit: 4 }
+  ],
+  tests: [
+    { kind: 'sd', label: 'Interactive System Design Test (Proctored)', questions: 1, mins: 60, perSubject: true }
+  ],
+  interview: { label: 'System Design Mock Interview', perSubject: true, mins: 45 }
+});
+
+const DEVOPS_CLOUD = subject('DevOps & Cloud Computing', [
+  unit('Linux & Git', ['Linux for Developers', 22], ['Git Workflows', 20]),
+  unit('Containers', ['Docker Fundamentals', 26], ['Docker Compose', 20], ['Kubernetes Basics', 28]),
+  unit('CI/CD', ['Pipelines with GitHub Actions', 24]),
+  unit('Cloud', ['Core Cloud Services', 26], ['Deploying to the Cloud', 24])
+], {
+  short: 'Linux, Docker, CI/CD, Cloud',
   practice: [
     { kind: 'lab', label: 'Hands-on Sandbox Labs', perUnit: 3, extendedPerUnit: 5 },
     { kind: 'mcq', label: 'MCQ Practice', perUnit: 10 }
   ],
   tests: [
-    { kind: 'proctored', label: 'DevOps Test (Proctored)', questions: 30, mins: 45 }
+    { kind: 'proctored', label: 'DevOps Test (Proctored)', questions: 30, mins: 45, perSubject: true }
   ],
-  interview: { label: 'DevOps Mock Interview', perSubject: false, mins: 30 }
-};
+  interview: { label: 'DevOps Mock Interview', perSubject: true, mins: 30 }
+});
 
-const systemDesign = {
-  id: 'system-design',
+const beyondDevelopment = {
+  id: 'beyond-development',
   tier: 'plus',
-  title: 'System Design',
-  short: 'HLD & LLD',
-  icon: 'chart',
-  subjects: [
-    subject('System Design', [
-      unit('Foundations', ['Scalability Basics', 22], ['Load Balancing', 20], ['Caching', 24]),
-      unit('Data', ['SQL vs NoSQL at Scale', 24], ['Sharding & Replication', 26]),
-      unit('High Level Design', ['Design a URL Shortener', 30], ['Design a Chat System', 34], ['Design a News Feed', 32]),
-      unit('Low Level Design', ['LLD Approach', 22], ['Design a Parking Lot', 28])
-    ])
-  ],
-  practice: [
-    { kind: 'sd', label: 'Interactive System Design Practice', perUnit: 2, extendedPerUnit: 4 }
-  ],
-  tests: [
-    { kind: 'sd', label: 'Interactive System Design Test (Proctored)', questions: 1, mins: 60 }
-  ],
-  interview: { label: 'System Design Mock Interview', perSubject: false, mins: 45 }
+  title: 'Beyond Development',
+  short: 'System Design, DevOps & Cloud',
+  icon: 'rocket',
+  subjects: [SYSTEM_DESIGN, DEVOPS_CLOUD],
+  practice: [...SYSTEM_DESIGN.practice, ...DEVOPS_CLOUD.practice],
+  tests: [],
+  interview: { label: 'Mock Interview', perSubject: true, mins: 45 } // each section has its own
 };
 
 const genai = {
@@ -311,8 +301,8 @@ const dsaMastery = {
 
 /* Order = sidebar order: Core, then Plus, then Ultra */
 export const MODULES = [
-  computerFundamentals, dbms, dsa,
-  dsaAdvanced, mern, jfs, devops, systemDesign, genai, commBehavioural,
+  computerFundamentals, dsa,
+  development, beyondDevelopment, genai, commBehavioural,
   dsaMastery
 ];
 
@@ -334,15 +324,41 @@ export const allLectures = (mod) =>
 
 export const subjectLectures = (subj) => subj.units.flatMap((u) => u.lectures);
 
-export const moduleUnlocked = (mod, planId, devTrack) => {
-  if (!(PLAN_TIERS[planId] || []).includes(mod.tier)) return false;
-  // Plus: only the Full Stack track chosen at checkout (older Plus enrollments default to MERN)
-  if (planId === 'plus' && DEV_TRACKS.includes(mod.id)) return mod.id === (devTrack || 'mern');
-  return true;
-};
-
-/* Lowest plan that would unlock this module for this learner */
-export const requiredPlanFor = (mod, planId) =>
-  mod.tier === 'ultra' || (planId === 'plus' && DEV_TRACKS.includes(mod.id)) ? 'compete' : 'plus';
+// Whole modules unlock by tier; the Full Stack track choice is per subject (subjectUnlocked)
+export const moduleUnlocked = (mod, planId) => (PLAN_TIERS[planId] || []).includes(mod.tier);
 
 export const findModule = (id) => MODULES.find((m) => m.id === id) || null;
+
+/* ── Subject-level plan tiers (DSA Advanced is a Plus subject inside a Core module) ── */
+export const subjectTier = (mod, subj) => subj.tier || mod.tier;
+// Plus also gets only the Full Stack track picked at checkout (older Plus enrollments default to MERN)
+export const subjectUnlocked = (mod, subj, planId, devTrack) =>
+  (PLAN_TIERS[planId] || []).includes(subjectTier(mod, subj))
+  && (!subj.track || planId !== 'plus' || subj.track === (devTrack || 'mern'));
+
+/* Which plans include a subject the learner doesn't have, e.g. "Plus & Ultra" or "Ultra" */
+export const subjectPlansLabel = (mod, subj) =>
+  subj.track || subjectTier(mod, subj) === 'ultra' ? 'Ultra' : 'Plus & Ultra';
+
+/* Ultra's higher limits apply to Plus & Ultra content, not Core */
+export const subjectExtended = (extended, mod, subj) => extended && subjectTier(mod, subj) !== 'core';
+
+/* A subject's own practice / tests, else the module's */
+export const subjectPractice = (mod, subj) => subj.practice || mod.practice;
+export const subjectTests = (mod, subj) => subj.tests || mod.tests;
+export const subjectInterview = (mod, subj) => subj.interview || mod.interview;
+
+/* The module as this plan sees it: subjects the plan doesn't include are left out */
+export const moduleForPlan = (mod, planId, devTrack) => {
+  if (!mod) return mod;
+  const subjects = mod.subjects.filter((s) => subjectUnlocked(mod, s, planId, devTrack));
+  if (!subjects.length || subjects.length === mod.subjects.length) return mod;
+  const kinds = new Map();
+  subjects.forEach((s) => (s.practice || []).forEach((p) => { if (!kinds.has(p.kind)) kinds.set(p.kind, p); }));
+  return {
+    ...mod,
+    subjects,
+    short: (subjects.length === 1 && subjects[0].short) || mod.short,
+    practice: kinds.size ? [...kinds.values()] : mod.practice
+  };
+};

@@ -3,7 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Circle, CircleCheck, CirclePlay, Clock, RotateCcw, X
 } from 'lucide-react';
-import { DEMO_VIDEO_SRC, allLectures, findModule, moduleUnlocked } from '../data/learnerModules';
+import { DEMO_VIDEO_SRC, allLectures, findModule, moduleForPlan, moduleUnlocked } from '../data/learnerModules';
 
 /* ══════════════════════════════════════════════════════════════
    Lecture player — /dashboard/m/:moduleId/watch/:lectureId
@@ -25,7 +25,8 @@ const DashboardPlayer = ({ ctx }) => {
   const [autoNext, setAutoNext] = useState(true);  // learner can cancel the countdown
   const currentRef = useRef(null);
 
-  const mod = findModule(moduleId);
+  // Preview uses its own short module list; otherwise the module as this plan sees it
+  const mod = ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : moduleForPlan(findModule(moduleId), planId, ctx.devTrack);
   const lectures = mod ? allLectures(mod) : [];
   const idx = lectures.findIndex((l) => l.id === lectureId);
   const current = lectures[idx];

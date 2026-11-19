@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, ChevronDown, CirclePlay, ClipboardCheck, ListChecks, Mic } from 'lucide-react';
 import { dayKey } from '../utils/learnerProgress';
-import { findModule } from '../data/learnerModules';
+import { findModule, moduleUnlocked } from '../data/learnerModules';
+import { activityFor } from '../utils/demoActivity';
 
 /* ══════════════════════════════════════════════════════════════
    Activity — /dashboard/activity  (GitHub-contributions style)
@@ -28,8 +29,10 @@ const countFor = (day, filter) =>
 const parseKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
 
 const DashboardActivity = ({ ctx }) => {
-  const { progress, enrollment } = ctx;
-  const activity = progress.activity || {};
+  const { enrollment } = ctx;
+  // Demo: every plan, and the preview (DSA, Development, System Design), gets a year of
+  // sample activity from its own modules under the real log
+  const activity = activityFor(ctx, ctx.modules.filter((m) => moduleUnlocked(m, ctx.planId, ctx.devTrack)));
   const [filter, setFilter] = useState('all');
   const [period, setPeriod] = useState('last'); // 'last' or a year number
   const [menuOpen, setMenuOpen] = useState(false);
@@ -233,7 +236,6 @@ const DashboardActivity = ({ ctx }) => {
                   {kinds.map((k) => {
                     const entry = byMonth[mk].kinds[k.id];
                     const mods = Object.entries(entry.mods).sort((a, b) => b[1] - a[1]);
-                    const max = Math.max(1, ...mods.map(([, n]) => n));
                     return (
                       <li key={k.id} className="dx-gh-event">
                         <span className="dx-gh-event-icon" style={{ color: k.color }}><k.Icon size={16} /></span>
@@ -246,9 +248,8 @@ const DashboardActivity = ({ ctx }) => {
                             <ul className="dx-gh-rows">
                               {mods.map(([modId, n]) => (
                                 <li key={modId}>
-                                  <Link to={`/dashboard/m/${modId}?tab=${k.tab}`} className="dx-gh-row-link">{findModule(modId)?.title || modId}</Link>
+                                  <Link to={`/dashboard/m/${modId}?tab=${k.tab}`} className="dx-gh-row-link">{(ctx.modules.find((m) => m.id === modId) || findModule(modId))?.title || modId}</Link>
                                   <span className="dx-gh-row-count">{plural(n, k.one, k.many)}</span>
-                                  <span className="dx-gh-bar"><span style={{ width: `${Math.round((n / max) * 100)}%`, background: k.color }} /></span>
                                 </li>
                               ))}
                             </ul>

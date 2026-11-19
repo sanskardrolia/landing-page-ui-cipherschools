@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Crown, Flame, Lock, ShieldCheck, X, Zap } from 'lucide-react';
 import { PLAN_BLURBS, planById, planSlug } from '../data/upgrade';
-import { DEV_TRACKS } from '../data/learnerModules';
 import { plansIncluding } from '../utils/preview';
 
 /* ══════════════════════════════════════════════════════════════
@@ -31,7 +30,7 @@ const DashboardPreviewPlans = ({ mod, target, onClose }) => {
   const names = plans.map((p) => p.name);
   const includedIn = names.length === 3 ? 'every plan' : names.length === 2 ? `${names[0]} and ${names[1]}` : `${names[0]} only`;
   const title = mod ? `Unlock ${mod.title}` : target === 'compete' ? 'Unlock with Ultra' : 'Choose your plan';
-  const isTrack = mod && DEV_TRACKS.includes(mod.id);
+  const isTrack = !!mod?.track; // a Full Stack track (MERN / JFS) of Development
 
   const buy = () => {
     onClose();

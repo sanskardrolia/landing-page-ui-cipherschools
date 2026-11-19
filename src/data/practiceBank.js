@@ -285,7 +285,7 @@ const JFS = {
       'Build a React page that lists, adds and deletes notes from the Spring API, with the assistant.',
       '// Ask the assistant for a component plan first.\n')
   ],
-  shipping: [
+  'jfs-shipping': [
     D('Test Fails Only in CI', 'Hard', 'java',
       'A date-based test passes locally but fails in CI. Make it deterministic.',
       "@Test\nvoid isWeekend() {\n    assertTrue(service.isWeekend(LocalDate.now()));\n}\n",
@@ -317,7 +317,8 @@ const DBMS_SQL = {
   ]
 };
 
-const BANK = { dsa: DSA, 'dsa-advanced': DSA_ADV, 'dsa-mastery': DSA_MASTERY, mern: MERN, jfs: JFS, dbms: DBMS_SQL };
+// DSA Basics and Advanced are subjects of one module; their unit ids don't overlap
+const BANK = { dsa: { ...DSA, ...DSA_ADV }, 'dsa-mastery': DSA_MASTERY, development: { ...MERN, ...JFS }, 'computer-fundamentals': DBMS_SQL }; // SQL sets live on the DBMS subject's units
 
 /* Generated sets for non-coding practice kinds */
 const SET_META = {
@@ -337,8 +338,10 @@ export const practiceForUnit = (mod, unit, isExt) => {
     .filter((p) => !p.extended || isExt)
     .map((p, i) => ({ ...p, id: `${mod.id}--${unit.id}--${i}` }));
 
-  // Practice kinds without a hand-written bank get generated sets (MCQ, labs, drills…)
-  mod.practice
+  // Practice kinds without a hand-written bank get generated sets (MCQ, labs, drills…),
+  // using the unit's own section's practice list when it has one (e.g. System Design vs DevOps)
+  const section = mod.subjects.find((s) => s.units.includes(unit));
+  (section?.practice || mod.practice)
     .filter((p) => SET_META[p.kind] && !(p.kind === 'company' && BANK[mod.id]))
     .forEach((p) => {
       const meta = SET_META[p.kind];
@@ -430,7 +433,7 @@ export const starterCode = (item, lang) => {
    Deterministic per calendar day + module, so every learner sees the
    same problem today and it rotates at local midnight. Drawn from the
    problems the learner can open (Ultra-only problems only for Ultra). */
-export const POTD_MODULES = ['dsa', 'dsa-advanced'];
+export const POTD_MODULES = ['dsa'];
 
 const dayKey = (d = new Date()) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 const hash = (str) => {

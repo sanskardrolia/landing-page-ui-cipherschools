@@ -55,7 +55,9 @@ export const upgradeQuote = (fromId, toId, now = new Date()) => {
 
 /* What moving up adds — derived from the dashboard catalog so it stays in sync.
    `devTrack` is the Plus learner's chosen Full Stack track (to name the one Ultra adds). */
-const PLUS_CORE_TITLES = MODULES.filter((m) => m.tier === 'plus' && !DEV_TRACKS.includes(m.id)).map((m) => m.title);
+const PLUS_CORE_TITLES = MODULES.flatMap((m) => (m.tier === 'plus'
+  ? (m.subjects.some((s) => s.track) ? [] : [m.title]) // Full Stack tracks are listed on their own
+  : m.subjects.filter((s) => s.tier === 'plus').map((s) => s.fullTitle || `${m.title} · ${s.title}`))); // e.g. DSA Advanced
 const TRACK_NAME = { mern: 'MERN', jfs: 'JFS' };
 
 export const upgradeBenefits = (fromId, toId, devTrack) => {

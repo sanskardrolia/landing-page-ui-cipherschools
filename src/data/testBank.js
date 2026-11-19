@@ -15,16 +15,20 @@ const T = (key, testType, format, mins, questions, noun = 'Questions') => ({ key
 
 /* Stage tests generated for each unit, by module */
 const STAGE_RULES = {
-  dsa: () => [T('ai', 'A.I. Assisted', 'Coding', 45, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 30, 3, 'Problems')],
-  'dsa-advanced': () => [T('ai', 'A.I. Assisted', 'Coding', 60, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 40, 3, 'Problems')],
+  // DSA: the Advanced (Plus) subject gets longer stage tests than Basics
+  dsa: (unit, subject) => (subject?.tier === 'plus'
+    ? [T('ai', 'A.I. Assisted', 'Coding', 60, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 40, 3, 'Problems')]
+    : [T('ai', 'A.I. Assisted', 'Coding', 45, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 30, 3, 'Problems')]),
   'dsa-mastery': () => [T('ai', 'A.I. Assisted', 'Coding', 75, 2, 'Problems'), T('approach', 'Approach Based', 'Coding', 50, 3, 'Problems')],
-  mern: () => [T('debugging', 'Debugging', 'Coding', 30, 3, 'Bugs'), T('vibe', 'Vibe Coding', 'Build Task', 45, 1, 'Task')],
-  jfs: () => [T('debugging', 'Debugging', 'Coding', 30, 3, 'Bugs'), T('vibe', 'Vibe Coding', 'Build Task', 45, 1, 'Task')],
-  dbms: (unit) => (unit.id === 'sql'
+  development: () => [T('debugging', 'Debugging', 'Coding', 30, 3, 'Bugs'), T('vibe', 'Vibe Coding', 'Build Task', 45, 1, 'Task')],
+  // DBMS is a subject of Computer Fundamentals; only its SQL unit gets a query test
+  'computer-fundamentals': (unit) => (unit.id === 'sql'
     ? [T('concept', 'Concept Check', 'MCQ', 20, 10), T('sql', 'SQL Query', 'Coding', 30, 3, 'Queries')]
     : [T('concept', 'Concept Check', 'MCQ', 20, 10)]),
-  devops: () => [T('lab', 'Hands-on Lab', 'Sandbox', 40, 1, 'Lab')],
-  'system-design': () => [T('design', 'Interactive Design', 'Design Canvas', 45, 1, 'Scenario')],
+  // Beyond Development: System Design units get design tests, DevOps & Cloud units get labs
+  'beyond-development': (unit, subject) => (subject?.id === 'system-design'
+    ? [T('design', 'Interactive Design', 'Design Canvas', 45, 1, 'Scenario')]
+    : [T('lab', 'Hands-on Lab', 'Sandbox', 40, 1, 'Lab')]),
   communication: () => [T('spoken', 'Spoken Response', 'Video Response', 15, 3)],
   default: () => [T('concept', 'Concept Check', 'MCQ', 20, 10)]
 };
@@ -34,12 +38,13 @@ export const stageTests = (mod, subject) => {
   const rule = STAGE_RULES[mod.id] || STAGE_RULES.default;
   const rows = [];
   subject.units.forEach((unit) => {
-    rule(unit).forEach((t) => {
+    const tests = rule(unit, subject);
+    tests.forEach((t) => {
       rows.push({
         ...t,
         id: `${mod.id}:stage:${subject.id}:${unit.id}:${t.key}`,
         unit,
-        name: rule(unit).length > 1 ? `${unit.title} · ${t.testType} Test` : `${unit.title} Test`
+        name: tests.length > 1 ? `${unit.title} · ${t.testType} Test` : `${unit.title} Test`
       });
     });
   });

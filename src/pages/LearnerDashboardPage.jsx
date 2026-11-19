@@ -1,13 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  Activity, ArrowRight, ChevronDown, CircleCheck, CirclePlay, Eye, Crown, Flame, House, LayoutDashboard,
-  Lock, Menu, Moon, PanelLeft, RotateCcw, Search, Sparkles, Sun, Terminal, Users, X, Zap
+  Activity, ArrowRight, ArrowUpRight, Award, BookOpen, CalendarDays, ChevronDown, ChevronRight, CircleCheck, CirclePlay, ClipboardCheck,
+  Code2, Contrast, Crown, Eye, FileText, Flame, Info, LayoutDashboard, ListChecks, Lock, Menu, Mic, Moon, PanelLeft, RotateCcw,
+  ScanSearch, Search, Sparkles, Sun, Users, Wrench, X, Zap
 } from 'lucide-react';
 import { getEnrollment } from '../utils/enrollment';
-import { useLearnerProgress } from '../utils/learnerProgress';
+import { dayKey, useLearnerProgress, useSessionProgress } from '../utils/learnerProgress';
+import { PREVIEW_SHARE, previewFreeInModule, previewModules } from '../utils/previewAccess';
 import {
-  MODULES, PLAN_LABELS, TIER_LABELS, allLectures, isExtendedPlan, moduleUnlocked, subjectLectures
+  MODULES, PLAN_LABELS, allLectures, isExtendedPlan, moduleForPlan, moduleUnlocked, subjectTests
 } from '../data/learnerModules';
 import ModuleIcon from '../components/ModuleIcon';
 import ModuleView from './DashboardModuleView';
@@ -16,19 +18,26 @@ import DashboardWorkspace from './DashboardWorkspace';
 import DashboardMentorship from './DashboardMentorship';
 import { mentorCreditsLeft } from '../utils/mentorship';
 import { learningStats } from '../utils/learningStats';
-import { PREVIEW_ENROLLMENT, PREVIEW_PROGRESS, clearSplash, endPreview, isPreviewOn, wantsSplash } from '../utils/preview';
+import { SHOW_DEMO_PROGRESS, activityFor, withDemoModuleProgress, withDemoStats } from '../utils/demoActivity';
+import { PREVIEW_ENROLLMENT, clearSplash, endPreview, isPreviewOn, wantsSplash } from '../utils/preview';
 import DashboardPreviewPlans from './DashboardPreviewPlans';
 import DashboardPreviewSplash from './DashboardPreviewSplash';
-
-const noop = () => {};
 import DashboardActivity from './DashboardActivity';
+import DashboardSearch from './DashboardSearch';
+import DashboardPlanner from './DashboardPlanner';
+import DashboardCertificates from './DashboardCertificates';
+import DashboardNextStep from './DashboardNextStep';
+import WhatsNext from './DashboardWhatsNext';
 import './LearnerDashboardPage.css';
 
 /* ══════════════════════════════════════════════════════════════
-   Learner dashboard (dark, immersive). Only renders for a paid
-   (demo) enrollment; otherwise redirects to /premium.
-   Routes:  /dashboard            → overview
-            /dashboard/m/:moduleId → module (Watch / Practice / Test / Mock)
+   Learner dashboard. Only renders for a paid (demo) enrollment or
+   the "Experience before you pay" preview; otherwise → /premium.
+   Routes:  /dashboard               → Overview
+            /dashboard/content       → opens the module to continue with
+            /dashboard/m/:moduleId   → module (Content / Practice / Test / Mock),
+                                       with the module bar under the top bar
+            /dashboard/planner · /activity · /certificates · /mentorship
    ══════════════════════════════════════════════════════════════ */
 
 const greeting = () => {
@@ -47,19 +56,21 @@ const readTheme = () => {
 /* Same plan icons as the pricing cards: Core ⚡ · Plus 🔥 · Ultra 👑 */
 const TIER_ICONS = { core: Zap, plus: Flame, ultra: Crown };
 const PLAN_TIER = { starter: 'core', plus: 'plus', compete: 'ultra' }; // plan id → its tier (icon / label)
-
-// Preview only: say what each higher tier carries over
-const PREVIEW_TIER_NOTE = { plus: '(includes Core)', ultra: '(includes Core & Plus)' };
+const MODULE_BAR_HIDDEN = ['dsa-mastery']; // kept out of the paid module bar (still on the overview)
 
 const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 
+/* Modules the learner works in: the plan's own (preview: its short list) */
+const learnerModules = (ctx) => (ctx.preview ? ctx.modules : ctx.modules.filter((m) => moduleUnlocked(m, ctx.planId, ctx.devTrack)));
+
 const LearnerDashboardPage = () => {
   const [realEnrollment] = useState(getEnrollment);
-  // Guests who chose "Experience before you pay" get the full dashboard with everything locked
+  // Guests who chose "Experience before you pay" get a partly open dashboard
   const [preview] = useState(() => !realEnrollment && isPreviewOn());
   const enrollment = realEnrollment || (preview ? PREVIEW_ENROLLMENT : null);
   const learner = useLearnerProgress();
-  const { progress, toggle, set } = preview ? { progress: PREVIEW_PROGRESS, toggle: noop, set: noop } : learner;
+  const guest = useSessionProgress(); // preview: what a guest tries lasts only for this visit
+  const { progress, toggle, set } = preview ? guest : learner;
   const [purchase, setPurchase] = useState(null); // preview only: { mod?, target? } while the plan pop-up is open
   // Crack-wall splash, once per "Experience before you pay" entry
   const [splash, setSplash] = useState(() => preview && wantsSplash());
@@ -69,7 +80,20 @@ const LearnerDashboardPage = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState(readTheme);
+  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+
+  // Cmd/Ctrl + F (or K) opens dashboard search; the code editor keeps its own find
+  useEffect(() => {
+    const onKey = (e) => {
+      if (!(e.metaKey || e.ctrlKey) || e.altKey || !['f', 'k'].includes(e.key.toLowerCase())) return;
+      if (e.target.closest?.('.dx-ws')) return;
+      e.preventDefault();
+      setSearchOpen(true);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const toggleTheme = () => setTheme((t) => {
     const next = t === 'dark' ? 'light' : 'dark';
@@ -83,12 +107,17 @@ const LearnerDashboardPage = () => {
 
   // The lecture player and coding workspace take the full width, so the sidebar collapses
   const onPlayer = /^\/dashboard\/m\/[^/]+\/(watch|practice)\//.test(location.pathname);
+  // The module bar shows on module pages (not in the player / workspace)
+  const moduleMatch = location.pathname.match(/^\/dashboard\/m\/([^/]+)\/?$/);
 
   const planId = enrollment.planId;
   // Paid dashboards show only the plan bought, so there is no upgrade path inside them.
   // openUpgrade(target?) and lockedTap(mod) are preview-only.
   const ctx = {
     enrollment, planId, extended: isExtendedPlan(planId), devTrack: enrollment.devTrack, progress, toggle, set,
+    // Every module as this plan sees it (e.g. Core gets DSA Basics only, not Advanced).
+    // Preview shows only DSA, Development and System Design.
+    modules: preview ? previewModules() : MODULES.map((m) => moduleForPlan(m, planId, enrollment.devTrack)),
     preview,
     // Preview: a plain "Get plan" goes to the premium page's plan comparison; a locked item asks for its plan
     openUpgrade: (target) => (target ? setPurchase({ target }) : navigate('/premium#plans')),
@@ -98,36 +127,56 @@ const LearnerDashboardPage = () => {
 
   return (
     <div className={`dx ${collapsed || onPlayer ? 'dx-collapsed' : ''} ${theme === 'light' ? 'dx-light' : ''} ${preview ? 'dx-preview' : ''}`}>
-      <Sidebar ctx={ctx} onCollapse={() => setCollapsed((v) => !v)} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <Sidebar ctx={ctx} onCollapse={() => setCollapsed((v) => !v)} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} onSearch={() => { setMobileOpen(false); setSearchOpen(true); }} />
       {mobileOpen && <div className="dx-scrim" onClick={() => setMobileOpen(false)} />}
 
       <div className="dx-main">
-        <TopBar ctx={ctx} onMenu={() => setMobileOpen(true)} theme={theme} onToggleTheme={toggleTheme} />
+        <TopBar ctx={ctx} onMenu={() => setMobileOpen(true)} theme={theme} onToggleTheme={toggleTheme} onSearch={() => setSearchOpen(true)} />
         {preview && (
           <div className="dx-pv-bar" role="status">
             <Eye size={16} />
-            <span><strong>Preview</strong> · everything is locked, tap anything to unlock</span>
+            <span><strong>Preview</strong> · about {Math.round(PREVIEW_SHARE * 100)}% of each module is open to try; tap anything locked to unlock it</span>
             <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => navigate('/premium#plans')}>See plans</button>
             <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={exitPreview}>Exit preview</button>
           </div>
         )}
+        {/* Content: the modules as a horizontal bar of their own, under (not inside) the top bar */}
+        {moduleMatch && <ModuleBar ctx={ctx} activeId={moduleMatch[1]} />}
         <main className="dx-page">
           <Routes>
             <Route path="/dashboard" element={<Overview ctx={ctx} />} />
+            <Route path="/dashboard/content" element={<ContentRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId" element={<ModuleRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/watch/:lectureId" element={<PlayerRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/practice/:itemId" element={<WorkspaceRoute ctx={ctx} />} />
-            <Route path="/dashboard/mentorship" element={<DashboardMentorship ctx={ctx} />} />
+            <Route path="/dashboard/planner" element={<DashboardPlanner ctx={ctx} />} />
             <Route path="/dashboard/activity" element={<DashboardActivity ctx={ctx} />} />
+            <Route path="/dashboard/certificates" element={<DashboardCertificates ctx={ctx} />} />
+            <Route path="/dashboard/mentorship" element={<DashboardMentorship ctx={ctx} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>
       </div>
 
+      {/* Next-step pop-ups: lectures done → practice, practice done → tests, all three → mock */}
+      <DashboardNextStep ctx={ctx} />
+      {searchOpen && <DashboardSearch ctx={ctx} onClose={() => setSearchOpen(false)} />}
       {splash && <DashboardPreviewSplash onDone={endSplash} />}
       {purchase && <DashboardPreviewPlans mod={purchase.mod} target={purchase.target} onClose={() => setPurchase(null)} />}
     </div>
   );
+};
+
+const previewOpen = (ctx, moduleId, id) => {
+  const mod = ctx.modules.find((m) => m.id === moduleId);
+  return !!mod && previewFreeInModule(mod, ctx.extended).has(id);
+};
+
+/* Content opens the module to continue with (the first one not finished) */
+const ContentRoute = ({ ctx }) => {
+  const mods = learnerModules(ctx);
+  const target = mods.find((m) => moduleProgress(m, ctx.progress).pct < 100) || mods[0];
+  return target ? <Navigate to={`/dashboard/m/${target.id}`} replace /> : <Navigate to="/dashboard" replace />;
 };
 
 // Keyed by module id so per-module state (selected subject, open units) starts fresh
@@ -139,18 +188,18 @@ const ModuleRoute = ({ ctx }) => {
 // Keyed by lecture so the "ended / up next" state resets for every video
 const PlayerRoute = ({ ctx }) => {
   const { moduleId, lectureId } = useParams();
-  if (ctx.preview) return <Navigate to={`/dashboard/m/${moduleId}`} replace />;
+  // Preview: only the open (first ~30%) lectures play
+  if (ctx.preview && !previewOpen(ctx, moduleId, lectureId)) return <Navigate to={`/dashboard/m/${moduleId}`} replace />;
   return <DashboardPlayer key={lectureId} ctx={ctx} />;
 };
 
 // Keyed by item so code, console and submissions load fresh for each problem
 const WorkspaceRoute = ({ ctx }) => {
   const { moduleId, itemId } = useParams();
-  if (ctx.preview) return <Navigate to={`/dashboard/m/${moduleId}?tab=practice`} replace />;
+  // Preview: only the open (first ~30%) practice problems can be solved
+  if (ctx.preview && !previewOpen(ctx, moduleId, itemId)) return <Navigate to={`/dashboard/m/${moduleId}?tab=practice`} replace />;
   return <DashboardWorkspace key={itemId} ctx={ctx} />;
 };
-
-/* ─────────────────────────── Sidebar ─────────────────────────── */
 
 const moduleProgress = (mod, progress) => {
   const lectures = allLectures(mod);
@@ -160,19 +209,22 @@ const moduleProgress = (mod, progress) => {
 
 const initialsOf = (name) => name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
 
-const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
+/* ─────────────────────────── Sidebar ─────────────────────────── */
+
+const TOOLS = [
+  { to: '/resume', label: 'Resume Builder', Icon: FileText },
+  { to: '/resume/ats-checker', label: 'ATS Checker', Icon: ScanSearch },
+  { to: '/online-compiler', label: 'Compiler', Icon: Code2 }
+];
+
+const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+
+const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
   const { planId, extended, progress, enrollment } = ctx;
   const learnerName = enrollment.learner?.name?.trim() || 'Learner';
-  // Preview starts with only Core expanded, so the sidebar stays calm; Plus & Ultra open on tap
-  const [open, setOpen] = useState(() => ({ core: true, plus: !ctx.preview, ultra: !ctx.preview }));
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-
-  // Preview shows every tier (locked). A paid learner sees only their own plan:
-  // one group named after it, holding every module that plan includes.
-  const navGroups = ctx.preview
-    ? ['core', 'plus', 'ultra'].map((tier) => ({ tier, label: TIER_LABELS[tier], mods: MODULES.filter((m) => m.tier === tier) }))
-    : [{ tier: PLAN_TIER[planId], label: `${PLAN_LABELS[planId]} Modules`, mods: MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack)) }];
+  const [toolsOpen, setToolsOpen] = useState(true);
+  const inContent = location.pathname.startsWith('/dashboard/m/') || location.pathname === '/dashboard/content';
 
   return (
     <aside className={`dx-side ${mobileOpen ? 'open' : ''}`} aria-label="Dashboard navigation">
@@ -189,95 +241,62 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose }) => {
         </button>
       </div>
 
+      {/* Small search: opens the dashboard-wide search (also Cmd/Ctrl + F) */}
+      <button type="button" className="dx-side-search" onClick={onSearch} aria-haspopup="dialog" aria-label="Search the dashboard" title="Search">
+        <Search size={15} />
+        <span className="dx-label">Search</span>
+        <kbd className="dx-label">{isMac ? '⌘' : 'Ctrl'} F</kbd>
+      </button>
+
       <nav className="dx-nav">
-        <NavLink to="/dashboard" end className="dx-nav-item" onClick={onClose}>
-          <LayoutDashboard size={18} />
-          <span className="dx-label">Dashboard</span>
+        <span className="dx-nav-heading dx-label">Main menu</span>
+        <NavLink to="/dashboard" end className="dx-nav-item" onClick={onClose} title="Overview">
+          <LayoutDashboard size={18} /><span className="dx-label">Overview</span>
         </NavLink>
+        <NavLink to="/dashboard/content" className={`dx-nav-item ${inContent ? 'active' : ''}`} onClick={onClose} title="Content">
+          <BookOpen size={18} /><span className="dx-label">Content</span>
+        </NavLink>
+        <NavLink to="/dashboard/planner" className="dx-nav-item" onClick={onClose} title="Planner">
+          <CalendarDays size={18} /><span className="dx-label">Planner</span>
+        </NavLink>
+        <NavLink to="/dashboard/activity" className="dx-nav-item" onClick={onClose} title="Activity">
+          <Activity size={18} /><span className="dx-label">Activity</span>
+        </NavLink>
+        <NavLink to="/dashboard/certificates" className="dx-nav-item" onClick={onClose} title="Certificates">
+          <Award size={18} /><span className="dx-label">Certificates</span>
+        </NavLink>
+        {extended && !ctx.preview && (
+          <NavLink to="/dashboard/mentorship" className="dx-nav-item" onClick={onClose} title="1:1 Mentorship">
+            <Users size={18} /><span className="dx-label dx-nav-text">1:1 Mentorship</span>
+            <span className="dx-label dx-nav-pct">{mentorCreditsLeft(progress)} cr</span>
+          </NavLink>
+        )}
 
-        {navGroups.map(({ tier, label, mods }) => {
-          return (
-            <div key={tier} className="dx-nav-group">
-              <button
-                type="button"
-                className="dx-group-head"
-                onClick={() => setOpen((o) => ({ ...o, [tier]: !o[tier] }))}
-                aria-expanded={open[tier]}
-              >
-                <TierIcon tier={tier} />
-                <span className="dx-label">
-                  {label}
-                  {ctx.preview && PREVIEW_TIER_NOTE[tier] && <em className="dx-tier-note">{PREVIEW_TIER_NOTE[tier]}</em>}
-                </span>
-                {ctx.preview && tier === 'ultra' && <Lock size={12} className="dx-label dx-nav-lock" />}
-                <ChevronDown size={14} className={`dx-chev dx-label ${open[tier] ? 'up' : ''}`} />
-              </button>
-              {open[tier] && mods.map((m) => {
-                const unlocked = !ctx.preview && moduleUnlocked(m, planId, ctx.devTrack);
-                const showSubjects = unlocked || ctx.preview; // preview: show everything, locked
-                const mp = moduleProgress(m, progress);
-                const modPath = `/dashboard/m/${m.id}`;
-                const inModule = location.pathname === modPath;
-                const activeSubject = query.get('subject') || m.subjects[0].id;
-                return (
-                  <div key={m.id} className="dx-nav-module">
-                    <NavLink to={modPath} className={`dx-nav-item ${unlocked ? '' : 'locked'}`} title={m.title} onClick={onClose}>
-                      <ModuleIcon mod={m} />
-                      <span className="dx-label dx-nav-text">{m.title}</span>
-                      {unlocked
-                        ? (mp.pct > 0 && <span className="dx-label dx-nav-pct">{mp.pct}%</span>)
-                        : <Lock size={13} className="dx-label dx-nav-lock" />}
-                    </NavLink>
-
-                    {/* Subjects (e.g. OS / CN / OOPs) as sub-items of a multi-subject module */}
-                    {showSubjects && m.subjects.length > 1 && (
-                      <ul className="dx-nav-sub">
-                        {m.subjects.map((sub) => {
-                          const sl = subjectLectures(sub);
-                          const sp = sl.length ? Math.round((sl.filter((l) => progress.watched[l.id]).length / sl.length) * 100) : 0;
-                          const isActive = inModule && activeSubject === sub.id;
-                          const tab = inModule ? query.get('tab') || 'watch' : 'watch';
-                          return (
-                            <li key={sub.id}>
-                              <Link
-                                to={`${modPath}?tab=${tab}&subject=${sub.id}`}
-                                className={`dx-nav-subitem ${isActive ? 'active' : ''}`}
-                                aria-current={isActive ? 'page' : undefined}
-                                onClick={onClose}
-                              >
-                                <span className="dx-nav-text">{sub.title}</span>
-                                {sp > 0 && <span className="dx-nav-pct">{sp}%</span>}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    )}
-                  </div>
-                );
-              })}
-
-              {/* 1:1 Mentorship lives with the Ultra modules (preview: locked; paid: Ultra only) */}
-              {tier === 'ultra' && open.ultra && (ctx.preview || extended) && (
-                <NavLink to="/dashboard/mentorship" className={`dx-nav-item ${extended && !ctx.preview ? '' : 'locked'}`} title="1:1 Mentorship" onClick={onClose}>
-                  <Users size={18} />
-                  <span className="dx-label dx-nav-text">1:1 Mentorship</span>
-                  {extended && !ctx.preview
-                    ? <span className="dx-label dx-nav-pct">{mentorCreditsLeft(progress)} cr</span>
-                    : <Lock size={13} className="dx-label dx-nav-lock" />}
-                </NavLink>
-              )}
-            </div>
-          );
-        })}
-
+        {/* Tools open the site's own pages (outside the dashboard) */}
+        <span className="dx-nav-heading dx-label">Tools</span>
+        <div className={`dx-nav-module has-subs ${toolsOpen ? '' : 'is-folded'}`}>
+          <button type="button" className="dx-nav-item dx-nav-groupbtn" onClick={() => setToolsOpen((v) => !v)} aria-expanded={toolsOpen} title="Tools">
+            <Wrench size={18} /><span className="dx-label dx-nav-text">Tools</span>
+            <ChevronDown size={15} className={`dx-label dx-tools-chev ${toolsOpen ? 'up' : ''}`} />
+          </button>
+          {toolsOpen && (
+            <ul className="dx-nav-sub">
+              {TOOLS.map((t) => (
+                <li key={t.to}>
+                  <Link to={t.to} className="dx-nav-subitem" onClick={onClose}>
+                    <t.Icon size={14} className="dx-nav-subicon" />
+                    <span className="dx-nav-text">{t.label}</span>
+                    <ArrowUpRight size={13} className="dx-nav-ext" aria-label="Opens outside the dashboard" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </nav>
 
       <div className="dx-side-foot">
-        <Link to="/online-compiler" className="dx-nav-item"><Terminal size={18} /><span className="dx-label">Compiler</span></Link>
-        <Link to="/" className="dx-nav-item"><House size={18} /><span className="dx-label">Back to site</span></Link>
-
-        {/* Profile row: initials · name · plan · upgrade */}
+        {/* Profile row: initials · name · plan */}
         <div className="dx-profile">
           <span className="dx-profile-avatar" title={learnerName}>{initialsOf(learnerName)}</span>
           <span className="dx-profile-text">
@@ -298,58 +317,89 @@ const TierIcon = ({ tier }) => {
   return Icon ? <Icon size={13} className={`dx-tier-icon dx-tier-${tier}`} aria-hidden="true" /> : null;
 };
 
+/* ─────────────────── Module bar (Content) ─────────────────── */
+
+const ModuleBar = ({ ctx, activeId }) => {
+  const ref = useRef(null);
+  const mods = learnerModules(ctx).filter((m) => ctx.preview || !MODULE_BAR_HIDDEN.includes(m.id) || m.id === activeId);
+  // Which edges have more modules past them (drives the edge fades)
+  const [edges, setEdges] = useState({ left: false, right: false });
+  const measure = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const left = el.scrollLeft > 1;
+    const right = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
+    setEdges((e) => (e.left === left && e.right === right ? e : { left, right }));
+  }, []);
+  useEffect(() => {
+    ref.current?.querySelector('.is-active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [activeId]);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const first = setTimeout(measure, 0); // first check, after the active module scrolls into view
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
+    ro?.observe(el);
+    return () => { clearTimeout(first); ro?.disconnect(); };
+  }, [measure, activeId]);
+  return (
+    // data-hscroll: the site smooth-scroll turns a plain mouse wheel into sideways scrolling here
+    // The wrapper keeps the divider line and background; only the scrolling strip fades
+    <div className="dx-modbar-wrap">
+    <nav className={`dx-modbar ${edges.left ? 'fade-left' : ''} ${edges.right ? 'fade-right' : ''}`} aria-label="Modules" ref={ref} data-hscroll onScroll={measure}>
+      {mods.map((m) => {
+        const mp = moduleProgress(m, ctx.progress);
+        const active = m.id === activeId;
+        return (
+          <Link key={m.id} to={`/dashboard/m/${m.id}`} className={`dx-modbar-item ${active ? 'is-active' : ''}`} aria-current={active ? 'page' : undefined}>
+            <ModuleIcon mod={m} size={16} />
+            <span>{m.title}</span>
+            {!ctx.preview && mp.pct > 0 && <em>{mp.pct}%</em>}
+          </Link>
+        );
+      })}
+    </nav>
+    </div>
+  );
+};
+
 /* ─────────────────────────── Top bar ─────────────────────────── */
 
-const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
+/* Page title for the top bar, from the route */
+const PAGE_TITLES = {
+  '/dashboard': 'Overview', '/dashboard/planner': 'Planner', '/dashboard/activity': 'Activity',
+  '/dashboard/certificates': 'Certificates', '/dashboard/mentorship': '1:1 Mentorship', '/dashboard/content': 'Content'
+};
+const pageTitle = (pathname, ctx) => {
+  const m = pathname.match(/^\/dashboard\/m\/([^/]+)/);
+  if (m) return { title: 'Content', sub: ctx.modules.find((x) => x.id === m[1])?.title, subTo: `/dashboard/m/${m[1]}` };
+  return { title: PAGE_TITLES[pathname.replace(/\/$/, '')] || 'Overview' };
+};
+
+const TopBar = ({ ctx, onMenu, theme, onToggleTheme, onSearch }) => {
   const { planId, progress } = ctx;
-  const navigate = useNavigate();
-  const [q, setQ] = useState('');
-  const [focus, setFocus] = useState(false);
-
-  const results = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    if (!s) return [];
-    const pool = ctx.preview ? MODULES : MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack));
-    return pool.filter((m) => `${m.title} ${m.short}`.toLowerCase().includes(s)).slice(0, 6);
-  }, [q, ctx.preview, planId, ctx.devTrack]);
-
-  const go = (m) => { setQ(''); setFocus(false); navigate(`/dashboard/m/${m.id}`); };
-
+  const location = useLocation();
+  const { title, sub, subTo } = pageTitle(location.pathname, ctx);
   const watchedTotal = Object.keys(progress.watched).length;
 
   return (
     <header className="dx-top">
       <button type="button" className="dx-icon-btn dx-menu" onClick={onMenu} aria-label="Open menu"><Menu size={18} /></button>
 
-      <div className="dx-search">
-        <Search size={16} />
-        <input
-          type="search"
-          placeholder="Search modules…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onFocus={() => setFocus(true)}
-          onBlur={() => setTimeout(() => setFocus(false), 120)}
-          onKeyDown={(e) => { if (e.key === 'Enter' && results[0]) go(results[0]); }}
-        />
-        {focus && results.length > 0 && (
-          <ul className="dx-search-results">
-            {results.map((m) => (
-              <li key={m.id}>
-                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => go(m)}>
-                  <span>{m.title}</span>
-                  {ctx.preview && <Lock size={13} />}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="dx-top-title">
+        {sub ? (
+          <>
+            <Link to="/dashboard/content" className="dx-top-title-root">{title}</Link>
+            <ChevronRight size={16} className="dx-top-title-sep" aria-hidden="true" />
+            <h1><Link to={subTo}>{sub}</Link></h1>
+          </>
+        ) : <h1>{title}</h1>}
       </div>
 
+      {/* Phones: the sidebar is a drawer, so search also sits here */}
+      <button type="button" className="dx-icon-btn dx-top-search" onClick={onSearch} aria-label="Search the dashboard"><Search size={17} /></button>
+
       <div className="dx-top-right">
-        <NavLink to="/dashboard/activity" className="dx-activity-btn" title="Activity heatmap">
-          <Activity size={16} /> <span className="dx-activity-label">Activity</span>
-        </NavLink>
         <button
           type="button"
           className="dx-icon-btn dx-theme-btn"
@@ -374,206 +424,292 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme }) => {
 
 /* ─────────────────────────── Overview ─────────────────────────── */
 
+const STAT_CARDS = [
+  { key: 'lectures', label: 'Lectures watched', tab: 'watch', Icon: CirclePlay, kind: 'lecture' },
+  { key: 'practice', label: 'Practice solved', tab: 'practice', Icon: ListChecks, kind: 'practice' },
+  { key: 'tests', label: 'Tests taken', tab: 'test', Icon: ClipboardCheck, kind: 'test' },
+  { key: 'interviews', label: 'Mock interviews', tab: 'interview', Icon: Mic, kind: 'interview' }
+];
+const MODULE_TABS = [
+  { id: 'all', label: 'All modules' },
+  { id: 'progress', label: 'In progress' },
+  { id: 'new', label: 'Not started' },
+  { id: 'done', label: 'Completed' }
+];
+const BANNER_KEY = 'cs_dash_plan_banner_hidden';
+const MONO_KEY = 'cs_dash_overview_mono';
+
 const Overview = ({ ctx }) => {
   const { enrollment, planId, progress } = ctx;
   const [hello, sub] = greeting();
   const name = enrollment.learner?.name?.trim() || 'Learner';
+  const [tab, setTab] = useState('all');
+  const [bannerHidden, setBannerHidden] = useState(() => { try { return sessionStorage.getItem(BANNER_KEY) === '1'; } catch { return false; } });
+  // Greyscale for the four stat cards (remembered on this device)
+  const [mono, setMono] = useState(() => { try { return localStorage.getItem(MONO_KEY) === '1'; } catch { return false; } });
+  const toggleMono = () => setMono((v) => { try { localStorage.setItem(MONO_KEY, v ? '0' : '1'); } catch { /* blocked */ } return !v; });
 
-  const unlocked = MODULES.filter((m) => moduleUnlocked(m, planId, ctx.devTrack));
+  const mods = learnerModules(ctx);
+  // What each module shows: real progress, or the demo sample while the demo switch is on
+  const shown = mods.map((m, i) => ({ mod: m, prog: ctx.preview ? moduleProgress(m, progress) : withDemoModuleProgress(moduleProgress(m, progress), i) }));
+  const startHere = shown.find((x) => x.prog.pct < 100)?.mod.id;
+  const startMod = startHere || mods[0]?.id;
 
-  // next unwatched lecture across unlocked modules, in sidebar order
-  let next = null;
-  for (const m of unlocked) {
-    const l = allLectures(m).find((x) => !progress.watched[x.id]);
-    if (l) { next = { mod: m, lecture: l }; break; }
-  }
-
-  const stats = learningStats(MODULES, ctx);
-  // Where to start: the first unlocked module (sidebar order) that isn't fully watched yet.
-  // It moves on by itself as soon as that module's last lecture is watched.
-  const startHere = unlocked.find((m) => moduleProgress(m, progress).pct < 100)?.id;
+  const realStats = learningStats(ctx.modules, ctx);
+  // Demo: sample numbers so the stat cards aren't empty (see utils/demoActivity.js)
+  const stats = SHOW_DEMO_PROGRESS && !ctx.preview ? withDemoStats(realStats, planId) : realStats;
 
   const validTill = new Date(enrollment.paidAt);
   validTill.setFullYear(validTill.getFullYear() + 1);
+  const hideBanner = () => { setBannerHidden(true); try { sessionStorage.setItem(BANNER_KEY, '1'); } catch { /* blocked */ } };
+
+  const stateOf = (p) => (p.pct >= 100 ? 'done' : p.pct > 0 ? 'progress' : 'new');
+  const listed = shown.filter((x) => tab === 'all' || stateOf(x.prog) === tab);
 
   return (
-    <div className="dx-overview">
-      <div className="dx-ov-main">
-        <section className="dx-hello">
-          {ctx.preview ? (
-            <>
-              <h1>Welcome, explorer <span aria-hidden="true">👋</span></h1>
-              <p>Every module in Core, Plus and Ultra.</p>
-            </>
-          ) : (
-            <>
-              <h1>{hello}, {name} <span aria-hidden="true">👋</span></h1>
-              <p>{sub}</p>
-            </>
-          )}
+    <div className={`dx-ov2 ${mono ? 'is-mono' : ''}`}>
+      <header className="dx-page-head">
+        <div>
+          <p className="dx-muted">
+            {ctx.preview
+              ? `Welcome, explorer. DSA, Development and System Design: about ${Math.round(PREVIEW_SHARE * 100)}% of each is open to try.`
+              : `${hello}, ${name}. ${sub}`}
+          </p>
+        </div>
+        <button type="button" role="switch" aria-checked={mono} className={`dx-mono-toggle ${mono ? 'is-on' : ''}`} onClick={toggleMono} title="Show the stat cards in greyscale">
+          <Contrast size={15} />
+          <span>Greyscale</span>
+          <span className="dx-switch" aria-hidden="true"><span /></span>
+        </button>
+      </header>
+
+      {!ctx.preview && !bannerHidden && (
+        <div className="dx-ov-banner" role="status">
+          <Info size={16} />
+          <span>
+            Your <strong>{PLAN_LABELS[planId]}</strong> plan is active till {validTill.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {planId === 'plus' && <> · Full Stack track: <strong>{(ctx.devTrack || 'mern').toUpperCase()}</strong></>}
+          </span>
+          <button type="button" className="dx-icon-btn" onClick={hideBanner} aria-label="Dismiss"><X size={16} /></button>
+        </div>
+      )}
+
+      {!ctx.preview && (
+        <section className="dx-ov-stats" aria-label="Learning progress">
+          {STAT_CARDS.map((c) => {
+            const v = stats[c.key];
+            const p = pct(v.done, v.total);
+            return (
+              <article key={c.key} className={`dx-card dx-ov-stat dx-stat-${c.kind}`}>
+                <div className="dx-ov-stat-top">
+                  <span className="dx-stat-icon"><c.Icon size={16} /></span>
+                  <span className="dx-ov-stat-label">{c.label}</span>
+                  <span className="dx-stat-pct">{p}%</span>
+                </div>
+                <p className="dx-ov-stat-val"><strong>{v.done}</strong> / {v.total}</p>
+                <div className="dx-meter" aria-hidden="true">
+                  {Array.from({ length: 20 }, (_, i) => (
+                    <span key={i} className={i < (v.done > 0 ? Math.max(1, Math.round((p / 100) * 20)) : 0) ? 'on' : undefined} style={{ '--i': i }} />
+                  ))}
+                </div>
+                {c.key === 'practice' && <p className="dx-stat-sub">Coding {v.coding.done}/{v.coding.total} · MCQ {v.mcq.done}/{v.mcq.total}</p>}
+                <Link to={startMod ? `/dashboard/m/${startMod}?tab=${c.tab}` : '/dashboard/content'} className="dx-ov-stat-foot">
+                  See details <ArrowRight size={15} />
+                </Link>
+              </article>
+            );
+          })}
         </section>
+      )}
 
-        {ctx.preview && ['core', 'plus', 'ultra'].map((tier) => (
-          <div key={tier}>
-            <div className="dx-section-head">
-              <h2><TierIcon tier={tier} /> {TIER_LABELS[tier]}{PREVIEW_TIER_NOTE[tier] && <em className="dx-tier-note">{PREVIEW_TIER_NOTE[tier]}</em>}</h2>
-              <span className="dx-rule" />
-            </div>
-            <div className="dx-module-grid">
-              {MODULES.filter((m) => m.tier === tier).map((m) => (
-                <ModuleCard key={m.id} mod={m} progress={progress} locked={{ core: 'Core', plus: 'Plus', ultra: 'Ultra' }[tier]} />
-              ))}
-            </div>
-          </div>
-        ))}
-
-        {!ctx.preview && next && (
-          <section className="dx-card dx-continue">
-            <div>
-              <span className="dx-kicker">Continue learning</span>
-              <h2>{next.lecture.title}</h2>
-              <p>{next.mod.title} · {next.lecture.mins} min</p>
-            </div>
-            <Link to={`/dashboard/m/${next.mod.id}/watch/${next.lecture.id}`} className="dx-btn dx-btn-primary">
-              <CirclePlay size={16} /> Resume
-            </Link>
-          </section>
-        )}
-
-        {!ctx.preview && (
-          <>
-            <div className="dx-section-head">
-              <h2>Your modules</h2>
-              <span className="dx-rule" />
-            </div>
-            <div className="dx-module-grid">
-              {unlocked.map((m) => <ModuleCard key={m.id} mod={m} progress={progress} highlight={m.id === startHere} />)}
-            </div>
-          </>
-        )}
-
+      <div className="dx-ov-row">
+        <ProgressChart ctx={ctx} mods={mods} />
+        {/* What's next: next lecture, practice question, test and mock for the current section */}
+        <WhatsNext ctx={ctx} mods={mods} />
       </div>
 
-      <aside className="dx-ov-rail">
-        {!ctx.preview && (
-        <section className="dx-card dx-ring-card">
-          <h3>Learning Progress</h3>
-          <div className="dx-stat-grid">
-            <StatRing kind="lecture" label="Lectures watched" {...stats.lectures} />
-            <StatRing
-              kind="practice"
-              label="Practice questions"
-              {...stats.practice}
-              sub={`Coding ${stats.practice.coding.done}/${stats.practice.coding.total} · MCQ ${stats.practice.mcq.done}/${stats.practice.mcq.total}`}
-            />
-            <StatRing kind="test" label="Tests taken" {...stats.tests} />
-            <StatRing kind="interview" label="Mock interviews" {...stats.interviews} />
-          </div>
-          <p className="dx-muted dx-small">Across your unlocked modules.</p>
-        </section>
-        )}
-
-        {ctx.preview ? (
-          <section className="dx-card dx-plan-card">
-            <span className="dx-kicker">Preview</span>
-            <h3>From ₹174/month</h3>
-            <p className="dx-muted dx-small">7-day money-back guarantee</p>
-            <Link to="/premium#plans" className="dx-btn dx-btn-primary">
-              See plans <ArrowRight size={15} />
-            </Link>
-          </section>
-        ) : (
-        <section className="dx-card dx-plan-card">
-          <span className="dx-kicker">Your plan</span>
-          <h3>{PLAN_LABELS[planId]}</h3>
-          {planId === 'plus' && <p className="dx-muted dx-small">Full Stack track: <strong>{(ctx.devTrack || 'mern').toUpperCase()}</strong></p>}
-          <p className="dx-muted dx-small">Active till {validTill.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
-        </section>
-        )}
-      </aside>
+      <section className="dx-ov-modules">
+        <div className="dx-ov-tabs" role="tablist" aria-label="Filter modules">
+          {(ctx.preview ? MODULE_TABS.slice(0, 1) : MODULE_TABS).map((t) => {
+            const count = t.id === 'all' ? shown.length : shown.filter((x) => stateOf(x.prog) === t.id).length;
+            return (
+              <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
+                {t.label} <span className="dx-count">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="dx-module-grid">
+          {listed.length === 0 && <p className="dx-muted dx-ov-empty">No modules here yet.</p>}
+          {listed.map(({ mod, prog }) => (ctx.preview
+            ? <ModuleCard key={mod.id} mod={mod} progress={progress} locked={`${{ core: 'Core', plus: 'Plus', ultra: 'Ultra' }[mod.tier]} · ${Math.round(PREVIEW_SHARE * 100)}% open`} />
+            : <ModuleCard key={mod.id} mod={mod} progress={progress} shown={prog} highlight={mod.id === startHere} />))}
+        </div>
+      </section>
     </div>
   );
 };
 
-// `locked` is the plan name that unlocks this module ("Plus" / "Ultra"), or falsy when unlocked.
-// `highlight` marks the module the learner should start (or continue) with.
-const ModuleCard = ({ mod, progress, locked, highlight }) => {
-  const mp = moduleProgress(mod, progress);
+/* "Your progress": lectures, practice, tests and mock interviews per day, from the activity log */
+const RANGES = [{ id: 7, label: '7 days' }, { id: 14, label: '14 days' }, { id: 30, label: '30 days' }];
+const SERIES = [
+  { id: 'lecture', label: 'Lectures', color: 'var(--accent)' },
+  { id: 'practice', label: 'Practice', color: '#3B82F6' },
+  { id: 'test', label: 'Tests', color: '#10B981' },
+  { id: 'interview', label: 'Mock interviews', color: '#A855F7' }
+];
+const W = 600;
+const H = 200;
+
+const smoothPath = (pts) => pts.reduce((d, p, i, a) => {
+  if (i === 0) return `M${p[0]},${p[1]}`;
+  const [x0, y0] = a[i - 1];
+  const cx = (x0 + p[0]) / 2;
+  return `${d} C${cx},${y0} ${cx},${p[1]} ${p[0]},${p[1]}`;
+}, '');
+
+const ProgressChart = ({ ctx, mods }) => {
+  const [range, setRange] = useState(14);
+  const [hover, setHover] = useState(null);
+  const activity = activityFor(ctx, mods);
+
+  const days = useMemo(() => {
+    const out = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    for (let i = range - 1; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const a = activity[dayKey(d)] || {};
+      out.push({ date: d, lecture: a.lecture || 0, practice: a.practice || 0, test: a.test || 0, interview: a.interview || 0 });
+    }
+    return out;
+  }, [activity, range]);
+
+  const max = Math.max(4, ...days.flatMap((d) => SERIES.map((s) => d[s.id])));
+  const step = Math.ceil(max / 4);
+  const top = step * 4;
+  const x = (i) => (days.length === 1 ? W / 2 : (i / (days.length - 1)) * W);
+  const y = (v) => H - (v / top) * H;
+  const totals = SERIES.map((s) => days.reduce((a, d) => a + d[s.id], 0));
+  const labelEvery = range <= 7 ? 1 : range <= 14 ? 2 : 5;
+
+  const onMove = (e) => {
+    const box = e.currentTarget.getBoundingClientRect();
+    const i = Math.round(((e.clientX - box.left) / box.width) * (days.length - 1));
+    setHover(Math.max(0, Math.min(days.length - 1, i)));
+  };
+  const h = hover != null ? days[hover] : null;
+
+  return (
+    <section className="dx-card dx-ov-chart">
+      <div className="dx-ov-card-head">
+        <h3><Activity size={16} /> Your progress</h3>
+        <div className="dx-ov-range" role="radiogroup" aria-label="Range">
+          {RANGES.map((r) => (
+            <button key={r.id} type="button" role="radio" aria-checked={range === r.id} className={range === r.id ? 'active' : ''} onClick={() => { setRange(r.id); setHover(null); }}>{r.label}</button>
+          ))}
+        </div>
+      </div>
+      <div className="dx-ov-legend">
+        {SERIES.map((s, i) => (
+          <span key={s.id}><i style={{ background: s.color }} /> {s.label} <strong>{totals[i]}</strong></span>
+        ))}
+      </div>
+      <div className="dx-chart">
+        <div className="dx-chart-y" aria-hidden="true">
+          {[4, 3, 2, 1, 0].map((k) => <span key={k}>{k * step}</span>)}
+        </div>
+        <div className="dx-chart-plot" onMouseMove={onMove} onMouseLeave={() => setHover(null)}>
+          <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img" aria-label={`Lectures, practice, tests and mock interviews per day, last ${range} days`}>
+            {[0, 1, 2, 3, 4].map((k) => <line key={k} x1="0" x2={W} y1={(k / 4) * H} y2={(k / 4) * H} className="dx-chart-grid" />)}
+            {SERIES.map((s) => (
+              <path key={s.id} d={smoothPath(days.map((d, i) => [x(i), y(d[s.id])]))} className="dx-chart-line" style={{ stroke: s.color }} />
+            ))}
+            {h && <line x1={x(hover)} x2={x(hover)} y1="0" y2={H} className="dx-chart-cursor" />}
+          </svg>
+          {h && SERIES.map((s) => (
+            <span key={s.id} className="dx-chart-dot" style={{ left: `${(x(hover) / W) * 100}%`, top: `${(y(h[s.id]) / H) * 100}%`, background: s.color }} />
+          ))}
+          {h && (
+            <div className={`dx-chart-tip ${hover > days.length / 2 ? 'left' : ''}`} style={{ left: `${(x(hover) / W) * 100}%` }}>
+              <strong>{h.date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })}</strong>
+              {SERIES.map((s) => <span key={s.id}><i style={{ background: s.color }} /> {s.label} <b>{h[s.id]}</b></span>)}
+            </div>
+          )}
+        </div>
+        <div className="dx-chart-x" aria-hidden="true">
+          {days.map((d, i) => (
+            <span key={i} style={{ left: `${(x(i) / W) * 100}%` }}>
+              {i % labelEvery === 0 || i === days.length - 1 ? d.date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : ''}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// `locked` is the label for a preview card ("Core · 30% open"), or falsy for the learner's own module.
+// `shown` is the progress to display (real, or the demo sample); `highlight` marks where to continue.
+const ModuleCard = ({ mod, progress, locked, highlight, shown }) => {
+  const real = moduleProgress(mod, progress);
+  const mp = shown || real;
+  // Additional tests, counted once per kind across the subjects this plan includes
+  const testCount = new Set(mod.subjects.flatMap((s) => subjectTests(mod, s).map((t) => t.kind))).size;
   const meta = (
     <div className="dx-mc-meta">
       <span>{mp.total} lectures</span>
       <span>{mod.practice.length} practice {mod.practice.length === 1 ? 'track' : 'tracks'}</span>
-      {mod.tests.length > 0 && <span>{mod.tests.length} {mod.tests.length === 1 ? 'test' : 'tests'}</span>}
+      {testCount > 0 && <span>{testCount} {testCount === 1 ? 'test' : 'tests'}</span>}
     </div>
   );
 
   if (locked) {
     return (
-      <Link to={`/dashboard/m/${mod.id}`} className="dx-card dx-module-card locked">
-        <div className="dx-mc-top">
-          <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
-          <span className="dx-badge"><Lock size={12} /> {locked}</span>
+      <Link to={`/dashboard/m/${mod.id}`} className="dx-card dx-module-card dx-mc-row locked">
+        <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
+        <div className="dx-mc-body">
+          <h3>{mod.title}</h3>
+          <p className="dx-muted dx-small">{mod.short}</p>
+          {meta}
         </div>
-        <h3>{mod.title}</h3>
-        <p className="dx-muted dx-small">{mod.short}</p>
-        {meta}
+        <span className="dx-badge dx-mc-side"><Lock size={12} /> {locked}</span>
       </Link>
     );
   }
 
   const nextLecture = allLectures(mod).find((l) => !progress.watched[l.id]);
-  const state = mp.done === 0 ? 'new' : nextLecture ? 'progress' : 'done';
+  const state = mp.pct === 0 ? 'new' : mp.pct < 100 ? 'progress' : 'done';
   const cta = {
     new: { label: 'Start learning', to: nextLecture && `/dashboard/m/${mod.id}/watch/${nextLecture.id}` },
     progress: { label: 'Continue learning', to: nextLecture && `/dashboard/m/${mod.id}/watch/${nextLecture.id}` },
     done: { label: 'Review module', to: `/dashboard/m/${mod.id}` }
   }[state];
 
-  // The title link covers the whole card; the CTA sits above it, so there are no nested links
+  // One horizontal card per module: icon · title & details · progress · CTA.
+  // The title link covers the whole card; the CTA sits above it, so there are no nested links.
   return (
-    <div className={`dx-card dx-module-card ${highlight ? 'is-next' : ''} ${state === 'done' ? 'is-done' : ''}`}>
-      <div className="dx-mc-top">
-        <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
-        {highlight && <span className="dx-mc-flag">{state === 'new' ? 'Start here' : 'Continue here'}</span>}
-        {state === 'done' && <span className="dx-mc-done"><CircleCheck size={13} /> Completed</span>}
+    <div className={`dx-card dx-module-card dx-mc-row ${highlight ? 'is-next' : ''} ${state === 'done' ? 'is-done' : ''}`}>
+      <span className="dx-mc-icon"><ModuleIcon mod={mod} /></span>
+      <div className="dx-mc-body">
+        <div className="dx-mc-title">
+          <h3><Link to={`/dashboard/m/${mod.id}`} className="dx-mc-link">{mod.title}</Link></h3>
+          {highlight && <span className="dx-mc-flag">{state === 'new' ? 'Start here' : 'Continue here'}</span>}
+          {state === 'done' && <span className="dx-mc-done"><CircleCheck size={13} /> Completed</span>}
+        </div>
+        <p className="dx-muted dx-small">{mod.short}</p>
+        {meta}
       </div>
-      <h3><Link to={`/dashboard/m/${mod.id}`} className="dx-mc-link">{mod.title}</Link></h3>
-      <p className="dx-muted dx-small">{mod.short}</p>
-      {meta}
-      <div className="dx-progress" aria-label={`${mp.pct}% watched`}>
-        <span style={{ width: `${mp.pct}%` }} />
+      <div className="dx-mc-prog">
+        <div className="dx-progress" aria-label={`${mp.pct}% watched`}>
+          <span style={{ width: `${mp.pct}%` }} />
+        </div>
+        <span className="dx-muted dx-small">{mp.done}/{mp.total} watched · {mp.pct}%</span>
       </div>
-      <div className="dx-mc-foot">
-        <span className="dx-muted dx-small">{mp.done}/{mp.total} watched</span>
-        <Link to={cta.to || `/dashboard/m/${mod.id}`} className={`dx-btn dx-btn-sm dx-mc-cta ${highlight ? 'dx-btn-primary' : 'dx-btn-ghost'}`}>
-          {state === 'done' ? <RotateCcw size={14} /> : <CirclePlay size={14} />} {cta.label}
-        </Link>
-      </div>
-    </div>
-  );
-};
-
-// One of the four Learning Progress charts: a ring with done / total and a label
-const StatRing = ({ kind, label, done, total, sub, size = 76 }) => {
-  const r = (size - 10) / 2;
-  const c = 2 * Math.PI * r;
-  const p = total ? done / total : 0;
-  return (
-    <div className={`dx-stat dx-stat-${kind}`} aria-label={`${label}: ${done} of ${total}`}>
-      <div className="dx-ring" style={{ width: size, height: size }}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-          <circle cx={size / 2} cy={size / 2} r={r} className="dx-ring-track" />
-          <circle
-            cx={size / 2} cy={size / 2} r={r} className="dx-ring-fill"
-            strokeDasharray={c} strokeDashoffset={c * (1 - p)}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          />
-        </svg>
-        <div className="dx-ring-center"><strong>{Math.round(p * 100)}%</strong></div>
-      </div>
-      <span className="dx-stat-label">{label}</span>
-      <span className="dx-stat-val"><strong>{done}</strong> / {total}</span>
-      {sub && <span className="dx-stat-sub">{sub}</span>}
+      <Link to={cta.to || `/dashboard/m/${mod.id}`} className={`dx-btn dx-btn-sm dx-mc-cta ${highlight ? 'dx-btn-primary' : 'dx-btn-ghost'}`}>
+        {state === 'done' ? <RotateCcw size={14} /> : <CirclePlay size={14} />} {cta.label}
+      </Link>
     </div>
   );
 };

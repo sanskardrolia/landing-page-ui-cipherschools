@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { CalendarClock, ChevronRight, Coins, Crown, Lock,  Users, X } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
+import { CalendarClock, Coins, Crown, Lock, Users, X } from 'lucide-react';
 import { CREDIT_PACKS, MENTOR_FOCUS } from '../data/learnerModules';
 import { mentorCredits } from '../utils/mentorship';
 
@@ -57,15 +57,9 @@ const DashboardMentorship = ({ ctx }) => {
 
   const header = (
     <>
-      <nav className="dx-crumbs" aria-label="Breadcrumb">
-        <Link to="/dashboard">Dashboard</Link>
-        <ChevronRight size={14} />
-        <span>1:1 Mentorship</span>
-      </nav>
       <header className="dx-mod-head">
         <span className="dx-mc-icon dx-mc-icon-lg"><Users size={22} /></span>
         <div className="dx-mod-head-text">
-          <h1>1:1 Mentorship</h1>
           <p className="dx-muted">Book a one-on-one meeting with a mentor for DSA, development, system design or your career.</p>
         </div>
       </header>

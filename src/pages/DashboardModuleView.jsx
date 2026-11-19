@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, ChevronRight, Circle, CircleCheck, CirclePlay,
+  ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, Circle, CircleCheck, CirclePlay,
   ClipboardCheck, ExternalLink, ListChecks, Lock, Mic, Monitor,
   Timer, X
 } from 'lucide-react';
 import {
-  TEST_UNLOCK_AT, findModule, moduleUnlocked, subjectLectures, allLectures
+  TEST_UNLOCK_AT, subjectInterview, subjectPlansLabel, findModule, moduleForPlan, moduleUnlocked, subjectExtended, subjectLectures, subjectTests, subjectTier,
+  subjectUnlocked, allLectures
 } from '../data/learnerModules';
 import ModuleIcon from '../components/ModuleIcon';
 import { WORKSPACE_KINDS, practiceForUnit, problemOfTheDay } from '../data/practiceBank';
 import { ADDITIONAL_META, stageTests } from '../data/testBank';
+import { previewFree } from '../utils/previewAccess';
 
 /* One module = four steps: Watch → Practice → Test → Mock Interview.
    Tests unlock at TEST_UNLOCK_AT of the subject watched; mock interviews at 100%. */
 
 const TABS = [
-  { id: 'watch', label: 'Content to Watch', short: 'Watch', Icon: CirclePlay },
+  { id: 'watch', label: 'Lectures', short: 'Lectures', Icon: CirclePlay },
   { id: 'practice', label: 'Practice', short: 'Practice', Icon: ListChecks },
   { id: 'test', label: 'Proctored Tests', short: 'Test', Icon: ClipboardCheck },
   { id: 'interview', label: 'Mock Interview', short: 'Interview', Icon: Mic }
@@ -28,9 +30,21 @@ const ModuleView = ({ ctx }) => {
   const { moduleId } = useParams();
   const [params, setParams] = useSearchParams();
   const { planId, extended, progress } = ctx;
-  const mod = findModule(moduleId);
+  // Preview only has its own short list of modules (DSA, Development, System Design)
+  const fullMod = ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : findModule(moduleId);
+  const mod = moduleForPlan(fullMod, planId, ctx.devTrack); // what the plan includes (Core: DSA Basics; Plus: one track)
 
 
+  // DBMS is now a subject inside Computer Fundamentals; keep old links working
+  // DSA Advanced is now the Advanced subject of DSA
+  // System Design and DevOps & Cloud are now the two sections of Beyond Development
+  if (moduleId === 'system-design' || moduleId === 'devops') {
+    return <Navigate to={`/dashboard/m/beyond-development?subject=${moduleId === 'devops' ? 'devops-cloud-computing' : 'system-design'}`} replace />;
+  }
+  // MERN and JFS are now the two tracks of Development
+  if (moduleId === 'mern' || moduleId === 'jfs') return <Navigate to={`/dashboard/m/development?subject=${moduleId}`} replace />;
+  if (moduleId === 'dsa-advanced') return <Navigate to="/dashboard/m/dsa?subject=advanced" replace />;
+  if (moduleId === 'dbms') return <Navigate to="/dashboard/m/computer-fundamentals?subject=database-management-system" replace />;
   if (!mod) return <Navigate to="/dashboard" replace />;
   // Paid dashboards only list the plan's own modules; a link to any other goes home
   if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to="/dashboard" replace />;
@@ -45,19 +59,21 @@ const ModuleView = ({ ctx }) => {
   const setTab = (id) => setQuery({ tab: id });
   const setSubjectId = (id) => setQuery({ subject: id });
   const subjectId = params.get('subject');
-  const isExt = extended && mod.tier !== 'core'; // Ultra's higher limits apply to Plus & Ultra modules
-  const subject = mod.subjects.find((s) => s.id === subjectId) || mod.subjects[0];
+  // Subjects outside the plan (Core → DSA Advanced) are still listed and open read-only, locked
+  const subject = fullMod.subjects.find((s) => s.id === subjectId) || mod.subjects[0];
+  const subjectLocked = !ctx.preview && !subjectUnlocked(fullMod, subject, planId, ctx.devTrack);
+  const viewMod = subjectLocked ? fullMod : mod;
+  // A locked subject reuses preview's locked rendering; taps on its content do nothing
+  const lockedCtx = subjectLocked ? { ...ctx, preview: true, lockedView: true, lockedTap: () => {} } : ctx;
+  const isExt = subjectExtended(extended, viewMod, subject); // Ultra's higher limits apply to Plus & Ultra content
+  // Preview: the first ~30% of each pillar in this section is open to try (`free` holds their ids)
+  const viewCtx = ctx.preview ? { ...lockedCtx, free: previewFree(viewMod, subject, isExt) } : lockedCtx;
 
   const lectures = allLectures(mod);
   const watchedCount = lectures.filter((l) => progress.watched[l.id]).length;
 
   return (
     <div className="dx-module">
-      <nav className="dx-crumbs" aria-label="Breadcrumb">
-        <Link to="/dashboard">Dashboard</Link>
-        <ChevronRight size={14} />
-        <span>{mod.title}</span>
-      </nav>
 
       <header className="dx-mod-head">
         <span className="dx-mc-icon dx-mc-icon-lg"><ModuleIcon mod={mod} size={22} /></span>
@@ -73,20 +89,23 @@ const ModuleView = ({ ctx }) => {
         </div>
       </header>
 
-      {mod.subjects.length > 1 && (
+      {fullMod.subjects.length > 1 && (
         <div className="dx-subjects" role="group" aria-label="Subject">
-          {mod.subjects.map((s) => {
+          {fullMod.subjects.map((s) => {
             const sl = subjectLectures(s);
             const d = sl.filter((l) => progress.watched[l.id]).length;
+            const locked = !ctx.preview && !subjectUnlocked(fullMod, s, planId, ctx.devTrack);
             return (
               <button
                 key={s.id}
                 type="button"
-                className={`dx-subject ${s.id === subject.id ? 'active' : ''}`}
+                className={`dx-subject ${s.id === subject.id ? 'active' : ''} ${locked ? 'is-locked' : ''}`}
                 onClick={() => setSubjectId(s.id)}
               >
                 {s.title}
-                <span className="dx-subject-pct">{pct(d, sl.length)}%</span>
+                {locked
+                  ? <Lock size={13} className="dx-subject-pct" aria-label="Locked" />
+                  : <span className="dx-subject-pct">{pct(d, sl.length)}%</span>}
               </button>
             );
           })}
@@ -112,18 +131,23 @@ const ModuleView = ({ ctx }) => {
       </div>
 
       {/* Preview: everything stays visible; any tap on content (not unit/test-group toggles) opens the plan pop-up */}
-      <div onClickCapture={ctx.preview ? (e) => previewGuard(e, () => ctx.lockedTap(mod)) : undefined}>
-        {tab === 'watch' && <WatchTab key={subject.id} mod={mod} subject={subject} ctx={ctx} />}
-        {tab === 'practice' && <PracticeTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
-        {tab === 'test' && <TestTab key={subject.id} mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
-        {tab === 'interview' && <InterviewTab mod={mod} subject={subject} ctx={ctx} isExt={isExt} />}
+      {/* Preview: a locked tap asks for the plan that includes this subject (DSA Advanced → Plus) */}
+      {subjectLocked && (
+        <p className="dx-locked-note"><Lock size={14} /> {subject.title} is included in {subjectPlansLabel(fullMod, subject)}.</p>
+      )}
+
+      <div onClickCapture={viewCtx.preview ? (e) => previewGuard(e, () => viewCtx.lockedTap({ ...viewMod, tier: subjectTier(viewMod, subject), track: subject.track })) : undefined}>
+        {tab === 'watch' && <WatchTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} />}
+        {tab === 'practice' && <PracticeTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
+        {tab === 'test' && <TestTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
+        {tab === 'interview' && <InterviewTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
       </div>
     </div>
   );
 };
 
 /* Preview mode: let unit accordions and the test-group switch work, lock every other tap */
-const PREVIEW_FREE = '.dx-unit-head, .dx-test-switch';
+const PREVIEW_FREE = '.dx-unit-head, .dx-test-switch, [data-free]'; // [data-free]: open-to-try items
 const PREVIEW_ACTION = 'a, button, tr, .dx-card, .dx-lecture';
 const previewGuard = (e, onLocked) => {
   if (e.target.closest(PREVIEW_FREE)) return;
@@ -151,7 +175,7 @@ const WatchTab = ({ mod, subject, ctx }) => {
     <section className="dx-tab-panel">
       <p className="dx-panel-intro">
         {ctx.preview
-          ? `Every ${subject.title} lecture, unit by unit. Tap any lecture to see how to unlock it.`
+          ? `Every ${subject.title} lecture, unit by unit.${ctx.lockedView ? '' : ' The first lectures are open to watch; tap a locked one to unlock it.'}`
           : <>Watch {subject.title} unit by unit. Open a lecture to play it, or tick the circle to mark it watched — tests unlock at
             {' '}{Math.round(TEST_UNLOCK_AT * 100)}% and the mock interview when the subject is complete.</>}
       </p>
@@ -173,9 +197,10 @@ const WatchTab = ({ mod, subject, ctx }) => {
                 <ul className="dx-lectures">
                   {u.lectures.map((l) => {
                     const done = !!progress.watched[l.id];
+                    const free = ctx.preview && ctx.free?.has(l.id);
                     return (
-                      <li key={l.id} className={`dx-lecture ${done ? 'done' : ''}`}>
-                        {ctx.preview ? (
+                      <li key={l.id} className={`dx-lecture ${done ? 'done' : ''} ${free ? 'is-free' : ''}`} data-free={free || undefined}>
+                        {ctx.preview && !free ? (
                           <span className="dx-lecture-check dx-pv-lock" aria-label="Locked"><Lock size={15} /></span>
                         ) : (
                         <button
@@ -217,10 +242,11 @@ export const LevelBadge = ({ level }) => (
 );
 
 // Daily featured problem — DSA modules only; renders nothing elsewhere
-const ProblemOfTheDay = ({ mod, isExt, progress, preview }) => {
+const ProblemOfTheDay = ({ mod, isExt, progress, preview: inPreview, free }) => {
   const potd = problemOfTheDay(mod, isExt);
   if (!potd) return null;
   const { item, unit } = potd;
+  const preview = inPreview && !free?.has(item.id); // preview: locked unless it's one of the open problems
   const solved = !!progress.practice[item.id];
 
   const now = new Date();
@@ -230,7 +256,7 @@ const ProblemOfTheDay = ({ mod, isExt, progress, preview }) => {
   const resetsIn = mins >= 60 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${mins}m`;
 
   return (
-    <div className="dx-card dx-potd">
+    <div className="dx-card dx-potd" data-free={(inPreview && !preview) || undefined}>
       <div className="dx-potd-main">
         <span className="dx-kicker dx-potd-kicker">
           <CalendarDays size={14} /> Problem of the Day · {now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
@@ -280,7 +306,8 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
         Practice follows the lectures unit by unit. Watch a unit, then solve its questions here.
       </p>
 
-      <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} preview={ctx.preview} />
+      {/* No Problem of the Day on a locked subject of a paid plan: it would only say "Unlock to solve" */}
+      {!ctx.lockedView && <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} preview={ctx.preview} free={ctx.free} />}
 
       <div className="dx-units">
         {units.map(({ unit: u, items }, idx) => {
@@ -319,10 +346,11 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
                     <tbody>
                       {items.map((item) => {
                         const done = !!progress.practice[item.id];
+                        const free = ctx.preview && ctx.free?.has(item.id);
                         return (
-                          <tr key={item.id} className={done ? 'done' : ''}>
+                          <tr key={item.id} className={`${done ? 'done' : ''} ${free ? 'is-free' : ''}`} data-free={free || undefined}>
                             <td className="dx-col-status">
-                              {ctx.preview
+                              {ctx.preview && !free
                                 ? <Lock size={15} className="dx-pv-lock" aria-label="Locked" />
                                 : done ? <CircleCheck size={17} className="dx-done-icon" aria-label="Solved" /> : <Circle size={17} className="dx-muted" aria-label="Not solved" />}
                             </td>
@@ -414,7 +442,7 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
   });
 
   // Additional Tests: the module-wide tests (per subject where configured)
-  const additionalRows = mod.tests.map((t, i) => {
+  const additionalRows = subjectTests(mod, subject).map((t, i) => {
     const scope = scopeOf(mod, subject, t.perSubject);
     const watched = scope.lectures.filter((l) => progress.watched[l.id]).length;
     const need = Math.ceil(scope.lectures.length * TEST_UNLOCK_AT) - watched;
@@ -473,8 +501,12 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
               const record = progress.tests[r.id];
               const used = record?.count || 0;
               const left = attemptsAllowed - used;
+              // Preview: the open tests can be launched straight away; the rest stay locked
+              const free = ctx.preview && ctx.free?.has(r.id);
+              const pvLocked = ctx.preview && !free;
+              const open = ctx.preview ? free : r.unlocked;
               return (
-                <tr key={r.id}>
+                <tr key={r.id} className={free ? 'is-free' : undefined} data-free={free || undefined}>
                   <td className="dx-col-stage">{r.stage}</td>
                   <td>
                     <div className="dx-tname">{r.name}</div>
@@ -495,8 +527,8 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
                   </td>
                   <td className={used > 0 ? 'dx-small' : 'dx-muted'}>{used > 0 ? 'Pending' : 'N/A'}</td>
                   <td className="dx-col-link">
-                    {ctx.preview || !r.unlocked ? (
-                      <button type="button" className="dx-btn dx-btn-locked dx-btn-sm" disabled={!ctx.preview} title={ctx.preview ? 'Unlock with a plan' : r.reason}>
+                    {pvLocked || !open ? (
+                      <button type="button" className="dx-btn dx-btn-locked dx-btn-sm" disabled={!pvLocked} title={pvLocked ? 'Unlock with a plan' : r.reason}>
                         Locked <Lock size={14} />
                       </button>
                     ) : left > 0 ? (
@@ -576,10 +608,10 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
   const [booking, setBooking] = useState(null);
   const [slot, setSlot] = useState('');
   const [slots] = useState(nextSlots);
-  const iv = mod.interview;
+  const iv = subjectInterview(mod, subject); // a section can have its own (System Design vs DevOps)
   const scope = scopeOf(mod, subject, iv.perSubject);
   const watched = scope.lectures.filter((l) => progress.watched[l.id]).length;
-  const complete = scope.lectures.length > 0 && watched === scope.lectures.length;
+  const subjectDone = scope.lectures.length > 0 && watched === scope.lectures.length;
   const rounds = isExt ? 2 : 1;
 
   return (
@@ -592,8 +624,11 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
         {Array.from({ length: rounds }, (_, i) => {
           const key = `${mod.id}:interview:${scope.id}:${i + 1}`;
           const booked = progress.interviews[key];
+          // Preview: the open round can be booked straight away; others stay locked
+          const free = ctx.preview && ctx.free?.has(key);
+          const complete = ctx.preview ? free : subjectDone;
           return (
-            <div key={key} className={`dx-card dx-test ${complete ? '' : 'locked'}`}>
+            <div key={key} className={`dx-card dx-test ${complete ? '' : 'locked'} ${free ? 'is-free' : ''}`} data-free={free || undefined}>
               <div className="dx-set-top">
                 <h3>{iv.label}{rounds > 1 ? ` · Round ${i + 1}` : ''}</h3>
                 {!complete ? <Lock size={15} className="dx-muted" /> : booked && <CalendarClock size={16} className="dx-done-icon" />}
@@ -657,7 +692,7 @@ const Dialog = ({ title, onClose, children }) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
   return (
-    <div className="dx-dialog-backdrop" onClick={onClose}>
+    <div className="dx-dialog-backdrop" onClick={onClose} data-free>
       <div className="dx-dialog" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
         <div className="dx-dialog-head">
           <h2>{title}</h2>

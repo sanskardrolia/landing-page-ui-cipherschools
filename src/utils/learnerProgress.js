@@ -96,3 +96,26 @@ export const useLearnerProgress = () => {
 
   return { progress, toggle, set };
 };
+
+/* "Experience before you pay": a guest's progress lives only for this visit
+   (never saved, never logged as activity), so trying the open items works. */
+const PREVIEW_EMPTY = { watched: {}, practice: {}, tests: {}, interviews: {}, activity: {}, mentorCredits: {}, mentorBookings: {} };
+
+export const useSessionProgress = () => {
+  const [progress, setProgress] = useState(PREVIEW_EMPTY);
+  const toggle = useCallback((bucket, key) => {
+    setProgress((p) => {
+      const next = { ...p[bucket] };
+      if (next[key]) delete next[key]; else next[key] = true;
+      return { ...p, [bucket]: next };
+    });
+  }, []);
+  const set = useCallback((bucket, key, value) => {
+    setProgress((p) => {
+      const next = { ...p[bucket] };
+      if (value == null) delete next[key]; else next[key] = value;
+      return { ...p, [bucket]: next };
+    });
+  }, []);
+  return { progress, toggle, set };
+};

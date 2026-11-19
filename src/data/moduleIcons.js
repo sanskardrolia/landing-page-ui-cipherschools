@@ -1,7 +1,7 @@
-import { Bot, Cloud, CodeXml, Cpu, Database, Layers, MessageSquare, Network, Workflow } from 'lucide-react';
+import { Bot, Cloud, CodeXml, Cpu, Database, Layers, MessageSquare, Network, Rocket, Workflow } from 'lucide-react';
 
 /* Icon per module (`icon` key in learnerModules.js) */
 export const MODULE_ICONS = {
   cpu: Cpu, database: Database, workflow: Workflow, layers: Layers, code: CodeXml,
-  cloud: Cloud, chart: Network, bot: Bot, message: MessageSquare
+  cloud: Cloud, chart: Network, bot: Bot, message: MessageSquare, rocket: Rocket
 };
