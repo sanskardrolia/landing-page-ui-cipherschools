@@ -9,10 +9,10 @@ import { ADDITIONAL_META, stageTests } from '../data/testBank';
 import { previewFree } from '../utils/previewAccess';
 
 /* ══════════════════════════════════════════════════════════════
-   Overview › What's next — one block per pillar for the section the
-   learner is in (the first section, in module order, that isn't
-   finished): next lecture to watch, next question to practice, next
-   test to take and the mock interview. Built from real progress.
+   Overview › What's next — the two most useful next steps for the
+   section the learner is in (the first unfinished one, in module
+   order), picked from: next lecture, next question to practice, next
+   test and the mock interview. Ready steps first. Real progress only.
    ══════════════════════════════════════════════════════════════ */
 
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
@@ -119,6 +119,11 @@ const WhatsNext = ({ ctx, mods }) => {
     mock && { key: 'mock', kind: 'mock', Icon: Mic, label: 'Mock interview', ...mock, to: `${base}?tab=interview&${q}`, cta: mock.booked ? 'View' : mock.open ? 'Book' : 'View' }
   ].filter(Boolean);
 
+  // Show two: the first steps that are ready now (in pillar order); waiting ones fill any gap
+  const isReady = (b) => b.open && !lockedFor(b.id);
+  const shown = [...blocks.filter(isReady), ...blocks.filter((b) => !isReady(b))].slice(0, 2)
+    .sort((x, y) => blocks.indexOf(x) - blocks.indexOf(y));
+
   return (
     <section className="dx-card dx-ov-next">
       <div className="dx-ov-card-head">
@@ -127,7 +132,7 @@ const WhatsNext = ({ ctx, mods }) => {
       </div>
       <p className="dx-wn-where"><span className="dx-mc-icon"><ModuleIcon mod={mod} size={14} /></span> {where}</p>
       <ul className="dx-wn-list">
-        {blocks.map((b) => {
+        {shown.map((b) => {
           const locked = lockedFor(b.id);
           const ready = b.open && !locked;
           return (

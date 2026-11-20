@@ -24,7 +24,42 @@ const TABS = [
   { id: 'interview', label: 'Mock Interview', short: 'Interview', Icon: Mic }
 ];
 
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
+
+/* The four pillars, done / total, across some sections of a module (ids as the tabs use them) */
+const PILLAR_KEYS = [
+  { key: 'lectures', label: 'Lectures' },
+  { key: 'practice', label: 'Practice' },
+  { key: 'tests', label: 'Tests' },
+  { key: 'mock', label: 'Mock' }
+];
+const pillarProgress = (ctx, mod, subjects) => {
+  const { watched, practice, tests, interviews } = ctx.progress;
+  const out = { lectures: [0, 0], practice: [0, 0], tests: [0, 0], mock: [0, 0] };
+  const seen = new Set();
+  const tick = (k, id, done) => { if (seen.has(id)) return; seen.add(id); out[k][1] += 1; if (done) out[k][0] += 1; };
+  subjects.forEach((subj) => {
+    const isExt = subjectExtended(ctx.extended, mod, subj);
+    subjectLectures(subj).forEach((l) => tick('lectures', `l:${l.id}`, watched[l.id]));
+    subj.units.forEach((u) => practiceForUnit(mod, u, isExt).forEach((p) => tick('practice', `p:${p.id}`, practice[p.id])));
+    stageTests(mod, subj).forEach((t) => tick('tests', `t:${t.id}`, tests[t.id]?.count > 0));
+    subjectTests(mod, subj).forEach((t) => {
+      const id = `${mod.id}:${t.kind}:${t.perSubject ? subj.id : 'module'}`;
+      tick('tests', `t:${id}`, tests[id]?.count > 0);
+    });
+    const iv = subjectInterview(mod, subj);
+    if (iv) {
+      const scope = iv.perSubject ? subj.id : 'module';
+      for (let r = 1; r <= (isExt ? 2 : 1); r++) { const key = `${mod.id}:interview:${scope}:${r}`; tick('mock', `i:${key}`, interviews[key]); }
+    }
+  });
+  const parts = PILLAR_KEYS.map(({ key, label }) => ({ key, label, done: out[key][0], total: out[key][1], pct: pct(out[key][0], out[key][1]) }))
+    .filter((x) => x.total > 0);
+  // Overall: the average of the pillars this scope has
+  const overall = parts.length ? Math.round(parts.reduce((a, x) => a + x.pct, 0) / parts.length) : 0;
+  return { parts, overall };
+};
 
 const ModuleView = ({ ctx }) => {
   const { moduleId } = useParams();
@@ -71,6 +106,7 @@ const ModuleView = ({ ctx }) => {
 
   const lectures = allLectures(mod);
   const watchedCount = lectures.filter((l) => progress.watched[l.id]).length;
+  const modProg = pillarProgress(ctx, mod, mod.subjects); // the plan's sections of this module
 
   return (
     <div className="dx-module">
@@ -83,18 +119,27 @@ const ModuleView = ({ ctx }) => {
           </h1>
           <p className="dx-muted">{mod.short} · {lectures.length} lectures{!ctx.preview && ` · ${watchedCount} watched`}</p>
         </div>
-        <div className="dx-mod-progress">
-          <span>{pct(watchedCount, lectures.length)}%</span>
-          <div className="dx-progress"><span style={{ width: `${pct(watchedCount, lectures.length)}%` }} /></div>
+        {/* One bar, four short segments (Lectures · Practice · Tests · Mock); the number is their average */}
+        <div className="dx-mod-progress dx-pp" aria-label={`Overall ${modProg.overall}%: ${modProg.parts.map((x) => `${x.label} ${x.done} of ${x.total}`).join(', ')}`}>
+          <span className="dx-pp-overall">{modProg.overall}%</span>
+          <div className="dx-pp-bar" aria-hidden="true">
+            {modProg.parts.map((x) => (
+              <span key={x.key} className={`dx-pp-seg is-${x.key}`} title={`${x.label}: ${x.done}/${x.total}`}><i style={{ width: `${x.pct}%` }} /></span>
+            ))}
+          </div>
+          <div className="dx-pp-legend" aria-hidden="true">
+            {modProg.parts.map((x) => (
+              <span key={x.key} className={`is-${x.key}`}><b />{x.label} {x.done}/{x.total}</span>
+            ))}
+          </div>
         </div>
       </header>
 
       {fullMod.subjects.length > 1 && (
         <div className="dx-subjects" role="group" aria-label="Subject">
           {fullMod.subjects.map((s) => {
-            const sl = subjectLectures(s);
-            const d = sl.filter((l) => progress.watched[l.id]).length;
             const locked = !ctx.preview && !subjectUnlocked(fullMod, s, planId, ctx.devTrack);
+            const sp = locked ? null : pillarProgress(ctx, fullMod, [s]); // same combined % as the header
             return (
               <button
                 key={s.id}
@@ -105,7 +150,7 @@ const ModuleView = ({ ctx }) => {
                 {s.title}
                 {locked
                   ? <Lock size={13} className="dx-subject-pct" aria-label="Locked" />
-                  : <span className="dx-subject-pct">{pct(d, sl.length)}%</span>}
+                  : <span className="dx-subject-pct" title={sp.parts.map((x) => `${x.label} ${x.done}/${x.total}`).join(' · ')}>{sp.overall}%</span>}
               </button>
             );
           })}
@@ -137,7 +182,7 @@ const ModuleView = ({ ctx }) => {
       )}
 
       <div onClickCapture={viewCtx.preview ? (e) => previewGuard(e, () => viewCtx.lockedTap({ ...viewMod, tier: subjectTier(viewMod, subject), track: subject.track })) : undefined}>
-        {tab === 'watch' && <WatchTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} />}
+        {tab === 'watch' && <WatchTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
         {tab === 'practice' && <PracticeTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
         {tab === 'test' && <TestTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
         {tab === 'interview' && <InterviewTab key={subject.id} mod={viewMod} subject={subject} ctx={viewCtx} isExt={isExt} />}
@@ -159,7 +204,7 @@ const previewGuard = (e, onLocked) => {
 
 /* ─────────────── 1. Watch ─────────────── */
 
-const WatchTab = ({ mod, subject, ctx }) => {
+const WatchTab = ({ mod, subject, ctx, isExt }) => {
   const { progress, toggle } = ctx;
   const firstOpen = subject.units.find((u) => u.lectures.some((l) => !progress.watched[l.id]))?.id || subject.units[0]?.id;
   // Preview shows every unit expanded; otherwise open the first unfinished one
@@ -221,6 +266,8 @@ const WatchTab = ({ mod, subject, ctx }) => {
                       </li>
                     );
                   })}
+                  {/* End of the unit: jump to its practice questions (opens that unit in Practice) */}
+                  <UnitPracticeRow mod={mod} subject={subject} unit={u} ctx={ctx} isExt={isExt} />
                 </ul>
               )}
             </div>
@@ -228,6 +275,30 @@ const WatchTab = ({ mod, subject, ctx }) => {
         })}
       </div>
     </section>
+  );
+};
+
+/* "Practice <unit> Questions" — last row of each unit in Lectures */
+const UnitPracticeRow = ({ mod, subject, unit, ctx, isExt }) => {
+  const items = practiceForUnit(mod, unit, isExt);
+  if (!items.length) return null;
+  const solved = items.filter((p) => ctx.progress.practice[p.id]).length;
+  const problems = items.filter((p) => WORKSPACE_KINDS.includes(p.kind)).length;
+  const count = problems ? plural(problems, 'question', 'questions') : plural(items.length, 'set', 'sets');
+  const all = solved === items.length;
+  return (
+    <li className={`dx-lecture dx-unit-practice ${all ? 'done' : ''}`} data-free>
+      <Link to={`/dashboard/m/${mod.id}?tab=practice&subject=${subject.id}&unit=${unit.id}`} className="dx-unit-practice-link">
+        <span className="dx-unit-practice-icon"><ListChecks size={15} /></span>
+        <span className="dx-unit-practice-text">
+          <strong>Practice {unit.title} Questions</strong>
+          <small>{count}{problems && items.length > problems ? ` · ${plural(items.length - problems, 'set', 'sets')}` : ''} · {solved}/{items.length} solved</small>
+        </span>
+        <span className="dx-unit-practice-cta">
+          {all ? <><CircleCheck size={15} /> All solved</> : <>Practice <ArrowRight size={14} /></>}
+        </span>
+      </Link>
+    </li>
   );
 };
 
@@ -284,11 +355,24 @@ const ProblemOfTheDay = ({ mod, isExt, progress, preview: inPreview, free }) => 
 const PracticeTab = ({ mod, subject, ctx, isExt }) => {
   const { progress, toggle } = ctx;
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [active, setActive] = useState(null);
 
   const units = subject.units.map((u) => ({ unit: u, items: practiceForUnit(mod, u, isExt) }));
-  const firstOpen = units.find((x) => x.items.some((i) => !progress.practice[i.id]))?.unit.id || units[0]?.unit.id;
+  // ?unit= (from "Practice <unit> Questions" in Lectures) opens that unit; else the first unfinished one
+  const asked = units.find((x) => x.unit.id === params.get('unit'))?.unit.id;
+  const firstOpen = asked || units.find((x) => x.items.some((i) => !progress.practice[i.id]))?.unit.id || units[0]?.unit.id;
   const [open, setOpen] = useState(() => new Set(ctx.preview ? units.map((x) => x.unit.id) : [firstOpen]));
+  // Coming from a unit's "Practice … Questions" row: bring that unit into view
+  // (after a beat: the dashboard scrolls to the top when a page opens, and that runs after this)
+  useEffect(() => {
+    if (!asked) return undefined;
+    const t = setTimeout(() => {
+      const el = document.getElementById(`dx-pu-${asked}`);
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140 }); // clear the sticky top bar
+    }, 120);
+    return () => clearTimeout(t);
+  }, [asked]);
   const flip = (id) => setOpen((s) => {
     const n = new Set(s);
     if (n.has(id)) n.delete(id); else n.add(id);
@@ -317,7 +401,7 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
           const hasCompany = items.length > 0 && items.every((i) => i.companies);
           const workspace = items.some((i) => WORKSPACE_KINDS.includes(i.kind));
           return (
-            <div key={u.id} className={`dx-unit ${isOpen ? 'open' : ''}`}>
+            <div key={u.id} id={`dx-pu-${u.id}`} className={`dx-unit ${isOpen ? 'open' : ''}`}>
               <button type="button" className="dx-unit-head" onClick={() => flip(u.id)} aria-expanded={isOpen}>
                 <span className="dx-unit-num">{String(idx + 1).padStart(2, '0')}</span>
                 <span className="dx-unit-title">{u.title}</span>

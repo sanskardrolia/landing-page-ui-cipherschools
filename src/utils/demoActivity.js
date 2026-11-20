@@ -86,7 +86,9 @@ export const withDemoActivity = (real = {}, demo = {}) => {
     const base = merged[k] || { mods: {} };
     const next = { ...base, mods: { ...(base.mods || {}) } };
     Object.entries(day).forEach(([field, v]) => {
-      if (field === 'mods') {
+      if (field === 'items') {
+        next.items = [...(base.items || []), ...(v || [])];
+      } else if (field === 'mods') {
         Object.entries(v || {}).forEach(([tag, n]) => { next.mods[tag] = (next.mods[tag] || 0) + n; });
       } else {
         next[field] = (next[field] || 0) + v;

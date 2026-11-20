@@ -59,6 +59,8 @@ const logActivity = (activity, bucket, key) => {
   if (mod) {
     const tag = `${kind}|${mod}`;
     day.mods = { ...(day.mods || {}), [tag]: (day.mods?.[tag] || 0) + 1 };
+    // Which item it was (lecture / practice item / test / interview key), so Activity can list it; capped per day
+    day.items = [...(day.items || []), { k: kind, m: mod, id: key }].slice(-60);
   }
   return { ...activity, [today]: day };
 };

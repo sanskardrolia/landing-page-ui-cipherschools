@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  Activity, ArrowRight, ArrowUpRight, Award, BookOpen, CalendarDays, ChevronDown, ChevronRight, CircleCheck, CirclePlay, ClipboardCheck,
+  Activity, ArrowUpRight, Award, BookOpen, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CirclePlay, ClipboardCheck,
   Code2, Contrast, Crown, Eye, FileText, Flame, Info, LayoutDashboard, ListChecks, Lock, Menu, Mic, Moon, PanelLeft, RotateCcw,
   ScanSearch, Search, Sparkles, Sun, Users, Wrench, X, Zap
 } from 'lucide-react';
@@ -342,10 +342,20 @@ const ModuleBar = ({ ctx, activeId }) => {
     ro?.observe(el);
     return () => { clearTimeout(first); ro?.disconnect(); };
   }, [measure, activeId]);
+  // Arrow buttons: page the strip by most of its visible width
+  const page = (dir) => {
+    const el = ref.current;
+    if (el) el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.7), behavior: 'smooth' });
+  };
   return (
     // data-hscroll: the site smooth-scroll turns a plain mouse wheel into sideways scrolling here
     // The wrapper keeps the divider line and background; only the scrolling strip fades
     <div className="dx-modbar-wrap">
+    {edges.left && (
+      <button type="button" className="dx-modbar-arrow is-left" onClick={() => page(-1)} aria-label="Scroll modules left" tabIndex={-1}>
+        <ChevronLeft size={16} />
+      </button>
+    )}
     <nav className={`dx-modbar ${edges.left ? 'fade-left' : ''} ${edges.right ? 'fade-right' : ''}`} aria-label="Modules" ref={ref} data-hscroll onScroll={measure}>
       {mods.map((m) => {
         const mp = moduleProgress(m, ctx.progress);
@@ -359,6 +369,11 @@ const ModuleBar = ({ ctx, activeId }) => {
         );
       })}
     </nav>
+    {edges.right && (
+      <button type="button" className="dx-modbar-arrow is-right" onClick={() => page(1)} aria-label="Scroll modules right" tabIndex={-1}>
+        <ChevronRight size={16} />
+      </button>
+    )}
     </div>
   );
 };
@@ -495,28 +510,30 @@ const Overview = ({ ctx }) => {
       )}
 
       {!ctx.preview && (
-        <section className="dx-ov-stats" aria-label="Learning progress">
+        <section className="dx-ov-stats dx-kpis" aria-label="Learning progress">
+          {/* Four pillars as one compact strip; each cell opens that pillar in the current module */}
           {STAT_CARDS.map((c) => {
             const v = stats[c.key];
             const p = pct(v.done, v.total);
             return (
-              <article key={c.key} className={`dx-card dx-ov-stat dx-stat-${c.kind}`}>
-                <div className="dx-ov-stat-top">
-                  <span className="dx-stat-icon"><c.Icon size={16} /></span>
-                  <span className="dx-ov-stat-label">{c.label}</span>
-                  <span className="dx-stat-pct">{p}%</span>
-                </div>
-                <p className="dx-ov-stat-val"><strong>{v.done}</strong> / {v.total}</p>
-                <div className="dx-meter" aria-hidden="true">
-                  {Array.from({ length: 20 }, (_, i) => (
-                    <span key={i} className={i < (v.done > 0 ? Math.max(1, Math.round((p / 100) * 20)) : 0) ? 'on' : undefined} style={{ '--i': i }} />
-                  ))}
-                </div>
-                {c.key === 'practice' && <p className="dx-stat-sub">Coding {v.coding.done}/{v.coding.total} · MCQ {v.mcq.done}/{v.mcq.total}</p>}
-                <Link to={startMod ? `/dashboard/m/${startMod}?tab=${c.tab}` : '/dashboard/content'} className="dx-ov-stat-foot">
-                  See details <ArrowRight size={15} />
-                </Link>
-              </article>
+              <Link
+                key={c.key}
+                to={startMod ? `/dashboard/m/${startMod}?tab=${c.tab}` : '/dashboard/content'}
+                className={`dx-kpi dx-stat-${c.kind}`}
+                aria-label={`${c.label}: ${v.done} of ${v.total}, ${p}%. See details`}
+              >
+                <span className="dx-kpi-head">
+                  <span className="dx-kpi-icon"><c.Icon size={14} /></span>
+                  <span className="dx-kpi-label">{c.label}</span>
+                  <ArrowUpRight size={15} className="dx-kpi-go" aria-hidden="true" />
+                </span>
+                <span className="dx-kpi-body">
+                  <span className="dx-kpi-val"><strong>{v.done}</strong>/{v.total}</span>
+                  <span className="dx-kpi-pct">{p}%</span>
+                </span>
+                <span className="dx-kpi-bar" aria-hidden="true"><span style={{ width: `${p}%` }} /></span>
+                {c.key === 'practice' && <span className="dx-kpi-sub">Coding {v.coding.done}/{v.coding.total} · MCQ {v.mcq.done}/{v.mcq.total}</span>}
+              </Link>
             );
           })}
         </section>

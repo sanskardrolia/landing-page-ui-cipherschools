@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, ChevronLeft, ChevronRight, Circle, CircleCheck, CirclePlay, Clock, RotateCcw, X
+  ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Circle, CircleCheck, CirclePlay, Clock, ListChecks, RotateCcw, X
 } from 'lucide-react';
-import { DEMO_VIDEO_SRC, allLectures, findModule, moduleForPlan, moduleUnlocked } from '../data/learnerModules';
+import { DEMO_VIDEO_SRC, allLectures, findModule, moduleForPlan, moduleUnlocked, subjectExtended } from '../data/learnerModules';
+import { practiceForUnit } from '../data/practiceBank';
 
 /* ══════════════════════════════════════════════════════════════
    Lecture player — /dashboard/m/:moduleId/watch/:lectureId
@@ -32,6 +33,13 @@ const DashboardPlayer = ({ ctx }) => {
   const current = lectures[idx];
   const prev = lectures[idx - 1];
   const next = lectures[idx + 1];
+  // Playlist: only the unit being watched starts open (the player remounts per lecture)
+  const [openUnits, setOpenUnits] = useState(() => new Set(current ? [current.unitId] : []));
+  const flipUnit = (id) => setOpenUnits((prevSet) => {
+    const n = new Set(prevSet);
+    if (n.has(id)) n.delete(id); else n.add(id);
+    return n;
+  });
 
   // Keep the playing lecture visible in the list
   useEffect(() => {
@@ -61,18 +69,18 @@ const DashboardPlayer = ({ ctx }) => {
   const subject = mod.subjects.find((s) => s.id === current.subjectId);
   const unit = subject?.units.find((u) => u.id === current.unitId);
   const done = !!progress.watched[current.id];
-  const watchedCount = lectures.filter((l) => progress.watched[l.id]).length;
 
   const onEnded = () => {
     set('watched', current.id, true);
     setEnded(true);
   };
 
-  // Group the playlist by subject → unit, keeping lecture order
-  const groups = mod.subjects.flatMap((s) =>
-    s.units.map((u) => ({ key: `${s.id}/${u.id}`, subject: s.title, unit: u.title, lectures: u.lectures }))
-  );
+  // Playlist: just this section's units, in lecture order
+  const isExt = subject ? subjectExtended(ctx.extended, mod, subject) : false;
+  const groups = (subject?.units || []).map((u) => ({ key: u.id, unit: u.title, lectures: u.lectures, practice: practiceForUnit(mod, u, isExt) }));
   const showSubject = mod.subjects.length > 1;
+  const sectionLectures = groups.flatMap((g) => g.lectures);
+  const sectionWatched = sectionLectures.filter((l) => progress.watched[l.id]).length;
 
   return (
     <div className="dx-player">
@@ -167,17 +175,25 @@ const DashboardPlayer = ({ ctx }) => {
       {/* ── Up next / module playlist ── */}
       <aside className="dx-playlist" aria-label={`${mod.title} lectures`}>
         <div className="dx-playlist-head">
-          <h2>Module content</h2>
-          <span className="dx-muted dx-small">{watchedCount}/{lectures.length} watched</span>
-          <div className="dx-progress"><span style={{ width: `${lectures.length ? Math.round((watchedCount / lectures.length) * 100) : 0}%` }} /></div>
+          <h2>{showSubject ? subject?.title : 'Module content'}</h2>
+          <span className="dx-muted dx-small">{sectionWatched}/{sectionLectures.length} watched</span>
+          <div className="dx-progress"><span style={{ width: `${sectionLectures.length ? Math.round((sectionWatched / sectionLectures.length) * 100) : 0}%` }} /></div>
         </div>
         <div className="dx-playlist-body">
-          {groups.map((g) => (
-            <div key={g.key} className="dx-pl-group">
-              <div className="dx-pl-group-title">
-                {showSubject && <span className="dx-pl-subject">{g.subject}</span>}
-                {g.unit}
-              </div>
+          {groups.map((g, gi) => {
+            const isOpen = openUnits.has(g.key);
+            const gDone = g.lectures.filter((l) => progress.watched[l.id]).length;
+            const gMins = g.lectures.reduce((a, l) => a + l.mins, 0);
+            return (
+            <div key={g.key} className={`dx-pl-group ${isOpen ? 'is-open' : ''}`}>
+              {/* Unit header: click to open / close; only the playing unit starts open */}
+              <button type="button" className="dx-pl-group-title dx-pl-unit-btn" onClick={() => flipUnit(g.key)} aria-expanded={isOpen}>
+                <span className="dx-pl-unit-num">{String(gi + 1).padStart(2, '0')}</span>
+                <span className="dx-pl-unit-name">{g.unit}</span>
+                <span className="dx-pl-unit-meta">{gDone === g.lectures.length ? <CircleCheck size={13} /> : `${gDone}/${g.lectures.length}`} · {gMins} min</span>
+                <ChevronDown size={15} className={`dx-pl-unit-chev ${isOpen ? 'up' : ''}`} />
+              </button>
+              {isOpen && (
               <ul>
                 {g.lectures.map((l) => {
                   const isCurrent = l.id === current.id;
@@ -205,9 +221,25 @@ const DashboardPlayer = ({ ctx }) => {
                     </li>
                   );
                 })}
+                {/* Last line of the unit: a quiet link to its practice questions */}
+                {g.practice.length > 0 && (() => {
+                  const solved = g.practice.filter((p) => progress.practice[p.id]).length;
+                  return (
+                    <li>
+                      <Link to={`/dashboard/m/${mod.id}?tab=practice&subject=${subject.id}&unit=${g.key}`} className={`dx-pl-practice ${solved === g.practice.length ? 'is-done' : ''}`}>
+                        <ListChecks size={14} />
+                        <span>Practice {g.unit} questions</span>
+                        <em>{solved}/{g.practice.length}</em>
+                        <ArrowRight size={13} className="dx-pl-practice-go" />
+                      </Link>
+                    </li>
+                  );
+                })()}
               </ul>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </aside>
     </div>

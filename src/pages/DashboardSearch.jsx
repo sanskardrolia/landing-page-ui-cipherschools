@@ -22,7 +22,7 @@ import { previewFree } from '../utils/previewAccess';
    ══════════════════════════════════════════════════════════════ */
 
 const PILLARS = [
-  { id: 'content', label: 'Content', tab: 'watch', Icon: CirclePlay },
+  { id: 'content', label: 'Lectures', tab: 'watch', Icon: CirclePlay },
   { id: 'practice', label: 'Practice', tab: 'practice', Icon: ListChecks },
   { id: 'test', label: 'Test', tab: 'test', Icon: ClipboardCheck },
   { id: 'mock', label: 'Mock', tab: 'interview', Icon: Mic }
@@ -31,10 +31,10 @@ const FILTERS = [{ id: 'all', label: 'All', Icon: LayoutGrid }, ...PILLARS];
 const PILLAR_IDS = PILLARS.map((p) => p.id);
 const PILLAR_NOUN = { content: ['lecture', 'lectures'], practice: ['item', 'items'], test: ['test', 'tests'], mock: ['round', 'rounds'] };
 const plural = (n, [one, many]) => `${n} ${n === 1 ? one : many}`;
-const GROUP_LABEL = { module: 'Modules', section: 'Sections', content: 'Content', practice: 'Practice', test: 'Tests', mock: 'Mock interviews' };
+const GROUP_LABEL = { module: 'Modules', section: 'Sections', content: 'Lectures', practice: 'Practice', test: 'Tests', mock: 'Mock interviews' };
 const GROUP_ORDER = ['module', 'section', 'content', 'practice', 'test', 'mock'];
 const KIND_ICON = { section: FolderOpen, content: CirclePlay, practice: ListChecks, test: ClipboardCheck, mock: Mic };
-const TOPICS = ['Arrays', 'Dynamic Programming', 'Operating Systems', 'SQL', 'React', 'Spring Boot', 'Load Balancing', 'Docker'];
+const HINTS = ['arrays', 'os', 'sql joins'];
 
 const RECENT_KEY = 'cs_dash_recent_search';
 const readRecent = () => { try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch { return []; } };
@@ -256,7 +256,7 @@ const DashboardSearch = ({ ctx, onClose, initialQuery = '' }) => {
     else if (ev.key === 'ArrowDown') { ev.preventDefault(); setActive((a) => Math.min(flat.length - 1, a + 1)); }
     else if (ev.key === 'ArrowUp') { ev.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
     else if (ev.key === 'Enter') { ev.preventDefault(); go(flat[active]); }
-    else if (ev.key === 'Tab') {
+    else if (ev.key === 'Tab' && tokens.length) { // filters only show while typing
       ev.preventDefault();
       const i = FILTERS.findIndex((f) => f.id === filter);
       chooseFilter(FILTERS[(i + (ev.shiftKey ? -1 : 1) + FILTERS.length) % FILTERS.length].id);
@@ -312,6 +312,8 @@ const DashboardSearch = ({ ctx, onClose, initialQuery = '' }) => {
           <kbd className="dx-sr-esc">Esc</kbd>
         </div>
 
+        {/* Pillar filters only once there's something to filter */}
+        {tokens.length > 0 && (
         <div className="dx-sr-filters" role="tablist" aria-label="Filter by pillar">
           {FILTERS.map((f) => (
             <button key={f.id} type="button" role="tab" aria-selected={filter === f.id} className={filter === f.id ? 'active' : ''} onClick={() => { chooseFilter(f.id); inputRef.current?.focus(); }}>
@@ -319,45 +321,47 @@ const DashboardSearch = ({ ctx, onClose, initialQuery = '' }) => {
             </button>
           ))}
         </div>
+        )}
 
         <div className="dx-sr-body" ref={listRef}>
+          {/* Before typing: just a few light shortcuts */}
           {view.mode === 'empty' && (
-            <>
+            <div className="dx-sr-start">
               {recent.length > 0 && (
                 <section className="dx-sr-group">
                   <h3>Recent <button type="button" className="dx-sr-link" onClick={() => { try { localStorage.removeItem(RECENT_KEY); } catch { /* blocked */ } setRecent([]); }}>Clear</button></h3>
-                  <div className="dx-sr-chips">
-                    {recent.map((r) => <button key={r} type="button" className="dx-sr-chip" onClick={() => setQuery(r)}><Clock size={13} /> {r}</button>)}
-                  </div>
+                  <ul className="dx-sr-list">
+                    {recent.slice(0, 3).map((r) => (
+                      <li key={r}>
+                        <button type="button" className="dx-sr-item dx-sr-recent" onClick={() => setQuery(r)}>
+                          <Clock size={14} className="dx-sr-recent-icon" />
+                          <span className="dx-sr-title">{r}</span>
+                          <CornerDownLeft size={13} className="dx-sr-enter" aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </section>
               )}
               <section className="dx-sr-group">
-                <h3>Jump into a module</h3>
-                <ul className="dx-sr-modules">
-                  {modules.map((m) => (
-                    <li key={m.key} className="dx-sr-modrow">
-                      <button type="button" className="dx-sr-modname" onClick={() => setQuery(m.title)}>
-                        <span className="dx-sr-icon dx-sr-module"><ModuleIcon mod={m.mod} size={16} /></span>
-                        <span>{m.title}</span>
-                      </button>
-                      <span className="dx-sr-pills">
-                        {PILLARS.map((p) => (
-                          <button key={p.id} type="button" className="dx-sr-pill" title={`${m.title} · ${p.label}`} onClick={() => goPillar(m, p)}>
-                            <p.Icon size={13} /> {p.label}
-                          </button>
-                        ))}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <section className="dx-sr-group">
-                <h3>Try searching</h3>
+                <h3>Modules</h3>
                 <div className="dx-sr-chips">
-                  {TOPICS.map((t) => <button key={t} type="button" className="dx-sr-chip" onClick={() => setQuery(t)}><Sparkles size={13} /> {t}</button>)}
+                  {modules.map((m) => (
+                    <button key={m.key} type="button" className="dx-sr-chip dx-sr-modchip" onClick={() => setQuery(m.title)}>
+                      <ModuleIcon mod={m.mod} size={13} /> {m.title}
+                    </button>
+                  ))}
                 </div>
               </section>
-            </>
+              <p className="dx-sr-hint">
+                Try {HINTS.map((h, i) => (
+                  <Fragment key={h}>
+                    <button type="button" onClick={() => setQuery(h)}>{h}</button>{i < HINTS.length - 2 ? ', ' : i === HINTS.length - 2 ? ' or ' : ''}
+                  </Fragment>
+                ))}
+                . Search finds lectures, practice, tests and mock interviews.
+              </p>
+            </div>
           )}
 
           {view.mode === 'focus' && (
@@ -432,7 +436,7 @@ const DashboardSearch = ({ ctx, onClose, initialQuery = '' }) => {
         <footer className="dx-sr-foot">
           <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
           <span><kbd>↵</kbd> open</span>
-          <span><kbd>Tab</kbd> filter</span>
+          {tokens.length > 0 && <span><kbd>Tab</kbd> filter</span>}
           <span><kbd>Esc</kbd> close</span>
         </footer>
       </div>
