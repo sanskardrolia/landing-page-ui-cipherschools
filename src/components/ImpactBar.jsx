@@ -1,57 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Brain, Cloud, Terminal, Layers, ArrowDown, MessageCircle, ArrowUpRight, BookOpen, Play, Code2, Award, Briefcase, Sparkles, CheckCircle2, Clock, ChevronRight, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame, GraduationCap, Building2, ArrowRight, Laptop, CheckSquare } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Brain, Layers, Code2, Award, Sparkles, ShieldCheck, Users, TrendingUp, Check, Star, Zap, Flame, ArrowRight } from 'lucide-react';
 import DiwaliHeroLayer from './DiwaliHeroLayer';
 import Diya from './Diya';
 import FireworkDiya from './FireworkDiya';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { goToSection } from '../utils/sectionNav';
+import { useNavigate } from 'react-router-dom';
+import { GrawlixWord } from '../pages/PremiumPage';
+import { startPreview } from '../utils/preview';
+import HeroRoadmap from './HeroRoadmap';
 import './ImpactBar.css';
 
-/* ── Floating Orbital Highlights (from Choose How You Want To Experience The Platform) ── */
-const HERO_ORBITAL_HIGHLIGHTS = [
-  {
-    id: 'dsa',
-    label: 'DSA Practice',
-    icon: Code2,
-    targetSection: 'practice-section',
-    mockupIndex: 2,
-  },
-  {
-    id: 'lms',
-    label: 'Campus LMS',
-    icon: Laptop,
-    targetSection: 'lms-section',
-    mockupIndex: 1,
-  },
-  {
-    id: 'training',
-    label: 'Training Support',
-    icon: Award,
-    targetSection: 'training-section',
-    mockupIndex: null,
-  },
-  {
-    id: 'assessment',
-    label: 'Assessment Platform',
-    icon: CheckSquare,
-    targetSection: 'assessment-section',
-    mockupIndex: 0,
-  },
-  {
-    id: 'compiler',
-    label: 'Online Compiler',
-    icon: Terminal,
-    targetSection: 'practice-section',
-    mockupIndex: 2,
-  },
-  {
-    id: 'placement',
-    label: 'Placements',
-    icon: Briefcase,
-    targetSection: 'university-section',
-    mockupIndex: null,
-  },
-];
+/* The founder's "Daily Dispatch" newspaper card under the hero — switched off for now (set true to bring it back) */
+const SHOW_FOUNDER_STORY = false;
 
 /* ── CountUp Component ── */
 const CountUp = ({ end, suffix = "", duration = 2200 }) => {
@@ -224,14 +183,12 @@ const ThanosParagraphReveal = ({ scrollToSection, inView }) => {
   );
 };
 
-const ImpactBar = ({ diwali = false }) => {
+/* part: 'hero' = hero + founder story · 'proof' = reach & outcomes · 'all' = both */
+const ImpactBar = ({ diwali = false, part = 'all' }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const sectionRef = useRef(null);
-  const mockupContainerRef = useRef(null);
   const [inView, setInView] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const [activeMockupIndex, setActiveMockupIndex] = useState(0);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -251,23 +208,6 @@ const ImpactBar = ({ diwali = false }) => {
           const sy = window.scrollY || document.documentElement.scrollTop;
           setScrollY(sy);
 
-          if (mockupContainerRef.current) {
-            const rect = mockupContainerRef.current.getBoundingClientRect();
-            const windowHeight = window.innerHeight;
-            const elementMid = rect.top + rect.height / 2;
-            const viewportMid = windowHeight / 2;
-            const diff = viewportMid - elementMid;
-
-            // Smoothly change active mockup as user scrolls through the showcase area
-            if (diff < -80) {
-              setActiveMockupIndex(0); // 1. CipherLabs IDE
-            } else if (diff >= -80 && diff < 160) {
-              setActiveMockupIndex(1); // 2. Interactive Learning Portal
-            } else {
-              setActiveMockupIndex(2); // 3. AI Resume Builder
-            }
-          }
-
           ticking = false;
         });
         ticking = true;
@@ -279,131 +219,16 @@ const ImpactBar = ({ diwali = false }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Notion-Style Rotating Words state (UNIVERSITIES -> STUDENTS every 2s)
-  const rotatingWords = ["UNIVERSITIES", "STUDENTS"];
-  const [wordIndex, setWordIndex] = useState(0);
-  const [isWordAnimating, setIsWordAnimating] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIsWordAnimating(true);
-      setTimeout(() => {
-        setWordIndex((prev) => (prev + 1) % rotatingWords.length);
-        setIsWordAnimating(false);
-      }, 220);
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Auto-Changing Mockup Timer (changes every 3.5s unless hovered)
-  const [isMockupHovered, setIsMockupHovered] = useState(false);
-
-  useEffect(() => {
-    if (isMockupHovered) return;
-    const autoTimer = setInterval(() => {
-      setActiveMockupIndex((prev) => (prev + 1) % 3);
-    }, 3500);
-    return () => clearInterval(autoTimer);
-  }, [isMockupHovered]);
-
-  // University sections open /university; student sections scroll here on home
-  const scrollToSection = (id) => goToSection(navigate, location.pathname, id);
-
-  const handleOrbitalNodeClick = (item) => {
-    if (item.mockupIndex !== null && item.mockupIndex !== undefined) {
-      if (activeMockupIndex === item.mockupIndex && item.targetSection) {
-        scrollToSection(item.targetSection);
-      } else {
-        setActiveMockupIndex(item.mockupIndex);
-      }
-    } else if (item.targetSection) {
-      scrollToSection(item.targetSection);
-    }
-  };
+  // Primary CTA: straight to the Plus checkout (same as the sticky bar for new learners)
+  // Secondary: try the dashboard free ("Experience before you pay")
+  const startFree = () => { startPreview(); navigate('/dashboard'); };
+  const upgradePlus = () => navigate('/premium/checkout/plus', { state: { fromPremiumCta: true } });
 
   return (
     <section className={`impact-section modern-bento-light-theme ${diwali ? 'diwali-on' : ''}`} ref={sectionRef}>
       {diwali && <DiwaliHeroLayer />}
-      {/* ── Ambient Scribble & Handwriting Watermark Pattern (5-7% Visibility) ── */}
-      <div className="hero-scribble-bg-layer" aria-hidden="true">
-        {/* Top-Left Cluster: Learn & Code loops */}
-        <div className="scribble-item sc-top-left-1">
-          <span className="scribble-text">learn ~ explore</span>
-          <svg className="scribble-svg" viewBox="0 0 100 25" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 5,18 Q 30,5 55,18 T 95,12" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        <div className="scribble-item sc-top-left-2">
-          <span className="scribble-text">practice.repeat()</span>
-        </div>
-
-        <div className="scribble-item sc-top-left-doodle">
-          <svg className="scribble-svg" viewBox="0 0 60 50" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 10,40 Q 15,10 45,15 Q 55,18 45,35 Q 35,45 20,40" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        {/* Top-Right Cluster: Campus Placement & Arrow */}
-        <div className="scribble-item sc-top-right-1">
-          <span className="scribble-text">campus placement ★</span>
-          <svg className="scribble-svg sc-arrow" viewBox="0 0 85 45" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 10,12 Q 45,38 75,18 M 60,12 L 75,18 L 68,32" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-
-        <div className="scribble-item sc-top-right-2">
-          <span className="scribble-text">career readiness ↗</span>
-        </div>
-
-        <div className="scribble-item sc-top-right-spark">
-          <svg className="scribble-svg" viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 20,4 L 20,36 M 4,20 L 36,20 M 9,9 L 31,31 M 9,31 L 31,9" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        {/* Mid-Left Cluster: Skills & Brackets */}
-        <div className="scribble-item sc-mid-left-1">
-          <span className="scribble-text">skills &gt; theory</span>
-          <svg className="scribble-svg" viewBox="0 0 80 20" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 4,14 C 25,6 55,18 76,8" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        <div className="scribble-item sc-mid-left-2">
-          <span className="scribble-text">{'{ hands-on code }'}</span>
-        </div>
-
-        {/* Mid-Right Cluster: Build & Innovate */}
-        <div className="scribble-item sc-mid-right-1">
-          <span className="scribble-text">build &amp; scale ✦</span>
-          <svg className="scribble-svg" viewBox="0 0 110 25" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 5,16 Q 35,4 65,16 T 105,10" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        <div className="scribble-item sc-mid-right-2">
-          <span className="scribble-text">assess · evaluate</span>
-        </div>
-
-        {/* Bottom-Left Cluster: Next-gen talent loop */}
-        <div className="scribble-item sc-bottom-left-1">
-          <span className="scribble-text">next-gen ecosystem</span>
-          <svg className="scribble-svg sc-circle" viewBox="0 0 100 45" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M 12,22 C 12,8 90,8 90,22 C 90,36 18,38 6,24" strokeLinecap="round" />
-          </svg>
-        </div>
-
-        {/* Bottom-Right Cluster: Outcome driven */}
-        <div className="scribble-item sc-bottom-right-1">
-          <span className="scribble-text">outcome focused ✧</span>
-          <svg className="scribble-svg" viewBox="0 0 95 25" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M 6,14 Q 30,2 55,14 T 90,8" strokeLinecap="round" />
-          </svg>
-        </div>
-      </div>
-
+      {part !== 'proof' && (
       <div className="container hero-split-container" style={{ position: 'relative', zIndex: 2 }}>
         
         {/* ── 2-Column Split Hero Layout ── */}
@@ -419,93 +244,42 @@ const ImpactBar = ({ diwali = false }) => {
                 <span>Shubh Deepawali</span>
               </div>
             )}
-            <h1 className="impact-headline-main">
-              <span className="headline-line-block">
-                <span className="headline-black-italic">AN</span>{' '}
-                <span className="headline-orange-italic">ED-TECH</span>{' '}
-                <span className="headline-black-italic">COMPANY</span>
-              </span>
-              <span className="headline-line-block">
-                <span className="headline-black-italic">FOR</span>{' '}
-                <span className="notion-hero-word-pill">
-                  <span className={`notion-word-text ${isWordAnimating ? 'word-animating' : ''}`}>
-                    {rotatingWords[wordIndex]}
-                  </span>
-                </span>
-              </span>
+            {/* Headline: the premium page's "Beyond L**tC*de shit" with its effects
+                (cycling censor symbols, RGB glitch, bleep, hand-drawn underline) */}
+            <h1 className="pr-h1-beyond hero-pr-headline" aria-label="Beyond LeetCode shit">
+              <span className="pr-beyond" aria-hidden="true">Beyond</span>{' '}
+              <GrawlixWord text="L**tC*de" />{' '}
+              <span className="pr-bleep" aria-hidden="true"><span className="pr-hl pr-hl-draw">shit</span></span>
             </h1>
 
             {/* Concise Value Proposition */}
             <p className="hero-value-prop">
-              <span>We turn campuses into <strong>career-ready ecosystems</strong>.</span>
+              <span>One place to <strong>learn, practice, test and interview</strong> for your first tech job.</span>
               <span className="hero-value-prop-sub">
-                Built for <em className="prop-highlight">universities</em>. Designed for <em className="prop-highlight">students</em>.
+                Built for <em className="prop-highlight">college students</em>. Free to start, <em className="prop-highlight">₹174/month</em> when you're ready.
               </span>
             </p>
 
-            {/* Sequential Product Journey Path */}
-            <div className="hero-product-offerings-container">
-              <div className="hero-product-pipeline-card">
-                {/* Step 1: TRAINING */}
-                <div className="pipeline-step-item">
-                  <div className="pipeline-step-tag">FOUNDATION</div>
-                  <h4 className="pipeline-step-title">TRAINING</h4>
-                  <p className="pipeline-step-desc">Campus LMS & Learning</p>
-                </div>
-
-                {/* Flow Separator 1 -> 2 */}
-                <div className="pipeline-flow-sep">
-                  <ChevronRight size={16} className="pipeline-chevron" />
-                </div>
-
-                {/* Step 2: ASSESS */}
-                <div className="pipeline-step-item">
-                  <div className="pipeline-step-tag">EVALUATION</div>
-                  <h4 className="pipeline-step-title">ASSESS</h4>
-                  <p className="pipeline-step-desc">Assessments & Performance</p>
-                </div>
-
-                {/* Flow Separator 2 -> 3 */}
-                <div className="pipeline-flow-sep">
-                  <ChevronRight size={16} className="pipeline-chevron" />
-                </div>
-
-                {/* Step 3: PRACTICE */}
-                <div className="pipeline-step-item">
-                  <div className="pipeline-step-tag">HANDS-ON</div>
-                  <h4 className="pipeline-step-title">PRACTICE</h4>
-                  <p className="pipeline-step-desc">Practice & Problem Sets</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Dual Hero CTAs: Student & University */}
+            {/* Primary: get Plus · Secondary: start free */}
             <div className="notion-cta-group hero-dual-cta-group">
-              <button 
-                className="hero-cta-btn hero-cta-student"
-                onClick={() => scrollToSection('student-section')}
-              >
-                <GraduationCap size={18} />
-                <span>I'm Student</span>
+              <button className="hero-cta-btn hero-cta-student" onClick={upgradePlus}>
+                <Flame size={18} />
+                <span>Upgrade to Plus</span>
                 <ArrowRight size={15} className="hero-btn-arrow" />
               </button>
-              <button 
-                className="hero-cta-btn hero-cta-university"
-                onClick={() => scrollToSection('university-section')}
-              >
-                <Building2 size={18} />
-                <span>I'm University</span>
+              <button className="hero-cta-btn hero-cta-university hero-cta-ghost" onClick={startFree}>
+                <Sparkles size={18} />
+                <span>Start free</span>
                 <ArrowRight size={15} className="hero-btn-arrow" />
               </button>
             </div>
+            <p className="hero-cta-reassure"><ShieldCheck size={14} /> 7-day money-back · Instant access · ₹350/month</p>
 
           </div>
 
-          {/* ── RIGHT COLUMN: Interactive & Auto-Changing 3D Stacked Mockup Deck ── */}
+          {/* ── RIGHT COLUMN: ambient orbit + floating offering labels ── */}
           <div 
             className="hero-right-column"
-            onMouseEnter={() => setIsMockupHovered(true)}
-            onMouseLeave={() => setIsMockupHovered(false)}
           >
             {/* ── Minimalist Ambient Spiral & Orbital System ── */}
             <div className="hero-orbital-spiral-wrap" aria-hidden="true">
@@ -562,29 +336,9 @@ const ImpactBar = ({ diwali = false }) => {
               </svg>
             </div>
 
-            {/* ── Interactive Floating Orbital Nodes (from Welcome Gateway) ── */}
-            <div className="hero-orbital-nodes-wrap" aria-label="Interactive Platform Features">
-              {HERO_ORBITAL_HIGHLIGHTS.map((item, idx) => {
-                const Icon = item.icon;
-                return (
-                  <div 
-                    key={item.id} 
-                    className={`hero-orbital-node-track track-pos-${idx}`}
-                  >
-                    <button
-                      type="button"
-                      className="hero-orbital-node-pill"
-                      onClick={() => handleOrbitalNodeClick(item)}
-                      title={`Click to explore ${item.label}`}
-                    >
-                      <span className="hero-orbital-node-icon">
-                        <Icon size={12} />
-                      </span>
-                      <span className="hero-orbital-node-label">{item.label}</span>
-                    </button>
-                  </div>
-                );
-              })}
+            {/* The four steps, as a checklist that ticks itself off */}
+            <div className="hero-roadmap-wrap">
+              <HeroRoadmap />
             </div>
 
             {diwali && (
@@ -596,57 +350,12 @@ const ImpactBar = ({ diwali = false }) => {
               </>
             )}
 
-            <div ref={mockupContainerRef} className="hero-stacked-mockup-showcase">
-              {/* 3D Stacked Mockup Inner Deck */}
-              <div className="stacked-mockup-inner">
-                
-                {/* Card 1: Assessment Platform */}
-                <div 
-                  className={`stacked-mockup-card card-ide ${activeMockupIndex === 0 ? 'card-active' : 'card-past'}`}
-                  onClick={() => setActiveMockupIndex(0)}
-                >
-                  <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - Assessment Platform & Automated Scoring</span>
-                  </div>
-                  <div className="mockup-window-body">
-                    <img src="/hero-mockup-left.png" alt="Assessment Platform Coding Mockup" className="mockup-img" />
-                  </div>
-                </div>
-
-                {/* Card 2: Campus LMS Platform */}
-                <div 
-                  className={`stacked-mockup-card card-portal ${activeMockupIndex === 1 ? 'card-active' : (activeMockupIndex === 0 ? 'card-next' : 'card-past')}`}
-                  onClick={() => setActiveMockupIndex(1)}
-                >
-                  <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - Campus LMS Platform</span>
-                  </div>
-                  <div className="mockup-window-body">
-                    <img src="/hero-mockup-lms.png" alt="CipherSchools LMS Dashboard Mockup" className="mockup-img" />
-                  </div>
-                </div>
-
-                {/* Card 3: Practice */}
-                <div 
-                  className={`stacked-mockup-card card-resume ${activeMockupIndex === 2 ? 'card-active' : (activeMockupIndex === 1 ? 'card-next' : 'card-deep')}`}
-                  onClick={() => setActiveMockupIndex(2)}
-                >
-                  <div className="mockup-window-header">
-                    <span className="window-title">CipherSchools - Practice & Problem Set</span>
-                  </div>
-                  <div className="mockup-window-body">
-                    <img src="/hero-mockup-cipherlabs.png" alt="CipherSchools Practice Platform Mockup" className="mockup-img" />
-                  </div>
-                </div>
-
-              </div>
-            </div>
           </div>
 
         </div>
 
         {/* ── Founder Story Narrative (Dynamic Scroll Reveal/Disappear + YC Drop-Cap Style) ── */}
-        {(() => {
+        {SHOW_FOUNDER_STORY && (() => {
           const storyProgress = Math.min(Math.max((scrollY - 30) / 160, 0), 1);
           const storyOpacity = inView ? storyProgress : 0;
           const storyTranslateY = (1 - storyProgress) * 28;
@@ -736,7 +445,10 @@ const ImpactBar = ({ diwali = false }) => {
 
       </div>
 
-        {/* ── Modern Light Bento Grid Dock (All-in-One View) ── */}
+      )}
+
+      {/* ── Modern Light Bento Grid Dock (All-in-One View) ── */}
+      {part !== 'hero' && (
         <div className={`modern-light-bento-dock ${inView ? 'impact-in-view' : ''}`}>
           
           {/* Section Header */}
@@ -941,6 +653,7 @@ const ImpactBar = ({ diwali = false }) => {
 
           </div>
         </div>
+      )}
 
       </section>
   );

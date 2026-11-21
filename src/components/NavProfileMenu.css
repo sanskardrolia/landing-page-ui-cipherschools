@@ -1,0 +1,26 @@
+/* Navbar profile menu */
+.npm { position: relative; }
+.npm-btn {
+  display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 6px 0 3px; border-radius: 999px;
+  border: 1px solid #E5E7EB; background: #fff; cursor: pointer; font: inherit; transition: border-color 0.15s, box-shadow 0.15s;
+}
+.npm-btn:hover, .npm-btn.is-open { border-color: #F3912E; box-shadow: 0 0 0 3px rgba(243, 145, 46, 0.12); }
+.npm-avatar { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.74rem; font-weight: 700; color: #C2620C; background: #FFF4E8; }
+.npm-chev { color: #6B7280; transition: transform 0.2s; }
+.npm-btn.is-open .npm-chev { transform: rotate(180deg); }
+.npm-pop {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 1100; width: 270px; padding: 6px;
+  border: 1px solid #E5E7EB; border-radius: 10px; background: #fff; box-shadow: 0 18px 40px -16px rgba(17, 24, 39, 0.3);
+  animation: npm-in 0.18s ease-out;
+}
+@keyframes npm-in { from { opacity: 0; transform: translateY(-4px); } }
+.npm-head { display: flex; flex-direction: column; padding: 8px 10px 10px; margin-bottom: 4px; border-bottom: 1px solid #F0EEEC; }
+.npm-head strong { font-size: 0.9rem; color: #111827; }
+.npm-head small { font-size: 0.76rem; color: #6B7280; }
+.npm-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 6px; text-decoration: none; color: inherit; }
+.npm-item:hover { background: #FAFAF9; }
+.npm-item > span:last-child { display: flex; flex-direction: column; }
+.npm-item strong { font-size: 0.88rem; font-weight: 600; color: #111827; }
+.npm-item small { font-size: 0.74rem; color: #6B7280; }
+.npm-icon { flex-shrink: 0; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: #F3912E; background: #FFF4E8; }
+.npm-item:hover .npm-icon { background: #FFE8CF; }

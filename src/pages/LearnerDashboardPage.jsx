@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  Activity, ArrowUpRight, Award, BookOpen, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CirclePlay, ClipboardCheck,
+  Activity, ArrowUpRight, Award, BookOpen, CalendarDays, ChevronDown, ChevronRight, CircleCheck, CirclePlay, ClipboardCheck,
   Code2, Contrast, Crown, Eye, FileText, Flame, Info, LayoutDashboard, ListChecks, Lock, Menu, Mic, Moon, PanelLeft, RotateCcw,
-  ScanSearch, Search, Sparkles, Sun, Users, Wrench, X, Zap
+  CreditCard, LifeBuoy, LogOut, ScanSearch, Search, Sparkles, Sun, UserRound, Users, Wrench, X, Zap
 } from 'lucide-react';
-import { getEnrollment } from '../utils/enrollment';
+import { clearEnrollment, getEnrollment, saveEnrollment } from '../utils/enrollment';
+import { clearSession, getSession } from '../utils/auth';
 import { dayKey, useLearnerProgress, useSessionProgress } from '../utils/learnerProgress';
 import { PREVIEW_SHARE, previewFreeInModule, previewModules } from '../utils/previewAccess';
 import {
@@ -28,6 +29,13 @@ import DashboardPlanner from './DashboardPlanner';
 import DashboardCertificates from './DashboardCertificates';
 import DashboardNextStep from './DashboardNextStep';
 import WhatsNext from './DashboardWhatsNext';
+import DashboardAccount from './DashboardAccount';
+import DashboardContent from './DashboardContent';
+import DashboardCoins from './DashboardCoins';
+import CoinsMenu, { CoinToast } from './DashboardCoinsMenu';
+import { useCipherCoins } from '../utils/cipherCoins';
+import DashboardSubscription from './DashboardSubscription';
+import DashboardSupport from './DashboardSupport';
 import './LearnerDashboardPage.css';
 
 /* ══════════════════════════════════════════════════════════════
@@ -56,7 +64,6 @@ const readTheme = () => {
 /* Same plan icons as the pricing cards: Core ⚡ · Plus 🔥 · Ultra 👑 */
 const TIER_ICONS = { core: Zap, plus: Flame, ultra: Crown };
 const PLAN_TIER = { starter: 'core', plus: 'plus', compete: 'ultra' }; // plan id → its tier (icon / label)
-const MODULE_BAR_HIDDEN = ['dsa-mastery']; // kept out of the paid module bar (still on the overview)
 
 const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 
@@ -64,10 +71,14 @@ const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 const learnerModules = (ctx) => (ctx.preview ? ctx.modules : ctx.modules.filter((m) => moduleUnlocked(m, ctx.planId, ctx.devTrack)));
 
 const LearnerDashboardPage = () => {
-  const [realEnrollment] = useState(getEnrollment);
+  const [realEnrollment, setRealEnrollment] = useState(getEnrollment);
   // Guests who chose "Experience before you pay" get a partly open dashboard
   const [preview] = useState(() => !realEnrollment && isPreviewOn());
-  const enrollment = realEnrollment || (preview ? PREVIEW_ENROLLMENT : null);
+  // Preview after a free login: show the signed-in name instead of "Guest"
+  const [session] = useState(getSession);
+  const enrollment = realEnrollment || (preview
+    ? (session?.email ? { ...PREVIEW_ENROLLMENT, learner: { name: session.name || 'Guest', email: session.email } } : PREVIEW_ENROLLMENT)
+    : null);
   const learner = useLearnerProgress();
   const guest = useSessionProgress(); // preview: what a guest tries lasts only for this visit
   const { progress, toggle, set } = preview ? guest : learner;
@@ -81,6 +92,8 @@ const LearnerDashboardPage = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState(readTheme);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
+  const coins = useCipherCoins(preview); // preview: coins last for this visit only
   const location = useLocation();
 
   // Cmd/Ctrl + F (or K) opens dashboard search; the code editor keeps its own find
@@ -107,8 +120,6 @@ const LearnerDashboardPage = () => {
 
   // The lecture player and coding workspace take the full width, so the sidebar collapses
   const onPlayer = /^\/dashboard\/m\/[^/]+\/(watch|practice)\//.test(location.pathname);
-  // The module bar shows on module pages (not in the player / workspace)
-  const moduleMatch = location.pathname.match(/^\/dashboard\/m\/([^/]+)\/?$/);
 
   const planId = enrollment.planId;
   // Paid dashboards show only the plan bought, so there is no upgrade path inside them.
@@ -121,9 +132,21 @@ const LearnerDashboardPage = () => {
     preview,
     // Preview: a plain "Get plan" goes to the premium page's plan comparison; a locked item asks for its plan
     openUpgrade: (target) => (target ? setPurchase({ target }) : navigate('/premium#plans')),
-    lockedTap: (mod) => setPurchase({ mod })
+    lockedTap: (mod) => setPurchase({ mod }),
+    theme, toggleTheme,
+    // My Account: save edited details back to the (demo) enrollment
+    updateLearner: (patch) => {
+      if (!realEnrollment) return;
+      const next = { ...realEnrollment, learner: { ...realEnrollment.learner, ...patch } };
+      saveEnrollment(next);
+      setRealEnrollment(next);
+    },
+    openSupport: () => setSupportOpen(true),
+    coins,
+    // Log out: forget this device's enrollment (progress stays) and go home
+    logout: () => { clearEnrollment(); clearSession(); navigate('/', { replace: true }); }
   };
-  const exitPreview = () => { endPreview(); navigate('/premium'); };
+  const exitPreview = () => { endPreview(); clearSession(); navigate('/premium'); };
 
   return (
     <div className={`dx ${collapsed || onPlayer ? 'dx-collapsed' : ''} ${theme === 'light' ? 'dx-light' : ''} ${preview ? 'dx-preview' : ''}`}>
@@ -140,12 +163,10 @@ const LearnerDashboardPage = () => {
             <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={exitPreview}>Exit preview</button>
           </div>
         )}
-        {/* Content: the modules as a horizontal bar of their own, under (not inside) the top bar */}
-        {moduleMatch && <ModuleBar ctx={ctx} activeId={moduleMatch[1]} />}
         <main className="dx-page">
           <Routes>
             <Route path="/dashboard" element={<Overview ctx={ctx} />} />
-            <Route path="/dashboard/content" element={<ContentRoute ctx={ctx} />} />
+            <Route path="/dashboard/content" element={<DashboardContent ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId" element={<ModuleRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/watch/:lectureId" element={<PlayerRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/practice/:itemId" element={<WorkspaceRoute ctx={ctx} />} />
@@ -153,6 +174,9 @@ const LearnerDashboardPage = () => {
             <Route path="/dashboard/activity" element={<DashboardActivity ctx={ctx} />} />
             <Route path="/dashboard/certificates" element={<DashboardCertificates ctx={ctx} />} />
             <Route path="/dashboard/mentorship" element={<DashboardMentorship ctx={ctx} />} />
+            <Route path="/dashboard/coins" element={<DashboardCoins ctx={ctx} />} />
+            <Route path="/dashboard/account" element={preview ? <Navigate to="/dashboard" replace /> : <DashboardAccount ctx={ctx} />} />
+            <Route path="/dashboard/subscription" element={preview ? <Navigate to="/dashboard" replace /> : <DashboardSubscription ctx={ctx} />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </main>
@@ -161,6 +185,8 @@ const LearnerDashboardPage = () => {
       {/* Next-step pop-ups: lectures done → practice, practice done → tests, all three → mock */}
       <DashboardNextStep ctx={ctx} />
       {searchOpen && <DashboardSearch ctx={ctx} onClose={() => setSearchOpen(false)} />}
+      <CoinToast coins={coins} />
+      {supportOpen && <DashboardSupport ctx={ctx} onClose={() => setSupportOpen(false)} />}
       {splash && <DashboardPreviewSplash onDone={endSplash} />}
       {purchase && <DashboardPreviewPlans mod={purchase.mod} target={purchase.target} onClose={() => setPurchase(null)} />}
     </div>
@@ -173,11 +199,6 @@ const previewOpen = (ctx, moduleId, id) => {
 };
 
 /* Content opens the module to continue with (the first one not finished) */
-const ContentRoute = ({ ctx }) => {
-  const mods = learnerModules(ctx);
-  const target = mods.find((m) => moduleProgress(m, ctx.progress).pct < 100) || mods[0];
-  return target ? <Navigate to={`/dashboard/m/${target.id}`} replace /> : <Navigate to="/dashboard" replace />;
-};
 
 // Keyed by module id so per-module state (selected subject, open units) starts fresh
 const ModuleRoute = ({ ctx }) => {
@@ -220,7 +241,7 @@ const TOOLS = [
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 
 const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
-  const { planId, extended, progress, enrollment } = ctx;
+  const { extended, progress, enrollment } = ctx;
   const learnerName = enrollment.learner?.name?.trim() || 'Learner';
   const location = useLocation();
   const [toolsOpen, setToolsOpen] = useState(true);
@@ -296,19 +317,76 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
       </nav>
 
       <div className="dx-side-foot">
-        {/* Profile row: initials · name · plan */}
-        <div className="dx-profile">
-          <span className="dx-profile-avatar" title={learnerName}>{initialsOf(learnerName)}</span>
-          <span className="dx-profile-text">
-            <strong>{learnerName}</strong>
-            <span>{ctx.preview ? 'Preview' : `${PLAN_LABELS[planId]} plan`}</span>
-          </span>
-          {ctx.preview && (
-            <button type="button" className="dx-upgrade" onClick={() => { onClose(); ctx.openUpgrade(); }}><Sparkles size={14} /> Get plan</button>
-          )}
-        </div>
+        {/* Profile row: initials · name · plan; opens the account menu */}
+        <ProfileMenu ctx={ctx} name={learnerName} onNavigate={onClose} />
       </div>
     </aside>
+  );
+};
+
+/* ─────────────────── Profile menu (sidebar foot) ─────────────────── */
+
+const ProfileMenu = ({ ctx, name, onNavigate }) => {
+  const { planId, enrollment } = ctx;
+  const [open, setOpen] = useState(false);
+  const wrap = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDown = (e) => { if (!wrap.current?.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    window.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onKey); };
+  }, [open]);
+
+  const go = (to) => { setOpen(false); onNavigate(); navigate(to); };
+  const email = enrollment.learner?.email;
+  const items = ctx.preview ? [
+    { key: 'support', label: 'Support & Feedback', Icon: LifeBuoy, run: () => { setOpen(false); onNavigate(); ctx.openSupport(); } },
+    { key: 'exit', label: 'Exit preview', Icon: LogOut, run: () => { setOpen(false); endPreview(); clearSession(); navigate('/premium'); }, danger: true }
+  ] : [
+    { key: 'account', label: 'My Account', Icon: UserRound, run: () => go('/dashboard/account') },
+    { key: 'sub', label: 'My Subscription', Icon: CreditCard, run: () => go('/dashboard/subscription'), note: PLAN_LABELS[planId] },
+    { key: 'support', label: 'Support & Feedback', Icon: LifeBuoy, run: () => { setOpen(false); onNavigate(); ctx.openSupport(); } },
+    { key: 'logout', label: 'Logout', Icon: LogOut, run: () => { setOpen(false); ctx.logout(); }, danger: true }
+  ];
+
+  return (
+    <div className="dx-profile-wrap" ref={wrap}>
+      {open && (
+        <div className="dx-pmenu" role="menu" aria-label="Account">
+          <div className="dx-pmenu-head">
+            <span className="dx-profile-avatar">{initialsOf(name)}</span>
+            <span className="dx-pmenu-who">
+              <strong>{name}</strong>
+              <span>{ctx.preview ? 'Previewing the dashboard' : email || `${PLAN_LABELS[planId]} plan`}</span>
+            </span>
+          </div>
+          {items.map((it, i) => (
+            <button key={it.key} type="button" role="menuitem" className={`dx-pmenu-item ${it.danger ? 'is-danger' : ''} ${it.danger && i > 0 ? 'has-sep' : ''}`} onClick={it.run}>
+              <it.Icon size={16} />
+              <span>{it.label}</span>
+              {it.note && <em>{it.note}</em>}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="dx-profile">
+        <button type="button" className="dx-profile-btn" onClick={() => setOpen((v) => !v)} aria-haspopup="menu" aria-expanded={open} title={name}>
+          <span className="dx-profile-avatar">{initialsOf(name)}</span>
+          <span className="dx-profile-text">
+            <strong>{name}</strong>
+            <span>{ctx.preview ? 'Preview' : `${PLAN_LABELS[planId]} plan`}</span>
+          </span>
+          <ChevronDown size={15} className={`dx-label dx-profile-chev ${open ? 'up' : ''}`} />
+        </button>
+        {ctx.preview && (
+          <button type="button" className="dx-upgrade" onClick={() => { onNavigate(); ctx.openUpgrade(); }}><Sparkles size={14} /> Get plan</button>
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -319,71 +397,13 @@ const TierIcon = ({ tier }) => {
 
 /* ─────────────────── Module bar (Content) ─────────────────── */
 
-const ModuleBar = ({ ctx, activeId }) => {
-  const ref = useRef(null);
-  const mods = learnerModules(ctx).filter((m) => ctx.preview || !MODULE_BAR_HIDDEN.includes(m.id) || m.id === activeId);
-  // Which edges have more modules past them (drives the edge fades)
-  const [edges, setEdges] = useState({ left: false, right: false });
-  const measure = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    const left = el.scrollLeft > 1;
-    const right = el.scrollLeft < el.scrollWidth - el.clientWidth - 1;
-    setEdges((e) => (e.left === left && e.right === right ? e : { left, right }));
-  }, []);
-  useEffect(() => {
-    ref.current?.querySelector('.is-active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  }, [activeId]);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return undefined;
-    const first = setTimeout(measure, 0); // first check, after the active module scrolls into view
-    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null;
-    ro?.observe(el);
-    return () => { clearTimeout(first); ro?.disconnect(); };
-  }, [measure, activeId]);
-  // Arrow buttons: page the strip by most of its visible width
-  const page = (dir) => {
-    const el = ref.current;
-    if (el) el.scrollBy({ left: dir * Math.max(160, el.clientWidth * 0.7), behavior: 'smooth' });
-  };
-  return (
-    // data-hscroll: the site smooth-scroll turns a plain mouse wheel into sideways scrolling here
-    // The wrapper keeps the divider line and background; only the scrolling strip fades
-    <div className="dx-modbar-wrap">
-    {edges.left && (
-      <button type="button" className="dx-modbar-arrow is-left" onClick={() => page(-1)} aria-label="Scroll modules left" tabIndex={-1}>
-        <ChevronLeft size={16} />
-      </button>
-    )}
-    <nav className={`dx-modbar ${edges.left ? 'fade-left' : ''} ${edges.right ? 'fade-right' : ''}`} aria-label="Modules" ref={ref} data-hscroll onScroll={measure}>
-      {mods.map((m) => {
-        const mp = moduleProgress(m, ctx.progress);
-        const active = m.id === activeId;
-        return (
-          <Link key={m.id} to={`/dashboard/m/${m.id}`} className={`dx-modbar-item ${active ? 'is-active' : ''}`} aria-current={active ? 'page' : undefined}>
-            <ModuleIcon mod={m} size={16} />
-            <span>{m.title}</span>
-            {!ctx.preview && mp.pct > 0 && <em>{mp.pct}%</em>}
-          </Link>
-        );
-      })}
-    </nav>
-    {edges.right && (
-      <button type="button" className="dx-modbar-arrow is-right" onClick={() => page(1)} aria-label="Scroll modules right" tabIndex={-1}>
-        <ChevronRight size={16} />
-      </button>
-    )}
-    </div>
-  );
-};
-
 /* ─────────────────────────── Top bar ─────────────────────────── */
 
 /* Page title for the top bar, from the route */
 const PAGE_TITLES = {
   '/dashboard': 'Overview', '/dashboard/planner': 'Planner', '/dashboard/activity': 'Activity',
-  '/dashboard/certificates': 'Certificates', '/dashboard/mentorship': '1:1 Mentorship', '/dashboard/content': 'Content'
+  '/dashboard/certificates': 'Certificates', '/dashboard/mentorship': '1:1 Mentorship', '/dashboard/content': 'Content',
+  '/dashboard/account': 'My Account', '/dashboard/coins': 'CipherCoins', '/dashboard/subscription': 'My Subscription'
 };
 const pageTitle = (pathname, ctx) => {
   const m = pathname.match(/^\/dashboard\/m\/([^/]+)/);
@@ -424,6 +444,8 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme, onSearch }) => {
         >
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
         </button>
+        <span className="dx-top-divider" aria-hidden="true" />
+        <CoinsMenu ctx={ctx} />
         <span className="dx-top-divider" aria-hidden="true" />
         <span className="dx-stat-pill" title="Lectures watched"><CirclePlay size={15} /> {watchedTotal}</span>
         <span className="dx-top-divider" aria-hidden="true" />

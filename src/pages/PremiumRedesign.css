@@ -98,7 +98,7 @@
 @keyframes pr-drift { to { background-position: 220px 110px; } }
 @keyframes pr-breathe { 50% { transform: scale(1.12) translate(-20px, 16px); opacity: 0.75; } }
 .pr-pricing { padding-top: 72px; }
-.pr-hero h1 {
+.pr-hero h1, .pr-hero h2.pr-h1-beyond {
   margin-top: 18px; font-size: clamp(2.1rem, 4.2vw, 3.3rem); font-weight: 800; line-height: 1.06; letter-spacing: -0.04em; color: var(--ink);
 }
 .pr-hero-sub { max-width: 540px; margin-top: 18px !important; font-size: 1.06rem; line-height: 1.6; color: var(--muted); }
@@ -522,7 +522,7 @@ body:has(.pr-sticky) .back-to-top-btn { bottom: 60px; transition: bottom 0.25s e
    • shit: hand-drawn underline + a TV "BEEP" censor bar that sweeps
      over it and off again on a loop
    ══════════════════════════════════════════════════════════════ */
-.pr-hero h1.pr-h1-beyond { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.02; }
+.pr-hero .pr-h1-beyond { font-size: clamp(2.6rem, 5.6vw, 4.6rem); line-height: 1.02; }
 .pr-beyond { display: block; color: var(--ink); }
 
 .pr-glitch { position: relative; display: inline-block; color: var(--ink); white-space: nowrap; animation: pr-skew 3s 1.2s infinite; }
@@ -587,7 +587,7 @@ body:has(.pr-sticky) .back-to-top-btn { bottom: 60px; transition: bottom 0.25s e
   .pr-glitch::before, .pr-glitch::after, .pr-bleep::after { display: none; }
 }
 @media (max-width: 640px) {
-  .pr-hero h1.pr-h1-beyond { font-size: clamp(2.1rem, 11vw, 2.8rem); }
+  .pr-hero .pr-h1-beyond { font-size: clamp(2.1rem, 11vw, 2.8rem); }
 }
 @media (max-width: 640px) {
   .pr-hero .pr-hero-ctas { flex-wrap: wrap; }
@@ -705,3 +705,38 @@ body:has(.pr-sticky) .back-to-top-btn { bottom: 60px; transition: bottom 0.25s e
 @media (prefers-reduced-motion: reduce) {
   .pr-om, .pr-om-sheet, .pr-om-hl, .pr-om-card { animation: none; }
 }
+
+/* ── On the home page: the premium pitch as a band, then the plan cards ── */
+.pr.pr-on-home { min-height: 0; padding: 24px 24px 24px; background: #fff; }
+.pr-on-home .pr-hero.pr-hero-home {
+  max-width: 1160px; padding: 56px 56px; gap: 48px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg);
+  overflow: hidden;
+}
+.pr-on-home .pr-hero.pr-hero-home::before { top: 0; bottom: 0; width: 100%; }
+.pr-on-home .pr-pricing { padding-top: 88px; }
+@media (max-width: 900px) {
+  .pr-on-home .pr-hero.pr-hero-home { padding: 36px 22px; }
+}
+
+/* Home page: leave room under the footer for the sticky upgrade bar */
+body:has(.pr-sticky.is-home) .footer-wrapper { padding-bottom: 44px; }
+@media (max-width: 768px) {
+  body:has(.pr-sticky.is-home) .footer-wrapper { padding-bottom: 104px; }
+}
+
+/* The site's left rail (68px from 1024px up) sits over the bar's left edge: start the bar after it */
+@media (min-width: 1024px) {
+  .app-container.with-sidebar .pr-sticky { left: 68px; }
+}
+
+/* The sticky bar now lives directly in <body> (portal), so it carries its own tokens and box model,
+   works the same in Safari and Chromium, and clears the iPhone home indicator */
+.pr-sticky {
+  --ink: #1F1E1B; --accent: #F3912E; --accent-dark: #E07F1C; --r: 4px;
+  box-sizing: border-box; z-index: 1001; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  -webkit-transform: translateZ(0); transform: translateZ(0);
+}
+.pr-sticky *, .pr-sticky *::before, .pr-sticky *::after { box-sizing: border-box; }
+.pr-sticky s { text-decoration: line-through; }

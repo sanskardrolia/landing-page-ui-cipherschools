@@ -20,7 +20,6 @@ import AtsLandingPage from './pages/AtsLandingPage';
 import CompilerPage from './pages/CompilerPage';
 import PracticePage from './pages/PracticePage';
 import BackToTop from './components/BackToTop';
-import AppSidebar from './components/AppSidebar';
 import SplashScreen from './components/SplashScreen';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
@@ -104,8 +103,7 @@ function App() {
     <>
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
       <FeedbackDrawer isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
-      <AppSidebar />
-      <div className="app-container with-sidebar">
+      <div className="app-container">
         <Navbar />
         <main>
           <Routes>

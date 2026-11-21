@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
-  ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, Circle, CircleCheck, CirclePlay,
-  ClipboardCheck, ExternalLink, ListChecks, Lock, Mic, Monitor,
+  ArrowLeft, ArrowRight, CalendarClock, CalendarDays, Camera, ChevronDown, Circle, CircleCheck, CirclePlay,
+  ClipboardCheck, ExternalLink, Info, ListChecks, Lock, Mic, Monitor,
   Timer, X
 } from 'lucide-react';
 import {
@@ -61,6 +61,46 @@ const pillarProgress = (ctx, mod, subjects) => {
   return { parts, overall };
 };
 
+/* How each tab works (shown from the i button next to the tab) */
+const tabInfo = (id, mod, subject, ctx) => {
+  const pctLabel = Math.round(TEST_UNLOCK_AT * 100);
+  if (id === 'watch') {
+    return ctx.preview
+      ? `Every ${subject.title} lecture, unit by unit.${ctx.lockedView ? '' : ' The first lectures are open to watch; tap a locked one to unlock it.'}`
+      : `Watch ${subject.title} unit by unit. Open a lecture to play it, or tick the circle to mark it watched. Tests unlock at ${pctLabel}% and the mock interview when the subject is complete.`;
+  }
+  if (id === 'practice') return 'Practice follows the lectures unit by unit. Watch a unit, then solve its questions here.';
+  if (id === 'test') {
+    return `Module tests: one per unit, in lecture order; each unlocks after you watch ${pctLabel}% of its unit and attempt the previous stage. `
+      + (subjectTests(mod, subject).length ? `Additional tests are module-wide and unlock after ${pctLabel}% of their content. ` : '')
+      + 'All tests are proctored: camera on, full-screen and tab-switch monitoring.';
+  }
+  const iv = subjectInterview(mod, subject);
+  if (!iv) return 'Mock interviews unlock once you complete the section.';
+  return `A live mock interview on ${iv.perSubject ? subject.title : mod.title}, unlocked once you've completed ${iv.perSubject ? 'the subject' : 'the module'}. You get detailed feedback after each round.`;
+};
+
+const TabInfo = ({ id, label, text }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDown = (e) => { if (!ref.current?.contains(e.target)) setOpen(false); };
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', onDown);
+    window.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('mousedown', onDown); window.removeEventListener('keydown', onKey); };
+  }, [open]);
+  return (
+    <span className="dx-tab-info" ref={ref} data-free>
+      <button type="button" className={`dx-tab-info-btn ${open ? 'is-on' : ''}`} onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-controls={`dx-tab-info-${id}`} aria-label={`How ${label} works`} title={`How ${label} works`}>
+        <Info size={14} />
+      </button>
+      {open && <span id={`dx-tab-info-${id}`} role="note" className="dx-tab-info-pop"><strong>{label}</strong>{text}</span>}
+    </span>
+  );
+};
+
 const ModuleView = ({ ctx }) => {
   const { moduleId } = useParams();
   const [params, setParams] = useSearchParams();
@@ -111,6 +151,9 @@ const ModuleView = ({ ctx }) => {
   return (
     <div className="dx-module">
 
+      <Link to="/dashboard/content" className="dx-mod-back" title="Back to all modules">
+        <ArrowLeft size={15} /> Back
+      </Link>
       <header className="dx-mod-head">
         <span className="dx-mc-icon dx-mc-icon-lg"><ModuleIcon mod={mod} size={22} /></span>
         <div className="dx-mod-head-text">
@@ -159,19 +202,22 @@ const ModuleView = ({ ctx }) => {
 
       <div className="dx-tabs" role="tablist">
         {TABS.map((t, i) => (
-          <button
-            key={t.id}
-            type="button"
-            role="tab"
-            aria-selected={tab === t.id}
-            className={`dx-tab ${tab === t.id ? 'active' : ''}`}
-            onClick={() => setTab(t.id)}
-          >
-            <span className="dx-tab-step">{i + 1}</span>
-            <t.Icon size={16} />
-            <span className="dx-tab-long">{t.label}</span>
-            <span className="dx-tab-short">{t.short}</span>
-          </button>
+          <div key={t.id} className={`dx-tab-wrap ${tab === t.id ? 'active' : ''}`}>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === t.id}
+              className={`dx-tab ${tab === t.id ? 'active' : ''}`}
+              onClick={() => setTab(t.id)}
+            >
+              <span className="dx-tab-step">{i + 1}</span>
+              <t.Icon size={16} />
+              <span className="dx-tab-long">{t.label}</span>
+              <span className="dx-tab-short">{t.short}</span>
+            </button>
+            {/* The tab's "how it works" note, behind an i button */}
+            <TabInfo id={t.id} label={t.label} text={tabInfo(t.id, viewMod, subject, viewCtx)} />
+          </div>
         ))}
       </div>
 
@@ -218,12 +264,6 @@ const WatchTab = ({ mod, subject, ctx, isExt }) => {
 
   return (
     <section className="dx-tab-panel">
-      <p className="dx-panel-intro">
-        {ctx.preview
-          ? `Every ${subject.title} lecture, unit by unit.${ctx.lockedView ? '' : ' The first lectures are open to watch; tap a locked one to unlock it.'}`
-          : <>Watch {subject.title} unit by unit. Open a lecture to play it, or tick the circle to mark it watched — tests unlock at
-            {' '}{Math.round(TEST_UNLOCK_AT * 100)}% and the mock interview when the subject is complete.</>}
-      </p>
       <div className="dx-units">
         {subject.units.map((u, idx) => {
           const d = u.lectures.filter((l) => progress.watched[l.id]).length;
@@ -386,10 +426,6 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
 
   return (
     <section className="dx-tab-panel">
-      <p className="dx-panel-intro">
-        Practice follows the lectures unit by unit. Watch a unit, then solve its questions here.
-      </p>
-
       {/* No Problem of the Day on a locked subject of a paid plan: it would only say "Unlock to solve" */}
       {!ctx.lockedView && <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} preview={ctx.preview} free={ctx.free} />}
 
@@ -559,13 +595,6 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
         )}
       </div>
 
-      <p className="dx-panel-intro">
-        {view === 'module'
-          ? `One test per unit, in lecture order. Each unlocks after you watch ${pctLabel}% of its unit and attempt the previous stage.`
-          : `Module-wide tests. Each unlocks after you watch ${pctLabel}% of its content.`}
-        {' '}All tests are proctored: camera on, full-screen and tab-switch monitoring.
-      </p>
-
       <div className="dx-card dx-ttable-card">
         <table className="dx-ptable dx-ttable">
           <thead>
@@ -700,10 +729,6 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
 
   return (
     <section className="dx-tab-panel">
-      <p className="dx-panel-intro">
-        A live mock interview on {scope.name}, unlocked once you've completed {iv.perSubject ? 'the subject' : 'the module'}.
-        You get detailed feedback after each round.
-      </p>
       <div className="dx-test-grid">
         {Array.from({ length: rounds }, (_, i) => {
           const key = `${mod.id}:interview:${scope.id}:${i + 1}`;

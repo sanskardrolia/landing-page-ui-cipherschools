@@ -8,6 +8,10 @@ import {
   ChevronDown, Layers, Target, Compass, Cpu, Bot
 } from 'lucide-react';
 import BookMeetingModal from './BookMeetingModal';
+import ProfileMenu from './NavProfileMenu';
+import { PROFILE_LINKS } from '../data/profileLinks';
+import { getEnrollment } from '../utils/enrollment';
+import { isPreviewOn } from '../utils/preview';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -83,6 +87,9 @@ const Navbar = () => {
   };
 
   // Student sections live on /, university sections on /university (see utils/sectionNav)
+  // Dashboard: open it when there is something to show (a plan or the free preview), else log in first
+  const dashboardTo = () => (getEnrollment() || isPreviewOn() ? '/dashboard' : '/login');
+
   const scrollToSection = (id) => {
     setMobileMenuOpen(false);
     setActiveDropdown(null);
@@ -413,10 +420,19 @@ const Navbar = () => {
               )}
             </div>
 
+            {/* Straight links: pricing on the home page, and the learner dashboard */}
+            <button onClick={() => scrollToSection('plans-section')} className="notion-nav-link">
+              <span>Pricing</span>
+            </button>
+            <Link to={dashboardTo()} className="notion-nav-link">
+              <span>Dashboard</span>
+            </Link>
+
           </div>
           
           <div className="navbar-actions desktop-only">
             <Link to="/login" className="notion-login-btn">Login</Link>
+            <ProfileMenu />
           </div>
 
           <button 
@@ -530,6 +546,19 @@ const Navbar = () => {
 
 
             
+            <button className="mobile-link" onClick={() => scrollToSection('plans-section')}>Pricing</button>
+            <Link to={dashboardTo()} className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+
+            {/* Your tools (what the old sidebar held) */}
+            <div className="mobile-menu-group mobile-profile-links">
+              {PROFILE_LINKS.map((l) => (
+                <Link key={l.to} to={l.to} className="mobile-sub-item" onClick={() => setMobileMenuOpen(false)}>
+                  <l.Icon size={15} className="text-brand" />
+                  <div><strong>{l.label}</strong><small>{l.hint}</small></div>
+                </Link>
+              ))}
+            </div>
+
             <Link to="/login" className="notion-cta-btn-mobile" onClick={() => setMobileMenuOpen(false)}>Login</Link>
           </div>
         )}

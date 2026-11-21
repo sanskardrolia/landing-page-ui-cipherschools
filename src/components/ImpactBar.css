@@ -2649,3 +2649,78 @@
     margin-bottom: 1.25rem;
   }
 }
+
+/* Home hero: four-step pipeline + reassurance under the CTAs */
+.hero-product-pipeline-card.hero-pipeline-4 { max-width: 640px; }
+.hero-cta-reassure { display: flex; align-items: center; gap: 6px; margin: 12px 0 0; font-size: 0.8rem; color: #6B7280; }
+.hero-cta-reassure svg { color: #10B981; flex-shrink: 0; }
+
+/* Hero deck: fresh dashboard screens + a reveal each time a card comes to the front */
+.stacked-mockup-card .mockup-window-header { display: flex; align-items: center; gap: 10px; }
+.window-dots { display: inline-flex; gap: 5px; }
+.window-dots i { width: 9px; height: 9px; border-radius: 50%; background: #E3E2E0; }
+.stacked-mockup-card.card-active .window-dots i:nth-child(1) { background: #FF5F57; }
+.stacked-mockup-card.card-active .window-dots i:nth-child(2) { background: #FEBC2E; }
+.stacked-mockup-card.card-active .window-dots i:nth-child(3) { background: #28C840; }
+.stacked-mockup-card .mockup-window-body { position: relative; aspect-ratio: 16 / 10; background: #FAFAFA; }
+.stacked-mockup-card .mockup-img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+/* Reveal: a top-down wipe with a light sweep */
+.stacked-mockup-card.card-active .mockup-img { animation: hero-shot-reveal 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.stacked-mockup-card.card-active .mockup-window-body::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+  transform: translateX(-110%); animation: hero-shot-sweep 1.1s ease-out 0.35s both;
+}
+@keyframes hero-shot-reveal { from { clip-path: inset(0 0 100% 0); transform: scale(1.04); } to { clip-path: inset(0 0 0 0); transform: none; } }
+@keyframes hero-shot-sweep { to { transform: translateX(110%); } }
+/* A live moment on the front card */
+.mockup-reveal-chip {
+  position: absolute; right: 4%; bottom: 7%; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px;
+  border-radius: 999px; font-size: 0.74rem; font-weight: 700; line-height: 1; color: #111827;
+  background: rgba(255, 255, 255, 0.96); box-shadow: 0 10px 24px -10px rgba(17, 24, 39, 0.45); opacity: 0;
+}
+.mockup-reveal-chip svg { color: #10B981; }
+.stacked-mockup-card.card-active .mockup-reveal-chip { animation: hero-chip-in 0.5s cubic-bezier(0.34, 1.5, 0.5, 1) 0.8s both; }
+@keyframes hero-chip-in { from { opacity: 0; transform: translateY(8px) scale(0.92); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .stacked-mockup-card.card-active .mockup-img, .stacked-mockup-card.card-active .mockup-window-body::after, .stacked-mockup-card.card-active .mockup-reveal-chip { animation: none; opacity: 1; }
+}
+
+/* Home hero headline: the premium page's "Beyond L**tC*de shit" (effects come from PremiumRedesign.css) */
+.hero-pr-headline, .hero-pr-eyebrow { --ink: #1F1E1B; --accent: #F3912E; }
+.hero-pr-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 4px;
+  font-size: 0.74rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #C2620C; background: #FFF4E8;
+}
+.hero-pr-headline {
+  margin: 0; font-size: clamp(2.6rem, 5.4vw, 4.6rem); font-weight: 800; line-height: 1.02; letter-spacing: -0.04em;
+  font-style: normal; text-transform: none; color: var(--ink);
+}
+.hero-pr-headline .pr-hl { color: var(--accent); }
+@media (max-width: 640px) { .hero-pr-headline { font-size: clamp(2.1rem, 11vw, 2.8rem); } }
+.hero-left-column .hero-pr-headline + .hero-value-prop { margin-top: 26px; }
+
+/* Hero right side: the roadmap card, centred over the ambient orbit */
+.hero-roadmap-wrap { position: relative; z-index: 4; display: flex; justify-content: center; align-items: center; width: 100%; padding: 12px 0; }
+
+/* Hero secondary CTA: transparent, outlined (no black fill) */
+.hero-cta-btn.hero-cta-ghost,
+.hero-cta-btn.hero-cta-ghost:hover {
+  background: transparent !important; color: #1F1E1B !important; border: 1.5px solid #D6D3CE !important; box-shadow: none !important;
+}
+.hero-cta-btn.hero-cta-ghost:hover { border-color: #F3912E !important; color: #C2620C !important; }
+.hero-cta-btn.hero-cta-ghost svg { color: currentColor; }
+
+/* Home hero: same side margins as the sections below (site .container: 1200px max, 2rem gutters) */
+#hero-impact-section .impact-section { padding-left: 0 !important; padding-right: 0 !important; }
+#hero-impact-section .hero-split-container { max-width: var(--max-width) !important; }
+
+/* Home hero → next section: no hard edge. The grey background eases into white,
+   and a soft white fade covers the bottom of the orbit lines (content stays above it). */
+#hero-impact-section .impact-section {
+  background: linear-gradient(180deg, #FAFAFA 0%, #FAFAFA 62%, #FFFFFF 100%) !important;
+}
+#hero-impact-section .impact-section::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 240px; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 60%, #FFFFFF 100%);
+}

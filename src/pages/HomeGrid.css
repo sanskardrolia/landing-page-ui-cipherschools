@@ -1,0 +1,52 @@
+/* ══ Home: a light grid frame, only where it helps ══
+   Each framed section gets: a label tab, a hairline across the content width,
+   ring markers at its two ends, and short guide lines that fade out below them.
+   No page-long lines; the pricing section stays plain.
+   --gx = the site .container's padded content edge. */
+.home-grid {
+  --grid-line: #E6E3DE;
+  --grid-mark: #C9C4BC;
+  --gx: calc(max(0px, (100% - var(--max-width)) / 2) + 2rem);
+  position: relative;
+}
+
+.home-band { position: relative; }
+
+/* hairline across the content + two short guides fading downward */
+.home-band:not(.is-plain)::before {
+  content: ''; position: absolute; left: var(--gx); right: var(--gx); top: 0; height: 140px; z-index: 3; pointer-events: none;
+  background:
+    linear-gradient(var(--grid-line), var(--grid-line)) no-repeat left top / 100% 1px,
+    linear-gradient(180deg, var(--grid-line), transparent) no-repeat left top / 1px 100%,
+    linear-gradient(180deg, var(--grid-line), transparent) no-repeat right top / 1px 100%;
+}
+/* ring markers at both ends of the hairline */
+.home-band:not(.is-plain)::after {
+  content: ''; position: absolute; left: calc(var(--gx) - 4px); right: calc(var(--gx) - 4px); top: -4px; height: 9px; z-index: 4; pointer-events: none;
+  background:
+    radial-gradient(circle, #fff 0 2px, var(--grid-mark) 2.5px 3.5px, transparent 4px) no-repeat left top / 9px 9px,
+    radial-gradient(circle, #fff 0 2px, var(--grid-mark) 2.5px 3.5px, transparent 4px) no-repeat right top / 9px 9px;
+}
+
+/* label: a small monospace tab in the corner */
+.home-band-label {
+  position: absolute; z-index: 5; top: 0; left: calc(var(--gx) + 1px);
+  padding: 8px 14px; font-family: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 0.76rem; letter-spacing: 0.02em; color: #6B7280;
+  background: #FAFAF8; border-right: 1px solid var(--grid-line); border-bottom: 1px solid var(--grid-line);
+}
+
+/* framed sections leave room for the label */
+.home-band:not(.is-plain) > .hs-section { padding-top: 104px; }
+
+/* pricing: same content width as the rest of the page */
+.home-band > .pr-on-home { padding-left: 2rem; padding-right: 2rem; }
+.home-band > .pr-on-home .pr-section { max-width: calc(var(--max-width) - 4rem); }
+
+@media (max-width: 768px) {
+  .home-grid { --gx: 1.25rem; }
+  .home-band-label { font-size: 0.7rem; padding: 6px 11px; }
+  .home-band:not(.is-plain) > .hs-section { padding-top: 76px; }
+  .home-band:not(.is-plain)::before { height: 90px; }
+  .home-band > .pr-on-home { padding-left: 1.25rem; padding-right: 1.25rem; }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowRight, BadgePercent, BarChart2, Bot, Check, ChevronDown, ClipboardCheck, Clock, Code2, Crown, Database, Eye,
@@ -385,7 +386,7 @@ const VALUE_COMPARE = [
   { title: 'Offline coaching & bootcamps', price: '₹25,000+', per: 'per course', desc: 'Fixed batches and one stack at a time.' }
 ];
 
-const FAQS = [
+export const FAQS = [
   { q: 'How does pricing work?', a: 'Every plan is a 12-month plan at 30% off, billed once: Core ₹2,088 (₹174/month), Plus ₹4,200 (₹350/month) and Ultra ₹5,880 (₹490/month).' },
   { q: 'Can I upgrade later?', a: 'Yes, any time from your dashboard. You pay only the difference between the two plans, and your validity resets to 12 months from the day you upgrade.' },
   { q: 'Which Full Stack track do I get with Plus?', a: 'Plus includes one Full Stack track, MERN or JFS, which you pick at checkout. Ultra includes both.' },
@@ -400,7 +401,7 @@ const FAQS = [
 const GRAWLIX = '@#$%&!*?';
 const grawlix = (text) => text.replace(/\*/g, () => GRAWLIX[Math.floor(Math.random() * GRAWLIX.length)]);
 
-const GrawlixWord = ({ text }) => {
+export const GrawlixWord = ({ text }) => {
   const [shown, setShown] = useState(text);
   useEffect(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
@@ -563,32 +564,12 @@ const PlanOfferingModal = ({ planId, onSwitch, onClose, ctaFor, onBuy }) => {
   );
 };
 
-const PremiumPage = () => {
+/* Everything the plan CTAs need: the learner's current plan, CTA labels, checkout routing,
+   the featured plan and the offer countdown. Shared by /premium and the home page. */
+const usePlanActions = () => {
   const navigate = useNavigate();
   const [enrollment] = useState(getEnrollment); // existing plan, if any — drives CTA labels and routing
-  const [openFaq, setOpenFaq] = useState(0);
-  const [tab, setTab] = useState(PLATFORM_TABS[0].id);
-  const [detailsFor, setDetailsFor] = useState(null); // plan id shown in the full-size offering pop-up
   const [left, setLeft] = useState(msLeft);
-  const plansRef = useRef(null);
-
-  const location = useLocation();
-  // Land at the top, or on the plan comparison when linked as /premium#plans (e.g. from dashboard preview)
-  useEffect(() => {
-    if (location.hash !== '#plans') { window.scrollTo(0, 0); return undefined; }
-    // The page is still settling after the route change (layout, other scroll resets),
-    // so keep nudging towards the plans for a moment until we're there.
-    let tries = 0;
-    const t = setInterval(() => {
-      const el = plansRef.current;
-      tries += 1;
-      if (!el) return;
-      const target = el.getBoundingClientRect().top + window.scrollY - 72;
-      if (Math.abs(window.scrollY - target) < 8 || tries > 12) { clearInterval(t); return; }
-      window.scrollTo({ top: target });
-    }, 120);
-    return () => clearInterval(t);
-  }, [location.hash]);
 
   // Offer countdown
   useEffect(() => {
@@ -638,33 +619,36 @@ const PremiumPage = () => {
     navigate('/dashboard');
   };
 
-  const scrollToPlans = () => plansRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
   // The plan to push in hero, value section and sticky bar: Plus, or the next tier up
   const featuredId = !enrollment ? 'plus' : PLAN_RANK[PLAN_RANK.indexOf(enrollment.planId) + 1] || null;
   const featured = PLANS_12M_DATA.find((p) => p.id === featuredId);
   const plus = PLANS_12M_DATA.find((p) => p.id === 'plus');
   const offerOn = left > 0;
   const clock = splitTime(left);
-  const tabData = PLATFORM_TABS.find((t) => t.id === tab);
   const FeaturedIcon = featured ? PLAN_META[featured.id].Icon : Crown;
 
+  return { enrollment, planRelation, ctaLabel, handleOpenCheckout, experience, featured, plus, offerOn, clock, FeaturedIcon };
+};
+
+/* Premium hero: the pitch + the featured plan offer. On home it sits as a band below the
+   home hero (onHome: an h2, contained card styling). */
+export const PremiumHero = ({ actions, onCompare, onHome = false }) => {
+  const { enrollment, ctaLabel, handleOpenCheckout, experience, featured, offerOn, clock, FeaturedIcon } = actions;
+  const Heading = onHome ? 'h2' : 'h1';
   return (
-    <div className="pr">
-      {/* ── Hero banner: pitch on the left, the plan offer on the right ── */}
-      <header className="pr-hero">
+      <header className={`pr-hero ${onHome ? 'pr-hero-home' : ''}`}>
         <div className="pr-hero-copy">
           <span className="pr-eyebrow"><Sparkles size={13} /> CipherSchools Premium</span>
-          <h1 className="pr-h1-beyond" aria-label="Beyond LeetCode shit">
+          <Heading className="pr-h1-beyond" aria-label="Beyond LeetCode shit">
             <span className="pr-beyond" aria-hidden="true">Beyond</span>{' '}
             <GrawlixWord text="L**tC*de" />{' '}
             <span className="pr-bleep" aria-hidden="true"><span className="pr-hl pr-hl-draw">shit</span></span>
-          </h1>
+          </Heading>
           <p className="pr-hero-sub">
             Lectures, practice, proctored tests, mock interviews and mentorship for CS fundamentals, DSA, development and system design.
           </p>
           <div className="pr-hero-ctas">
-            <button type="button" className="pr-btn pr-btn-dark pr-btn-lg" onClick={scrollToPlans}>Compare all plans <ArrowRight size={17} /></button>
+            <button type="button" className="pr-btn pr-btn-dark pr-btn-lg" onClick={onCompare}>Compare all plans <ArrowRight size={17} /></button>
             <button type="button" className="pr-btn pr-btn-ghost pr-btn-lg" onClick={experience}>
               <Eye size={17} /> {enrollment ? 'Go to your dashboard' : 'Experience before you pay'}
             </button>
@@ -713,9 +697,16 @@ const PremiumPage = () => {
           </aside>
         )}
       </header>
+  );
+};
 
-      {/* ── Pricing ── */}
-      <section className="pr-section pr-pricing" id="plans" ref={plansRef}>
+/* Pricing: the three plan cards, offer countdown and assurances, with the full-offering pop-up */
+export const PremiumPricing = ({ actions, sectionRef, id = 'plans' }) => {
+  const { planRelation, ctaLabel, handleOpenCheckout, offerOn, clock } = actions;
+  const [detailsFor, setDetailsFor] = useState(null); // plan id shown in the full-size offering pop-up
+  return (
+    <>
+      <section className="pr-section pr-pricing" id={id} ref={sectionRef}>
         <div className="pr-head">
           <span className="pr-pill">Pricing Plans</span>
           <h2>Pick your plan, <span className="pr-hl">save 30%</span></h2>
@@ -791,6 +782,88 @@ const PremiumPage = () => {
           <li><Lock size={16} /> Secure payments via UPI, cards & net banking</li>
         </ul>
       </section>
+      {detailsFor && (
+        <PlanOfferingModal
+          planId={detailsFor}
+          onSwitch={setDetailsFor}
+          onClose={() => setDetailsFor(null)}
+          ctaFor={(plan) => ctaLabel(plan, PLAN_META[plan.id].cta)}
+          onBuy={(plan) => { setDetailsFor(null); handleOpenCheckout(plan); }}
+        />
+      )}
+    </>
+  );
+};
+
+/* Slim sticky banner at the bottom: pushes the next plan up (Plus for new learners).
+   Used on /premium and the home page. */
+export const PremiumStickyBar = ({ actions, onHome = false }) => {
+  const { ctaLabel, handleOpenCheckout, featured, offerOn, clock } = actions;
+  if (!featured) return null;
+  // Rendered straight into <body>: Safari clips position:fixed inside an ancestor with overflow: clip (.pr)
+  return createPortal(
+        <div className={`pr-sticky ${onHome ? 'is-home' : ''}`} role="region" aria-label={`Upgrade to ${featured.name}`}>
+          <div className="pr-sticky-inner">
+            <span className="pr-sticky-tag"><Flame size={14} /> Upgrade to {featured.name}</span>
+            <span className="pr-sticky-price">
+              <strong>{featured.monthlyPriceFormatted}</strong>/mo <s>{featured.originalMonthlyPrice}</s>
+              <span className="pr-sticky-off">{featured.discount}</span>
+            </span>
+            {offerOn && <span className="pr-sticky-timer"><Clock size={13} /> ends in {clock[0][1]}d {clock[1][1]}h {String(clock[2][1]).padStart(2, '0')}m</span>}
+            <button type="button" className="pr-sticky-btn" onClick={() => handleOpenCheckout(featured)}>
+              {ctaLabel(featured, `Upgrade to ${featured.name}`)} <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>,
+    document.body
+  );
+};
+
+/* Home page: the pricing (with its offer pop-up) and the sticky upgrade bar */
+export const PremiumOnHome = () => {
+  const actions = usePlanActions();
+  const plansRef = useRef(null);
+  return (
+    <div className="pr pr-on-home">
+      <PremiumPricing actions={actions} sectionRef={plansRef} id="plans-section" />
+      <PremiumStickyBar actions={actions} onHome />
+    </div>
+  );
+};
+
+const PremiumPage = () => {
+  const actions = usePlanActions();
+  const { ctaLabel, handleOpenCheckout, featured, plus } = actions;
+  const [openFaq, setOpenFaq] = useState(0);
+  const [tab, setTab] = useState(PLATFORM_TABS[0].id);
+  const plansRef = useRef(null);
+
+  const location = useLocation();
+  // Land at the top, or on the plan comparison when linked as /premium#plans (e.g. from dashboard preview)
+  useEffect(() => {
+    if (location.hash !== '#plans') { window.scrollTo(0, 0); return undefined; }
+    // The page is still settling after the route change (layout, other scroll resets),
+    // so keep nudging towards the plans for a moment until we're there.
+    let tries = 0;
+    const t = setInterval(() => {
+      const el = plansRef.current;
+      tries += 1;
+      if (!el) return;
+      const target = el.getBoundingClientRect().top + window.scrollY - 72;
+      if (Math.abs(window.scrollY - target) < 8 || tries > 12) { clearInterval(t); return; }
+      window.scrollTo({ top: target });
+    }, 120);
+    return () => clearInterval(t);
+  }, [location.hash]);
+
+  const scrollToPlans = () => plansRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const tabData = PLATFORM_TABS.find((t) => t.id === tab);
+
+  return (
+    <div className="pr">
+      <PremiumHero actions={actions} onCompare={scrollToPlans} />
+
+      <PremiumPricing actions={actions} sectionRef={plansRef} />
 
       {/* ── Numbers ── */}
       <section className="pr-section pr-stats-wrap">
@@ -937,32 +1010,8 @@ const PremiumPage = () => {
         </div>
       </section>
 
-      {detailsFor && (
-        <PlanOfferingModal
-          planId={detailsFor}
-          onSwitch={setDetailsFor}
-          onClose={() => setDetailsFor(null)}
-          ctaFor={(plan) => ctaLabel(plan, PLAN_META[plan.id].cta)}
-          onBuy={(plan) => { setDetailsFor(null); handleOpenCheckout(plan); }}
-        />
-      )}
-
       {/* ── Slim sticky banner: always on screen, pushes the next plan up (Plus for new learners) ── */}
-      {featured && (
-        <div className="pr-sticky" role="region" aria-label={`Upgrade to ${featured.name}`}>
-          <div className="pr-sticky-inner">
-            <span className="pr-sticky-tag"><Flame size={14} /> Upgrade to {featured.name}</span>
-            <span className="pr-sticky-price">
-              <strong>{featured.monthlyPriceFormatted}</strong>/mo <s>{featured.originalMonthlyPrice}</s>
-              <span className="pr-sticky-off">{featured.discount}</span>
-            </span>
-            {offerOn && <span className="pr-sticky-timer"><Clock size={13} /> ends in {clock[0][1]}d {clock[1][1]}h {String(clock[2][1]).padStart(2, '0')}m</span>}
-            <button type="button" className="pr-sticky-btn" onClick={() => handleOpenCheckout(featured)}>
-              {ctaLabel(featured, `Upgrade to ${featured.name}`)} <ArrowRight size={14} />
-            </button>
-          </div>
-        </div>
-      )}
+      <PremiumStickyBar actions={actions} />
     </div>
   );
 };

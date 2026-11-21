@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  ArrowLeft, ArrowRight, Eye, EyeOff, Sparkles, CheckCircle2, 
-  Lock, Mail, User, KeyRound, ShieldCheck, BookOpen, 
-  Terminal, GraduationCap, Check
-} from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, CheckCircle2, Lock, Mail, User, KeyRound } from 'lucide-react';
+import { DEMO_ACCOUNTS, DEMO_PASSWORD } from '../data/demoAccounts';
+import { signIn } from '../utils/auth';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -18,13 +16,36 @@ const LoginPage = () => {
     rememberMe: true
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
 
+  // DEMO: log in / sign up opens the dashboard — the paid one for a plan, else the preview
+  const go = (result) => {
+    if (!result.ok) { setError(result.error); setBusy(false); return; }
+    setTimeout(() => navigate('/dashboard'), 350);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 3000);
+    setError('');
+    if (authMode === 'invite') {
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 3000);
+      return;
+    }
+    setBusy(true);
+    go(signIn(formData.email, formData.password));
+  };
+  const fillDemo = (acc) => {
+    setAuthMode('login');
+    setError('');
+    setFormData((f) => ({ ...f, email: acc.email, password: DEMO_PASSWORD }));
+  };
+  const googleSignIn = () => {
+    setError('');
+    if (!formData.email) { setError('Enter your email first, then continue with Google (demo).'); return; }
+    setBusy(true);
+    go(signIn(formData.email, '', { provider: 'google' }));
   };
 
   const handleInputChange = (field, value) => {
@@ -274,14 +295,17 @@ const LoginPage = () => {
               )}
 
               {/* Submit Button */}
-              <button type="submit" className="login-submit-btn">
+              <button type="submit" className="login-submit-btn" disabled={busy}>
                 <span>
-                  {authMode === 'login' && 'Log In to CipherSchools'}
-                  {authMode === 'signup' && 'Create Free Account'}
-                  {authMode === 'invite' && 'Verify & Join Cohort'}
+                  {busy && 'Signing you in…'}
+                  {!busy && authMode === 'login' && 'Log In to CipherSchools'}
+                  {!busy && authMode === 'signup' && 'Create Free Account'}
+                  {!busy && authMode === 'invite' && 'Verify & Join Cohort'}
                 </span>
                 <ArrowRight size={17} />
               </button>
+
+              {error && <p className="login-error" role="alert">{error}</p>}
 
               {submitted && (
                 <div className="login-feedback-toast animate-fade-in">
@@ -302,7 +326,7 @@ const LoginPage = () => {
                 </div>
 
                 <div className="login-oauth-group">
-                  <button type="button" className="login-oauth-btn google-oauth-btn">
+                  <button type="button" className="login-oauth-btn google-oauth-btn" onClick={googleSignIn} disabled={busy}>
                     <svg className="oauth-svg-icon" viewBox="0 0 24 24" width="18" height="18">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -313,6 +337,23 @@ const LoginPage = () => {
                   </button>
                 </div>
               </>
+            )}
+
+            {/* DEMO accounts: tap to fill the form */}
+            {authMode !== 'invite' && (
+              <div className="login-demo">
+                <p className="login-demo-title">Demo accounts <span>password: <code>{DEMO_PASSWORD}</code></span></p>
+                <div className="login-demo-grid">
+                  {DEMO_ACCOUNTS.map((a) => (
+                    <button key={a.email} type="button" className={`login-demo-chip ${formData.email === a.email ? 'is-on' : ''}`} onClick={() => fillDemo(a)}>
+                      <strong>{a.label}</strong>
+                      <small>{a.email}</small>
+                      <em>{a.note}</em>
+                    </button>
+                  ))}
+                </div>
+                <p className="login-demo-foot">Any other email opens the free preview dashboard.</p>
+              </div>
             )}
 
             {/* Have an invite code label link (replaces big box) */}
