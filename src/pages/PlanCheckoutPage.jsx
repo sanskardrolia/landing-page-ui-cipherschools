@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, ArrowRight, Check, Crown, Flame, Lock, ShieldCheck, Sparkles, Zap
+  ArrowLeft, ArrowRight, Check, ChevronDown, ClipboardCheck, Crown, Flame, ListChecks, Lock, Mic, PlayCircle, ShieldCheck, Zap
 } from 'lucide-react';
 import { PLANS_12M_DATA, PLAN_SLUGS, FeatureTree } from './PremiumPage';
+import { PILLARS, PLAN_COL, PLAN_ROWS } from '../data/planRows';
 import './PremiumPage.css';
 import './PlanCheckoutPage.css';
 
@@ -18,6 +19,10 @@ const PASSOUT_YEARS = (() => {
   const now = new Date().getFullYear();
   return Array.from({ length: 10 }, (_, i) => now - 5 + i);
 })();
+
+const inr = (n) => `₹${n.toLocaleString('en-IN')}`;
+
+const PILLAR_ICONS = [PlayCircle, ListChecks, ClipboardCheck, Mic];
 
 const EMPTY_FORM = { name: '', email: '', college: '', phone: '', passoutYear: '', linkedin: '' };
 
@@ -68,6 +73,8 @@ const PlanCheckoutPage = () => {
   };
 
   const PlanIcon = plan.id === 'plus' ? Flame : plan.id === 'compete' ? Crown : Zap;
+  const col = PLAN_COL[plan.id] ?? 0;
+  const fullPrice = Number(String(plan.originalPrice).replace(/[^\d]/g, '')) || plan.price;
 
   return (
     <div className="premium-page-viewport plan-checkout-viewport">
@@ -77,44 +84,55 @@ const PlanCheckoutPage = () => {
         </Link>
 
         <div className="plan-checkout-grid">
-          {/* ── Left: plan brief ── */}
+          {/* ── Left: plan brief — compact so the whole offer fits without scrolling:
+                 price in two lines, the four pillars, then everything included in two
+                 columns (same rows as the plan cards); the full module breakdown is optional ── */}
           <aside className={`pricing-card-surface plan-checkout-brief card-${plan.id}`}>
-            <div className="plan-header">
-              <div className="plan-title-row">
+            <div className="pcb-head">
+              <div>
                 <h1 className="plan-name">{plan.name} Plan</h1>
-                <PlanIcon size={20} className="plan-checkout-plan-icon" />
+                <p className="plan-checkout-pitch">{plan.pitch}</p>
               </div>
-              <p className="plan-checkout-pitch">{plan.pitch}</p>
+              <PlanIcon size={20} className="plan-checkout-plan-icon" />
             </div>
 
-            <div className="plan-price-block">
-              <div className="price-main-line">
-                <span className="price-figure">{plan.monthlyPriceFormatted}</span>
-                <span className="price-period">/ mon</span>
-              </div>
-              <div className="price-commitment-line">
-                <span className="price-commitment-badge">with a commitment of {plan.durationLabel}</span>
-                <span className="price-total-billed">Billed {plan.priceFormatted} upfront</span>
-              </div>
-              <div className="price-sub-line">
-                <span className="price-original">{plan.originalMonthlyPrice}/mon</span>
-                <span className="price-discount-tag">{plan.discount}</span>
-              </div>
+            <div className="pcb-price">
+              <span className="pcb-price-fig">{plan.monthlyPriceFormatted}<small>/mon</small></span>
+              <span className="pcb-price-was">{plan.originalMonthlyPrice}/mon</span>
+              <span className="price-discount-tag">{plan.discount}</span>
+            </div>
+            <p className="pcb-billed"><b>{plan.priceFormatted}</b> billed once for {plan.durationLabel.toLowerCase()}</p>
+
+            <div className="pcb-pillars">
+              <span>Every subject includes</span>
+              <ul>{PILLARS.map((t, i) => { const I = PILLAR_ICONS[i]; return <li key={t}><I size={13} /> {t}</li>; })}</ul>
             </div>
 
-            <div className="plan-card-divider"></div>
+            <p className="pcb-label">What&apos;s included</p>
+            <ul className="pcb-rows">
+              {PLAN_ROWS.filter((r) => r.v[col]).map((r) => {
+                const v = r.v[col];
+                return (
+                  <li key={r.label}>
+                    <Check size={14} className="pcb-yes" />
+                    <span>
+                      {r.labels?.[col] ?? r.label}
+                      {typeof v === 'string' && <small>{v}</small>}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
 
-            {plan.inheritedLabel && (
-              <div className="plan-inherited-banner">
-                <Sparkles size={13} />
-                <span>{plan.inheritedLabel}</span>
-              </div>
-            )}
-            <FeatureTree nodes={plan.features} />
-
-            <div className="plan-footer-assurance">
-              <ShieldCheck size={14} />
-              <span>Instant access • 100% money-back 7-day guarantee</span>
+            <div className="pcb-foot">
+              <details className="pcb-more">
+                <summary>See the full module breakdown <ChevronDown size={14} /></summary>
+                <div className="pcb-more-body">
+                  {plan.inheritedLabel && <p className="pcb-inherited">{plan.inheritedLabel}</p>}
+                  <FeatureTree nodes={plan.features} />
+                </div>
+              </details>
+              <span className="pcb-assure"><ShieldCheck size={13} /> 7-day money-back guarantee</span>
             </div>
           </aside>
 
@@ -127,15 +145,17 @@ const PlanCheckoutPage = () => {
                 </p>
 
                 <div className="plan-checkout-fields">
-                  <Field label="Full Name" error={showErr('name')}>
-                    <input type="text" autoComplete="name" placeholder="e.g. Riya Sharma"
-                      value={form.name} onChange={onChange('name')} onBlur={onBlur('name')} />
-                  </Field>
+                  <div className="plan-checkout-row is-even">
+                    <Field label="Full Name" error={showErr('name')}>
+                      <input type="text" autoComplete="name" placeholder="e.g. Riya Sharma"
+                        value={form.name} onChange={onChange('name')} onBlur={onBlur('name')} />
+                    </Field>
 
-                  <Field label="Email" error={showErr('email')}>
-                    <input type="email" autoComplete="email" placeholder="you@example.com"
-                      value={form.email} onChange={onChange('email')} onBlur={onBlur('email')} />
-                  </Field>
+                    <Field label="Email" error={showErr('email')}>
+                      <input type="email" autoComplete="email" placeholder="you@example.com"
+                        value={form.email} onChange={onChange('email')} onBlur={onBlur('email')} />
+                    </Field>
+                  </div>
 
                   <Field label="College" error={showErr('college')}>
                     <input type="text" autoComplete="organization" placeholder="Your college / university"
@@ -166,6 +186,13 @@ const PlanCheckoutPage = () => {
                       value={form.linkedin} onChange={onChange('linkedin')} onBlur={onBlur('linkedin')} />
                   </Field>
                 </div>
+
+                {/* order summary: fills the space above the pay button */}
+                <dl className="plan-checkout-summary">
+                  <div><dt>{plan.name} plan · {plan.durationLabel.toLowerCase()}</dt><dd>{plan.originalPrice}</dd></div>
+                  <div className="is-off"><dt>{plan.discount.replace('OFF', 'off')} applied</dt><dd>−{inr(fullPrice - plan.price)}</dd></div>
+                  <div className="is-total"><dt>Total today</dt><dd>{plan.priceFormatted}</dd></div>
+                </dl>
 
                 <button type="submit" className={`plan-checkout-submit submit-${plan.id}`}>
                   <span>Continue to payment · {plan.priceFormatted}</span>

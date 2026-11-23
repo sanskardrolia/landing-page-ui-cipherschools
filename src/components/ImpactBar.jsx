@@ -4,7 +4,6 @@ import DiwaliHeroLayer from './DiwaliHeroLayer';
 import Diya from './Diya';
 import FireworkDiya from './FireworkDiya';
 import { useNavigate } from 'react-router-dom';
-import { GrawlixWord } from '../pages/PremiumPage';
 import { startPreview } from '../utils/preview';
 import HeroRoadmap from './HeroRoadmap';
 import './ImpactBar.css';
@@ -244,17 +243,15 @@ const ImpactBar = ({ diwali = false, part = 'all' }) => {
                 <span>Shubh Deepawali</span>
               </div>
             )}
-            {/* Headline: the premium page's "Beyond L**tC*de shit" with its effects
-                (cycling censor symbols, RGB glitch, bleep, hand-drawn underline) */}
-            <h1 className="pr-h1-beyond hero-pr-headline" aria-label="Beyond LeetCode shit">
-              <span className="pr-beyond" aria-hidden="true">Beyond</span>{' '}
-              <GrawlixWord text="L**tC*de" />{' '}
-              <span className="pr-bleep" aria-hidden="true"><span className="pr-hl pr-hl-draw">shit</span></span>
+            {/* Headline: a play on the name (cipher → deciphered) that still says the
+                outcome in plain words; "deciphered" carries the hand-drawn underline */}
+            <h1 className="hero-pr-headline hero-h1-plain">
+              Your first tech job, <span className="pr-hl pr-hl-draw">deciphered.</span>
             </h1>
 
             {/* Concise Value Proposition */}
             <p className="hero-value-prop">
-              <span>One place to <strong>learn, practice, test and interview</strong> for your first tech job.</span>
+              <span>One clear path to <strong>learn, practice, test and interview</strong>, step by step.</span>
               <span className="hero-value-prop-sub">
                 Built for <em className="prop-highlight">college students</em>. Free to start, <em className="prop-highlight">₹174/month</em> when you're ready.
               </span>
@@ -273,7 +270,7 @@ const ImpactBar = ({ diwali = false, part = 'all' }) => {
                 <ArrowRight size={15} className="hero-btn-arrow" />
               </button>
             </div>
-            <p className="hero-cta-reassure"><ShieldCheck size={14} /> 7-day money-back · Instant access · ₹350/month</p>
+            <p className="hero-cta-reassure"><ShieldCheck size={14} /> 7-day money-back guarantee</p>
 
           </div>
 

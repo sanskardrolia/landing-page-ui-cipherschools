@@ -2724,3 +2724,12 @@
   content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 240px; z-index: 1; pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.85) 60%, #FFFFFF 100%);
 }
+
+/* Hero line "One place to learn, practice, test and interview…" on one line (two-column layouts) */
+@media (min-width: 961px) {
+  .hero-left-column .hero-value-prop { max-width: none; }
+  .hero-left-column .hero-value-prop > span:first-child { white-space: nowrap; font-size: clamp(0.95rem, 1.3vw, 1.125rem); }
+}
+/* Plain SEO headline: a touch smaller than the old 3-word one so it sits in 3 lines */
+.hero-pr-headline.hero-h1-plain { font-size: clamp(2.3rem, 4.3vw, 3.7rem); line-height: 1.06; letter-spacing: -0.035em; text-wrap: balance; }
+@media (max-width: 640px) { .hero-pr-headline.hero-h1-plain { font-size: clamp(2rem, 9.5vw, 2.6rem); } }

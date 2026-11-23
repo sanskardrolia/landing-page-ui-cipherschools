@@ -452,3 +452,160 @@
 
 /* "Learn. Practice. Test. Interview." uses the same title size as the other section headings */
 .hs-n-title { font-size: clamp(1.7rem, 3.4vw, 2.5rem); line-height: 1.18; letter-spacing: -0.02em; font-weight: 800; }
+
+/* ══ Problem card — refined (clean SaaS style): monochrome, hairlines, list rows, one orange accent ══ */
+.hs-tabs { --ink: #111827; --text: #374151; --muted: #6B7280; --faint: #9CA3AF; --line: #ECEBE8;
+  --hatch: repeating-linear-gradient(135deg, #E4E2DE 0 1px, transparent 1px 6px);
+  border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 30px 60px -40px rgba(17, 24, 39, 0.35); }
+
+/* tab strip: quiet, grey; the other sites are desaturated + soft */
+.hs-tabs .hs-tabs-bar { background: #F7F7F5; border-bottom: 1px solid var(--line); padding: 9px 12px 0; }
+.hs-tabs .hs-tabs-dots i { width: 9px; height: 9px; background: #DDDBD7 !important; }
+.hs-tabs .hs-tab { height: 32px; font-size: 0.76rem; color: var(--muted); background: transparent; border-radius: 6px 6px 0 0; }
+.hs-tabs .hs-tab-mess { filter: grayscale(1) blur(0.6px); opacity: 0.8; }
+.hs-tabs .hs-tab-mess:first-of-type, .hs-tabs .hs-tab-mess:nth-of-type(2) { background: transparent; }
+.hs-tabs .hs-tab-mess + .hs-tab-mess { border-left: 1px solid #E4E2DE; border-radius: 0; }
+.hs-tabs .hs-tab-cs { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); border-bottom: 1px solid #fff; margin-bottom: -1px; }
+
+/* body: white both sides, a single hairline between */
+.hs-tabs .hs-tabs-body, .hs-tabs.is-fixed .hs-tabs-body { background: #fff; }
+.hs-tabs .hs-tabs-doc { padding: 26px 30px; }
+.hs-tabs-doc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.hs-tabs .hs-tabs-doc-title { margin: 0; font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); }
+.hs-tabs .hs-tabs-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; color: var(--text); background: #fff; border: 1px solid var(--line); }
+.hs-tabs .hs-tabs-chip i { width: 6px; height: 6px; border-radius: 50%; background: #D1D5DB; transition: background 0.3s; }
+.hs-tabs .hs-tabs-chip.is-ok { color: var(--ink); background: #fff; }
+.hs-tabs .hs-tabs-chip.is-ok i { background: #F3912E; }
+
+/* rows: a list, not boxed cards */
+.hs-tabs .hs-tabs-doc ul { gap: 0; border-top: 1px solid var(--line); }
+.hs-tabs .hs-tabs-doc li, .hs-tabs.is-fixed .hs-tabs-doc li {
+  gap: 14px; padding: 13px 2px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none;
+}
+.hs-tabs-num { flex-shrink: 0; width: 20px; font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 0.72rem; color: var(--faint); }
+.hs-tabs .hs-tabs-icon, .hs-tabs.is-fixed .hs-tabs-icon { width: auto; height: auto; background: none; color: var(--faint); border-radius: 0; }
+.hs-tabs.is-fixed .hs-tabs-icon { color: var(--ink); }
+.hs-tabs .hs-tabs-line { font-size: 0.95rem; }
+.hs-tabs .hs-tabs-line .is-mess { color: var(--faint); font-style: normal; }
+.hs-tabs .hs-tabs-line .is-fix { color: var(--ink); font-weight: 500; }
+.hs-tabs .hs-tabs-mark, .hs-tabs.is-fixed .hs-tabs-mark { width: 44px; height: 18px; border-radius: 4px; background: none; color: var(--ink); }
+.hs-tabs-hatch { display: block; width: 44px; height: 10px; border-radius: 3px; background: var(--hatch); border: 1px solid #ECEAE6; }
+.hs-tabs.is-fixed .hs-tabs-mark { width: 20px; height: 20px; border-radius: 50%; color: #fff; background: var(--ink); margin-left: 24px; }
+.hs-tabs.is-fixed .hs-tabs-doc li:last-child .hs-tabs-mark { background: #F3912E; }
+
+/* right: white panel, ink numbers, hairline stats */
+.hs-tabs .hs-tabs-side, .hs-tabs:not(.is-fixed) .hs-tabs-side { background: #fff; border-left: 1px solid var(--line); padding: 26px 28px; gap: 18px; }
+.hs-tabs-visual { height: auto; }
+.hs-tabbars { display: flex; align-items: flex-end; gap: 4px; height: 64px; padding: 0 2px; border-bottom: 1px solid var(--line); }
+.hs-tabbars i {
+  flex: 1; max-width: 18px; height: var(--h); border-radius: 3px 3px 0 0; background: var(--hatch), #FAFAF9; border: 1px solid #E8E6E2; border-bottom: 0;
+  transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), max-width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.5s, opacity 0.4s, background 0.4s;
+  transition-delay: calc(var(--k) * 40ms);
+}
+.hs-tabs.is-fixed .hs-tabbars i { flex: 0; max-width: 0; opacity: 0; border-width: 0; }
+.hs-tabs.is-fixed .hs-tabbars i:first-child { flex: 1; max-width: 100%; height: 100%; opacity: 1; border-width: 0; background: #F3912E; transition-delay: 0.5s; }
+.hs-tabbars-label { display: block; margin-top: 8px; font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 0.7rem; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.hs-tabs .hs-tabs-count strong, .hs-tabs.is-fixed .hs-tabs-count strong { font-size: 3rem; font-weight: 600; letter-spacing: -0.04em; color: var(--ink); }
+.hs-tabs .hs-tabs-count span { font-size: 0.9rem; color: var(--muted); }
+.hs-tabs .hs-tabs-stats { gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.hs-tabs .hs-tabs-stats li { padding: 10px 0 10px 12px; border: 0; border-left: 1px solid var(--line); border-radius: 0; background: none; }
+.hs-tabs .hs-tabs-stats li:first-child { border-left: 0; padding-left: 0; }
+.hs-tabs .hs-tabs-stats b, .hs-tabs:not(.is-fixed) .hs-tabs-stats b { font-size: 1rem; font-weight: 600; color: var(--ink); }
+.hs-tabs .hs-tabs-stats span { font-size: 0.72rem; color: var(--muted); }
+.hs-tabs .hs-tabs-side::before { display: none; }
+.hs-tabs .hs-btn-ghost { color: var(--ink); background: #fff; border-color: #E5E7EB; }
+
+/* presence + cursors: monochrome, "You" in orange */
+.hs-presence-avatars i { background: #4B5563 !important; }
+.hs-presence-avatars i:nth-child(2) { background: #6B7280 !important; }
+.hs-presence-avatars i:nth-child(3) { background: #9CA3AF !important; }
+.hs-presence-avatars i.is-you { background: #F3912E !important; }
+.hs-presence-dot { background: #16A34A; }
+
+@media (max-width: 860px) {
+  .hs-tabs .hs-tabs-side, .hs-tabs:not(.is-fixed) .hs-tabs-side { border-left: 0; border-top: 1px solid var(--line); padding: 22px 18px; }
+  .hs-tabs .hs-tabs-doc { padding: 20px 16px; }
+}
+@media (max-width: 480px) {
+  .hs-tabs-num { display: none; }
+  .hs-tabs .hs-tabs-mark { width: 30px; }
+  .hs-tabs-hatch { width: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .hs-tabbars i { transition: none; } }
+.hs-tabs.is-fixed .hs-tabbars i:first-child { height: 40%; border-radius: 4px 4px 0 0; }
+
+/* How it works: blurbs sit between the heading and the mockup —
+   one hairline strip, columns aligned to the mockup's edges, left-aligned */
+#how-section .hs-n-title { margin-bottom: 36px; }
+.hs-blurbs.is-top {
+  max-width: none; margin: 0 0 32px; gap: 0; text-align: left;
+  border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;
+}
+.hs-blurbs.is-top > div { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; row-gap: 6px; align-items: center; padding: 22px 28px; }
+.hs-blurbs.is-top > div + div { border-left: 1px solid #E5E7EB; }
+.hs-blurbs.is-top > div:first-child { padding-left: 4px; }
+.hs-blurb-ico { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; color: #111827; background: #F4F4F5; border: 1px solid #E5E7EB; border-radius: 4px; }
+.hs-blurbs.is-top h3 { margin: 0; font-size: 1.02rem; font-weight: 700; letter-spacing: -0.01em; color: #111827; }
+.hs-blurbs.is-top p { grid-column: 2; margin: 0; max-width: 30ch; font-size: 0.93rem; line-height: 1.55; color: #6B7280; }
+@media (max-width: 760px) {
+  .hs-blurbs.is-top { grid-template-columns: 1fr; margin-bottom: 24px; }
+  .hs-blurbs.is-top > div { padding: 16px 2px; }
+  .hs-blurbs.is-top > div + div { border-left: 0; border-top: 1px solid #E5E7EB; }
+}
+
+/* Beyond lectures: switch between the two hands-on demos */
+.sdd-section .hs-head { margin-bottom: 22px; }
+.hs-beyond-tabs { display: flex; justify-content: center; gap: 4px; width: fit-content; margin: 0 auto 20px; padding: 4px; background: #F4F4F5; border: 1px solid #E5E7EB; border-radius: 4px; }
+.hs-beyond-tabs button {
+  display: inline-flex; align-items: center; gap: 7px; height: 36px; padding: 0 14px;
+  font: inherit; font-size: 0.88rem; font-weight: 600; color: #6B7280; background: none; border: 0; border-radius: 4px; cursor: pointer;
+}
+.hs-beyond-tabs button:hover { color: #111827; }
+.hs-beyond-tabs button.is-on { color: #111827; background: #fff; box-shadow: 0 1px 3px rgba(17, 24, 39, 0.12); }
+.hs-beyond-tabs button.is-on svg { color: #E8801A; }
+.hs-beyond-stage { max-width: 1000px; margin: 0 auto; animation: hs-beyond-in 0.3s ease; }
+@keyframes hs-beyond-in { from { opacity: 0; transform: translateY(6px); } }
+@media (max-width: 520px) { .hs-beyond-tabs button { padding: 0 10px; font-size: 0.8rem; } }
+
+/* Problem card: the two count captions overlap in one grid cell so toggling never changes the card height */
+.hs-tabs .hs-tabs-count .hs-tabs-cap { display: grid; }
+.hs-tabs .hs-tabs-count .hs-tabs-cap > span { grid-area: 1 / 1; margin-top: 6px; transition: opacity 0.25s ease; }
+.hs-tabs .hs-tabs-count .hs-tabs-cap > span.is-off { opacity: 0; visibility: hidden; }
+.hs-tabs .hs-tabs-count .hs-tabs-cap { margin-top: 0; max-width: 240px; }
+
+/* Beyond lectures: two alternating rows — mock + copy, sides swap on the second row */
+.hs-beyond { display: flex; flex-direction: column; gap: 72px; }
+.hs-beyond-row { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+.hs-beyond-row.is-flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); }
+.hs-beyond-row.is-flip .hs-beyond-mock { order: 2; }
+.hs-beyond-mock { min-width: 0; }
+.hs-beyond-kicker { display: inline-flex; align-items: center; gap: 7px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em; color: #6B7280; }
+.hs-beyond-kicker svg { color: #E8801A; }
+.hs-beyond-copy h3 { margin: 10px 0 10px; font-size: clamp(1.3rem, 2.2vw, 1.7rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; color: #111827; }
+.hs-beyond-copy p { margin: 0; max-width: 42ch; font-size: 0.98rem; line-height: 1.6; color: #4B5563; }
+.hs-beyond-copy ul { list-style: none; margin: 18px 0 0; padding: 16px 0 0; border-top: 1px solid #E5E7EB; display: flex; flex-direction: column; gap: 10px; }
+.hs-beyond-copy li { display: flex; align-items: center; gap: 9px; font-size: 0.92rem; font-weight: 500; color: #374151; }
+.hs-beyond-copy li svg { flex-shrink: 0; color: #111827; }
+.sdd-section .sdd-more { margin-top: 48px; }
+@media (max-width: 960px) {
+  .hs-beyond { gap: 48px; }
+  .hs-beyond-row, .hs-beyond-row.is-flip { grid-template-columns: 1fr; gap: 22px; }
+  .hs-beyond-row.is-flip .hs-beyond-mock { order: 0; }
+  .hs-beyond-copy { order: -1; }
+}
+.hs-beyond-mock .sdd-problem { display: none; }
+
+/* Beyond lectures: each mock sits in a soft grey block (Notion feature-card style),
+   inset on top and sides and running off the block's bottom edge */
+.hs-beyond-mock {
+  position: relative; padding: 36px 36px 0; overflow: hidden;
+  background: #F6F6F4; border: 1px solid #EEEEEC; border-radius: 12px;
+}
+.hs-beyond-mock > .ctd, .hs-beyond-mock > .sdd {
+  border-bottom: 0; border-radius: 6px 6px 0 0;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 18px 40px -24px rgba(17, 24, 39, 0.22);
+}
+@media (max-width: 640px) {
+  .hs-beyond-mock { padding: 16px 12px 0; border-radius: 10px; }
+}

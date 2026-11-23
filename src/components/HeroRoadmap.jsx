@@ -1,189 +1,176 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Bot, Check, ChevronLeft, ChevronRight, Code2, Layers, Mic, Network, Timer, Wand2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import './HeroRoadmap.css';
 
 /* ══════════════════════════════════════════════════════════════
-   Home hero › right side: "What you'll master" as a stack of cards,
-   one per topic, each with a tiny live visual. The front card
-   auto-advances (paused on hover); click it, swipe it, use the
-   arrows / ← → keys, or pick a topic from the row below.
-   Neutral palette: ink + greys.
+   Home hero › right side: "What you'll master", one feature card at
+   a time. Card style follows the bento "feature card" pattern: a
+   quiet title + one-line subtitle, then a small, believable piece of
+   product UI (board, pipeline, diagram, chart, task card, live session).
+   Neutral by default; brand orange marks the one thing that matters
+   in each card; hatched fills mean "not yet".
+   Auto-advances (paused on hover; stops once the visitor navigates).
    ══════════════════════════════════════════════════════════════ */
 
-/* Small visuals, one per card (only the front card animates) */
-const DsaVisual = () => (
-  <ul className="hs2-list">
-    {[['Two Sum', 'Easy', true], ['Longest Substring', 'Medium', true], ['Merge K Lists', 'Hard', false]].map(([t, d, ok], i) => (
-      <li key={t} style={{ '--i': i }}>
-        <span className={`hs2-box ${ok ? 'is-ok' : ''}`}>{ok && <Check size={11} strokeWidth={3} />}</span>
-        <span className="hs2-list-t">{t}</span>
-        <em className={`hs2-diff is-${d.toLowerCase()}`}>{d}</em>
-      </li>
-    ))}
-  </ul>
-);
-const DevVisual = () => (
-  <div className="hs2-dev">
-    <div className="hs2-code">
-      {[62, 84, 48, 72].map((w, i) => <i key={i} style={{ '--w': `${w}%`, '--i': i }} />)}
+/* 1 · DSA — a problem board: three days × two topics */
+const DsaUI = () => (
+  <div className="fc-board">
+    <div className="fc-board-head">
+      <span className="fc-nav"><ChevronLeft size={12} /><ChevronRight size={12} /></span>
+      <span>MON</span><span>TUE</span><span>WED</span>
     </div>
-    <div className="hs2-chips">{['React', 'Node', 'MongoDB', 'Spring Boot'].map((c) => <span key={c}>{c}</span>)}</div>
+    <div className="fc-board-row">
+      <span className="fc-board-label">Arrays</span>
+      <span className="fc-chip"><b>Two Sum</b><small>Easy · Solved</small></span>
+      <span className="fc-hatch" />
+      <span className="fc-chip"><b>3Sum</b><small>Medium · Solved</small></span>
+    </div>
+    <div className="fc-board-row">
+      <span className="fc-board-label">Graphs</span>
+      <span className="fc-hatch" />
+      <span className="fc-chip is-hot"><b>Topo Sort</b><small>Medium · Today</small></span>
+      <span className="fc-hatch" />
+    </div>
   </div>
 );
-const DesignVisual = () => (
-  <div className="hs2-sd">
-    <span className="n n1">Client</span>
-    <span className="n n2">Load balancer</span>
-    <span className="n n3">API</span>
-    <span className="n n4">Cache</span>
-    <span className="n n5">DB</span>
-    <svg viewBox="0 0 300 110" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M44 22 H112" /><path d="M188 22 H236" /><path d="M262 34 V58 C262 70 250 76 236 76 H190" /><path d="M150 76 H112" /><path d="M150 88 V96" />
+
+/* 2 · Development — build steps of a real project */
+const DevUI = () => (
+  <div className="fc-window">
+    <div className="fc-window-bar"><i /><i /><i /><span>shopkart · MERN</span></div>
+    <ul className="fc-steps">
+      {[['Auth & JWT', 'Done'], ['Cart API', 'Done'], ['Payments', 'Done'], ['Deploy to cloud', 'Building…']].map(([t, st], i) => (
+        <li key={t} className={st === 'Done' ? '' : 'is-hot'} style={{ '--i': i }}>
+          <span className="fc-tick">{st === 'Done' && <Check size={11} strokeWidth={3} />}</span>{t}<em>{st}</em>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+/* 3 · System Design — a small diagram with a metric tooltip */
+const DesignUI = () => (
+  <div className="fc-sd">
+    <span className="fc-tip">Throughput: 10k rps</span>
+    <span className="fc-node n1">Client</span>
+    <span className="fc-node n2 is-hot">Load balancer</span>
+    <span className="fc-node n3">API</span>
+    <span className="fc-node n4">API</span>
+    <span className="fc-node n5">DB</span>
+    <svg viewBox="0 0 300 150" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M62 92 H104" /><path d="M196 84 L222 52" /><path d="M196 100 L222 132" /><path d="M262 60 L270 88" /><path d="M262 124 L270 104" />
     </svg>
   </div>
 );
-const TestVisual = () => (
-  <div className="hs2-test">
-    <div className="hs2-test-top"><span>Q 2 / 3 · <span className="hs2-rec" /> Proctored</span><b><Timer size={11} /> 38:42</b></div>
-    <div className="hs2-review">
-      <span className="hs2-ai"><Bot size={12} /> AI review</span>
-      <p><Check size={11} strokeWidth={3} /> Approach explained</p>
-      <p><Check size={11} strokeWidth={3} /> O(n) solution</p>
-    </div>
-  </div>
-);
-const VibeVisual = () => (
-  <div className="hs2-vibe">
-    <p className="hs2-prompt">“Add a dark-mode toggle”</p>
-    <div className="hs2-diff-lines">
-      <i className="del" style={{ '--w': '70%' }} /><i className="add" style={{ '--w': '82%' }} /><i className="add" style={{ '--w': '56%' }} />
-    </div>
-    <span className="hs2-bug"><Check size={11} strokeWidth={3} /> Bug fixed on line 12</span>
-  </div>
-);
-const MockVisual = () => (
-  <div className="hs2-mock">
-    <div className="hs2-wave">{Array.from({ length: 14 }, (_, i) => <i key={i} style={{ '--i': i }} />)}</div>
-    <div className="hs2-scores">
-      {[['Problem solving', 82], ['Communication', 74]].map(([k, v]) => (
-        <div key={k}><span>{k}</span><b><i style={{ '--v': `${v}%` }} /></b></div>
+
+/* 4 · AI-assisted tests — scores across stages, one highlighted */
+const TestUI = () => (
+  <div className="fc-chart">
+    <div className="fc-bars">
+      {[['S1', 86, true], ['S2', 62], ['S3', 54], ['S4', 74], ['S5', 66], ['S6', 48]].map(([k, v, hot], i) => (
+        <div key={k} className={`fc-bar ${hot ? 'is-hot' : ''}`} style={{ '--v': `${v}%`, '--i': i }}>
+          {hot && <span className="fc-tip">Score: {v}%</span>}
+          <span className="fc-bar-track"><i /></span>
+          <small>{k}</small>
+        </div>
       ))}
     </div>
   </div>
 );
 
+/* 5 · Vibe coding & debugging — the current task, flanked by others */
+const VibeUI = () => (
+  <div className="fc-task">
+    <span className="fc-task-ghost is-l" />
+    <div className="fc-task-card">
+      <div className="fc-task-top"><span className="fc-dot" /> Current task <em>In progress</em></div>
+      <p>Fix: cart total is off by one</p>
+      <div className="fc-task-meta"><span>Mode: <b>Debugging</b></span><span>AI hints: <b>2</b></span></div>
+    </div>
+    <span className="fc-task-ghost is-r" />
+  </div>
+);
+
+/* 6 · Mock interviews — a live session with named cursors */
+const Pointer = () => <svg width="14" height="16" viewBox="0 0 18 20" aria-hidden="true"><path d="M1.5 1.5 16 9.2l-6.4 1.6-3 6.7z" /></svg>;
+const MockUI = () => (
+  <div className="fc-live">
+    <div className="fc-window">
+      <div className="fc-window-bar"><i /><i /><i /><span>Mock interview · live</span></div>
+      <ul className="fc-rows">
+        {[['Approach', 92, 58], ['Code', 70, 44], ['Communication', 84, 62]].map(([k, a, b]) => (
+          <li key={k}><span>{k}</span><i style={{ '--w': `${a}%` }} /><i style={{ '--w': `${b}%` }} /></li>
+        ))}
+      </ul>
+    </div>
+    <span className="fc-cursor c1"><Pointer /><em>Interviewer</em></span>
+    <span className="fc-cursor c2 is-hot"><Pointer /><em>You</em></span>
+  </div>
+);
+
 const CARDS = [
-  { id: 'dsa', title: 'DSA', text: 'Arrays to DP · 1,200+ questions', Icon: Code2, tag: 'Most asked', Visual: DsaVisual },
-  { id: 'dev', title: 'Development', text: 'MERN or Java Full Stack', Icon: Layers, tag: 'In demand', Visual: DevVisual },
-  { id: 'sd', title: 'System Design', text: 'Design, practice & test: HLD + LLD', Icon: Network, tag: 'Trending', Visual: DesignVisual },
-  { id: 'ai', title: 'AI-Assisted Coding Tests', text: 'Approach-based, AI-reviewed, proctored', Icon: Bot, tag: 'New', Visual: TestVisual },
-  { id: 'vibe', title: 'Vibe Coding & Debugging', text: 'Build with AI, fix real broken code', Icon: Wand2, tag: 'Hot', Visual: VibeVisual },
-  { id: 'mock', title: 'Mock Interviews', text: 'Company-specific, with feedback', Icon: Mic, tag: 'Placement-ready', Visual: MockVisual }
+  { id: 'dsa', title: 'DSA', text: 'Topic by topic, from arrays to DP, with 1,200+ problems.', UI: DsaUI },
+  { id: 'dev', title: 'Development', text: 'Build and ship real MERN or Java full-stack projects.', UI: DevUI },
+  { id: 'sd', title: 'System Design', text: 'Design, practice and test HLD and LLD under real load.', UI: DesignUI },
+  { id: 'ai', title: 'AI-Assisted Coding Tests', text: 'Proctored tests that review your approach, not just output.', UI: TestUI },
+  { id: 'vibe', title: 'Vibe Coding & Debugging', text: 'Build with AI and fix real broken code, like on the job.', UI: VibeUI },
+  { id: 'mock', title: 'Mock Interviews', text: 'Company-specific rounds with feedback you can act on.', UI: MockUI }
 ];
 const N = CARDS.length;
-const AUTO_MS = 3200;
+const AUTO_MS = 4200;
 const reduced = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 const HeroRoadmap = () => {
   const [active, setActive] = useState(0);
-  const [left, setLeft] = useState(null);   // the card that just flew off (animates to the back)
   const [paused, setPaused] = useState(false);
-  const [drag, setDrag] = useState(0);
-  const start = useRef(null);
-
-  const go = useCallback((to) => {
-    setActive((a) => {
-      const next = ((to ?? a + 1) % N + N) % N;
-      if (next !== a) setLeft(a);
-      return next;
-    });
-  }, []);
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
-    if (paused || reduced()) return undefined;
-    const t = setTimeout(() => go(), AUTO_MS);
+    if (paused || touched || reduced()) return undefined;
+    const t = setTimeout(() => setActive((a) => (a + 1) % N), AUTO_MS);
     return () => clearTimeout(t);
-  }, [active, paused, go]);
+  }, [active, paused, touched]);
 
-  // Swipe / drag the front card
-  const onDown = (e) => { start.current = e.clientX; e.currentTarget.setPointerCapture?.(e.pointerId); };
-  const onMove = (e) => { if (start.current != null) setDrag(e.clientX - start.current); };
-  const onUp = () => {
-    if (start.current == null) return;
-    const dx = drag;
-    start.current = null;
-    setDrag(0);
-    if (Math.abs(dx) > 70) go(dx < 0 ? active + 1 : active - 1);
-    else if (Math.abs(dx) < 6) go();               // a tap: next card
-  };
-  const onKey = (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); }
-  };
+  const go = (i) => { setTouched(true); setActive(((i % N) + N) % N); };
+  const c = CARDS[active];
 
   return (
     <div
-      className="hs2"
+      className="fcx"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onKeyDown={(e) => { if (e.key === 'ArrowRight') go(active + 1); if (e.key === 'ArrowLeft') go(active - 1); }}
       aria-roledescription="carousel"
       aria-label="What you'll master"
     >
-      <div className="hs2-head">
-        <span className="hs2-kicker">What you&apos;ll master</span>
-        <span className="hs2-count">{String(active + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}</span>
+      <div className="fcx-head">
+        <span className="fcx-kicker">What you&apos;ll master</span>
+        <span className="fcx-count">{String(active + 1).padStart(2, '0')} <i>/ {String(N).padStart(2, '0')}</i></span>
       </div>
 
-      <div className="hs2-stack" tabIndex={0} onKeyDown={onKey} aria-live="polite">
-        {CARDS.map((c, i) => {
-          const d = (i - active + N) % N;           // 0 = front
-          const isFront = d === 0;
-          const style = {
-            '--d': d,
-            zIndex: N - d,
-            ...(isFront && drag ? { transform: `translateX(${drag}px) rotate(${drag / 18}deg)`, transition: 'none' } : {})
-          };
-          return (
-            <article
-              key={c.id}
-              className={`hs2-card ${isFront ? 'is-front' : ''} ${left === i ? 'is-left' : ''} ${d > 3 ? 'is-hidden' : ''}`}
-              style={style}
-              aria-hidden={!isFront}
-              onPointerDown={isFront ? onDown : undefined}
-              onPointerMove={isFront ? onMove : undefined}
-              onPointerUp={isFront ? onUp : undefined}
-              onPointerCancel={isFront ? onUp : undefined}
-              onAnimationEnd={() => left === i && setLeft(null)}
-            >
-              <header className="hs2-card-head">
-                <span className="hs2-icon"><c.Icon size={18} /></span>
-                <span className="hs2-titles">
-                  <strong>{c.title}</strong>
-                  <small>{c.text}</small>
-                </span>
-                <em className="hs2-tag">{c.tag}</em>
-              </header>
-              <div className="hs2-visual"><c.Visual /></div>
-              <footer className="hs2-card-foot">
-                {['Learn', 'Practice', 'Test', 'Mock'].map((p) => <span key={p}><Check size={10} strokeWidth={3} /> {p}</span>)}
-              </footer>
-            </article>
-          );
-        })}
+      {/* one card at a time; a soft second card sits behind it */}
+      <div className="fcx-stage">
+        <span className="fcx-behind" aria-hidden="true" />
+        <article key={c.id} className="fcx-card" aria-live="polite">
+          <header>
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </header>
+          <div className="fcx-ui"><c.UI /></div>
+        </article>
       </div>
 
-      {/* Controls: arrows + a row of topics */}
-      <div className="hs2-nav">
-        <button type="button" className="hs2-arrow" onClick={() => go(active - 1)} aria-label="Previous topic"><ChevronLeft size={16} /></button>
-        <div className="hs2-pills" role="tablist" aria-label="Topics">
-          {CARDS.map((c, i) => (
-            <button key={c.id} type="button" role="tab" aria-selected={active === i} className={active === i ? 'is-on' : ''} onClick={() => go(i)} title={c.title}>
-              <c.Icon size={14} />
-              {active === i && <span>{c.title}</span>}
+      <div className="fcx-nav">
+        <button type="button" className="fcx-arrow" onClick={() => go(active - 1)} aria-label="Previous"><ChevronLeft size={16} /></button>
+        <div className="fcx-dots" role="tablist" aria-label="Tracks">
+          {CARDS.map((x, i) => (
+            <button key={x.id} type="button" role="tab" aria-selected={active === i} aria-label={x.title} title={x.title}
+              className={active === i ? 'is-on' : ''} onClick={() => go(i)}>
+              {active === i && !paused && !touched && <span key={`p-${active}`} />}
             </button>
           ))}
         </div>
-        <button type="button" className="hs2-arrow" onClick={() => go(active + 1)} aria-label="Next topic"><ChevronRight size={16} /></button>
+        <button type="button" className="fcx-arrow" onClick={() => go(active + 1)} aria-label="Next"><ChevronRight size={16} /></button>
       </div>
     </div>
   );

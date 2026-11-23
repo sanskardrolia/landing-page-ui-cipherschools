@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, Award, BarChart3, BookOpen, Bot, Bug, Code2, Lightbulb, ScanSearch, Terminal, Timer, Users, CalendarDays, Check, ChevronDown, CirclePlay, ClipboardCheck, Coins, CreditCard,
+  ArrowRight, Award, Compass, Flame, Layers, BarChart3, BookOpen, Bot, Bug, Code2, Lightbulb, ScanSearch, Terminal, Timer, Users, CalendarDays, Check, ChevronDown, CirclePlay, ClipboardCheck, Coins, CreditCard,
   FileText, ListChecks, Mic, Pause, Play, Rocket, ShieldCheck, Sparkles, Star, X
 } from 'lucide-react';
 import { FAQS } from '../pages/PremiumPage';
 import { STUDENT_FEEDBACK } from '../data/studentFeedback';
+import SystemDesignDemo from './SystemDesignDemo';
+import CodingTestDemo from './CodingTestDemo';
 import { startPreview } from '../utils/preview';
 import './HomeSections.css';
 
@@ -29,77 +31,6 @@ const Head = ({ eyebrow, title, sub }) => (
     {sub && <p className="hs-sub">{sub}</p>}
   </header>
 );
-
-/* ───────────── Live cursors (problem section) ─────────────
-   2–3 other "learners" move around the browser card, hover rows,
-   tap tabs and now and then press "Fix my prep", so the section feels
-   shared. The visitor's own pointer gets a "You" label. Purely
-   decorative (aria-hidden); hidden on small screens. */
-
-const PEERS = [
-  { name: 'Riya · Delhi', color: '#7C3AED' },
-  { name: 'Aman · Pune', color: '#0EA5E9' },
-  { name: 'Neha · Bengaluru', color: '#16A34A' }
-];
-const TARGETS = ['.hs-tabs-doc li', '.hs-tab', '.hs-tabs-stats li', '.hs-tabs-count', '.hs-tabs-doc-title'];
-const rand = (a, b) => a + Math.random() * (b - a);
-
-const LiveCursors = ({ wrapRef, canPress, onPress }) => {
-  const [pos, setPos] = useState(() => PEERS.map((_, i) => ({ x: 120 + i * 220, y: 140 + i * 60, click: false })));
-  const pressRef = useRef({ canPress, onPress });
-  useEffect(() => { pressRef.current = { canPress, onPress }; }, [canPress, onPress]);
-
-  useEffect(() => {
-    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
-    const timers = [];
-    const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); };
-
-    const pick = (i) => {
-      const wrap = wrapRef.current;
-      if (!wrap) return null;
-      const box = wrap.getBoundingClientRect();
-      // Only the first learner goes for the button (and only while the story auto-plays)
-      const goButton = i === 0 && pressRef.current.canPress && Math.random() < 0.45;
-      const pool = goButton ? [...wrap.querySelectorAll('.hs-tabs-btn')] : TARGETS.flatMap((sel) => [...wrap.querySelectorAll(sel)]);
-      const el = pool.filter((n) => n.offsetParent)[Math.floor(Math.random() * pool.length)] || pool[0];
-      if (!el) return null;
-      const r = el.getBoundingClientRect();
-      return {
-        x: r.left - box.left + rand(0.25, 0.75) * r.width,
-        y: r.top - box.top + rand(0.3, 0.7) * r.height,
-        button: goButton
-      };
-    };
-
-    const step = (i) => {
-      const t = pick(i);
-      if (t) {
-        setPos((p) => p.map((c, j) => (j === i ? { x: t.x, y: t.y, click: false } : c)));
-        // arrive, then "click"
-        later(() => {
-          setPos((p) => p.map((c, j) => (j === i ? { ...c, click: true } : c)));
-          if (t.button && pressRef.current.canPress) pressRef.current.onPress();
-          later(() => setPos((p) => p.map((c, j) => (j === i ? { ...c, click: false } : c))), 420);
-        }, 1150);
-      }
-      later(() => step(i), rand(2200, 3800));
-    };
-    PEERS.forEach((_, i) => later(() => step(i), 500 + i * 700));
-    return () => timers.forEach(clearTimeout);
-  }, [wrapRef]);
-
-  return (
-    <div className="hs-cursors" aria-hidden="true">
-      {PEERS.map((p, i) => (
-        <span key={p.name} className={`hs-cursor ${pos[i].click ? 'is-click' : ''}`} style={{ '--c': p.color, transform: `translate(${pos[i].x}px, ${pos[i].y}px)` }}>
-          <svg width="18" height="20" viewBox="0 0 18 20"><path d="M1.5 1.5 16 9.2l-6.4 1.6-3 6.7z" fill="var(--c)" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" /></svg>
-          <em>{p.name}</em>
-          <i className="hs-cursor-ripple" />
-        </span>
-      ))}
-    </div>
-  );
-};
 
 /* ───────────── Problem & Solution (browser-tabs story) ─────────────
    The mess: a browser with a pile of prep tabs and a "plan" full of
@@ -136,7 +67,7 @@ const PLAN_ROWS = [
   { Icon: ListChecks, mess: 'Solve… which questions?', fix: 'Practice right after every unit', c: '#3B82F6' },
   { Icon: ClipboardCheck, mess: 'Test myself… where?', fix: 'Proctored tests, like real OAs', c: '#10B981' },
   { Icon: Mic, mess: 'Mock interview… with whom?', fix: 'Mock interviews with feedback', c: '#A855F7' },
-  { Icon: Coins, mess: 'Stay consistent… day 3 😩', fix: 'Streaks & CipherCoins keep you going', c: '#D97706' }
+  { Icon: Coins, mess: 'Stay consistent… gave up on day 3', fix: 'Streaks & CipherCoins keep you going', c: '#D97706' }
 ];
 
 export const ProblemSolution = () => {
@@ -150,11 +81,10 @@ export const ProblemSolution = () => {
   }, [fixed, auto]);
   const toggle = () => { setAuto(false); setFixed((v) => !v); };
 
-  // Shared-feeling layer: other learners' cursors + the visitor's own "You" label
+  // The visitor's own pointer gets a "You" label
   const collabRef = useRef(null);
   const youRef = useRef(null);
   const [here, setHere] = useState(false);
-  const peerPress = useCallback(() => setFixed((v) => !v), []);
   const moveYou = (e) => {
     const box = collabRef.current?.getBoundingClientRect();
     if (box && youRef.current) youRef.current.style.transform = `translate(${e.clientX - box.left}px, ${e.clientY - box.top}px)`;
@@ -167,15 +97,6 @@ export const ProblemSolution = () => {
           title={<>Placement prep is scattered. <span className="hs-accent">We put it in one path.</span></>}
         />
 
-        <div className="hs-presence" aria-hidden="true">
-          <span className="hs-presence-dot" />
-          <span className="hs-presence-avatars">
-            {PEERS.map((p) => <i key={p.name} style={{ background: p.color }}>{p.name[0]}</i>)}
-            {here && <i className="is-you">You</i>}
-          </span>
-          <span>{here ? `You + ${PEERS.length} learners here` : `${PEERS.length} learners exploring`}</span>
-        </div>
-
         <div
           className="hs-collab"
           ref={collabRef}
@@ -183,7 +104,6 @@ export const ProblemSolution = () => {
           onMouseLeave={() => setHere(false)}
           onMouseMove={moveYou}
         >
-        <LiveCursors wrapRef={collabRef} canPress={auto} onPress={peerPress} />
         <span ref={youRef} className={`hs-you ${here ? 'is-on' : ''}`} aria-hidden="true"><em>You</em></span>
         <div className={`hs-tabs ${fixed ? 'is-fixed' : ''}`}>
           {/* Tab strip */}
@@ -205,19 +125,20 @@ export const ProblemSolution = () => {
           {/* The "plan" */}
           <div className="hs-tabs-body">
             <div className="hs-tabs-doc">
-              <p className="hs-tabs-doc-title">
-                {fixed ? 'My placement prep' : 'My placement prep plan'}
-                <span className={`hs-tabs-chip ${fixed ? 'is-ok' : ''}`}>{fixed ? 'One path' : 'No plan'}</span>
-              </p>
+              <div className="hs-tabs-doc-head">
+                <p className="hs-tabs-doc-title">My placement prep</p>
+                <span className={`hs-tabs-chip ${fixed ? 'is-ok' : ''}`}><i />{fixed ? 'One path' : 'No plan'}</span>
+              </div>
               <ul>
                 {PLAN_ROWS.map((r, i) => (
-                  <li key={r.fix} style={{ '--i': i, '--c': r.c }}>
-                    <span className="hs-tabs-icon"><r.Icon size={17} /></span>
+                  <li key={r.fix} style={{ '--i': i }}>
+                    <span className="hs-tabs-num">{String(i + 1).padStart(2, '0')}</span>
+                    <span className="hs-tabs-icon"><r.Icon size={16} /></span>
                     <span className="hs-tabs-line">
                       <span className="is-mess">{r.mess}</span>
                       <span className="is-fix">{r.fix}</span>
                     </span>
-                    <span className="hs-tabs-mark">{fixed ? <Check size={13} strokeWidth={3} /> : '?'}</span>
+                    <span className="hs-tabs-mark">{fixed ? <Check size={12} strokeWidth={3} /> : <span className="hs-tabs-hatch" />}</span>
                   </li>
                 ))}
               </ul>
@@ -226,31 +147,26 @@ export const ProblemSolution = () => {
             <div className="hs-tabs-side">
               {/* Visual: a pile of site icons → one CipherSchools hub with its four steps */}
               <div className="hs-tabs-visual" aria-hidden="true">
-                <div className="hs-pile">
-                  {['leetcode', 'gfg', 'udemy', 'pdf', 'discord'].map((site, i) => (
-                    <span key={site} className={`hs-pile-chip p${i}`}><TabLogo site={site} /></span>
-                  ))}
-                  <span className="hs-pile-chip p5 is-more">+41</span>
+                {/* 12 open tabs (hatched) collapse into one solid tab */}
+                <div className="hs-tabbars">
+                  {Array.from({ length: 12 }, (_, k) => <i key={k} style={{ '--k': k, '--h': `${38 + ((k * 37) % 50)}%` }} />)}
                 </div>
-                <div className="hs-hub">
-                  <span className="hs-hub-logo"><img src="/cipherschools-logo.png" alt="" /></span>
-                  <div className="hs-hub-steps">
-                    {PLAN_ROWS.slice(0, 4).map((r, i) => (
-                      <span key={r.fix} style={{ '--c': r.c, '--i': i }}><r.Icon size={15} /></span>
-                    ))}
-                  </div>
-                </div>
+                <span className="hs-tabbars-label">{fixed ? 'cipherschools.com/dashboard' : 'leetcode · gfg · udemy · pdf · discord · +41'}</span>
               </div>
 
               <div className="hs-tabs-count">
                 <strong>{fixed ? 1 : 47}</strong>
-                <span>{fixed ? 'tab. Everything in one place.' : 'tabs open. Still not sure what\'s next.'}</span>
+                {/* both captions share one cell, so the box keeps the taller one's height */}
+                <span className="hs-tabs-cap">
+                  <span className={fixed ? 'is-off' : ''} aria-hidden={fixed}>tabs open, and still unsure what&apos;s next.</span>
+                  <span className={fixed ? '' : 'is-off'} aria-hidden={!fixed}>tab. Everything in one place.</span>
+                </span>
               </div>
 
               <ul className="hs-tabs-stats">
                 {(fixed
                   ? [['4', 'steps, in order'], ['1', 'dashboard'], ['0', 'guesswork']]
-                  : [['5+', 'sites'], ['0', 'plan'], ['?', 'what next']]
+                  : [['5+', 'sites'], ['0', 'plan'], ['?', 'next step']]
                 ).map(([n, l]) => <li key={l}><b>{n}</b><span>{l}</span></li>)}
               </ul>
 
@@ -281,9 +197,9 @@ const STEPS = [
 const STEP_MS = 4500;
 
 const BLURBS = [
-  { title: 'Always know what\'s next', text: 'Your dashboard picks the next lecture, question and test for you.' },
-  { title: 'Practice where you learn', text: 'Questions and an in-browser editor right after every unit.' },
-  { title: 'Stay on track', text: 'A planner, streaks and CipherCoins that reward showing up daily.' }
+  { Icon: Compass, title: 'Always know what\'s next', text: 'Your dashboard picks the next lecture, question and test for you.' },
+  { Icon: Code2, title: 'Practice where you learn', text: 'Questions and an in-browser editor right after every unit.' },
+  { Icon: Flame, title: 'Stay on track', text: 'A planner, streaks and CipherCoins that reward showing up daily.' }
 ];
 
 export const HowItWorks = () => {
@@ -303,6 +219,15 @@ export const HowItWorks = () => {
       <div className="container">
         <h2 className="hs-n-title">Learn. Practice. Test. Interview.</h2>
 
+        <div className="hs-blurbs is-top">
+          {BLURBS.map((b) => (
+            <div key={b.title}>
+              <span className="hs-blurb-ico"><b.Icon size={16} /></span>
+              <h3>{b.title}</h3>
+              <p>{b.text}</p>
+            </div>
+          ))}
+        </div>
         <div className="hs-canvas">
           <div className="hs-window">
             <div className="hs-window-bar">
@@ -344,14 +269,6 @@ export const HowItWorks = () => {
           </div>
         </div>
 
-        <div className="hs-blurbs">
-          {BLURBS.map((b) => (
-            <div key={b.title}>
-              <h3>{b.title}</h3>
-              <p>{b.text}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -471,6 +388,48 @@ export const Capabilities = () => {
     </section>
   );
 };
+
+/* ───────────── Beyond lectures (above pricing) ─────────────
+   A system design practice problem, played out: drag, connect, run,
+   fail under load, fix, pass. Then the other hands-on practice. */
+const BEYOND = [
+  {
+    id: 'vibe', Icon: Code2, kicker: 'Vibe coding test', Demo: () => <CodingTestDemo compact />,
+    title: 'Ship a real feature with AI, then prove it works',
+    text: 'You get a ticket on a real codebase. Guide the assistant, review its edit, and run the tests before you submit.',
+    points: ['Scored on your prompts, reviews and debugging', 'Visible tests now, hidden tests on submit', 'Timed, like a real take-home round']
+  },
+  {
+    id: 'sd', Icon: Layers, kicker: 'System design', Demo: () => <SystemDesignDemo />,
+    title: 'Design it, load it, fix what breaks',
+    text: 'Drag in the blocks, wire them up and send 10k requests a second. When a server buckles, add a load balancer or cache and run it again.',
+    points: ['HLD and LLD practice problems', 'Instant feedback on errors and latency', 'The same trade-offs interviews ask about']
+  }
+];
+
+export const BeyondLectures = () => (
+  <section className="hs-section sdd-section" id="beyond-section">
+    <div className="container">
+      <Head title={<>What you can do <span className="hs-accent">beyond lectures</span></>} sub="Hands-on rounds that feel like the job, not another video." />
+      <div className="hs-beyond">
+        {BEYOND.map((b, i) => (
+          <div key={b.id} className={`hs-beyond-row ${i % 2 ? 'is-flip' : ''}`}>
+            <div className="hs-beyond-mock"><b.Demo /></div>
+            <div className="hs-beyond-copy">
+              <span className="hs-beyond-kicker"><b.Icon size={14} /> {b.kicker}</span>
+              <h3>{b.title}</h3>
+              <p>{b.text}</p>
+              <ul>{b.points.map((t) => <li key={t}><Check size={14} strokeWidth={2.5} /> {t}</li>)}</ul>
+            </div>
+          </div>
+        ))}
+      </div>
+      <ul className="sdd-more" aria-label="More hands-on practice">
+        {['Debugging', 'Approach-based tests', 'Mock interviews'].map((t) => <li key={t}>{t}</li>)}
+      </ul>
+    </div>
+  </section>
+);
 
 /* ───────────── Student feedback (below pricing) ─────────────
    One row of feedback cards that scrolls sideways on its own

@@ -1,61 +1,61 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
-  ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, Circle, CircleCheck, CirclePlay, Clock, ListChecks, RotateCcw, X
+  AlertCircle, ArrowLeft, ArrowRight, ChevronDown, ChevronLeft, ChevronRight, CircleCheck, CirclePlay, Clock, FileText,
+  ListChecks, PanelRightClose, PanelRightOpen, RotateCcw, X
 } from 'lucide-react';
 import { DEMO_VIDEO_SRC, allLectures, findModule, moduleForPlan, moduleUnlocked, subjectExtended } from '../data/learnerModules';
 import { practiceForUnit } from '../data/practiceBank';
 
 /* ══════════════════════════════════════════════════════════════
    Lecture player — /dashboard/m/:moduleId/watch/:lectureId
-   Video on the left, the module's lecture list ("up next") on the right.
-   Finishing a video marks it watched and counts down to the next one.
-   The dashboard collapses its sidebar while this route is open.
+   Left: "← Sections", the video, title + course line, Report,
+   then Additional resources / Notes tabs.
+   Right: the subject panel — ‹ › switch between the module's
+   subjects; every unit of the subject is listed (the playing one
+   open) with a quiet practice link per unit; subject progress
+   pinned at the bottom. The panel can be collapsed.
    ══════════════════════════════════════════════════════════════ */
 
 const AUTOPLAY_SECONDS = 5;
 const watchUrl = (modId, lecId) => `/dashboard/m/${modId}/watch/${lecId}`;
+
+const notesKey = (id) => `cs-lecture-notes-${id}`;
+const readNotes = (id) => { try { return localStorage.getItem(notesKey(id)) || ''; } catch { return ''; } };
+const writeNotes = (id, v) => { try { localStorage.setItem(notesKey(id), v); } catch { /* storage off */ } };
 
 const DashboardPlayer = ({ ctx }) => {
   const { moduleId, lectureId } = useParams();
   const navigate = useNavigate();
   const { planId, progress, toggle, set } = ctx;
 
-  const [ended, setEnded] = useState(false);       // video finished → show "up next" card
+  const [ended, setEnded] = useState(false);
   const [countdown, setCountdown] = useState(AUTOPLAY_SECONDS);
-  const [autoNext, setAutoNext] = useState(true);  // learner can cancel the countdown
+  const [autoNext, setAutoNext] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [infoTab, setInfoTab] = useState('resources');
+  const [notes, setNotes] = useState(() => readNotes(lectureId));
   const currentRef = useRef(null);
 
-  // Preview uses its own short module list; otherwise the module as this plan sees it
   const mod = ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : moduleForPlan(findModule(moduleId), planId, ctx.devTrack);
   const lectures = mod ? allLectures(mod) : [];
   const idx = lectures.findIndex((l) => l.id === lectureId);
   const current = lectures[idx];
-  const prev = lectures[idx - 1];
   const next = lectures[idx + 1];
-  // Playlist: only the unit being watched starts open (the player remounts per lecture)
+
+  // Which subject the panel shows (‹ › browse without leaving the video)
+  const playingSubjectIdx = mod && current ? Math.max(0, mod.subjects.findIndex((s) => s.id === current.subjectId)) : 0;
+  const [subjectIdx, setSubjectIdx] = useState(playingSubjectIdx);
   const [openUnits, setOpenUnits] = useState(() => new Set(current ? [current.unitId] : []));
-  const flipUnit = (id) => setOpenUnits((prevSet) => {
-    const n = new Set(prevSet);
-    if (n.has(id)) n.delete(id); else n.add(id);
-    return n;
-  });
+  const flipUnit = (id) => setOpenUnits((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
-  // Keep the playing lecture visible in the list
-  useEffect(() => {
-    currentRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [lectureId]);
+  useEffect(() => { currentRef.current?.scrollIntoView({ block: 'nearest' }); }, [lectureId]);
 
-  // Countdown to the next lecture once a video ends
   useEffect(() => {
     if (!ended || !autoNext || !next) return undefined;
     const t = setInterval(() => {
       setCountdown((c) => {
-        if (c <= 1) {
-          clearInterval(t);
-          navigate(watchUrl(mod.id, next.id));
-          return AUTOPLAY_SECONDS;
-        }
+        if (c <= 1) { clearInterval(t); navigate(watchUrl(mod.id, next.id)); return AUTOPLAY_SECONDS; }
         return c - 1;
       });
     }, 1000);
@@ -66,40 +66,41 @@ const DashboardPlayer = ({ ctx }) => {
   if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
   if (!current) return <Navigate to={`/dashboard/m/${mod.id}?tab=watch`} replace />;
 
-  const subject = mod.subjects.find((s) => s.id === current.subjectId);
-  const unit = subject?.units.find((u) => u.id === current.unitId);
+  const playingSubject = mod.subjects[playingSubjectIdx];
+  const unit = playingSubject?.units.find((u) => u.id === current.unitId);
   const done = !!progress.watched[current.id];
 
-  const onEnded = () => {
-    set('watched', current.id, true);
-    setEnded(true);
+  // Panel subject + its units
+  const subject = mod.subjects[subjectIdx] || playingSubject;
+  const nSubjects = mod.subjects.length;
+  const isExt = subject ? subjectExtended(ctx.extended, mod, subject) : false;
+  const groups = (subject?.units || []).map((u) => ({ unit: u, practice: practiceForUnit(mod, u, isExt) }));
+  const subjLectures = groups.flatMap((g) => g.unit.lectures);
+  const subjWatched = subjLectures.filter((l) => progress.watched[l.id]).length;
+  const subjPct = subjLectures.length ? Math.round((subjWatched / subjLectures.length) * 100) : 0;
+  const browse = (d) => {
+    const n = (subjectIdx + d + nSubjects) % nSubjects;
+    setSubjectIdx(n);
+    // open the unit being played if we're back on its subject, else the first unit
+    const s = mod.subjects[n];
+    setOpenUnits(new Set([s.id === playingSubject.id ? current.unitId : s.units[0]?.id]));
   };
 
-  // Playlist: just this section's units, in lecture order
-  const isExt = subject ? subjectExtended(ctx.extended, mod, subject) : false;
-  const groups = (subject?.units || []).map((u) => ({ key: u.id, unit: u.title, lectures: u.lectures, practice: practiceForUnit(mod, u, isExt) }));
-  const showSubject = mod.subjects.length > 1;
-  const sectionLectures = groups.flatMap((g) => g.lectures);
-  const sectionWatched = sectionLectures.filter((l) => progress.watched[l.id]).length;
 
   return (
-    <div className="dx-player">
+    <div className={`dx-player dx-lp ${panelOpen ? '' : 'is-wide'}`}>
       <div className="dx-player-main">
-        <Link to={`/dashboard/m/${mod.id}?tab=watch`} className="dx-back-link">
-          <ArrowLeft size={15} /> {mod.title}
-        </Link>
+        <div className="dx-lp-top">
+          <Link to={`/dashboard/m/${mod.id}?tab=watch`} className="dx-lp-back"><ArrowLeft size={16} /> Sections</Link>
+          <button type="button" className="dx-lp-toggle" onClick={() => setPanelOpen((v) => !v)}
+            aria-label={panelOpen ? 'Hide lecture list' : 'Show lecture list'} title={panelOpen ? 'Hide lecture list' : 'Show lecture list'}>
+            {panelOpen ? <PanelRightClose size={16} /> : <PanelRightOpen size={16} />}
+          </button>
+        </div>
 
         <div className="dx-video">
-          <video
-            key={current.id}
-            src={current.src || DEMO_VIDEO_SRC}
-            controls
-            autoPlay
-            playsInline
-            preload="metadata"
-            onEnded={onEnded}
-          />
-
+          <video key={current.id} src={current.src || DEMO_VIDEO_SRC} controls autoPlay playsInline preload="metadata"
+            onEnded={() => { set('watched', current.id, true); setEnded(true); }} />
           {ended && (
             <div className="dx-upnext-overlay">
               {next ? (
@@ -108,24 +109,16 @@ const DashboardPlayer = ({ ctx }) => {
                   <h3>{next.title}</h3>
                   <p className="dx-muted dx-small">{next.mins} min</p>
                   <div className="dx-upnext-actions">
-                    <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => navigate(watchUrl(mod.id, next.id))}>
-                      <CirclePlay size={15} /> Play now
-                    </button>
-                    {autoNext ? (
-                      <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={() => setAutoNext(false)}>
-                        <X size={15} /> Cancel
-                      </button>
-                    ) : (
-                      <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={() => setEnded(false)}>
-                        <RotateCcw size={15} /> Stay here
-                      </button>
-                    )}
+                    <button type="button" className="dx-btn dx-btn-primary dx-btn-sm" onClick={() => navigate(watchUrl(mod.id, next.id))}><CirclePlay size={15} /> Play now</button>
+                    {autoNext
+                      ? <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={() => setAutoNext(false)}><X size={15} /> Cancel</button>
+                      : <button type="button" className="dx-btn dx-btn-ghost dx-btn-sm" onClick={() => setEnded(false)}><RotateCcw size={15} /> Stay here</button>}
                   </div>
                 </div>
               ) : (
                 <div className="dx-upnext-card">
                   <CircleCheck size={28} className="dx-done-icon" />
-                  <h3>You've reached the end of {mod.title}</h3>
+                  <h3>You&apos;ve reached the end of {mod.title}</h3>
                   <p className="dx-muted dx-small">Head to Practice and Tests to lock it in.</p>
                   <div className="dx-upnext-actions">
                     <Link to={`/dashboard/m/${mod.id}?tab=practice`} className="dx-btn dx-btn-primary dx-btn-sm">Go to Practice</Link>
@@ -137,111 +130,104 @@ const DashboardPlayer = ({ ctx }) => {
           )}
         </div>
 
-        <div className="dx-player-info">
-          <p className="dx-player-path dx-muted dx-small">
-            {showSubject && <>{subject?.title} · </>}{unit?.title} · Lecture {idx + 1} of {lectures.length}
-          </p>
-          <h1>{current.title}</h1>
-          <div className="dx-player-actions">
-            <span className="dx-muted dx-small dx-inline"><Clock size={14} /> {current.mins} min</span>
-            <span className="dx-spacer" />
-            <button
-              type="button"
-              className="dx-btn dx-btn-ghost dx-btn-sm"
-              disabled={!prev}
-              onClick={() => prev && navigate(watchUrl(mod.id, prev.id))}
-            >
-              <ChevronLeft size={16} /> Previous
+        <div className="dx-lp-info">
+          <div className="dx-lp-titles">
+            <h1>{current.title}</h1>
+            <p>{mod.subjects.length > 1 ? `${playingSubject?.title} · ` : `${mod.title} · `}{unit?.title}</p>
+          </div>
+          <div className="dx-lp-actions">
+            <button type="button" className={`dx-lp-btn ${done ? 'is-done' : ''}`} onClick={() => toggle('watched', current.id)}>
+              <CircleCheck size={16} /> {done ? 'Completed' : 'Mark complete'}
             </button>
-            <button
-              type="button"
-              className={`dx-btn dx-btn-sm ${done ? 'dx-btn-done' : 'dx-btn-ghost'}`}
-              onClick={() => toggle('watched', current.id)}
-            >
-              {done ? <CircleCheck size={16} /> : <Circle size={16} />} {done ? 'Completed' : 'Mark as complete'}
-            </button>
-            <button
-              type="button"
-              className="dx-btn dx-btn-primary dx-btn-sm"
-              disabled={!next}
-              onClick={() => next && navigate(watchUrl(mod.id, next.id))}
-            >
-              Next <ChevronRight size={16} />
-            </button>
+            {ctx.openSupport && (
+              <button type="button" className="dx-lp-btn" onClick={ctx.openSupport}><AlertCircle size={16} /> Report</button>
+            )}
           </div>
         </div>
+
+        <div className="dx-lp-tabs" role="tablist">
+          {[['resources', 'Additional Resources'], ['notes', 'Notes']].map(([k, label]) => (
+            <button key={k} type="button" role="tab" aria-selected={infoTab === k} className={infoTab === k ? 'is-on' : ''} onClick={() => setInfoTab(k)}>{label}</button>
+          ))}
+        </div>
+        {infoTab === 'resources' ? (
+          <ul className="dx-lp-res">
+            <li><FileText size={16} /><span>{current.title} · lecture slides</span><em>PDF</em></li>
+            <li><Clock size={16} /><span>{current.mins} min lecture</span><em>Lecture {idx + 1} of {lectures.length}</em></li>
+          </ul>
+        ) : (
+          <div className="dx-lp-notes">
+            <textarea value={notes} placeholder="Write notes for this lecture. They're saved on this device."
+              onChange={(e) => { setNotes(e.target.value); writeNotes(current.id, e.target.value); }} />
+          </div>
+        )}
       </div>
 
-      {/* ── Up next / module playlist ── */}
-      <aside className="dx-playlist" aria-label={`${mod.title} lectures`}>
-        <div className="dx-playlist-head">
-          <h2>{showSubject ? subject?.title : 'Module content'}</h2>
-          <span className="dx-muted dx-small">{sectionWatched}/{sectionLectures.length} watched</span>
-          <div className="dx-progress"><span style={{ width: `${sectionLectures.length ? Math.round((sectionWatched / sectionLectures.length) * 100) : 0}%` }} /></div>
-        </div>
-        <div className="dx-playlist-body">
-          {groups.map((g, gi) => {
-            const isOpen = openUnits.has(g.key);
-            const gDone = g.lectures.filter((l) => progress.watched[l.id]).length;
-            const gMins = g.lectures.reduce((a, l) => a + l.mins, 0);
-            return (
-            <div key={g.key} className={`dx-pl-group ${isOpen ? 'is-open' : ''}`}>
-              {/* Unit header: click to open / close; only the playing unit starts open */}
-              <button type="button" className="dx-pl-group-title dx-pl-unit-btn" onClick={() => flipUnit(g.key)} aria-expanded={isOpen}>
-                <span className="dx-pl-unit-num">{String(gi + 1).padStart(2, '0')}</span>
-                <span className="dx-pl-unit-name">{g.unit}</span>
-                <span className="dx-pl-unit-meta">{gDone === g.lectures.length ? <CircleCheck size={13} /> : `${gDone}/${g.lectures.length}`} · {gMins} min</span>
-                <ChevronDown size={15} className={`dx-pl-unit-chev ${isOpen ? 'up' : ''}`} />
-              </button>
-              {isOpen && (
-              <ul>
-                {g.lectures.map((l) => {
-                  const isCurrent = l.id === current.id;
-                  const isNext = next && l.id === next.id;
-                  const isDone = !!progress.watched[l.id];
-                  return (
-                    <li key={l.id} ref={isCurrent ? currentRef : undefined}>
-                      <Link
-                        to={watchUrl(mod.id, l.id)}
-                        className={`dx-pl-item ${isCurrent ? 'current' : ''} ${isDone ? 'done' : ''}`}
-                        aria-current={isCurrent ? 'true' : undefined}
-                      >
-                        <span className="dx-pl-icon">
-                          {isCurrent ? <CirclePlay size={16} /> : isDone ? <CircleCheck size={16} /> : <Circle size={16} />}
-                        </span>
-                        <span className="dx-pl-text">
-                          <span className="dx-pl-title">{l.title}</span>
-                          <span className="dx-pl-meta">
-                            {l.mins} min
-                            {isCurrent && <em className="dx-pl-tag">Now playing</em>}
-                            {isNext && <em className="dx-pl-tag dx-pl-tag-next">Up next</em>}
-                          </span>
-                        </span>
-                      </Link>
-                    </li>
-                  );
-                })}
-                {/* Last line of the unit: a quiet link to its practice questions */}
-                {g.practice.length > 0 && (() => {
-                  const solved = g.practice.filter((p) => progress.practice[p.id]).length;
-                  return (
-                    <li>
-                      <Link to={`/dashboard/m/${mod.id}?tab=practice&subject=${subject.id}&unit=${g.key}`} className={`dx-pl-practice ${solved === g.practice.length ? 'is-done' : ''}`}>
-                        <ListChecks size={14} />
-                        <span>Practice {g.unit} questions</span>
-                        <em>{solved}/{g.practice.length}</em>
-                        <ArrowRight size={13} className="dx-pl-practice-go" />
-                      </Link>
-                    </li>
-                  );
-                })()}
-              </ul>
-              )}
-            </div>
-            );
-          })}
-        </div>
-      </aside>
+      {/* ── Subject panel ── */}
+      {panelOpen && (
+        <aside className="dx-lp-panel" aria-label={`${subject.title} content`}>
+          <div className="dx-lp-head">
+            <h2>{nSubjects > 1 ? `Subject ${subjectIdx + 1}: ` : ''}{subject.title}</h2>
+            {nSubjects > 1 && (
+              <span className="dx-lp-step">
+                <button type="button" onClick={() => browse(-1)} aria-label="Previous subject"><ChevronLeft size={16} /></button>
+                <button type="button" onClick={() => browse(1)} aria-label="Next subject"><ChevronRight size={16} /></button>
+              </span>
+            )}
+          </div>
+
+          <div className="dx-lp-body">
+            {groups.map(({ unit: u, practice }, gi) => {
+              const isOpen = openUnits.has(u.id);
+              const uDone = u.lectures.filter((l) => progress.watched[l.id]).length;
+              const solved = practice.filter((p) => progress.practice[p.id]).length;
+              return (
+                <section key={u.id} className={`dx-lp-unit ${isOpen ? 'is-open' : ''}`}>
+                  <button type="button" className="dx-lp-unit-btn" onClick={() => flipUnit(u.id)} aria-expanded={isOpen}>
+                    <span className="dx-lp-unit-num">{String(gi + 1).padStart(2, '0')}</span>
+                    <span className="dx-lp-unit-name">{u.title}</span>
+                    <span className="dx-lp-unit-meta">{uDone}/{u.lectures.length}</span>
+                    <ChevronDown size={15} className="dx-lp-chev" />
+                  </button>
+                  {isOpen && (
+                    <ul>
+                      {u.lectures.map((l) => {
+                        const isCurrent = l.id === current.id;
+                        const isDone = !!progress.watched[l.id];
+                        return (
+                          <li key={l.id} ref={isCurrent ? currentRef : undefined}>
+                            <Link to={watchUrl(mod.id, l.id)} className={`dx-lp-item ${isCurrent ? 'is-current' : ''}`} aria-current={isCurrent ? 'true' : undefined}>
+                              <span className="dx-lp-ico"><CirclePlay size={17} /></span>
+                              <span className="dx-lp-text"><b>{l.title}</b><small>{isCurrent ? 'Now playing' : 'Video lecture'} · {l.mins} min</small></span>
+                              <span className={`dx-lp-check ${isDone ? 'is-done' : ''}`} aria-label={isDone ? 'Watched' : 'Not watched'}>{isDone && <CircleCheck size={18} />}</span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                      {/* last line of the unit: a quiet link to its practice questions */}
+                      {practice.length > 0 && (
+                        <li>
+                          <Link to={`/dashboard/m/${mod.id}?tab=practice&subject=${subject.id}&unit=${u.id}`} className={`dx-pl-practice ${solved === practice.length ? 'is-done' : ''}`}>
+                            <ListChecks size={14} />
+                            <span>Practice {u.title} questions</span>
+                            <em>{solved}/{practice.length}</em>
+                            <ArrowRight size={13} className="dx-pl-practice-go" />
+                          </Link>
+                        </li>
+                      )}
+                    </ul>
+                  )}
+                </section>
+              );
+            })}
+          </div>
+
+          <div className="dx-lp-foot">
+            <span>Subject progress</span><b>{subjPct}%</b>
+            <div className="dx-lp-bar"><i style={{ width: `${subjPct}%` }} /></div>
+          </div>
+        </aside>
+      )}
     </div>
   );
 };

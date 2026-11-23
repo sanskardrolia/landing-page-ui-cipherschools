@@ -1,5 +1,5 @@
 import ImpactBar from '../components/ImpactBar';
-import { HowItWorks, ProblemSolution, StudentFeedback } from '../components/HomeSections';
+import { BeyondLectures, HowItWorks, ProblemSolution, StudentFeedback } from '../components/HomeSections';
 import { PremiumOnHome } from './PremiumPage';
 import { useHashScroll } from '../utils/sectionNav';
 import './HomeGrid.css';
@@ -9,8 +9,9 @@ import './HomeGrid.css';
    1. Hero              — what it is, who it's for, why it matters, primary CTA
    2. Problem & Solution
    3. How it works & Key features
-   4. Premium: the plan offer + pricing (shared with /premium)
-   5. Student feedback
+   4. Beyond lectures: a played-out system design practice problem
+   5. Premium: the plan offer + pricing (shared with /premium)
+   6. Student feedback
    Layout detail: a light grid frame on top of each section (not pricing):
    a label tab, a hairline across the content, small corner markers and
    short guide lines that fade out (HomeGrid.css). */
@@ -19,7 +20,7 @@ import './HomeGrid.css';
 // plain: no frame (pricing).
 const Band = ({ label, plain = false, children }) => (
   <div className={`home-band ${plain ? 'is-plain' : ''}`}>
-    {!plain && <span className="home-band-label">{label}</span>}
+    {!plain && label && <span className="home-band-label">{label}</span>}
     {children}
   </div>
 );
@@ -34,11 +35,12 @@ const MainPage = () => {
       </div>
 
       <div id="student-section">
-        <Band label="01 — The problem"><ProblemSolution /></Band>
-        <Band label="02 — How it works"><HowItWorks /></Band>
+        <Band><ProblemSolution /></Band>
+        <Band><HowItWorks /></Band>
+        <Band><BeyondLectures /></Band>
         {/* Premium pitch + the plan cards (same as /premium) */}
         <Band plain><PremiumOnHome /></Band>
-        <Band label="03 — Students"><StudentFeedback /></Band>
+        <Band><StudentFeedback /></Band>
       </div>
     </div>
   );

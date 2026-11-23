@@ -1,0 +1,98 @@
+/* System design practice demo — neutral board, brand orange for the action, red/green only for the result */
+.sdd { container-type: inline-size; border: 1px solid #E5E7EB; border-radius: 4px; overflow: hidden; background: #fff; box-shadow: 0 30px 60px -36px rgba(17, 24, 39, 0.35); }
+.sdd-bar { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #F7F7F5; border-bottom: 1px solid #ECEAE7; flex-wrap: wrap; }
+.sdd-dots { display: inline-flex; gap: 6px; }
+.sdd-dots i { width: 10px; height: 10px; border-radius: 50%; background: #FF5F57; }
+.sdd-dots i:nth-child(2) { background: #FEBC2E; }
+.sdd-dots i:nth-child(3) { background: #28C840; }
+.sdd-title { font-size: 0.84rem; font-weight: 700; color: #111827; }
+.sdd-problem { padding: 3px 9px; border-radius: 4px; font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; font-size: 0.74rem; color: #4B5563; background: #fff; border: 1px solid #E5E7EB; }
+.sdd-ctrl { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.sdd-ctrl button {
+  height: 30px; min-width: 30px; padding: 0 8px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  font: inherit; font-size: 0.78rem; font-weight: 700; color: #374151; background: #fff; border: 1px solid #E5E7EB; border-radius: 4px; cursor: pointer;
+}
+.sdd-ctrl button:hover { border-color: #9CA3AF; }
+.sdd-ctrl .sdd-run { color: #fff; background: #F3912E; border-color: #F3912E; padding: 0 12px; }
+.sdd-ctrl .sdd-run:hover { background: #E07F1C; border-color: #E07F1C; }
+
+/* board: dot grid like a design canvas */
+.sdd-board {
+  position: relative; height: 330px; overflow: hidden; user-select: none;
+  background-color: #FCFCFB; background-image: radial-gradient(#E7E5E1 1px, transparent 1px); background-size: 18px 18px;
+}
+.sdd-tray { position: absolute; left: 0; top: 0; bottom: 0; width: 14%; border-right: 1px dashed #E5E7EB; background: rgba(250, 250, 248, 0.85); }
+.sdd-chip {
+  position: absolute; left: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; white-space: nowrap;
+  font-size: 0.74rem; font-weight: 600; color: #6B7280; background: #fff; border: 1px dashed #D1D5DB; border-radius: 4px;
+}
+
+.sdd-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.sdd-wires line { stroke: #9CA3AF; stroke-width: 1.6; vector-effect: non-scaling-stroke; stroke-dasharray: 5 5; animation: sdd-draw 0.4s ease-out; }
+.sdd-wires line.is-flow { stroke: #F3912E; animation: sdd-flow 0.6s linear infinite; }
+.sdd-wires line.is-bad { stroke: #DC2626; }
+.sdd-wires line.is-good { stroke: #16A34A; animation: sdd-flow 1.2s linear infinite; }
+@keyframes sdd-flow { to { stroke-dashoffset: -20; } }
+@keyframes sdd-draw { from { opacity: 0; } }
+
+.sdd-node {
+  position: absolute; z-index: 2; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; white-space: nowrap;
+  font-size: 0.78rem; font-weight: 700; color: #111827; background: #fff; border: 1px solid #D1D5DB; border-radius: 4px;
+  box-shadow: 0 6px 16px -10px rgba(17, 24, 39, 0.4);
+  transition: left 0.85s cubic-bezier(0.45, 0.05, 0.25, 1), top 0.85s cubic-bezier(0.45, 0.05, 0.25, 1), border-color 0.3s, background 0.3s, box-shadow 0.3s;
+}
+.sdd-node svg { color: #6B7280; }
+.sdd-node.is-hot { border-color: #DC2626; background: #FEF2F2; color: #991B1B; animation: sdd-shake 0.4s ease-in-out 3; }
+.sdd-node.is-hot svg { color: #DC2626; }
+.sdd-node.is-ok { border-color: #86EFAC; }
+.sdd-node.is-ok svg { color: #16A34A; }
+.sdd-badge {
+  position: absolute; left: 50%; top: -12px; transform: translate(-50%, -100%); display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px;
+  font-style: normal; font-size: 0.66rem; font-weight: 800; color: #fff; background: #DC2626; border-radius: 4px; white-space: nowrap;
+}
+@keyframes sdd-shake { 25% { transform: translate(calc(-50% - 3px), -50%); } 75% { transform: translate(calc(-50% + 3px), -50%); } }
+
+.sdd-result { position: absolute; left: 16%; right: 14px; bottom: 12px; z-index: 3; display: flex; justify-content: flex-start; }
+.sdd-result p { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 8px 12px; border-radius: 4px; font-size: 0.8rem; color: #374151; background: #fff; border: 1px solid #E5E7EB; box-shadow: 0 8px 18px -12px rgba(17, 24, 39, 0.35); }
+.sdd-result p.is-fail { color: #991B1B; background: #FEF2F2; border-color: #FECACA; }
+.sdd-result p.is-pass { color: #166534; background: #F0FDF4; border-color: #BBF7D0; }
+.sdd-result p.is-run { color: #9A3412; }
+.sdd-spin { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #FCD9B6; border-top-color: #F3912E; animation: sdd-spin 0.7s linear infinite; }
+@keyframes sdd-spin { to { transform: rotate(360deg); } }
+
+.sdd-cursor {
+  position: absolute; z-index: 5; pointer-events: none; transform: translate(-2px, -2px);
+  transition: left 0.85s cubic-bezier(0.45, 0.05, 0.25, 1), top 0.85s cubic-bezier(0.45, 0.05, 0.25, 1);
+}
+.sdd-cursor svg { filter: drop-shadow(0 2px 3px rgba(17, 24, 39, 0.3)); transition: transform 0.12s; }
+.sdd-cursor.is-down svg { transform: scale(0.85); }
+
+/* section around it */
+.sdd-section .hs-head { margin-bottom: 28px; }
+.sdd-more { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 22px 0 0; padding: 0; list-style: none; }
+.sdd-more li { padding: 6px 12px; border-radius: 4px; font-size: 0.82rem; font-weight: 600; color: #374151; background: #fff; border: 1px solid #E5E7EB; }
+
+@media (max-width: 760px) {
+  .sdd-board { height: 320px; }
+  .sdd-node { padding: 6px 8px; font-size: 0.68rem; gap: 5px; }
+  .sdd-node span { display: none; }
+  .sdd-chip { padding: 5px 7px; font-size: 0; gap: 0; }
+  .sdd-problem { display: none; }
+  .sdd-result { left: 20%; }
+  .sdd-result p { font-size: 0.72rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sdd-node, .sdd-cursor { transition: none; }
+  .sdd-wires line, .sdd-node.is-hot { animation: none; }
+}
+
+/* labels: full by default, short (LB / API / DB) when the board itself is narrow */
+.sdd-l, .sdd-s { font-weight: inherit; }
+.sdd-s { display: none; }
+@container (max-width: 760px) {
+  .sdd-l { display: none; }
+  .sdd-s { display: inline; }
+  .sdd-node { padding: 7px 10px; font-size: 0.74rem; gap: 6px; }
+  .sdd-chip { padding: 5px 8px; font-size: 0.7rem; gap: 5px; }
+  .sdd-result p { font-size: 0.74rem; }
+}

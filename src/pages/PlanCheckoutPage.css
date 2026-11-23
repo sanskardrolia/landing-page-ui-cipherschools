@@ -197,3 +197,89 @@
   .plan-checkout-row { grid-template-columns: 1fr; }
   .plan-checkout-form-card { padding: 22px 16px; }
 }
+
+/* ── Compact plan brief (fits without scrolling) ── */
+.plan-checkout-brief { padding: 24px 26px 20px !important; }
+.pcb-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.pcb-head .plan-checkout-pitch { margin-top: 4px; font-size: 0.86rem; }
+.pcb-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px 10px; margin-top: 16px; }
+.pcb-price-fig { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.03em; color: #37352F; line-height: 1; }
+.pcb-price-fig small { margin-left: 3px; font-size: 0.85rem; font-weight: 500; color: #787774; letter-spacing: 0; }
+.pcb-price-was { font-size: 0.85rem; color: #9B9A97; text-decoration: line-through; }
+.pcb-billed { margin: 6px 0 0; font-size: 0.85rem; color: #787774; }
+.pcb-billed b { color: #37352F; }
+
+.pcb-pillars { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 16px; padding: 10px 12px; background: #F7F7F5; border: 1px solid #ECEAE7; border-radius: 4px; }
+.pcb-pillars > span { font-size: 0.78rem; font-weight: 600; color: #57564F; }
+.pcb-pillars ul { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pcb-pillars li { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; font-size: 0.76rem; font-weight: 600; color: #37352F; background: #fff; border: 1px solid #E9E9E7; border-radius: 4px; }
+.pcb-pillars li svg { color: #E8801A; }
+
+.pcb-label { margin: 18px 0 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9B9A97; }
+.pcb-rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; margin: 0; padding: 0; list-style: none; border-top: 1px solid #EFEFED; }
+.pcb-rows li { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; font-size: 0.86rem; font-weight: 500; color: #37352F; line-height: 1.35; border-bottom: 1px solid #EFEFED; }
+.pcb-rows small { display: block; margin-top: 1px; font-size: 0.76rem; font-weight: 600; color: #C2410C; }
+.pcb-yes { flex-shrink: 0; margin-top: 2px; color: #16A34A; }
+
+.pcb-more { margin-top: 12px; }
+.pcb-more summary { display: inline-flex; align-items: center; gap: 4px; font-size: 0.82rem; font-weight: 600; color: #57564F; cursor: pointer; list-style: none; }
+.pcb-more summary::-webkit-details-marker { display: none; }
+.pcb-more summary:hover { color: #37352F; }
+.pcb-more summary svg { transition: transform 0.2s ease; }
+.pcb-more[open] summary svg { transform: rotate(180deg); }
+.pcb-more-body { margin-top: 10px; max-height: 320px; overflow-y: auto; padding-right: 4px; }
+.pcb-inherited { margin: 0 0 6px; font-size: 0.8rem; font-weight: 600; color: #C2410C; }
+.plan-checkout-brief .plan-footer-assurance { margin-top: 14px; }
+
+@media (max-width: 520px) {
+  .pcb-rows { grid-template-columns: 1fr; }
+}
+/* tighter rhythm so even Ultra fits a 768px-tall laptop screen */
+.plan-checkout-brief { padding: 22px 24px 18px !important; }
+.pcb-head .plan-checkout-pitch { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.pcb-price { margin-top: 12px; }
+.pcb-pillars { margin-top: 12px; padding: 8px 10px; }
+.pcb-label { margin: 14px 0 4px; }
+.pcb-rows li { padding: 6px 0; }
+.pcb-foot { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 16px; margin-top: 10px; }
+.pcb-foot .pcb-more { margin-top: 0; flex: 1 1 auto; }
+.pcb-foot .pcb-more[open] { flex-basis: 100%; order: 2; }
+.pcb-assure { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #787774; white-space: nowrap; }
+.pcb-assure svg { color: #16A34A; }
+
+/* ── Compact details form (fits beside the brief without scrolling) ── */
+.plan-checkout-form-card { padding: 22px 24px 18px; }
+.plan-checkout-form-sub { margin: 4px 0 16px; }
+.plan-checkout-fields { gap: 12px; }
+.plan-checkout-row.is-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.plan-checkout-field { gap: 5px; }
+.plan-checkout-field input,
+.plan-checkout-field select { height: 38px; }
+.plan-checkout-phone { height: 38px; }
+.plan-checkout-submit { margin-top: 18px !important; }
+.plan-checkout-trust { margin-top: 10px !important; }
+@media (max-width: 560px) {
+  .plan-checkout-row.is-even { grid-template-columns: 1fr; }
+}
+/* both cards share one height on desktop; the pay button settles at the bottom of the form card */
+@media (min-width: 901px) {
+  .plan-checkout-grid { align-items: stretch; }
+  .plan-checkout-form-card { position: static; display: flex; flex-direction: column; }
+  .plan-checkout-form-card > form { flex: 1; display: flex; flex-direction: column; }
+  .plan-checkout-form-card .plan-checkout-submit { margin-top: auto !important; }
+  .plan-checkout-form-card .plan-checkout-fields { margin-bottom: 18px; }
+}
+.plan-checkout-summary { margin: 0 0 14px; padding: 12px 14px; background: #F7F7F5; border: 1px solid #ECEAE7; border-radius: 4px; }
+.plan-checkout-summary > div { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; font-size: 0.85rem; color: #57564F; }
+.plan-checkout-summary dt, .plan-checkout-summary dd { margin: 0; }
+.plan-checkout-summary dd { font-variant-numeric: tabular-nums; }
+.plan-checkout-summary .is-off dd { color: #16A34A; font-weight: 600; }
+.plan-checkout-summary .is-total { margin-top: 6px; padding-top: 9px; border-top: 1px solid #E5E4E0; font-size: 0.95rem; font-weight: 700; color: #37352F; }
+@media (min-width: 901px) {
+  .plan-checkout-form-card .plan-checkout-summary { margin-top: auto; }
+  .plan-checkout-form-card .plan-checkout-submit { margin-top: 0 !important; }
+}
+.plan-checkout-summary { padding: 9px 12px; margin-bottom: 12px; }
+.plan-checkout-summary > div { padding: 2px 0; }
+.plan-checkout-summary .is-total { margin-top: 4px; padding-top: 7px; }
+@media (min-width: 901px) { .plan-checkout-form-card .plan-checkout-fields { margin-bottom: 12px; } }

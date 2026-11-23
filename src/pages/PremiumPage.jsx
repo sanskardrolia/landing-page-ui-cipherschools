@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, BadgePercent, BarChart2, Bot, Check, ChevronDown, ClipboardCheck, Clock, Code2, Crown, Database, Eye,
+  ArrowRight, BadgePercent, BarChart2, Bot, Check, ChevronDown, ClipboardCheck, ListChecks, Clock, Code2, Crown, Database, Eye,
   Flame, Info, Laptop, Layers, Lock, Maximize2, Mic, PlayCircle, RefreshCw, ShieldCheck, Sparkles, Terminal,
   Users, Workflow, X, Zap
 } from 'lucide-react';
 import { getEnrollment } from '../utils/enrollment';
+import { PLAN_ROWS } from '../data/planRows';
 import { startPreview } from '../utils/preview';
 import './PremiumPage.css';
 import './PremiumRedesign.css';
@@ -214,7 +215,6 @@ export const PLANS_12M_DATA = [
     features: [
       ...ultraModules(DSA_INFO_PLUS),
       { text: 'Company Specific Mock Interview — 2 rounds' },
-      { text: '2 attempts on every proctored test' },
     ],
     ctaText: 'Go All-In for 1 Year',
     ctaVariant: 'slate'
@@ -271,24 +271,6 @@ export const FeatureTree = ({ nodes, level = 0, excluded = false }) => (
    PREMIUM PAGE CONTENT
    ══════════════════════════════════════════════════════════════ */
 
-/* What each plan includes, as one row per offering so the three cards line up.
-   `true` = included, `false` = not included, a string = included with that detail. */
-const PLAN_ROWS = [
-  { label: 'Computer Fundamentals', note: 'OS, CN, OOPs', v: [true, true, true] },
-  { label: 'DBMS', v: [true, true, true] },
-  { label: 'DSA questions', v: ['600 + 10/mo', '1,200 + 20/mo', '2,000 + 30/mo'] },
-  { label: 'DSA Advanced', v: [false, true, true] },
-  { label: 'Full Stack', v: [false, 'MERN or JFS', 'MERN + JFS'] },
-  { label: 'DevOps & Cloud Computing', v: [false, true, true] },
-  { label: 'System Design', v: [false, true, true] },
-  { label: 'Generative A.I.', v: [false, true, true] },
-  { label: 'Communication & Behavioural', v: [false, true, true] },
-  { label: 'Company-specific tests', v: [false, true, true] },
-  { label: 'Mock interviews', v: ['Generic', '+ Company', '+ Company · 2 rounds'] },
-  { label: 'DSA Mastery', v: [false, false, true] },
-  { label: '1:1 Mentorship', v: [false, false, '3 credits'] },
-  { label: 'Attempts per test', v: ['1', '1', '2'] }
-];
 
 /* Hero offer card: the four strongest reasons to buy each plan */
 const HERO_POINTS = {
@@ -427,7 +409,7 @@ export const GrawlixWord = ({ text }) => {
    lower plan. Tabs switch between plans without closing.
    ══════════════════════════════════════════════════════════════ */
 const OFFER_HIGHLIGHTS = {
-  starter: [['3', 'Core modules'], ['600 + 10/mo', 'DSA questions'], ['Generic', 'Mock interview'], ['1', 'Attempt per test']],
+  starter: [['3', 'Core modules'], ['600 + 10/mo', 'DSA questions'], ['Generic', 'Mock interview']],
   plus: [['9', 'Modules'], ['1,200 + 20/mo', 'DSA questions'], ['+ Company', 'Mock interviews & tests'], ['MERN or JFS', 'Full Stack track']],
   compete: [['11', 'Modules + mentorship'], ['2,000 + 30/mo', 'DSA questions'], ['2 rounds', 'Company mock interviews'], ['3 credits', '1:1 Mentorship']]
 };
@@ -495,7 +477,7 @@ const PlanOfferingModal = ({ planId, onSwitch, onClose, ctaFor, onBuy }) => {
             <p>{meta.tagline}. {plan.priceFormatted} for 12 months, about ₹{plan.dailyCost} a day, with a 7-day money-back guarantee.</p>
           </div>
 
-          <div className="pr-om-highlights">
+          <div className="pr-om-highlights" style={{ '--n': OFFER_HIGHLIGHTS[planId].length }}>
             {OFFER_HIGHLIGHTS[planId].map(([value, label], i) => (
               <div key={label} className="pr-om-hl" style={{ '--i': i }}>
                 <strong>{value}</strong><span>{label}</span>
@@ -724,6 +706,16 @@ export const PremiumPricing = ({ actions, sectionRef, id = 'plans' }) => {
           </div>
         )}
 
+        {/* Applies to every plan: each subject is taught through the same four pillars */}
+        <div className="pr-pillars" aria-label="Every subject in every plan includes">
+          <span className="pr-pillars-lead">Every subject, in every plan, includes</span>
+          <ul>
+            {[[PlayCircle, 'Lectures'], [ListChecks, 'Practice'], [ClipboardCheck, 'Tests'], [Mic, 'A.I. Mock interviews']].map(([I, t]) => (
+              <li key={t}><I size={15} /> {t}</li>
+            ))}
+          </ul>
+        </div>
+
         <div className="pr-cards">
           {PLANS_12M_DATA.map((plan, col) => {
             const meta = PLAN_META[plan.id];
@@ -760,8 +752,11 @@ export const PremiumPricing = ({ actions, sectionRef, id = 'plans' }) => {
                     return (
                       <li key={row.label} className={v ? '' : 'is-off'}>
                         {v ? <Check size={15} className="pr-yes" /> : <X size={15} className="pr-no" />}
-                        <span className="pr-row-label">{row.label}{row.note && <em> · {row.note}</em>}</span>
-                        {typeof v === 'string' && <b className="pr-row-val">{v}</b>}
+                        <span className="pr-row-label">
+                          {row.labels?.[col] ?? row.label}{row.note && <em> · {row.note}</em>}
+                          {row.stack && typeof v === 'string' && <small className="pr-row-sub">{v}</small>}
+                        </span>
+                        {!row.stack && typeof v === 'string' && <b className="pr-row-val">{v}</b>}
                       </li>
                     );
                   })}

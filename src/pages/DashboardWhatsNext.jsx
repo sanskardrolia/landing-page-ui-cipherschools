@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarClock, CircleCheck, CirclePlay, ClipboardCheck, ListChecks, Lock, Mic, Sparkles } from 'lucide-react';
-import ModuleIcon from '../components/ModuleIcon';
 import {
   TEST_UNLOCK_AT, subjectExtended, subjectInterview, subjectLectures, subjectTests
 } from '../data/learnerModules';
@@ -75,7 +74,7 @@ const WhatsNext = ({ ctx, mods }) => {
     const need = Math.ceil(t.unit.lectures.length * TEST_UNLOCK_AT) - unitWatched;
     const free = st.free ? st.free.has(t.id) : null;
     const open = free ?? need <= 0;
-    test = { id: t.id, title: t.name, meta: `${t.testType} · ${t.format} · ${t.mins} min`, open, note: open ? 'Ready to launch' : `Watch ${plural(need, 'more lecture', 'more lectures')} of ${t.unit.title}` };
+    test = { id: t.id, title: t.name, meta: `${t.mins} min`, open, note: open ? 'Ready to launch' : `Watch ${plural(need, 'more lecture', 'more lectures')} of ${t.unit.title}` };
   } else {
     const t = st.extra.find((x) => !(tests[x.id]?.count > 0));
     if (t) {
@@ -98,25 +97,25 @@ const WhatsNext = ({ ctx, mods }) => {
     const left = st.lectures.length - watchedCount;
     const open = st.free ? st.free.has(nextKey) : left === 0;
     mock = {
-      id: nextKey, title: `${iv.label}${rounds > 1 ? ` · Round ${keys.indexOf(nextKey) + 1}` : ''}`, meta: `${iv.mins} min · live with feedback`,
+      id: nextKey, title: `${iv.label}${rounds > 1 ? ` · Round ${keys.indexOf(nextKey) + 1}` : ''}`, meta: `${iv.mins} min · live`,
       open, booked, note: booked ? `Booked: ${booked}` : open ? 'Ready to book' : `Unlocks after the section · ${watchedCount}/${st.lectures.length} lectures`
     };
   }
 
   const blocks = [
     lec && {
-      key: 'lecture', kind: 'lecture', Icon: CirclePlay, label: 'Next lecture',
-      title: lec.title, meta: `${lec.unit?.title || subj.title} · ${lec.mins} min`, id: lec.id,
+      key: 'lecture', kind: 'lecture', Icon: CirclePlay, label: 'Lecture',
+      title: lec.title, meta: `${lec.mins} min`, id: lec.id,
       to: `${base}/watch/${lec.id}`, cta: 'Watch', open: true, note: `${watchedCount}/${st.lectures.length} watched in this section`
     },
     item && {
-      key: 'practice', kind: 'practice', Icon: ListChecks, label: 'Next to practice',
-      title: item.title, meta: [item.level, ...(item.companies || []).slice(0, 2), item.unit.title].filter(Boolean).join(' · '), id: item.id,
+      key: 'practice', kind: 'practice', Icon: ListChecks, label: 'Practice',
+      title: item.title, meta: item.level || '', id: item.id,
       to: WORKSPACE_KINDS.includes(item.kind) ? `${base}/practice/${item.id}` : `${base}?tab=practice&${q}`, cta: 'Solve', open: true,
       note: `${st.items.filter((p) => practice[p.id]).length}/${st.items.length} solved`
     },
-    test && { key: 'test', kind: 'test', Icon: ClipboardCheck, label: 'Next test', ...test, to: `${base}?tab=test&${q}`, cta: test.open ? 'Take test' : 'View' },
-    mock && { key: 'mock', kind: 'mock', Icon: Mic, label: 'Mock interview', ...mock, to: `${base}?tab=interview&${q}`, cta: mock.booked ? 'View' : mock.open ? 'Book' : 'View' }
+    test && { key: 'test', kind: 'test', Icon: ClipboardCheck, label: 'Test', ...test, to: `${base}?tab=test&${q}`, cta: test.open ? 'Take test' : 'View' },
+    mock && { key: 'mock', kind: 'mock', Icon: Mic, label: 'Interview', ...mock, to: `${base}?tab=interview&${q}`, cta: mock.booked ? 'View' : mock.open ? 'Book' : 'View' }
   ].filter(Boolean);
 
   // Show two: the first steps that are ready now (in pillar order); waiting ones fill any gap
@@ -124,28 +123,33 @@ const WhatsNext = ({ ctx, mods }) => {
   const shown = [...blocks.filter(isReady), ...blocks.filter((b) => !isReady(b))].slice(0, 2)
     .sort((x, y) => blocks.indexOf(x) - blocks.indexOf(y));
 
+  const pctWatched = st.lectures.length ? Math.round((watchedCount / st.lectures.length) * 100) : 0;
+  const firstReady = shown.find((b) => b.open && !lockedFor(b.id));
+
   return (
     <section className="dx-card dx-ov-next">
       <div className="dx-ov-card-head">
         <h3><Sparkles size={16} /> What's next</h3>
         <Link to={`${base}?${q}`} className="dx-ov-link">Open section</Link>
       </div>
-      <p className="dx-wn-where"><span className="dx-mc-icon"><ModuleIcon mod={mod} size={14} /></span> {where}</p>
+      {/* where you are + one slim progress line (replaces per-item counts) */}
+      <div className="dx-wn-where">
+        <span className="dx-wn-where-name">{where}</span>
+        <span className="dx-wn-where-pct">{watchedCount}/{st.lectures.length} lectures</span>
+        <span className="dx-wn-bar" aria-hidden="true"><i style={{ width: `${pctWatched}%` }} /></span>
+      </div>
       <ul className="dx-wn-list">
         {shown.map((b) => {
           const locked = lockedFor(b.id);
           const ready = b.open && !locked;
+          const sub = locked ? 'Unlock with a plan' : !b.open ? b.note : b.booked ? b.note : [b.label, b.meta].filter(Boolean).join(' · ');
           return (
             <li key={b.key}>
-              <Link to={b.to} className={`dx-wn-item dx-wn-${b.kind} ${ready ? '' : 'is-waiting'}`} onClick={(e) => tap(e, b.id)}>
+              <Link to={b.to} className={`dx-wn-item ${ready ? '' : 'is-waiting'} ${b === firstReady ? 'is-primary' : ''}`} onClick={(e) => tap(e, b.id)}>
                 <span className="dx-wn-icon"><b.Icon size={16} /></span>
                 <span className="dx-wn-text">
-                  <span className="dx-wn-label">{b.label}</span>
                   <strong>{b.title}</strong>
-                  <span className="dx-wn-meta">{b.meta}</span>
-                  <span className={`dx-wn-note ${ready ? 'is-ready' : ''}`}>
-                    {locked ? <><Lock size={11} /> Unlock with a plan</> : !b.open ? <><Lock size={11} /> {b.note}</> : b.booked ? <><CalendarClock size={11} /> {b.note}</> : b.note}
-                  </span>
+                  <span className="dx-wn-meta">{!ready && <Lock size={11} />}{b.booked && <CalendarClock size={11} />}{sub}</span>
                 </span>
                 <span className="dx-wn-cta">{locked ? <Lock size={14} /> : <>{b.cta} <ArrowRight size={14} /></>}</span>
               </Link>

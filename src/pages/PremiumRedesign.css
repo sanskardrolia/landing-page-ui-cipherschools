@@ -646,7 +646,7 @@ body:has(.pr-sticky) .back-to-top-btn { bottom: 60px; transition: bottom 0.25s e
 .pr-om-intro p { margin: 10px 0 0; font-size: 1rem; line-height: 1.6; color: var(--muted); }
 
 @keyframes pr-om-rise { from { opacity: 0; transform: translateY(12px); } }
-.pr-om-highlights { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.pr-om-highlights { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); margin-top: 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .pr-om-hl { padding: 20px 18px; animation: pr-om-rise 0.4s calc(0.1s + var(--i) * 0.06s) cubic-bezier(0.2, 0.7, 0.2, 1) backwards; }
 .pr-om-hl + .pr-om-hl { border-left: 1px solid var(--line); }
 .pr-om-hl strong { display: block; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; color: var(--accent-dark); }
@@ -740,3 +740,22 @@ body:has(.pr-sticky.is-home) .footer-wrapper { padding-bottom: 44px; }
 }
 .pr-sticky *, .pr-sticky *::before, .pr-sticky *::after { box-sizing: border-box; }
 .pr-sticky s { text-decoration: line-through; }
+
+/* "4 pillars" line above the plan cards — applies to all plans */
+.pr-pillars {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 16px;
+  max-width: calc(var(--max-width, 1200px) - 4rem); margin: 0 auto 22px; padding: 12px 18px;
+  background: #fff; border: 1px solid #E5E7EB; border-radius: 4px;
+}
+.pr-pillars-lead { font-size: 0.9rem; font-weight: 600; color: #374151; }
+.pr-pillars ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.pr-pillars li {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px;
+  font-size: 0.86rem; font-weight: 600; color: #111827; background: #F7F7F5; border: 1px solid #ECEAE7; border-radius: 4px;
+}
+.pr-pillars li svg { color: #E8801A; }
+@media (max-width: 560px) {
+  .pr-pillars { padding: 12px; }
+  .pr-pillars-lead { width: 100%; text-align: center; font-size: 0.85rem; }
+}
+.pr-row-sub { display: block; margin-top: 2px; font-size: 0.78rem; font-weight: 600; color: #C2410C; }
