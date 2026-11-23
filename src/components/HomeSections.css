@@ -609,3 +609,22 @@
 @media (max-width: 640px) {
   .hs-beyond-mock { padding: 16px 12px 0; border-radius: 10px; }
 }
+
+/* Problem card: title says which side of the story we're on */
+.hs-tabs .hs-tabs-doc-title { flex-wrap: wrap; gap: 0 6px; }
+.hs-tabs-who { font-weight: 600; color: var(--muted, #6B7280); }
+.hs-tabs-who.is-with { color: #E8801A; }
+
+/* "Without" state: the prep tabs open one after another, like someone opening site after site */
+@keyframes hs-tab-open {
+  from { max-width: 0; padding-left: 0; padding-right: 0; opacity: 0; }
+  60% { opacity: 1; }
+}
+.hs-tabs:not(.is-fixed) .hs-tab-mess,
+.hs-tabs:not(.is-fixed) .hs-tab-more {
+  animation: hs-tab-open 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(0.15s + var(--i, 0) * 0.28s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-tabs:not(.is-fixed) .hs-tab-mess, .hs-tabs:not(.is-fixed) .hs-tab-more { animation: none; }
+}

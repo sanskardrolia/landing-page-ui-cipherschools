@@ -243,10 +243,9 @@ const ImpactBar = ({ diwali = false, part = 'all' }) => {
                 <span>Shubh Deepawali</span>
               </div>
             )}
-            {/* Headline: a play on the name (cipher → deciphered) that still says the
-                outcome in plain words; "deciphered" carries the hand-drawn underline */}
+            {/* Headline: what CipherSchools is, in plain words; "your career" carries the hand-drawn underline */}
             <h1 className="hero-pr-headline hero-h1-plain">
-              Your first tech job, <span className="pr-hl pr-hl-draw">deciphered.</span>
+              The platform to learn skills and excel in <span className="pr-hl pr-hl-draw">your career.</span>
             </h1>
 
             {/* Concise Value Proposition */}

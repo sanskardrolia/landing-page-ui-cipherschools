@@ -76,7 +76,7 @@ export const ProblemSolution = () => {
 
   useEffect(() => {
     if (!auto) return undefined;
-    const t = setTimeout(() => setFixed((v) => !v), fixed ? 4200 : 3400);
+    const t = setTimeout(() => setFixed((v) => !v), fixed ? 4200 : 4800);
     return () => clearTimeout(t);
   }, [fixed, auto]);
   const toggle = () => { setAuto(false); setFixed((v) => !v); };
@@ -118,7 +118,7 @@ export const ProblemSolution = () => {
                   <span className="hs-tab-logo"><TabLogo site={t.site} /></span> {t.label} <X size={11} />
                 </span>
               ))}
-              <span className="hs-tab hs-tab-more">+41</span>
+              <span className="hs-tab hs-tab-more" style={{ '--i': MESS_TABS.length }}>+41</span>
             </div>
           </div>
 
@@ -126,7 +126,7 @@ export const ProblemSolution = () => {
           <div className="hs-tabs-body">
             <div className="hs-tabs-doc">
               <div className="hs-tabs-doc-head">
-                <p className="hs-tabs-doc-title">My placement prep</p>
+                <p className="hs-tabs-doc-title">My placement prep <span className={`hs-tabs-who ${fixed ? 'is-with' : ''}`}>{fixed ? 'with CipherSchools' : 'without CipherSchools'}</span></p>
                 <span className={`hs-tabs-chip ${fixed ? 'is-ok' : ''}`}><i />{fixed ? 'One path' : 'No plan'}</span>
               </div>
               <ul>
