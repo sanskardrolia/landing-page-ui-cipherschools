@@ -1,5 +1,8 @@
 import ImpactBar from '../components/ImpactBar';
-import { BeyondLectures, HowItWorks, ProblemSolution, StudentFeedback } from '../components/HomeSections';
+import { HowItWorks, ProblemSolution, StudentFeedback } from '../components/HomeSections';
+import PlatformExperience from '../components/PlatformExperience';
+import GoalAdvisor from '../components/GoalAdvisor';
+import PlacedLogos from '../components/PlacedLogos';
 import { PremiumOnHome } from './PremiumPage';
 import { useHashScroll } from '../utils/sectionNav';
 import './HomeGrid.css';
@@ -12,18 +15,16 @@ import './HomeGrid.css';
    4. Beyond lectures: a played-out system design practice problem
    5. Premium: the plan offer + pricing (shared with /premium)
    6. Student feedback
-   Layout detail: a light grid frame on top of each section (not pricing):
-   a label tab, a hairline across the content, small corner markers and
-   short guide lines that fade out (HomeGrid.css). */
+   Each section sits in a plain Band wrapper (HomeGrid.css); the earlier grid frame was removed. */
 
-// A section with a light grid frame at its top (label tab, hairline, corner markers, short guides).
-// plain: no frame (pricing).
-const Band = ({ label, plain = false, children }) => (
+// A homepage section wrapper. plain: the pricing band (keeps its own width rules).
+const Band = ({ plain = false, children }) => (
   <div className={`home-band ${plain ? 'is-plain' : ''}`}>
-    {!plain && label && <span className="home-band-label">{label}</span>}
     {children}
   </div>
 );
+
+const SHOW_HOW_IT_WORKS = false;
 
 const MainPage = () => {
   useHashScroll(); // e.g. /#student-section when coming back from /university
@@ -35,13 +36,19 @@ const MainPage = () => {
       </div>
 
       <div id="student-section">
+        {/* proof: where students have been placed */}
+        <div className="home-proof"><div className="container"><PlacedLogos /></div></div>
         <Band><ProblemSolution /></Band>
-        <Band><HowItWorks /></Band>
-        <Band><BeyondLectures /></Band>
+        {/* "Learn. Practice. Test. Interview." — disabled for now; put back to show it again */}
+        {SHOW_HOW_IT_WORKS && <Band><HowItWorks /></Band>}
+        <Band><PlatformExperience /></Band>
         {/* Premium pitch + the plan cards (same as /premium) */}
         <Band plain><PremiumOnHome /></Band>
         <Band><StudentFeedback /></Band>
       </div>
+
+      {/* "Describe your goal" pill (after the hero) → roadmap + course advisor */}
+      <GoalAdvisor />
     </div>
   );
 };

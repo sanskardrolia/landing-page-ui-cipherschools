@@ -628,3 +628,22 @@
 @media (prefers-reduced-motion: reduce) {
   .hs-tabs:not(.is-fixed) .hs-tab-mess, .hs-tabs:not(.is-fixed) .hs-tab-more { animation: none; }
 }
+
+/* Problem section: labelled "Without / With" switch + one-line caption, so the story reads at a glance */
+#why-section .hs-head { margin-bottom: 22px; }
+.hs-story { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 0 auto 22px; }
+.hs-story-tabs { display: inline-flex; gap: 4px; padding: 4px; background: #F4F4F2; border: 1px solid #E7E5E1; border-radius: 4px; }
+.hs-story-tabs button {
+  position: relative; overflow: hidden; height: 36px; padding: 0 16px; font: inherit; font-size: 0.9rem; font-weight: 600;
+  color: #6B7280; background: none; border: 0; border-radius: 4px; cursor: pointer; transition: color 0.2s, background 0.2s;
+}
+.hs-story-tabs button:hover { color: #111827; }
+.hs-story-tabs button.is-on { color: #111827; background: #fff; box-shadow: 0 1px 3px rgba(17, 24, 39, 0.12); }
+.hs-story-tabs button:last-child.is-on { color: #C2620C; }
+.hs-story-bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: #F3912E; transform-origin: left; animation: hs-story-bar var(--ms) linear both; }
+.hs-story-bar.is-paused { animation-play-state: paused; }
+@keyframes hs-story-bar { from { transform: scaleX(0); } }
+.hs-story-line { margin: 0; font-size: 0.98rem; color: #4B5563; text-align: center; animation: hs-story-in 0.4s ease; }
+@keyframes hs-story-in { from { opacity: 0; transform: translateY(4px); } }
+@media (max-width: 480px) { .hs-story-tabs button { padding: 0 10px; font-size: 0.82rem; } }
+@media (prefers-reduced-motion: reduce) { .hs-story-bar, .hs-story-line { animation: none; } }

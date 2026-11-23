@@ -70,18 +70,15 @@ const PLAN_ROWS = [
   { Icon: Coins, mess: 'Stay consistent… gave up on day 3', fix: 'Streaks & CipherCoins keep you going', c: '#D97706' }
 ];
 
+const STORY_MS = 8000; // time on each side of the story
+
 export const ProblemSolution = () => {
   const [fixed, setFixed] = useState(false);
   const [auto, setAuto] = useState(true);
+  const [live, setLive] = useState(false);   // starts once the card is on screen
+  const [cycle, setCycle] = useState(0);     // restarts the progress line after a hover pause
 
-  useEffect(() => {
-    if (!auto) return undefined;
-    const t = setTimeout(() => setFixed((v) => !v), fixed ? 4200 : 4800);
-    return () => clearTimeout(t);
-  }, [fixed, auto]);
-  const toggle = () => { setAuto(false); setFixed((v) => !v); };
-
-  // The visitor's own pointer gets a "You" label
+  // The visitor's own pointer gets a "You" label; hovering the card also pauses the story
   const collabRef = useRef(null);
   const youRef = useRef(null);
   const [here, setHere] = useState(false);
@@ -89,6 +86,23 @@ export const ProblemSolution = () => {
     const box = collabRef.current?.getBoundingClientRect();
     if (box && youRef.current) youRef.current.style.transform = `translate(${e.clientX - box.left}px, ${e.clientY - box.top}px)`;
   };
+
+  useEffect(() => {
+    const el = collabRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setLive(true); io.disconnect(); } }, { threshold: 0.45 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!auto || !live || here) return undefined;
+    const t = setTimeout(() => setFixed((v) => !v), STORY_MS);
+    return () => clearTimeout(t);
+  }, [fixed, auto, live, here, cycle]);
+
+  const show = (v) => { setAuto(false); setFixed(v); };
+  const toggle = () => show(!fixed);
 
   return (
     <section className="hs-section" id="why-section">
@@ -101,7 +115,7 @@ export const ProblemSolution = () => {
           className="hs-collab"
           ref={collabRef}
           onMouseEnter={() => setHere(true)}
-          onMouseLeave={() => setHere(false)}
+          onMouseLeave={() => { setHere(false); setCycle((c) => c + 1); }}
           onMouseMove={moveYou}
         >
         <span ref={youRef} className={`hs-you ${here ? 'is-on' : ''}`} aria-hidden="true"><em>You</em></span>

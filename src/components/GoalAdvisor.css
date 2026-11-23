@@ -1,0 +1,264 @@
+/* Goal advisor — floating pill + Notion-like sheet (white, hairlines, one accent) */
+.ga-pill, .ga-sheet { --ink: #111827; --mut: #6B7280; --line: #E7E5E1; --acc: #E8801A; font-family: inherit; }
+
+/* ── the pill: sits above the home sticky upgrade bar ── */
+.ga-pill {
+  position: fixed; left: 50%; z-index: 41; bottom: calc(44px + 16px + env(safe-area-inset-bottom, 0px));
+  width: min(560px, calc(100% - 32px)); height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 6px 0 18px;
+  background: rgba(255, 255, 255, 0.92); -webkit-backdrop-filter: saturate(1.6) blur(14px); backdrop-filter: saturate(1.6) blur(14px);
+  border: 1px solid var(--line); border-radius: 999px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.05), 0 18px 40px -16px rgba(17, 24, 39, 0.3);
+  opacity: 0; pointer-events: none; transform: translate(-50%, 24px) scale(0.98);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+body:not(:has(.pr-sticky)) .ga-pill { bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
+.ga-pill.is-shown { opacity: 1; pointer-events: auto; transform: translate(-50%, 0) scale(1); }
+.ga-pill:focus-within { border-color: #F3C9A0; box-shadow: 0 0 0 4px rgba(232, 128, 26, 0.12), 0 18px 40px -16px rgba(17, 24, 39, 0.3); }
+.ga-pill-ico { flex-shrink: 0; color: var(--acc); }
+.ga-pill input { flex: 1; min-width: 0; height: 100%; padding: 0; font: inherit; font-size: 0.95rem; color: var(--ink); background: none; border: 0; outline: none; }
+.ga-pill input::placeholder { color: #9CA3AF; }
+#root ~ .ga-pill button, .ga-pill button {
+  flex-shrink: 0; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; background: var(--ink); border: 0; border-radius: 999px !important; cursor: pointer; transition: background 0.2s;
+}
+.ga-pill button:hover { background: var(--acc); }
+
+/* ── the sheet ── */
+.ga-scrim { position: fixed; inset: 0; z-index: 1200; display: flex; align-items: flex-start; justify-content: center; padding: 6vh 16px 16px; background: rgba(17, 24, 39, 0.32); animation: ga-fade 0.2s ease; }
+@keyframes ga-fade { from { opacity: 0; } }
+.ga-sheet {
+  width: min(1040px, 100%); max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;
+  color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 30px 80px -30px rgba(17, 24, 39, 0.45); animation: ga-rise 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes ga-rise { from { opacity: 0; transform: translateY(14px) scale(0.99); } }
+.ga-top { display: flex; align-items: center; gap: 8px; padding: 14px 14px 14px 20px; border-bottom: 1px solid var(--line); }
+.ga-search { flex: 1; display: flex; align-items: center; gap: 12px; color: var(--mut); }
+.ga-search input { flex: 1; min-width: 0; height: 40px; padding: 0; font: inherit; font-size: 1.05rem; color: var(--ink); background: none; border: 0; outline: none; }
+.ga-search input::placeholder { color: #A3A3A3; }
+.ga-go { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; font: inherit; font-size: 0.86rem; font-weight: 600; color: #fff; background: var(--ink); border: 0; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.ga-go:disabled { color: #9CA3AF; background: #F3F4F6; cursor: default; }
+.ga-x { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; color: var(--mut); background: none; border: 0; border-radius: 4px; cursor: pointer; }
+.ga-x:hover { color: var(--ink); background: #F4F4F2; }
+
+.ga-body { flex: 1; overflow-y: auto; padding: 28px 32px 32px; }
+.ga-thinking { display: flex; align-items: center; gap: 8px; margin: 40px 0; justify-content: center; color: var(--mut); }
+.ga-spin { animation: ga-spin 0.8s linear infinite; }
+@keyframes ga-spin { to { transform: rotate(360deg); } }
+
+.ga-empty { max-width: 640px; margin: 18px auto; text-align: center; }
+.ga-empty h2 { margin: 0; font-size: 1.6rem; font-weight: 750; letter-spacing: -0.02em; }
+.ga-empty > p { margin: 10px auto 0; max-width: 520px; font-size: 0.98rem; line-height: 1.55; color: var(--mut); }
+.ga-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; }
+.ga-chips button { padding: 8px 12px; font: inherit; font-size: 0.86rem; color: #374151; background: #fff; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.ga-chips button:hover { border-color: #D1D5DB; background: #FAFAF8; }
+.ga-or { margin-top: 22px !important; font-size: 0.9rem; }
+.ga-or a { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--ink); text-decoration: underline; text-decoration-color: #D1D5DB; text-underline-offset: 3px; }
+
+/* result: roadmap + sidebar */
+.ga-result { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 36px; align-items: start; }
+.ga-kicker { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #9A4D0A; }
+.ga-map h2 { margin: 8px 0 6px; font-size: 1.7rem; font-weight: 750; letter-spacing: -0.02em; }
+.ga-blurb { margin: 0; max-width: 56ch; font-size: 0.96rem; line-height: 1.55; color: var(--mut); }
+.ga-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; }
+.ga-meta span { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; font-size: 0.8rem; font-weight: 600; color: #374151; background: #F4F4F2; border-radius: 4px; }
+.ga-meta span.is-hot { color: #9A4D0A; background: #FFF1E2; }
+.ga-alt { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 16px; font-size: 0.82rem; color: var(--mut); }
+.ga-alt button { padding: 4px 10px; font: inherit; font-size: 0.8rem; font-weight: 600; color: #374151; background: none; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; }
+.ga-alt button.is-on { color: #fff; background: var(--ink); border-color: var(--ink); }
+
+/* roadmap.sh-style spine */
+.ga-steps { position: relative; list-style: none; margin: 26px 0 0; padding: 0 0 0 4px; }
+.ga-steps::before { content: ''; position: absolute; left: 19px; top: 20px; bottom: 30px; border-left: 2px dashed #E5E3DF; }
+.ga-steps li { position: relative; display: flex; gap: 16px; padding-bottom: 14px; animation: ga-step 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; animation-delay: calc(var(--i) * 70ms); }
+@keyframes ga-step { from { opacity: 0; transform: translateY(8px); } }
+.ga-node { position: relative; z-index: 1; flex-shrink: 0; width: 32px; height: 32px; margin-top: 10px; display: grid; place-items: center; font-size: 0.82rem; font-weight: 800; color: #fff; background: var(--acc); border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px #F3C9A0; }
+.ga-card { flex: 1; min-width: 0; padding: 12px 14px; background: #fff; border: 1px solid var(--line); border-radius: 6px; transition: border-color 0.15s, box-shadow 0.15s; }
+.ga-card:hover { border-color: #D6D3CE; box-shadow: 0 8px 20px -16px rgba(17, 24, 39, 0.4); }
+.ga-card b { display: block; font-size: 0.98rem; font-weight: 650; }
+.ga-mod { display: inline-block; margin-top: 6px; padding: 2px 8px; font-size: 0.76rem; font-weight: 700; color: #9A4D0A; background: #FFF4E8; border-radius: 4px; }
+.ga-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.ga-topics i { font-style: normal; font-size: 0.8rem; color: var(--mut); }
+.ga-topics i + i::before { content: '·'; margin-right: 6px; color: #D1D5DB; }
+
+.ga-side { position: sticky; top: 0; display: flex; flex-direction: column; }
+.ga-dl { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 40px; font: inherit; font-size: 0.9rem; font-weight: 650; color: var(--ink); background: #fff; border: 1px solid #D6D3CE; border-radius: 4px; cursor: pointer; }
+.ga-dl:hover { border-color: var(--ink); }
+.ga-dl:disabled { opacity: 0.6; cursor: default; }
+.ga-dl-note { margin: 6px 0 0; font-size: 0.76rem; color: #9CA3AF; text-align: center; }
+.ga-side-h { margin: 22px 0 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9CA3AF; }
+.ga-courses { list-style: none; margin: 0; padding: 0; border-top: 1px solid #F0EEEA; }
+.ga-courses li { display: flex; align-items: flex-start; gap: 8px; padding: 9px 0; border-bottom: 1px solid #F0EEEA; }
+.ga-courses li > svg { flex-shrink: 0; margin-top: 2px; color: #16A34A; }
+.ga-courses span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.ga-courses b { font-size: 0.88rem; font-weight: 600; }
+.ga-courses small { font-size: 0.76rem; color: #9CA3AF; }
+.ga-courses em { font-style: normal; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; color: #374151; background: #F4F4F2; }
+.ga-courses em.is-plus, .ga-courses em.is-ultra { color: #9A4D0A; background: #FFF1E2; }
+.ga-plan { margin-top: 4px; }
+.ga-plan-row { display: flex; align-items: baseline; justify-content: space-between; font-size: 1.05rem; }
+.ga-plan-row strong { font-size: 1.3rem; font-weight: 800; }
+.ga-plan-row span { color: var(--mut); font-size: 0.85rem; }
+.ga-plan-note { margin: 4px 0 12px; font-size: 0.8rem; color: var(--mut); }
+.ga-cta { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 40px; font: inherit; font-size: 0.9rem; font-weight: 700; color: #fff; background: var(--acc); border: 0; border-radius: 4px; cursor: pointer; }
+.ga-cta:hover { background: #D9700F; }
+.ga-cta.is-ghost { margin-top: 8px; color: var(--ink); background: none; border: 1px solid var(--line); }
+.ga-cta.is-ghost:hover { background: #FAFAF8; }
+
+@media (max-width: 860px) {
+  .ga-result { grid-template-columns: 1fr; gap: 22px; }
+  .ga-side { position: static; }
+}
+@media (max-width: 640px) {
+  .ga-pill { height: 48px; padding-left: 14px; bottom: calc(44px + 12px + env(safe-area-inset-bottom, 0px)); }
+  .ga-pill input { font-size: 0.88rem; }
+  .ga-scrim { padding: 0; align-items: stretch; }
+  .ga-sheet { max-height: none; height: 100%; border-radius: 0; border: 0; }
+  .ga-top { padding: 10px 10px 10px 14px; }
+  .ga-go { padding: 0 10px; font-size: 0; gap: 0; }
+  .ga-go svg { width: 16px; height: 16px; }
+  .ga-body { padding: 20px 16px 28px; }
+  .ga-empty h2 { font-size: 1.3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ga-pill, .ga-steps li, .ga-sheet, .ga-scrim { transition: none; animation: none; }
+}
+
+/* ══════════ A.I. glow ══════════ */
+@property --ga-a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes ga-turn { to { --ga-a: 360deg; } }
+.ga-pill, .ga-sheet { --ga-glow: conic-gradient(from var(--ga-a), #F3912E, #FCD34D, #FB923C, #FB7185, #F3912E); }
+
+/* pill: now a tap target with a slowly turning glow ring */
+.ga-pill { border-color: transparent; cursor: pointer; text-align: left; font: inherit; }
+.ga-pill::before, .ga-pill::after { content: ''; position: absolute; border-radius: inherit; pointer-events: none; }
+.ga-pill::before {
+  inset: -1.5px; padding: 1.5px; background: var(--ga-glow);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: ga-turn 4s linear infinite;
+}
+.ga-pill::after { inset: 4px; z-index: -1; background: var(--ga-glow); filter: blur(16px); opacity: 0.38; animation: ga-turn 4s linear infinite, ga-breathe 2.8s ease-in-out infinite; }
+@keyframes ga-breathe { 50% { opacity: 0.6; } }
+.ga-pill:hover::after { opacity: 0.6; }
+.ga-pill-text { flex: 1; min-width: 0; font-size: 0.95rem; color: #6B7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: ga-ph 0.4s ease; }
+@keyframes ga-ph { from { opacity: 0; transform: translateY(4px); } }
+.ga-pill-go { flex-shrink: 0; width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--ink); border-radius: 999px; transition: background 0.2s; }
+.ga-pill:hover .ga-pill-go { background: var(--acc); }
+.ga-pill-ico { animation: ga-twinkle 2.4s ease-in-out infinite; }
+@keyframes ga-twinkle { 50% { transform: scale(1.18) rotate(12deg); opacity: 0.8; } }
+
+/* centred pop-up input (before a search) */
+.ga-scrim.is-compact { align-items: center; padding-top: 16px; }
+.ga-sheet { position: relative; overflow: visible; }
+.ga-sheet > .ga-top { border-radius: 12px 12px 0 0; }
+.ga-sheet > .ga-body { border-radius: 0 0 12px 12px; }
+.ga-sheet.is-compact { width: min(640px, 100%); max-height: none; }
+.ga-sheet.is-compact::before, .ga-sheet.is-building::before {
+  content: ''; position: absolute; inset: -2px; padding: 2px; border-radius: 14px; pointer-events: none; background: var(--ga-glow);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: ga-turn 4s linear infinite;
+}
+.ga-sheet.is-compact::after, .ga-sheet.is-building::after {
+  content: ''; position: absolute; inset: 12px; z-index: -1; border-radius: 14px; pointer-events: none; background: var(--ga-glow);
+  filter: blur(36px); opacity: 0.35; animation: ga-turn 4s linear infinite, ga-breathe 2.8s ease-in-out infinite;
+}
+.ga-sheet.is-building::before { animation-duration: 1.6s; }
+.ga-sheet.is-building::after { animation-duration: 1.6s, 1.4s; opacity: 0.5; }
+.ga-sheet.is-compact .ga-top { border-bottom-color: #F0EEEA; }
+.ga-sheet.is-compact .ga-body { padding: 18px 20px 22px; }
+.ga-empty.is-compact { margin: 0; text-align: left; }
+.ga-empty.is-compact > p { margin: 0; max-width: none; font-size: 0.9rem; }
+.ga-try { margin: 16px 0 0 !important; font-size: 0.72rem !important; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9CA3AF !important; }
+.ga-empty.is-compact .ga-chips { justify-content: flex-start; margin-top: 8px; }
+.ga-chips button { display: inline-flex; align-items: center; gap: 6px; }
+.ga-chips button svg { color: var(--acc); }
+
+/* building: status lines + a skeleton roadmap that assembles with a shimmer */
+.ga-build { max-width: 640px; margin: 6px auto 0; }
+.ga-build-h { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.2rem; font-weight: 750; letter-spacing: -0.01em; }
+.ga-build-h svg { color: var(--acc); animation: ga-twinkle 1.2s ease-in-out infinite; }
+.ga-build-status { position: relative; height: 22px; margin-top: 6px; overflow: hidden; font-size: 0.9rem; color: var(--mut); }
+.ga-build-status span { position: absolute; left: 0; top: 0; opacity: 0; animation: ga-status 2.2s linear both; animation-delay: calc(var(--i) * 0.7s); }
+.ga-build-status span:last-child { animation-name: ga-status-last; }
+@keyframes ga-status { 0% { opacity: 0; transform: translateY(8px); } 8%, 28% { opacity: 1; transform: none; } 36%, 100% { opacity: 0; transform: translateY(-8px); } }
+@keyframes ga-status-last { 0% { opacity: 0; transform: translateY(8px); } 8%, 100% { opacity: 1; transform: none; } }
+
+.ga-build-map { position: relative; list-style: none; margin: 22px 0 0; padding: 0; }
+.ga-build-map::before { content: ''; position: absolute; left: 15px; top: 16px; bottom: 26px; border-left: 2px dashed #F3C9A0; transform-origin: top; animation: ga-draw 1.6s ease-out both; }
+@keyframes ga-draw { from { transform: scaleY(0); } }
+.ga-build-map li { position: relative; display: flex; gap: 16px; padding-bottom: 12px; opacity: 0; animation: ga-step 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; animation-delay: calc(0.15s + var(--i) * 0.32s); }
+.ga-build-node { position: relative; z-index: 1; flex-shrink: 0; width: 32px; height: 32px; margin-top: 8px; border-radius: 50%; background: var(--acc); border: 3px solid #fff; box-shadow: 0 0 0 1px #F3C9A0, 0 0 18px rgba(243, 145, 46, 0.55); animation: ga-pulse 1.2s ease-in-out infinite; }
+@keyframes ga-pulse { 50% { box-shadow: 0 0 0 1px #F3C9A0, 0 0 4px rgba(243, 145, 46, 0.2); } }
+.ga-build-card { position: relative; flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 14px; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+.ga-build-card i { display: block; height: 9px; border-radius: 4px; background: #F1EFEB; }
+.ga-build-card i:first-child { height: 12px; background: #E9E6E1; }
+.ga-build-card::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(100deg, transparent 20%, rgba(252, 211, 77, 0.35) 45%, rgba(243, 145, 46, 0.25) 55%, transparent 80%);
+  animation: ga-shimmer 1.3s ease-in-out infinite; animation-delay: calc(var(--i) * 0.12s);
+}
+@keyframes ga-shimmer { to { transform: translateX(100%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ga-pill::before, .ga-pill::after, .ga-sheet::before, .ga-sheet::after, .ga-build-card::after, .ga-build-node, .ga-pill-ico { animation: none !important; }
+  .ga-build-map li, .ga-build-status span { animation: none; opacity: 1; }
+}
+/* the pill is a <button>: out-rank the site-wide `button { border-radius: 4px !important }` */
+html body button.ga-pill.ga-pill.ga-pill.ga-pill.ga-pill { border-radius: 999px !important; }
+/* keep the soft glow outside the pill / pop-up (a masked ring), so the inside stays clean white */
+.ga-pill { background: #fff; }
+.ga-pill::after {
+  inset: -16px; z-index: 0; padding: 16px; filter: blur(12px); opacity: 0.45;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.ga-pill > * { position: relative; z-index: 1; }
+.ga-sheet.is-compact::after, .ga-sheet.is-building::after {
+  inset: -30px; z-index: 0; padding: 30px; border-radius: 40px; filter: blur(22px);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.ga-scrim { z-index: 3000; }
+
+/* ══ Subtle glow (final): brand orange only, fading to transparent, soft blur, no crisp ring ══ */
+.ga-pill, .ga-sheet {
+  --ga-glow: conic-gradient(from var(--ga-a), rgba(243, 145, 46, 0.9), rgba(253, 186, 116, 0.55) 25%, rgba(243, 145, 46, 0) 50%, rgba(253, 186, 116, 0.5) 75%, rgba(243, 145, 46, 0.9));
+}
+/* no hard gradient border: a plain hairline instead */
+.ga-pill::before, .ga-sheet.is-compact::before, .ga-sheet.is-building::before { display: none; }
+.ga-pill { border: 1px solid #EFE7DD; }
+.ga-sheet.is-compact, .ga-sheet.is-building { border-color: #EFE7DD; }
+/* soft halo just outside the edge */
+.ga-pill::after { inset: -12px; padding: 12px; filter: blur(10px); opacity: 0.22; animation: ga-turn 6s linear infinite, ga-soft 4s ease-in-out infinite; }
+.ga-sheet.is-compact::after { inset: -26px; padding: 26px; filter: blur(22px); opacity: 0.16; animation: ga-turn 7s linear infinite, ga-soft 4s ease-in-out infinite; }
+.ga-sheet.is-building::after { inset: -26px; padding: 26px; filter: blur(22px); opacity: 0.24; animation: ga-turn 3s linear infinite, ga-soft 2.4s ease-in-out infinite; }
+@keyframes ga-soft { 50% { opacity: 0.32; } }
+.ga-pill:hover::after { opacity: 0.32; }
+.ga-pill-ico { animation-duration: 3.2s; }
+/* building skeleton: calmer nodes + shimmer */
+.ga-build-node { box-shadow: 0 0 0 1px #F6D9BC, 0 0 10px rgba(243, 145, 46, 0.25); }
+@keyframes ga-pulse { 50% { box-shadow: 0 0 0 1px #F6D9BC, 0 0 2px rgba(243, 145, 46, 0.1); } }
+.ga-build-card::after { background: linear-gradient(100deg, transparent 25%, rgba(243, 145, 46, 0.1) 50%, transparent 75%); }
+
+/* ══ Travelling ring: one soft orange arc slowly circling the edge (fades out at both ends) ══ */
+.ga-pill::before, .ga-sheet.is-compact::before, .ga-sheet.is-building::before {
+  display: block; content: ''; position: absolute; pointer-events: none; border-radius: inherit;
+  inset: -1px; padding: 1.5px;
+  background: conic-gradient(from var(--ga-a),
+    rgba(243, 145, 46, 0) 0deg, rgba(243, 145, 46, 0) 250deg,
+    rgba(253, 186, 116, 0.55) 300deg, rgba(243, 145, 46, 0.95) 340deg, rgba(243, 145, 46, 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: ga-turn 7s linear infinite;
+}
+.ga-sheet.is-compact::before, .ga-sheet.is-building::before { inset: -1px; border-radius: 13px; }
+.ga-sheet.is-building::before { animation-duration: 2.6s; }
+/* the halo follows the arc, very faintly */
+.ga-pill::after { animation: ga-turn 7s linear infinite, ga-soft 4s ease-in-out infinite; opacity: 0.18; }
+/* arc: symmetric fade — fully transparent at both tips, soft peak in the middle */
+.ga-pill::before, .ga-sheet.is-compact::before, .ga-sheet.is-building::before {
+  background: conic-gradient(from var(--ga-a),
+    rgba(243, 145, 46, 0) 0deg,
+    rgba(243, 145, 46, 0) 210deg,
+    rgba(253, 186, 116, 0.25) 245deg,
+    rgba(243, 145, 46, 0.7) 285deg,
+    rgba(253, 186, 116, 0.25) 325deg,
+    rgba(243, 145, 46, 0) 360deg);
+}
