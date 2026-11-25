@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { subjectLectures } from '../data/learnerModules';
 import { dayKey } from './learnerProgress';
+import { PLANNER_LIVE } from '../data/features';
 
 /* ══════════════════════════════════════════════════════════════
    CipherCoins: earned for showing up and doing the work.
@@ -204,7 +205,8 @@ export const buildMissions = (ctx, coins) => {
   const bonuses = [
     make('bonus', 'bonus:welcome', 'Welcome bonus', 'For joining CipherSchools', 1, 1, 100),
     make('bonus', 'bonus:profile', 'Complete your profile', 'Fill every field in My Account', filled, profileFields.length, 50, '/dashboard/account'),
-    make('bonus', 'bonus:planner', 'Tick off a planned task', 'Complete a task in the Planner', plannerDone(), 1, 30, '/dashboard/planner')
+    // hidden while the Planner is "Coming soon"
+    ...(PLANNER_LIVE ? [make('bonus', 'bonus:planner', 'Tick off a planned task', 'Complete a task in the Planner', plannerDone(), 1, 30, '/dashboard/planner')] : [])
   ];
 
   return {

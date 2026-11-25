@@ -21,8 +21,9 @@ const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); 
 
 const KIND_TITLE = { coding: 'Problem', debugging: 'Debugging', vibe: 'Vibe Coding', sql: 'SQL' };
 
-/* `free` (optional): a problem from the free DSA practice bank (/dashboard/practice).
-   It opens without a module, goes back to that page, and saves "solved" in its own store. */
+/* `free` (optional): a problem outside the plan's modules — the free DSA bank or a one-time
+   purchased course: { item, solved, onSolved, backTo, crumbs: [{ label, to }] }.
+   It opens without a module, goes back to `backTo`, and saves "solved" in its own store. */
 const DashboardWorkspace = ({ ctx, free = null }) => {
   const params = useParams();
   const moduleId = free ? null : params.moduleId;
@@ -85,7 +86,7 @@ const DashboardWorkspace = ({ ctx, free = null }) => {
 
   const solved = free ? free.solved : !!progress.practice[item.id];
   const lines = code.split('\n').length;
-  const backTo = free ? '/dashboard/practice' : `/dashboard/m/${mod.id}?tab=practice`;
+  const backTo = free ? free.backTo : `/dashboard/m/${mod.id}?tab=practice`;
 
   const switchLang = (next) => {
     setLang(next);
@@ -147,7 +148,7 @@ const DashboardWorkspace = ({ ctx, free = null }) => {
               <nav className="dx-crumbs" aria-label="Breadcrumb">
                 <Link to="/dashboard">Overview</Link><span>/</span>
                 {free ? (
-                  <><Link to={backTo}>Practice</Link><span>/</span></>
+                  free.crumbs.map((c) => <span key={c.to} className="dx-crumb-pair"><Link to={c.to}>{c.label}</Link><span>/</span></span>)
                 ) : (
                   <>
                     <Link to={backTo}>{mod.title}</Link><span>/</span>

@@ -80,7 +80,7 @@ const tabInfo = (id, mod, subject, ctx) => {
   return `A live mock interview on ${iv.perSubject ? subject.title : mod.title}, unlocked once you've completed ${iv.perSubject ? 'the subject' : 'the module'}. You get detailed feedback after each round.`;
 };
 
-const TabInfo = ({ id, label, text }) => {
+export const TabInfo = ({ id, label, text }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   useEffect(() => {
@@ -794,7 +794,7 @@ const InterviewTab = ({ mod, subject, ctx, isExt }) => {
 
 /* ─────────────── Dialog (shadcn-style) ─────────────── */
 
-const Dialog = ({ title, onClose, children }) => {
+export const Dialog = ({ title, onClose, children }) => {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);

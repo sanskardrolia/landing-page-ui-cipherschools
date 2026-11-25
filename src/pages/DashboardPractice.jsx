@@ -139,7 +139,7 @@ export const FreePracticeSolve = ({ ctx }) => {
   const [solved, setSolved] = useState(() => !!readFreeSolved()[problemId]);
   if (!item) return <Navigate to="/dashboard/practice" replace />;
   const onSolved = (id) => { markFreeSolved(id); setSolved(true); };
-  return <DashboardWorkspace key={item.id} ctx={ctx} free={{ item, solved, onSolved }} />;
+  return <DashboardWorkspace key={item.id} ctx={ctx} free={{ item, solved, onSolved, backTo: '/dashboard/practice', crumbs: [{ label: 'Practice', to: '/dashboard/practice' }] }} />;
 };
 
 export default DashboardPractice;

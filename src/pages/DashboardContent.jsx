@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, CircleCheck, Clock, Lock, PlayCircle, Route } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, CircleCheck, Clock, Lock, Route } from 'lucide-react';
 import ModuleIcon from '../components/ModuleIcon';
 import { MODULES, PLAN_LABELS, moduleUnlocked, subjectLectures, subjectUnlocked } from '../data/learnerModules';
+import { PLANNER_LIVE } from '../data/features';
 import { ONE_TIME_PURCHASES, courseLectures } from '../data/oneTimePurchases';
-import { coursePillars, courseWatched } from '../utils/oneTimeProgress';
-import PillarBar from '../components/PillarBar';
+import { courseProgress, coursePillars } from '../utils/oneTimeProgress';
 
 /* ══════════════════════════════════════════════════════════════
    Content — /dashboard/content
@@ -80,17 +80,22 @@ const DashboardContent = ({ ctx }) => {
           <small className="dx-cp-foot">{path.length} modules · {allOpen.length} sections · {done}/{total} lectures · {finishedSections} sections done</small>
           <Route className="dx-cp-art" strokeWidth={1.4} aria-hidden="true" />
         </div>
-        {next && (
-          <Link to={`/dashboard/m/${next.mod.id}?subject=${next.subj.id}`} className="dx-cp-resume">
-            <span className="dx-cp-resume-icon"><PlayCircle size={20} /></span>
-            <span className="dx-cp-resume-text">
-              <small>{done ? 'Continue where you left off' : 'Start here'}</small>
-              <strong>{next.mod.subjects.length > 1 ? next.subj.title : next.mod.title}</strong>
-              <em>{next.mod.title} · {next.done}/{next.lectures} lectures</em>
-            </span>
-            <ArrowRight size={16} />
-          </Link>
-        )}
+        {/* Planner teaser (Coming soon); becomes a link once PLANNER_LIVE is on */}
+        {(() => {
+          const body = (
+            <>
+              <span className="dx-cp-plan-top">
+                <span className="dx-cp-plan-icon"><CalendarDays size={18} /></span>
+                <strong>Planner</strong>
+                {!PLANNER_LIVE && <span className="dx-nav-soon">Coming soon</span>}
+              </span>
+              <p>Plan your week one day at a time. Add lectures and problems from your modules in a tap, set a weekly lecture goal and tick tasks off as you go.</p>
+            </>
+          );
+          return PLANNER_LIVE
+            ? <Link to="/dashboard/planner" className="dx-cp-plan">{body}</Link>
+            : <div className="dx-cp-plan is-soon" aria-label="Planner, coming soon">{body}</div>;
+        })()}
       </section>
 
       {/* ── Subscription: modules in order, each with its sections in order ── */}
@@ -164,7 +169,7 @@ const DashboardContent = ({ ctx }) => {
           <ul className="dx-cp-subs dx-cp-once">
             {ONE_TIME_PURCHASES.map((c) => {
               const lectures = courseLectures(c);
-              const pillars = coursePillars(c, courseWatched(c));
+              const pillars = coursePillars(c, courseProgress(c));
               return (
                 <li key={c.id}>
                   <Link to={`/dashboard/course/${c.id}`} className="dx-cp-sub dx-cp-once-card">
@@ -173,7 +178,11 @@ const DashboardContent = ({ ctx }) => {
                     <span className="dx-cp-sub-meta">
                       {c.subjects[0].units.length} units · {lectures.length} lectures · <Clock size={11} /> {hours(lectures.reduce((a, l) => a + l.mins, 0))}
                     </span>
-                    <PillarBar parts={pillars.parts} overall={pillars.overall} compact />
+                    {/* one bar: overall progress across Lectures · Problem · Test (the course page shows the split) */}
+                    <span className="dx-cp-sub-prog" title={pillars.parts.map((x) => `${x.label} ${x.done}/${x.total}`).join(' · ')}>
+                      <span className="dx-cp-bar is-sm" aria-hidden="true"><span style={{ width: `${pillars.overall}%` }} /></span>
+                      <em>{pillars.overall}%</em>
+                    </span>
                   </Link>
                 </li>
               );

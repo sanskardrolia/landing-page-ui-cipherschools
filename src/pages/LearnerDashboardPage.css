@@ -3891,29 +3891,13 @@ button.dx-act-modtag:hover { background: var(--card-hover); }
 .dx-cp-divider { width: 100%; height: 0; margin: 6px 0; border: 0; border-top: 1px solid var(--line); }
 .dx-cp-once { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
-/* One-time purchased course page (/dashboard/course/:courseId) */
-.dx-oc { display: flex; flex-direction: column; gap: 16px; max-width: 1080px; }
-.dx-oc-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; font-weight: 600; color: var(--muted) !important; }
-.dx-oc-back:hover { color: var(--text) !important; }
-.dx-oc-hero { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; padding: 20px 22px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--card-shadow); }
-.dx-oc-kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 600; color: var(--muted); }
-.dx-oc-hero h1 { margin: 6px 0 6px; font-size: 1.4rem; font-weight: 700; }
-.dx-oc-hero-text p { margin: 0 0 10px; font-size: 0.92rem; line-height: 1.55; color: var(--text-2); }
-.dx-oc-hero-text small { display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); }
-.dx-oc-hero-side { display: flex; flex-direction: column; justify-content: center; gap: 10px; }
-.dx-oc-prog { display: flex; align-items: baseline; justify-content: space-between; font-size: 0.84rem; color: var(--muted); }
-.dx-oc-prog strong { font-size: 1.2rem; color: var(--text); font-variant-numeric: tabular-nums; }
-.dx-oc-prog em { font-style: normal; font-variant-numeric: tabular-nums; }
-.dx-oc-cta { justify-content: center; gap: 8px; }
-.dx-oc-next { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dx-oc-units { padding: 4px 18px 10px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--card-shadow); }
-.dx-oc-unit .dx-lp-unit-btn .dx-done-icon { flex-shrink: 0; }
-.dx-oc-unit:last-child .dx-lp-unit-btn { border-bottom: 0; }
-.dx-oc-unit.is-open .dx-lp-unit-btn { border-bottom: 1px solid var(--line); }
-@media (max-width: 760px) {
-  .dx-oc-hero { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
-  .dx-oc-units { padding: 2px 12px 8px; }
-}
+/* One-time purchased course page (/dashboard/course/:courseId) — module page layout */
+.dx-oc-page .dx-mod-progress { width: 430px; }
+.dx-oc-tag { display: inline-flex; align-items: center; gap: 4px; margin-right: 8px; padding: 1px 7px; font-size: 0.72rem; font-weight: 600; color: var(--text-2); background: var(--track); border-radius: 4px; vertical-align: 1px; }
+.dx-oc-resume { padding: 12px 16px; }
+.dx-oc-empty { margin: 0; padding: 22px 18px; font-size: 0.9rem; color: var(--muted); background: var(--card); border: 1px dashed var(--line-strong); border-radius: 6px; }
+.dx-crumb-pair { display: contents; }
+@media (max-width: 760px) { .dx-oc-page .dx-mod-progress { width: 100%; } }
 
 /* Pillar bar outside the module header (one-time course cards + course page) */
 .dx-pp:not(.dx-mod-progress) { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; }
@@ -3984,3 +3968,21 @@ button.dx-act-modtag:hover { background: var(--card-hover); }
 }
 .dx-ai-suggest button svg { color: var(--accent); }
 .dx-ai .dx-ai-suggest button:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); background: var(--accent-soft); }
+
+/* Sidebar: an item that isn't live yet (e.g. Planner) */
+.dx-nav-item.is-soon { cursor: default; color: var(--muted) !important; }
+.dx-nav-item.is-soon:hover { background: transparent; }
+.dx-nav-item.is-soon svg { opacity: 0.6; }
+.dx-nav-soon { flex-shrink: 0; font-size: 0.64rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; color: var(--muted); background: var(--track); white-space: nowrap; }
+
+/* Content header: Planner teaser in place of the resume card */
+.dx-cp-plan {
+  display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 16px 18px;
+  color: inherit; text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+}
+a.dx-cp-plan:hover { border-color: var(--line-strong); }
+.dx-cp-plan-top { display: flex; align-items: center; gap: 10px; }
+.dx-cp-plan-top strong { font-size: 0.98rem; font-weight: 600; }
+.dx-cp-plan-icon { width: 32px; height: 32px; flex-shrink: 0; display: grid; place-items: center; border-radius: 4px; color: var(--accent); background: var(--accent-soft); }
+.dx-cp-plan .dx-nav-soon { margin-left: auto; }
+.dx-cp-plan p { margin: 0; font-size: 0.84rem; line-height: 1.5; color: var(--muted); }

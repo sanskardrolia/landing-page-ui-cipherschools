@@ -3,11 +3,12 @@ import {
   Award, BookOpen, Bot, Building2, CalendarCheck, Cpu, Layers, Network, Sparkles, Workflow, Check, CirclePlay, Code2, Coins, FileText, Flame, ListChecks, Mic, Pause, Play,
   Target
 } from 'lucide-react';
+import AiOrb from './AiOrb';
 import './PlatformExperience.css';
 
 /* ══════════════════════════════════════════════════════════════
    Home › Platform experience — "how it feels to use CipherSchools".
-   Three feature tabs (Curriculum, Practice, Interview). Each tab is a
+   Feature tabs (Curriculum, Practice, Buddy A.I., A.I. Interview, CipherCoins). Each tab is a
    small product canvas (fixed 760×460 design space) and a list of
    steps. Each step plays like a screen recording: the camera zooms
    out, the cursor travels to the feature, the camera zooms in on it,
@@ -239,6 +240,101 @@ const InterviewCanvas = ({ done }) => (
   </>
 );
 
+/* ── Canvas · Ask Buddy A.I. (inside the lecture player) ──
+   Reply areas use a CSS-only beat: the orb "thinks" for a moment, then the answer fades in. */
+const BD_OPTIONS = ['Move right pointer left', 'Move left pointer right', 'Move both pointers', 'Restart from middle'];
+const BD_CODE = [
+  'function pairSum(nums, target) {',
+  '  let l = 0, r = nums.length - 1;',
+  '  while (l < r) {',
+  '    const s = nums[l] + nums[r];',
+  '    if (s === target) return [l, r];',
+  '    s < target ? l++ : r--;',
+  '  }',
+  '}'
+];
+const BdThink = ({ label }) => (
+  <div className="pe-bd-think"><AiOrb size={18} thinking /><span>{label}</span><i /><i /></div>
+);
+const BuddyCanvas = ({ done }) => {
+  const stage = !done[0] ? 'closed' : !done[1] ? 'hello' : !done[3] ? 'quiz' : 'code';
+  return (
+    <>
+      <section className="pe-panel pe-bd-video" style={{ left: 20, top: 20, width: 440, height: 250 }}>
+        <span className="pe-bd-play"><Play size={18} /></span>
+        <span className="pe-bd-cap">Two Pointers · Lecture 2 of 16</span>
+        <span className="pe-bd-prog"><i /></span>
+      </section>
+      <section className="pe-panel pe-bd-actions" style={{ left: 20, top: 286, width: 440, height: 46 }}>
+        <span className="pe-mini-btn is-on"><Check size={12} /> Completed</span>
+        <span className={`pe-mini-btn pe-bd-ask ${done[0] ? 'is-ask' : ''}`} data-pe="ask"><AiOrb size={14} still /> Ask Buddy A.I.</span>
+        <span className="pe-mini-btn">Report</span>
+      </section>
+      <section className="pe-panel" style={{ left: 20, top: 348, width: 440, height: 92 }}>
+        <p className="pe-ph"><ListChecks size={14} /> Up next</p>
+        <ul className="pe-bd-next"><li><CirclePlay size={13} /> Prefix Sums <em>20 min</em></li><li><CirclePlay size={13} /> Sliding Window <em>22 min</em></li></ul>
+      </section>
+
+      {stage === 'closed' ? (
+        <section className="pe-panel" style={{ left: 480, top: 20, width: 260, height: 420 }}>
+          <p className="pe-ph"><BookOpen size={14} /> Arrays</p>
+          <ul className="pe-units">
+            {[['Array Basics', 'done'], ['Two Pointers', 'now'], ['Prefix Sums'], ['Sliding Window']].map(([u, st], i) => (
+              <li key={u} className={st ? `is-${st}` : ''}><span className="pe-unit-n">{st === 'done' ? <Check size={11} strokeWidth={3} /> : i + 1}</span>{u}{st === 'now' && <em>Now</em>}</li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <section className="pe-panel pe-bd-chat" style={{ left: 480, top: 20, width: 260, height: 420 }}>
+          <p className="pe-bd-head"><AiOrb size={20} /> <b>Ask Buddy A.I.</b><small>Two Pointers</small></p>
+
+          {stage === 'hello' && (
+            <div key="hello" className="pe-bd-reply" style={{ top: 64 }}>
+              <BdThink label="Opening Buddy" />
+              <div className="pe-bd-msg"><AiOrb size={16} /> <span>Hi! I&apos;m Buddy. I can quiz you, write code or explain this lecture simply.</span></div>
+            </div>
+          )}
+
+          {stage === 'quiz' && (
+            <div key="quiz" className="pe-bd-reply" style={{ top: 64 }}>
+              <span className="pe-bd-user">Ask me a quiz</span>
+              <BdThink label="Writing your questions" />
+              <div className="pe-bd-quiz">
+                <p>The sum is too small. What do you do?</p>
+                {BD_OPTIONS.map((o, i) => (
+                  <span key={o} className={`pe-bd-opt ${done[2] && i === 1 ? 'is-right' : ''} ${done[2] && i !== 1 ? 'is-dim' : ''}`}>
+                    <b>{String.fromCharCode(65 + i)}</b>{o}{done[2] && i === 1 && <Check size={11} strokeWidth={3} />}
+                  </span>
+                ))}
+                {done[2] && <em className="pe-bd-why">Correct. A bigger left value raises the sum.</em>}
+              </div>
+            </div>
+          )}
+
+          {stage === 'code' && (
+            <div key="code" className="pe-bd-reply" style={{ top: 64 }}>
+              <span className="pe-bd-user">Show me the code</span>
+              <BdThink label="Writing the code" />
+              <div className="pe-bd-code">
+                <p className="pe-bd-code-bar"><span>pairSum.js</span><span className={`pe-bd-run ${done[4] ? 'is-on' : ''}`}><Play size={10} /> Run</span></p>
+                <pre>{BD_CODE.join('\n')}</pre>
+                {done[4] && <p className="pe-bd-out"><b>Output</b> › [2, 4] · 1 ms</p>}
+              </div>
+            </div>
+          )}
+
+          <span className="pe-bd-chips">
+            {stage === 'hello' || stage === 'closed'
+              ? <><i data-pe="quiz">Ask me a quiz</i><i>Write code</i></>
+              : <><i>Another quiz</i><i data-pe="code">Show me the code</i></>}
+          </span>
+          <span className="pe-bd-input">Ask anything about this lecture</span>
+        </section>
+      )}
+    </>
+  );
+};
+
 /* Each step: what it says, where the camera zooms (canvas coords + zoom) and where the cursor clicks */
 const TABS = [
   {
@@ -258,6 +354,16 @@ const TABS = [
       { t: 'Code in the browser', d: 'An editor that runs right next to the question.', cam: [515, 170, 1.45], cur: [470, 170] },
       { t: 'Instant verdict', d: 'Run your code against tests and see what passes.', cam: [515, 390, 1.6], cur: [700, 358] },
       { t: 'Streaks that keep you going', d: 'Show up daily and earn CipherCoins.', cam: [145, 400, 1.8], cur: [228, 408] }
+    ]
+  },
+  {
+    id: 'buddy', label: 'Buddy A.I.', Icon: Sparkles, Canvas: BuddyCanvas, title: 'Lecture · Two Pointers',
+    steps: [
+      { t: 'Ask Buddy A.I., mid-lecture', d: 'One tap opens Buddy right beside the video.', cam: [240, 300, 1.75], cur: [207, 309] },
+      { t: 'Quiz yourself in a tap', d: 'Buddy turns the lecture into quick questions.', cam: [610, 330, 1.6], cur: [540, 399] },
+      { t: 'Instant feedback', d: 'Pick an answer and see why it is right.', cam: [610, 250, 1.6], cur: [600, 237] },
+      { t: 'Ask for code', d: 'Get a snippet for the exact idea you just watched.', cam: [610, 330, 1.6], cur: [646, 399] },
+      { t: 'Run it right in the chat', d: 'Press Run and see the output without leaving the lecture.', cam: [610, 200, 1.7], cur: [694, 147] }
     ]
   },
   {

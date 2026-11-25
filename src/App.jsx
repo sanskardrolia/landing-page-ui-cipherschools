@@ -19,7 +19,6 @@ import AtsCheckerPage from './pages/AtsCheckerPage';
 import AtsLandingPage from './pages/AtsLandingPage';
 import CompilerPage from './pages/CompilerPage';
 import PracticePage from './pages/PracticePage';
-import BackToTop from './components/BackToTop';
 import SplashScreen from './components/SplashScreen';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
@@ -131,7 +130,6 @@ function App() {
         </main>
         {/* The editor keeps the navbar and sidebar but has no footer */}
         {!hideFooter && <Footer />}
-        {!hideFooter && <BackToTop />}
       </div>
     </>
   );

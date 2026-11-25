@@ -277,3 +277,66 @@
 .pe-checkin .pe-ck-btn { position: static; margin-left: auto; padding: 5px 11px; }
 .pe-checkin .pe-ladder { margin-top: 14px; }
 .pe-head h2 { margin-top: 0; }
+
+/* ── Buddy A.I. canvas ── */
+.pe-bd-video { padding: 0; overflow: hidden; border: 0; background: radial-gradient(70% 90% at 70% 30%, #3B2A1A, #15120F 70%); }
+.pe-bd-play { position: absolute; left: 50%; top: 46%; width: 46px; height: 46px; margin: -23px 0 0 -23px; display: grid; place-items: center; color: #fff; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.25); border-radius: 50%; }
+.pe-bd-cap { position: absolute; left: 14px; bottom: 22px; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.85); }
+.pe-bd-prog { position: absolute; left: 14px; right: 14px; bottom: 12px; height: 3px; background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+.pe-bd-prog i { display: block; width: 38%; height: 100%; background: #F3912E; border-radius: 3px; }
+.pe-bd-actions { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
+.pe-bd-actions .pe-mini-btn { display: inline-flex; align-items: center; gap: 6px; }
+.pe-bd-ask { font-weight: 650; }
+.pe-bd-ask.is-ask { color: var(--pe-ink); background: #FFF1E2; border-color: #F6C795; }
+.pe-bd-next { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.pe-bd-next li { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #374151; }
+.pe-bd-next svg { color: var(--pe-acc); }
+.pe-bd-next em { margin-left: auto; font-style: normal; font-size: 11.5px; color: var(--pe-mut); }
+
+/* chat: translucent, brand-tinted like the real one */
+.pe-bd-chat {
+  padding: 0; overflow: hidden; animation: pe-fade 0.35s ease;
+  background: radial-gradient(120% 60% at 100% 0%, rgba(243, 145, 46, 0.12), transparent 60%), rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+}
+.pe-bd-head { display: flex; align-items: center; gap: 8px; margin: 0; padding: 12px 14px; border-bottom: 1px solid #F0EEEA; font-size: 13px; }
+.pe-bd-head small { margin-left: auto; font-size: 11px; color: var(--pe-mut); }
+.pe-bd-reply { position: absolute; left: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; }
+.pe-bd-user { align-self: flex-end; padding: 5px 10px; font-size: 11.5px; background: #F3F4F6; border-radius: 4px; }
+.pe-bd-msg { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.45; color: #374151; }
+
+/* the beat: think first, then the answer */
+.pe-bd-think { display: flex; align-items: center; gap: 8px; height: 0; overflow: hidden; font-size: 11.5px; font-weight: 600; color: #4B5563; opacity: 0; animation: pe-bd-think 1s ease forwards; }
+.pe-bd-think i { flex: 1; height: 6px; border-radius: 4px; background: linear-gradient(90deg, #F1EFEC, #FCE3C8, #F1EFEC); background-size: 200% 100%; animation: pe-bd-shimmer 1s linear infinite; }
+.pe-bd-think i + i { flex: 0.6; }
+.pe-bd-reply > :not(.pe-bd-think):not(.pe-bd-user) { animation: pe-bd-show 0.4s ease 0.95s both; }
+@keyframes pe-bd-think { 0% { height: 22px; opacity: 1; } 85% { height: 22px; opacity: 1; } 100% { height: 0; opacity: 0; } }
+@keyframes pe-bd-show { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes pe-bd-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+.pe-bd-quiz { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: rgba(255, 255, 255, 0.8); border: 1px solid #EFEDE9; border-radius: 5px; }
+.pe-bd-quiz p { margin: 0 0 3px; font-size: 12px; font-weight: 650; }
+.pe-bd-opt { display: flex; align-items: center; gap: 7px; padding: 5px 7px; font-size: 11.5px; border: 1px solid #ECEAE6; border-radius: 4px; background: #fff; transition: all 0.3s; }
+.pe-bd-opt b { width: 15px; height: 15px; display: grid; place-items: center; font-size: 9.5px; color: var(--pe-mut); border: 1px solid #DDD9D3; border-radius: 3px; }
+.pe-bd-opt svg { margin-left: auto; }
+.pe-bd-opt.is-right { color: #15803D; background: #ECFDF3; border-color: #A7E3BF; }
+.pe-bd-opt.is-right b { color: #15803D; border-color: currentColor; }
+.pe-bd-opt.is-dim { opacity: 0.5; }
+.pe-bd-why { font-style: normal; font-size: 11px; color: #4B5563; animation: pe-fade 0.3s ease; }
+
+.pe-bd-code { border: 1px solid #ECEAE6; border-radius: 5px; overflow: hidden; background: #fff; }
+.pe-bd-code-bar { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 5px 7px 5px 9px; font-size: 11px; font-weight: 600; background: #F7F7F5; border-bottom: 1px solid #ECEAE6; }
+.pe-bd-run { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 10.5px; color: #1A1206; background: #F3912E; border-radius: 3px; transition: box-shadow 0.3s; }
+.pe-bd-run.is-on { box-shadow: 0 0 0 3px rgba(243, 145, 46, 0.25); }
+.pe-bd-code pre { margin: 0; padding: 8px 9px; font: 10px/1.55 ui-monospace, Menlo, monospace; color: #1F2937; white-space: pre; }
+.pe-bd-out { margin: 0; padding: 6px 9px; font: 10.5px ui-monospace, Menlo, monospace; color: #15803D; border-top: 1px solid #ECEAE6; animation: pe-fade 0.3s ease; }
+.pe-bd-out b { color: var(--pe-mut); font-weight: 700; margin-right: 4px; }
+
+.pe-bd-chips { position: absolute; left: 12px; right: 12px; top: 364px; display: flex; gap: 6px; }
+.pe-bd-chips i { padding: 4px 9px; font-style: normal; font-size: 11px; font-weight: 600; white-space: nowrap; color: #374151; background: rgba(255, 255, 255, 0.85); border: 1px solid #ECEAE6; border-radius: 4px; }
+.pe-bd-input { position: absolute; left: 12px; right: 12px; bottom: 10px; padding: 7px 10px; font-size: 11px; color: #9CA3AF; background: rgba(255, 255, 255, 0.85); border: 1px solid #E5E2DD; border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pe-bd-think { display: none; }
+  .pe-bd-reply > * { animation: none !important; }
+}

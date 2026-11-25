@@ -32,8 +32,9 @@ import WhatsNext from './DashboardWhatsNext';
 import DashboardAccount from './DashboardAccount';
 import DashboardContent from './DashboardContent';
 import DashboardPractice, { FreePracticeSolve } from './DashboardPractice';
-import DashboardCourse, { CourseWatch } from './DashboardCourse';
+import DashboardCourse, { CourseSolve, CourseWatch } from './DashboardCourse';
 import { findPurchase } from '../data/oneTimePurchases';
+import { PLANNER_LIVE } from '../data/features';
 import DashboardCoins from './DashboardCoins';
 import CoinsMenu, { CoinToast } from './DashboardCoinsMenu';
 import { Coin } from '../components/CipherCoinParts';
@@ -124,7 +125,7 @@ const LearnerDashboardPage = () => {
   if (!enrollment) return <Navigate to="/premium" replace />;
 
   // The lecture player and coding workspace take the full width, so the sidebar collapses
-  const onPlayer = /^\/dashboard\/(m\/[^/]+\/(watch|practice)|practice|course\/[^/]+\/watch)\/[^/]/.test(location.pathname);
+  const onPlayer = /^\/dashboard\/(m\/[^/]+\/(watch|practice)|practice|course\/[^/]+\/(watch|practice))\/[^/]/.test(location.pathname);
 
   const planId = enrollment.planId;
   // Paid dashboards show only the plan bought, so there is no upgrade path inside them.
@@ -177,9 +178,10 @@ const LearnerDashboardPage = () => {
             <Route path="/dashboard/m/:moduleId/practice/:itemId" element={<WorkspaceRoute ctx={ctx} />} />
             <Route path="/dashboard/course/:courseId" element={<DashboardCourse />} />
             <Route path="/dashboard/course/:courseId/watch/:lectureId" element={<CourseWatch ctx={ctx} />} />
+            <Route path="/dashboard/course/:courseId/practice/:problemId" element={<CourseSolve ctx={ctx} />} />
             <Route path="/dashboard/practice" element={<DashboardPractice />} />
             <Route path="/dashboard/practice/:problemId" element={<FreePracticeSolve ctx={ctx} />} />
-            <Route path="/dashboard/planner" element={<DashboardPlanner ctx={ctx} />} />
+            <Route path="/dashboard/planner" element={PLANNER_LIVE ? <DashboardPlanner ctx={ctx} /> : <Navigate to="/dashboard" replace />} />
             <Route path="/dashboard/activity" element={<DashboardActivity ctx={ctx} />} />
             <Route path="/dashboard/certificates" element={<DashboardCertificates ctx={ctx} />} />
             <Route path="/dashboard/mentorship" element={<DashboardMentorship ctx={ctx} />} />
@@ -291,9 +293,16 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
           <Code2 size={18} /><span className="dx-label dx-nav-text">Practice</span>
           <span className="dx-label dx-nav-free">Free</span>
         </NavLink>
-        <NavLink to="/dashboard/planner" className="dx-nav-item" onClick={onClose} title="Planner">
-          <CalendarDays size={18} /><span className="dx-label">Planner</span>
-        </NavLink>
+        {PLANNER_LIVE ? (
+          <NavLink to="/dashboard/planner" className="dx-nav-item" onClick={onClose} title="Planner">
+            <CalendarDays size={18} /><span className="dx-label">Planner</span>
+          </NavLink>
+        ) : (
+          <span className="dx-nav-item is-soon" aria-disabled="true" title="Planner is coming soon">
+            <CalendarDays size={18} /><span className="dx-label dx-nav-text">Planner</span>
+            <span className="dx-label dx-nav-soon">Coming soon</span>
+          </span>
+        )}
         <NavLink to="/dashboard/activity" className="dx-nav-item" onClick={onClose} title="Activity">
           <Activity size={18} /><span className="dx-label">Activity</span>
         </NavLink>
