@@ -12,6 +12,7 @@ import {
 import ModuleIcon from '../components/ModuleIcon';
 import { WORKSPACE_KINDS, practiceForUnit, problemOfTheDay } from '../data/practiceBank';
 import { ADDITIONAL_META, stageTests } from '../data/testBank';
+import { NEW_PROBLEMS_ADDED, newInUnit } from '../data/newProblems';
 import { previewFree } from '../utils/previewAccess';
 
 /* One module = four steps: Watch → Practice → Test → Mock Interview.
@@ -424,8 +425,44 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
     else setActive(item);
   };
 
+  // Newly added problems of this section, pinned at the top
+  const freshAll = units.flatMap(({ unit: u, items }) => {
+    const f = newInUnit(subject, u, items);
+    return items.filter((i) => f.has(i.id)).map((item) => ({ item, unit: u }));
+  });
+  const addedOn = new Date(NEW_PROBLEMS_ADDED).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
   return (
     <section className="dx-tab-panel">
+      {freshAll.length > 0 && (
+        <div className="dx-card dx-fresh">
+          <div className="dx-fresh-head">
+            <span className="dx-new-tag">Newly added</span>
+            <strong>{freshAll.length} new problem{freshAll.length === 1 ? '' : 's'} in {subject.title}</strong>
+            <span className="dx-muted dx-small">Added {addedOn}</span>
+          </div>
+          <ul className="dx-fresh-list">
+            {freshAll.map(({ item, unit: u }) => {
+              const done = !!progress.practice[item.id];
+              const free = ctx.preview && ctx.free?.has(item.id);
+              return (
+                <li key={item.id} data-free={free || undefined}>
+                  <button type="button" className={`dx-fresh-row ${done ? 'done' : ''}`} onClick={() => openItem(item)}>
+                    {ctx.preview && !free
+                      ? <Lock size={15} className="dx-pv-lock" aria-label="Locked" />
+                      : done ? <CircleCheck size={16} className="dx-done-icon" aria-label="Solved" /> : <Circle size={16} className="dx-muted" aria-label="Not solved" />}
+                    <span className="dx-fresh-title">{item.title}</span>
+                    <span className="dx-fresh-unit">{u.title}</span>
+                    {item.level && <LevelBadge level={item.level} />}
+                    <span className="dx-fresh-go">{done ? 'Solved' : 'Solve'} <ArrowRight size={13} /></span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {/* No Problem of the Day on a locked subject of a paid plan: it would only say "Unlock to solve" */}
       {!ctx.lockedView && <ProblemOfTheDay mod={mod} isExt={isExt} progress={progress} preview={ctx.preview} free={ctx.free} />}
 
@@ -436,11 +473,13 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
           const lecturesDone = u.lectures.filter((l) => progress.watched[l.id]).length;
           const hasCompany = items.length > 0 && items.every((i) => i.companies);
           const workspace = items.some((i) => WORKSPACE_KINDS.includes(i.kind));
+          const fresh = newInUnit(subject, u, items); // "Newly added" problems in this unit
           return (
             <div key={u.id} id={`dx-pu-${u.id}`} className={`dx-unit ${isOpen ? 'open' : ''}`}>
               <button type="button" className="dx-unit-head" onClick={() => flip(u.id)} aria-expanded={isOpen}>
                 <span className="dx-unit-num">{String(idx + 1).padStart(2, '0')}</span>
                 <span className="dx-unit-title">{u.title}</span>
+                {fresh.size > 0 && <span className="dx-new-tag">{fresh.size} new</span>}
                 <span className="dx-unit-meta">{solved}/{items.length} solved</span>
                 {items.length > 0 && solved === items.length && <CircleCheck size={16} className="dx-done-icon" />}
                 <ChevronDown size={16} className={`dx-chev ${isOpen ? 'up' : ''}`} />
@@ -477,6 +516,7 @@ const PracticeTab = ({ mod, subject, ctx, isExt }) => {
                             <td>
                               <button type="button" className="dx-prow-title" onClick={() => openItem(item)}>
                                 {item.title}
+                                {fresh.has(item.id) && <span className="dx-new-tag" title="Newly added">Newly added</span>}
                               </button>
                             </td>
                             <td className="dx-col-level"><LevelBadge level={item.level} /></td>

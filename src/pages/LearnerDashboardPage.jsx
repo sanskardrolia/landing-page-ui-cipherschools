@@ -37,6 +37,7 @@ import { findPurchase } from '../data/oneTimePurchases';
 import { PLANNER_LIVE } from '../data/features';
 import DashboardCoins from './DashboardCoins';
 import CoinsMenu, { CoinToast } from './DashboardCoinsMenu';
+import Notifications from './DashboardNotifications';
 import { Coin } from '../components/CipherCoinParts';
 import { fmtCoins, useCipherCoins } from '../utils/cipherCoins';
 import DashboardSubscription from './DashboardSubscription';
@@ -474,6 +475,7 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme, onSearch }) => {
         >
           {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
         </button>
+        <Notifications ctx={ctx} />
         <span className="dx-top-divider" aria-hidden="true" />
         <CoinsMenu ctx={ctx} />
         <span className="dx-top-divider" aria-hidden="true" />

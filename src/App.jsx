@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -22,6 +22,9 @@ import PracticePage from './pages/PracticePage';
 import SplashScreen from './components/SplashScreen';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
+
+// /waitlist: standalone demo page in its own bundle (loaded only on that route)
+const WaitlistPage = lazy(() => import('./waitlist/WaitlistPage'));
 
 function App() {
   const location = useLocation();
@@ -91,6 +94,11 @@ function App() {
 
   if (isLoginPage) {
     return <LoginPage />;
+  }
+
+  // Waitlist demo: full-screen, no site navbar/footer
+  if (location.pathname === '/waitlist') {
+    return <Suspense fallback={<div style={{ minHeight: '100vh', background: '#09090B' }} />}><WaitlistPage /></Suspense>;
   }
 
   // Learner dashboard is full-screen (own course sidebar); it self-guards on a paid enrollment
