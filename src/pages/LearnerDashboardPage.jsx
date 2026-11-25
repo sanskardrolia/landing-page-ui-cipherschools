@@ -31,9 +31,13 @@ import DashboardNextStep from './DashboardNextStep';
 import WhatsNext from './DashboardWhatsNext';
 import DashboardAccount from './DashboardAccount';
 import DashboardContent from './DashboardContent';
+import DashboardPractice, { FreePracticeSolve } from './DashboardPractice';
+import DashboardCourse, { CourseWatch } from './DashboardCourse';
+import { findPurchase } from '../data/oneTimePurchases';
 import DashboardCoins from './DashboardCoins';
 import CoinsMenu, { CoinToast } from './DashboardCoinsMenu';
-import { useCipherCoins } from '../utils/cipherCoins';
+import { Coin } from '../components/CipherCoinParts';
+import { fmtCoins, useCipherCoins } from '../utils/cipherCoins';
 import DashboardSubscription from './DashboardSubscription';
 import DashboardSupport from './DashboardSupport';
 import './LearnerDashboardPage.css';
@@ -42,6 +46,7 @@ import './LearnerDashboardPage.css';
    Learner dashboard. Only renders for a paid (demo) enrollment or
    the "Experience before you pay" preview; otherwise → /premium.
    Routes:  /dashboard               → Overview
+            /dashboard/practice      → free DSA question bank (separate from Content)
             /dashboard/content       → opens the module to continue with
             /dashboard/m/:moduleId   → module (Content / Practice / Test / Mock),
                                        with the module bar under the top bar
@@ -119,7 +124,7 @@ const LearnerDashboardPage = () => {
   if (!enrollment) return <Navigate to="/premium" replace />;
 
   // The lecture player and coding workspace take the full width, so the sidebar collapses
-  const onPlayer = /^\/dashboard\/m\/[^/]+\/(watch|practice)\//.test(location.pathname);
+  const onPlayer = /^\/dashboard\/(m\/[^/]+\/(watch|practice)|practice|course\/[^/]+\/watch)\/[^/]/.test(location.pathname);
 
   const planId = enrollment.planId;
   // Paid dashboards show only the plan bought, so there is no upgrade path inside them.
@@ -170,6 +175,10 @@ const LearnerDashboardPage = () => {
             <Route path="/dashboard/m/:moduleId" element={<ModuleRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/watch/:lectureId" element={<PlayerRoute ctx={ctx} />} />
             <Route path="/dashboard/m/:moduleId/practice/:itemId" element={<WorkspaceRoute ctx={ctx} />} />
+            <Route path="/dashboard/course/:courseId" element={<DashboardCourse />} />
+            <Route path="/dashboard/course/:courseId/watch/:lectureId" element={<CourseWatch ctx={ctx} />} />
+            <Route path="/dashboard/practice" element={<DashboardPractice />} />
+            <Route path="/dashboard/practice/:problemId" element={<FreePracticeSolve ctx={ctx} />} />
             <Route path="/dashboard/planner" element={<DashboardPlanner ctx={ctx} />} />
             <Route path="/dashboard/activity" element={<DashboardActivity ctx={ctx} />} />
             <Route path="/dashboard/certificates" element={<DashboardCertificates ctx={ctx} />} />
@@ -245,7 +254,7 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
   const learnerName = enrollment.learner?.name?.trim() || 'Learner';
   const location = useLocation();
   const [toolsOpen, setToolsOpen] = useState(true);
-  const inContent = location.pathname.startsWith('/dashboard/m/') || location.pathname === '/dashboard/content';
+  const inContent = location.pathname.startsWith('/dashboard/m/') || location.pathname.startsWith('/dashboard/course/') || location.pathname === '/dashboard/content';
 
   return (
     <aside className={`dx-side ${mobileOpen ? 'open' : ''}`} aria-label="Dashboard navigation">
@@ -277,6 +286,11 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
         <NavLink to="/dashboard/content" className={`dx-nav-item ${inContent ? 'active' : ''}`} onClick={onClose} title="Content">
           <BookOpen size={18} /><span className="dx-label">Content</span>
         </NavLink>
+        {/* Free DSA question bank, separate from the practice inside Content */}
+        <NavLink to="/dashboard/practice" className="dx-nav-item" onClick={onClose} title="Practice (free DSA questions)">
+          <Code2 size={18} /><span className="dx-label dx-nav-text">Practice</span>
+          <span className="dx-label dx-nav-free">Free</span>
+        </NavLink>
         <NavLink to="/dashboard/planner" className="dx-nav-item" onClick={onClose} title="Planner">
           <CalendarDays size={18} /><span className="dx-label">Planner</span>
         </NavLink>
@@ -292,6 +306,11 @@ const Sidebar = ({ ctx, onCollapse, mobileOpen, onClose, onSearch }) => {
             <span className="dx-label dx-nav-pct">{mentorCreditsLeft(progress)} cr</span>
           </NavLink>
         )}
+        {/* Rewards: the CipherCoins page, with the learner's balance */}
+        <NavLink to="/dashboard/coins" className="dx-nav-item dx-nav-rewards" onClick={onClose} title="Rewards (CipherCoins)">
+          <Coin size={18} /><span className="dx-label dx-nav-text">Rewards</span>
+          {ctx.coins && <span className="dx-label dx-nav-pct">{fmtCoins(ctx.coins.balance)}</span>}
+        </NavLink>
 
         {/* Tools open the site's own pages (outside the dashboard) */}
         <span className="dx-nav-heading dx-label">Tools</span>
@@ -403,19 +422,21 @@ const TierIcon = ({ tier }) => {
 const PAGE_TITLES = {
   '/dashboard': 'Overview', '/dashboard/planner': 'Planner', '/dashboard/activity': 'Activity',
   '/dashboard/certificates': 'Certificates', '/dashboard/mentorship': '1:1 Mentorship', '/dashboard/content': 'Content',
-  '/dashboard/account': 'My Account', '/dashboard/coins': 'CipherCoins', '/dashboard/subscription': 'My Subscription'
+  '/dashboard/practice': 'Practice', '/dashboard/account': 'My Account', '/dashboard/coins': 'Rewards', '/dashboard/subscription': 'My Subscription'
 };
 const pageTitle = (pathname, ctx) => {
   const m = pathname.match(/^\/dashboard\/m\/([^/]+)/);
+  const oc = pathname.match(/^\/dashboard\/course\/([^/]+)/);
+  if (oc) return { title: 'Content', sub: findPurchase(oc[1])?.title, subTo: `/dashboard/course/${oc[1]}` };
+  if (pathname.startsWith('/dashboard/practice/')) return { title: 'Practice', sub: 'Free DSA', subTo: '/dashboard/practice' };
   if (m) return { title: 'Content', sub: ctx.modules.find((x) => x.id === m[1])?.title, subTo: `/dashboard/m/${m[1]}` };
   return { title: PAGE_TITLES[pathname.replace(/\/$/, '')] || 'Overview' };
 };
 
 const TopBar = ({ ctx, onMenu, theme, onToggleTheme, onSearch }) => {
-  const { planId, progress } = ctx;
+  const { planId } = ctx;
   const location = useLocation();
   const { title, sub, subTo } = pageTitle(location.pathname, ctx);
-  const watchedTotal = Object.keys(progress.watched).length;
 
   return (
     <header className="dx-top">
@@ -447,7 +468,6 @@ const TopBar = ({ ctx, onMenu, theme, onToggleTheme, onSearch }) => {
         <span className="dx-top-divider" aria-hidden="true" />
         <CoinsMenu ctx={ctx} />
         <span className="dx-top-divider" aria-hidden="true" />
-        <span className="dx-stat-pill" title="Lectures watched"><CirclePlay size={15} /> {watchedTotal}</span>
         <span className="dx-top-divider" aria-hidden="true" />
         {ctx.preview ? (
           <button type="button" className="dx-upgrade" onClick={() => ctx.openUpgrade()}><Sparkles size={15} /> Get a plan</button>

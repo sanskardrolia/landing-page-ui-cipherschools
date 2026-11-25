@@ -21,16 +21,20 @@ const writeJSON = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); 
 
 const KIND_TITLE = { coding: 'Problem', debugging: 'Debugging', vibe: 'Vibe Coding', sql: 'SQL' };
 
-const DashboardWorkspace = ({ ctx }) => {
-  const { moduleId, itemId } = useParams();
+/* `free` (optional): a problem from the free DSA practice bank (/dashboard/practice).
+   It opens without a module, goes back to that page, and saves "solved" in its own store. */
+const DashboardWorkspace = ({ ctx, free = null }) => {
+  const params = useParams();
+  const moduleId = free ? null : params.moduleId;
+  const itemId = free ? free.item.id : params.itemId;
   const { planId, progress, set } = ctx;
   // Preview uses its own short module list; otherwise the module as this plan sees it
-  const mod = ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : moduleForPlan(findModule(moduleId), planId, ctx.devTrack);
+  const mod = free ? null : ctx.preview ? ctx.modules.find((m) => m.id === moduleId) || null : moduleForPlan(findModule(moduleId), planId, ctx.devTrack);
   // Ultra's higher limits depend on the item's subject (DSA Advanced yes, Basics no), so find it first
   const probe = mod ? findPracticeItem(mod, itemId, isExtendedPlan(planId)) : null;
   const isExt = probe ? subjectExtended(isExtendedPlan(planId), mod, probe.subject) : false;
   const found = mod ? findPracticeItem(mod, itemId, isExt) : null;
-  const item = found?.item;
+  const item = free ? free.item : found?.item;
 
   const langs = item?.kind === 'coding' ? LANGUAGES : [{ id: item?.language, label: (item?.language || '').toUpperCase() }];
   const [lang, setLang] = useState(langs[0]?.id);
@@ -75,13 +79,13 @@ const DashboardWorkspace = ({ ctx }) => {
     window.addEventListener('pointerup', up);
   }, []);
 
-  if (!mod) return <Navigate to="/dashboard" replace />;
-  if (!moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
-  if (!item || !WORKSPACE_KINDS.includes(item.kind)) return <Navigate to={`/dashboard/m/${mod.id}?tab=practice`} replace />;
+  if (!free && !mod) return <Navigate to="/dashboard" replace />;
+  if (!free && !moduleUnlocked(mod, planId, ctx.devTrack)) return <Navigate to={`/dashboard/m/${mod.id}`} replace />;
+  if (!free && (!item || !WORKSPACE_KINDS.includes(item.kind))) return <Navigate to={`/dashboard/m/${mod.id}?tab=practice`} replace />;
 
-  const solved = !!progress.practice[item.id];
+  const solved = free ? free.solved : !!progress.practice[item.id];
   const lines = code.split('\n').length;
-  const backTo = `/dashboard/m/${mod.id}?tab=practice`;
+  const backTo = free ? '/dashboard/practice' : `/dashboard/m/${mod.id}?tab=practice`;
 
   const switchLang = (next) => {
     setLang(next);
@@ -115,7 +119,7 @@ const DashboardWorkspace = ({ ctx }) => {
     const all = readJSON(SUBS_KEY);
     all[itemId] = next;
     writeJSON(SUBS_KEY, all);
-    set('practice', item.id, true);
+    if (free) free.onSolved(item.id); else set('practice', item.id, true);
     setConsoleOpen(true);
     setConsoleTab('result');
     setResult({ type: 'submit' });
@@ -142,8 +146,14 @@ const DashboardWorkspace = ({ ctx }) => {
             <article className="dx-problem">
               <nav className="dx-crumbs" aria-label="Breadcrumb">
                 <Link to="/dashboard">Overview</Link><span>/</span>
-                <Link to={backTo}>{mod.title}</Link><span>/</span>
-                <Link to={backTo}>{found.unit.title}</Link><span>/</span>
+                {free ? (
+                  <><Link to={backTo}>Practice</Link><span>/</span></>
+                ) : (
+                  <>
+                    <Link to={backTo}>{mod.title}</Link><span>/</span>
+                    <Link to={backTo}>{found.unit.title}</Link><span>/</span>
+                  </>
+                )}
                 <strong>{item.title}</strong>
               </nav>
 

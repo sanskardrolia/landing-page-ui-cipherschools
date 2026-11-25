@@ -23,7 +23,7 @@ import { previewFree } from '../utils/previewAccess';
 
 const PILLARS = [
   { id: 'content', label: 'Lectures', tab: 'watch', Icon: CirclePlay },
-  { id: 'practice', label: 'Practice', tab: 'practice', Icon: ListChecks },
+  { id: 'practice', label: 'Problem', tab: 'practice', Icon: ListChecks },
   { id: 'test', label: 'Test', tab: 'test', Icon: ClipboardCheck },
   { id: 'mock', label: 'Mock', tab: 'interview', Icon: Mic }
 ];

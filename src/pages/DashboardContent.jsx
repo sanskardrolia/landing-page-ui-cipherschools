@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, CircleCheck, Clock, Lock, PlayCircle, Route } from 'lucide-react';
 import ModuleIcon from '../components/ModuleIcon';
-import { MODULES, moduleUnlocked, subjectLectures, subjectUnlocked } from '../data/learnerModules';
+import { MODULES, PLAN_LABELS, moduleUnlocked, subjectLectures, subjectUnlocked } from '../data/learnerModules';
+import { ONE_TIME_PURCHASES, courseLectures } from '../data/oneTimePurchases';
+import { coursePillars, courseWatched } from '../utils/oneTimeProgress';
+import PillarBar from '../components/PillarBar';
 
 /* ══════════════════════════════════════════════════════════════
    Content — /dashboard/content
@@ -11,11 +14,14 @@ import { MODULES, moduleUnlocked, subjectLectures, subjectUnlocked } from '../da
    Paid: the plan's modules; a section outside the plan's tier (e.g.
    DSA Advanced on Core) shows locked; the other Full Stack track is
    left out. Preview: its short module list, all sections open.
+   Two groups: "Subscription" (the plan's path, in sequence) and,
+   after a divider, "One-time purchased" (standalone cards, no rail).
    ══════════════════════════════════════════════════════════════ */
 
 const HIDDEN = ['dsa-mastery']; // kept off the paid content list (same as the module bar)
 const pct = (d, t) => (t ? Math.round((d / t) * 100) : 0);
 const two = (n) => String(n).padStart(2, '0');
+const fmtDate = (iso) => new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 const hours = (mins) => (mins >= 60 ? `${Math.round(mins / 6) / 10} h` : `${mins} min`);
 
 const buildPath = (ctx) => {
@@ -87,7 +93,11 @@ const DashboardContent = ({ ctx }) => {
         )}
       </section>
 
-      {/* Modules in order, each with its sections in order */}
+      {/* ── Subscription: modules in order, each with its sections in order ── */}
+      <div className="dx-cp-group">
+        <h2>Subscription</h2>
+        <span>{ctx.preview ? 'Preview' : `${PLAN_LABELS[ctx.planId]} plan`} · {path.length} modules</span>
+      </div>
       <ol className="dx-cp-path">
         {path.map((m, mi) => (
           <li key={m.mod.id} className={`dx-cp-step ${m.pct === 100 ? 'is-done' : ''}`}>
@@ -142,6 +152,35 @@ const DashboardContent = ({ ctx }) => {
           </li>
         ))}
       </ol>
+
+      {/* ── One-time purchased: standalone courses, not part of the sequence ── */}
+      {!ctx.preview && ONE_TIME_PURCHASES.length > 0 && (
+        <>
+          <hr className="dx-cp-divider" />
+          <div className="dx-cp-group">
+            <h2>One-time purchased</h2>
+            <span>{ONE_TIME_PURCHASES.length} courses · lifetime access</span>
+          </div>
+          <ul className="dx-cp-subs dx-cp-once">
+            {ONE_TIME_PURCHASES.map((c) => {
+              const lectures = courseLectures(c);
+              const pillars = coursePillars(c, courseWatched(c));
+              return (
+                <li key={c.id}>
+                  <Link to={`/dashboard/course/${c.id}`} className="dx-cp-sub dx-cp-once-card">
+                    <span className="dx-cp-sub-num">Purchased {fmtDate(c.purchased)}</span>
+                    <strong>{c.title}</strong>
+                    <span className="dx-cp-sub-meta">
+                      {c.subjects[0].units.length} units · {lectures.length} lectures · <Clock size={11} /> {hours(lectures.reduce((a, l) => a + l.mins, 0))}
+                    </span>
+                    <PillarBar parts={pillars.parts} overall={pillars.overall} compact />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

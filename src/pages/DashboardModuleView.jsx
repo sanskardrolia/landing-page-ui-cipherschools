@@ -19,7 +19,7 @@ import { previewFree } from '../utils/previewAccess';
 
 const TABS = [
   { id: 'watch', label: 'Lectures', short: 'Lectures', Icon: CirclePlay },
-  { id: 'practice', label: 'Practice', short: 'Practice', Icon: ListChecks },
+  { id: 'practice', label: 'Problem', short: 'Problem', Icon: ListChecks },
   { id: 'test', label: 'Proctored Tests', short: 'Test', Icon: ClipboardCheck },
   { id: 'interview', label: 'Mock Interview', short: 'Interview', Icon: Mic }
 ];
@@ -30,7 +30,7 @@ const pct = (done, total) => (total ? Math.round((done / total) * 100) : 0);
 /* The four pillars, done / total, across some sections of a module (ids as the tabs use them) */
 const PILLAR_KEYS = [
   { key: 'lectures', label: 'Lectures' },
-  { key: 'practice', label: 'Practice' },
+  { key: 'practice', label: 'Problem' },
   { key: 'tests', label: 'Tests' },
   { key: 'mock', label: 'Mock' }
 ];
