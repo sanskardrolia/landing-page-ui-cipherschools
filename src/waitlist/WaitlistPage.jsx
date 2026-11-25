@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check, Download, Link2, Loader2, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Check, Download, Link2, Loader2, Sparkles, X } from 'lucide-react';
+import { markWaitlistSeen } from './waitlistGate';
 import QRCode from 'qrcode';
 import WaitlistPass from './WaitlistPass';
 import { downloadPass, isEmail, joinWaitlist, nameFrom, pad, shareText, shareUrl, waitingCount } from './waitlistUtils';
@@ -95,11 +97,13 @@ const WaitlistPage = () => {
   const [copied, setCopied] = useState(false);
   const [count, setCount] = useState(waitingCount);
   const timers = useRef([]);
+  const navigate = useNavigate();
   const ref = new URLSearchParams(window.location.search).get('ref');
 
   useEffect(() => {
     const prev = document.title;
     document.title = 'Join the waitlist · CipherSchools';
+    markWaitlistSeen(); // the homepage won't redirect back here during this visit
     const t = timers.current;
     return () => { document.title = prev; t.forEach(clearTimeout); };
   }, []);
@@ -130,21 +134,30 @@ const WaitlistPage = () => {
     <div className={`wl is-${state}`}>
       <header className="wl-top">
         <a href="/" className="wl-logo"><img src="/cipherschools-logo.png" alt="" /> CipherSchools</a>
-        <span className="wl-live"><i /> {count.toLocaleString('en-IN')} joined</span>
+        <span className="wl-top-right">
+          <span className="wl-live"><i /> {count.toLocaleString('en-IN')} joined</span>
+          <button type="button" className="wl-close" onClick={() => navigate('/')} aria-label="Close the waitlist and go to the homepage" title="Close">
+            <X size={18} />
+          </button>
+        </span>
       </header>
 
       {state !== 'done' ? (
         <main className="wl-hero">
           {ref && <span className="wl-invite"><Sparkles size={13} /> A friend saved you a spot</span>}
           <h1 aria-label="New chapter begins. You deserve more than just grinding DSA problems.">
-            <Words text="New chapter begins" />
+            <span>
+              <span className="wl-word" style={{ '--i': 0 }}>New{' '}</span>
+              <span className="wl-word wl-h-brand" style={{ '--i': 1 }}>chapter{' '}</span>
+              <span className="wl-word" style={{ '--i': 2 }}>begins</span>
+            </span>
             <span className="wl-h-sorry" aria-hidden="true">
               <Words text="You deserve" from={3} />
               <span className="wl-word wl-h-more" style={{ '--i': 5 }}>more{' '}</span>
               <Words text="than just grinding DSA problems." from={6} />
             </span>
           </h1>
-          <p className="wl-sub">The next CipherSchools is almost here. Join the waitlist and get in early.</p>
+          <p className="wl-sub">The next CipherSchools is almost here. Join the waitlist to get extra perks once it launches.</p>
 
           <form className={`wl-form ${state === 'error' ? 'is-shake' : ''}`} onSubmit={submit} noValidate onAnimationEnd={() => state === 'error' && setState('idle')}>
             <input

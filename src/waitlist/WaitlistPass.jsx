@@ -35,7 +35,6 @@ const WaitlistPass = ({ pass = null, qr = null, size = 'lg' }) => {
 
         <div className="wl-pass-top">
           <span className="wl-pass-brand"><img src="/cipherschools-logo.png" alt="" /> CIPHERSCHOOLS</span>
-          <span className="wl-pass-season">SEASON 01</span>
         </div>
         <div className="wl-pass-chiprow">
           <span className="wl-pass-chip" aria-hidden="true"><i /><i /><i /><i /></span>

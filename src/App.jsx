@@ -22,6 +22,7 @@ import PracticePage from './pages/PracticePage';
 import SplashScreen from './components/SplashScreen';
 import { useSmoothScroll } from './hooks/useSmoothScroll';
 import './App.css';
+import { WAITLIST_FIRST, waitlistSeen } from './waitlist/waitlistGate';
 
 // /waitlist: standalone demo page in its own bundle (loaded only on that route)
 const WaitlistPage = lazy(() => import('./waitlist/WaitlistPage'));
@@ -94,6 +95,11 @@ function App() {
 
   if (isLoginPage) {
     return <LoginPage />;
+  }
+
+  // Waitlist first: the main link opens the waitlist once per visit; closing it comes back here
+  if (WAITLIST_FIRST && location.pathname === '/' && !waitlistSeen()) {
+    return <Navigate to={`/waitlist${location.search}`} replace />;
   }
 
   // Waitlist demo: full-screen, no site navbar/footer

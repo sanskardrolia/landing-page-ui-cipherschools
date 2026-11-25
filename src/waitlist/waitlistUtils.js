@@ -70,7 +70,6 @@ export const downloadPass = async ({ name, number, joined, code, qr }) => {
   g.fillStyle = '#F3912E'; g.font = '800 34px Unbounded, Inter, sans-serif'; g.fillText('CIPHERSCHOOLS', 72, 104);
   g.fillStyle = '#C2620A'; g.font = '600 24px "JetBrains Mono", monospace'; g.fillText('EARLY ACCESS PASS', 72, 146);
   g.fillStyle = '#8A8580';
-  g.textAlign = 'right'; g.fillText('SEASON 01', W - 72, 104); g.textAlign = 'left';
 
   g.fillStyle = '#8A8580'; g.font = '600 22px "JetBrains Mono", monospace'; g.fillText('WAITLIST NO.', 72, 300);
   g.fillStyle = '#0B0B0D'; g.font = '800 150px Unbounded, Inter, sans-serif'; g.fillText(`#${pad(number)}`, 64, 440);

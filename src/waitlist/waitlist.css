@@ -85,7 +85,6 @@
 #root .wl-pass-top { display: flex; align-items: center; justify-content: space-between; transform: translateZ(30px); }
 #root .wl-pass-brand { display: inline-flex; align-items: center; gap: 2.2cqw; font-family: var(--display); font-weight: 800; font-size: 3.6cqw; letter-spacing: 0.04em; }
 #root .wl-pass-brand img { width: 6cqw; height: 6cqw; }
-#root .wl-pass-season { font-family: var(--mono); font-size: 2.5cqw; font-weight: 700; letter-spacing: 0.16em; color: rgba(255, 255, 255, 0.6); }
 #root .wl-pass-chiprow { display: flex; align-items: center; gap: 3cqw; margin-top: 5cqw; }
 #root .wl-pass-chip { position: relative; width: 11cqw; aspect-ratio: 1.3; border-radius: 1.6cqw; background: linear-gradient(135deg, #F8D79B, #C9923E 60%, #F3C777); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25); display: grid; grid-template-columns: 1fr 1fr; gap: 1px; padding: 1.4cqw; }
 #root .wl-pass-chip i { border: 1px solid rgba(90, 55, 10, 0.45); border-radius: 0.6cqw; }
@@ -171,7 +170,7 @@
 #root .wl-pass-foil { mix-blend-mode: multiply; background-image: linear-gradient(calc(115deg + var(--hue)), transparent 20%, rgba(255, 92, 138, 0.18) 35%, rgba(253, 186, 116, 0.22) 45%, rgba(110, 231, 183, 0.18) 55%, rgba(139, 92, 246, 0.18) 65%, transparent 80%); }
 #root .wl-pass-glare { mix-blend-mode: normal; background: radial-gradient(circle at var(--gx) var(--gy), rgba(255, 255, 255, 0.85), transparent 40%); }
 #root .wl-pass-wrap:hover .wl-pass-glare { opacity: 0.7; }
-#root .wl-pass-season, #root .wl-pass-num small, #root .wl-pass-who small { color: #8A8580; }
+#root .wl-pass-num small, #root .wl-pass-who small { color: #8A8580; }
 #root .wl-pass-kind { color: #C2620A; }
 #root .wl-pass-num strong { background-image: linear-gradient(180deg, #0B0B0D 35%, #8A4A12); }
 #root .wl-pass-meta em { color: #4B4743; }
@@ -208,3 +207,12 @@
 #root .wl-h-more { color: var(--ink); }
 /* cursor trail sits above the background, under the content's interactions */
 #root .wl-trail { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 40; pointer-events: none; mix-blend-mode: multiply; }
+#root .wl-h-brand { color: var(--o); }
+
+/* close (×) → homepage */
+#root .wl-top-right { display: inline-flex; align-items: center; gap: 14px; }
+#root .wl .wl-close {
+  width: 36px; height: 36px; display: grid; place-items: center; padding: 0; color: var(--ink);
+  background: #fff; border: 1px solid var(--line); border-radius: 999px !important; transition: background 0.15s, border-color 0.15s, transform 0.2s;
+}
+#root .wl .wl-close:hover { background: #F6F5F3; border-color: #C9C6C1; transform: rotate(90deg); }
