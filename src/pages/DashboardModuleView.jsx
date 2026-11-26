@@ -590,6 +590,7 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
     const prevDone = i === 0 || !!progress.tests[stages[i - 1].id];
     return {
       id: t.id,
+      unit: t.unit,
       stage: `#${i + 1}`,
       name: t.name,
       mins: t.mins,
@@ -622,35 +623,16 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
 
   const rows = view === 'module' ? moduleRows : additionalRows;
 
-  return (
-    <section className="dx-tab-panel">
-      <div className="dx-test-switch" role="tablist" aria-label="Test groups">
-        <button type="button" role="tab" aria-selected={view === 'module'} className={view === 'module' ? 'active' : ''} onClick={() => setView('module')}>
-          Module Tests <span className="dx-count">{moduleRows.length}</span>
-        </button>
-        {additionalRows.length > 0 && (
-          <button type="button" role="tab" aria-selected={view === 'additional'} className={view === 'additional' ? 'active' : ''} onClick={() => setView('additional')}>
-            Additional Tests <span className="dx-count">{additionalRows.length}</span>
-          </button>
-        )}
-      </div>
+  // Module Tests are grouped by unit (same accordions as the Problem tab)
+  const unitGroups = subject.units
+    .map((u, idx) => ({ unit: u, idx, rows: moduleRows.filter((r) => r.unit.id === u.id) }))
+    .filter((g) => g.rows.length);
+  const firstOpenUnit = (unitGroups.find((g) => g.rows.some((r) => r.unlocked && !progress.tests[r.id]))
+    || unitGroups.find((g) => g.rows.some((r) => !progress.tests[r.id])) || unitGroups[0])?.unit.id;
+  const [openUnits, setOpenUnits] = useState(() => new Set(ctx.preview ? unitGroups.map((g) => g.unit.id) : [firstOpenUnit]));
+  const flipUnit = (id) => setOpenUnits((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
 
-      <div className="dx-card dx-ttable-card">
-        <table className="dx-ptable dx-ttable">
-          <thead>
-            <tr>
-              <th scope="col" className="dx-col-stage">{view === 'module' ? 'Stage' : '#'}</th>
-              <th scope="col">Name</th>
-              <th scope="col">Test Type</th>
-              <th scope="col">Type</th>
-              <th scope="col">Platform</th>
-              <th scope="col">Result</th>
-              <th scope="col">Marks</th>
-              <th scope="col" className="dx-col-link">Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => {
+  const renderRow = (r) => {
               const record = progress.tests[r.id];
               const used = record?.count || 0;
               const left = attemptsAllowed - used;
@@ -700,10 +682,75 @@ const TestTab = ({ mod, subject, ctx, isExt }) => {
                   </td>
                 </tr>
               );
-            })}
-          </tbody>
-        </table>
+  };
+
+  const testTable = (list, firstCol = 'Stage') => (
+    <table className="dx-ptable dx-ttable">
+      <thead>
+        <tr>
+          <th scope="col" className="dx-col-stage">{firstCol}</th>
+          <th scope="col">Name</th>
+          <th scope="col">Test Type</th>
+          <th scope="col">Type</th>
+          <th scope="col">Platform</th>
+          <th scope="col">Result</th>
+          <th scope="col">Marks</th>
+          <th scope="col" className="dx-col-link">Link</th>
+        </tr>
+      </thead>
+      <tbody>{list.map(renderRow)}</tbody>
+    </table>
+  );
+
+
+  return (
+    <section className="dx-tab-panel">
+      <div className="dx-test-switch" role="tablist" aria-label="Test groups">
+        <button type="button" role="tab" aria-selected={view === 'module'} className={view === 'module' ? 'active' : ''} onClick={() => setView('module')}>
+          Module Tests <span className="dx-count">{moduleRows.length}</span>
+        </button>
+        {additionalRows.length > 0 && (
+          <button type="button" role="tab" aria-selected={view === 'additional'} className={view === 'additional' ? 'active' : ''} onClick={() => setView('additional')}>
+            Additional Tests <span className="dx-count">{additionalRows.length}</span>
+          </button>
+        )}
       </div>
+
+      {view === 'module' ? (
+        <div className="dx-units">
+          {unitGroups.map(({ unit: u, idx, rows: list }) => {
+            const attempted = list.filter((r) => progress.tests[r.id]?.count > 0).length;
+            const isOpen = openUnits.has(u.id);
+            const lecturesDone = u.lectures.filter((l) => progress.watched[l.id]).length;
+            const allLocked = !ctx.preview && list.every((r) => !r.unlocked);
+            return (
+              <div key={u.id} id={`dx-tu-${u.id}`} className={`dx-unit ${isOpen ? 'open' : ''}`}>
+                <button type="button" className="dx-unit-head" onClick={() => flipUnit(u.id)} aria-expanded={isOpen}>
+                  <span className="dx-unit-num">{String(idx + 1).padStart(2, '0')}</span>
+                  <span className="dx-unit-title">{u.title}</span>
+                  {allLocked && attempted === 0 && <Lock size={13} className="dx-muted" aria-label="Locked" />}
+                  <span className="dx-unit-meta">{attempted}/{list.length} attempted</span>
+                  {attempted === list.length && <CircleCheck size={16} className="dx-done-icon" />}
+                  <ChevronDown size={16} className={`dx-chev ${isOpen ? 'up' : ''}`} />
+                </button>
+                {isOpen && (
+                  <div className="dx-ptable-wrap">
+                    <div className="dx-ptable-note">
+                      <span className="dx-muted dx-small">Lectures watched: {lecturesDone}/{u.lectures.length} · tests open at {pctLabel}%</span>
+                      <Link to={`/dashboard/m/${mod.id}/watch/${u.lectures[0].id}`} className="dx-mini-link">
+                        <CirclePlay size={14} /> Watch this unit
+                      </Link>
+                    </div>
+                    {testTable(list)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="dx-card dx-ttable-card">{testTable(rows, '#')}</div>
+      )}
 
       {active && (
         <Dialog title={active.name} onClose={() => setActive(null)}>

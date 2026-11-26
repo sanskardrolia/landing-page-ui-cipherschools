@@ -10,6 +10,7 @@
    Lecture titles, counts and durations below are PLACEHOLDER curriculum
    so the dashboard has realistic shape; replace with the real syllabus.
    ══════════════════════════════════════════════════════════════ */
+import { ADDITIONAL_TESTS } from './features';
 
 export const TEST_UNLOCK_AT = 0.6; // 60% of a subject's lectures watched
 
@@ -345,7 +346,8 @@ export const subjectExtended = (extended, mod, subj) => extended && subjectTier(
 
 /* A subject's own practice / tests, else the module's */
 export const subjectPractice = (mod, subj) => subj.practice || mod.practice;
-export const subjectTests = (mod, subj) => subj.tests || mod.tests;
+// Additional (module-wide) tests; empty while the ADDITIONAL_TESTS switch is off
+export const subjectTests = (mod, subj) => (ADDITIONAL_TESTS ? subj.tests || mod.tests : []);
 export const subjectInterview = (mod, subj) => subj.interview || mod.interview;
 
 /* The module as this plan sees it: subjects the plan doesn't include are left out */

@@ -21,13 +21,24 @@ export const codeFor = (email) => {
 
 export const waitingCount = () => WAITLIST_BASE + Object.keys(readAll()).length;
 
+/* Referrals: someone joining through ?ref=CODE counts for that code (demo: this browser only) */
+const REF_KEY = 'cs_waitlist_refs';
+export const REFERRAL_GOAL = 5;
+const readRefs = () => { try { return JSON.parse(localStorage.getItem(REF_KEY)) || {}; } catch { return {}; } };
+export const referralsFor = (code) => readRefs()[code] || 0;
+
 /* join (or re-open) a spot; same email → same number */
-export const joinWaitlist = (email) => {
+export const joinWaitlist = (email, ref = null) => {
   const key = email.trim().toLowerCase();
   const all = readAll();
   if (!all[key]) {
     all[key] = { number: WAITLIST_BASE + Object.keys(all).length + 1, joined: new Date().toISOString() };
     writeAll(all);
+    if (ref && ref !== codeFor(key)) {
+      const refs = readRefs();
+      refs[ref] = (refs[ref] || 0) + 1;
+      try { localStorage.setItem(REF_KEY, JSON.stringify(refs)); } catch { /* storage off */ }
+    }
   }
   return { email: key, code: codeFor(key), ...all[key] };
 };
