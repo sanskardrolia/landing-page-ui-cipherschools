@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════
-   Free DSA practice — /dashboard/practice
+   Free practice (DSA · Programming · SQL) — /dashboard/practice
    A standalone, free question bank (open on every plan and in the
    preview). It is NOT the per-unit practice inside Content: solved
    state lives in its own storage key and never counts toward module
@@ -9,8 +9,16 @@
    the real bank.
    ══════════════════════════════════════════════════════════════ */
 
-const P = (slug, title, level, topics, companies, fn, params, returns, statement, examples, constraints = []) => ({
-  id: `fp-${slug}`, kind: 'coding', title, level, topics, companies, fn, params, returns, statement, examples, constraints
+const P = (slug, title, level, topics, companies, fn, params, returns, statement, examples, constraints = [], track = 'DSA') => ({
+  id: `fp-${slug}`, kind: 'coding', track, title, level, topics, companies, fn, params, returns, statement, examples, constraints
+});
+/* Programming basics: same coding workspace, track 'Programming' */
+const G = (slug, title, level, topics, companies, fn, params, returns, statement, examples) =>
+  P(slug, title, level, topics, companies, fn, params, returns, statement, examples, [], 'Programming');
+/* SQL: opens the SQL workspace (schema + query editor) */
+const Q = (slug, title, level, topics, companies, statement, schema, examples) => ({
+  id: `fp-${slug}`, kind: 'sql', track: 'SQL', language: 'sql', title, level, topics, companies, statement, schema, examples,
+  starter: '-- Write your query below\nSELECT\n'
 });
 const ex = (input, output, explanation) => ({ input, output, ...(explanation ? { explanation } : {}) });
 
@@ -74,11 +82,63 @@ export const FREE_PROBLEMS = [
     [ex('a = "horse", b = "ros"', '3')]),
   P('merge-k-lists', 'Merge K Sorted Lists', 'Hard', ['Linked List', 'Heaps'], ['Amazon', 'Flipkart'], 'mergeKLists', [['lists', 'ListNode[]']], 'ListNode',
     'Merge k sorted linked lists into one sorted list and return its head.',
-    [ex('lists = [1→4→5, 1→3→4, 2→6]', '1→1→2→3→4→4→5→6')])
+    [ex('lists = [1→4→5, 1→3→4, 2→6]', '1→1→2→3→4→4→5→6')]),
+
+  /* ── Programming ── */
+  G('fizzbuzz', 'FizzBuzz', 'Easy', ['Loops', 'Conditionals'], ['TCS', 'Wipro'], 'fizzBuzz', [['n', 'int']], 'string[]',
+    'Return the numbers 1 to n as strings, but "Fizz" for multiples of 3, "Buzz" for multiples of 5 and "FizzBuzz" for both.',
+    [ex('n = 5', '["1", "2", "Fizz", "4", "Buzz"]')]),
+  G('palindrome-number', 'Palindrome Number', 'Easy', ['Math'], ['Infosys'], 'isPalindrome', [['x', 'int']], 'bool',
+    'Return true if x reads the same forwards and backwards, without converting it to a string.',
+    [ex('x = 121', 'true'), ex('x = -121', 'false')]),
+  G('count-vowels', 'Count the Vowels', 'Easy', ['Strings', 'Loops'], ['Cognizant'], 'countVowels', [['s', 'string']], 'int',
+    'Return how many vowels (a, e, i, o, u, either case) are in s.',
+    [ex('s = "CipherSchools"', '3')]),
+  G('fibonacci', 'Nth Fibonacci Number', 'Easy', ['Recursion', 'Math'], ['Accenture'], 'fib', [['n', 'int']], 'int',
+    'Return the nth Fibonacci number, where fib(0) = 0 and fib(1) = 1.',
+    [ex('n = 7', '13')]),
+  G('armstrong', 'Armstrong Number', 'Easy', ['Math', 'Loops'], ['Capgemini'], 'isArmstrong', [['n', 'int']], 'bool',
+    'Return true if n equals the sum of its digits each raised to the number of digits.',
+    [ex('n = 153', 'true', '1³ + 5³ + 3³ = 153')]),
+  G('second-largest', 'Second Largest in an Array', 'Easy', ['Arrays'], ['HCL'], 'secondLargest', [['nums', 'int[]']], 'int',
+    'Return the second largest distinct value in nums, or -1 if there is none. One pass, no sorting.',
+    [ex('nums = [12, 35, 1, 10, 34, 1]', '34')]),
+  G('word-frequency', 'Most Frequent Word', 'Medium', ['Strings', 'Hashing'], ['Zoho'], 'mostFrequent', [['text', 'string']], 'string',
+    'Return the word that appears most often in text, ignoring case and punctuation. On a tie, return the one that appears first.',
+    [ex('text = "Code, test. Code again!"', '"code"')]),
+  G('matrix-spiral', 'Print a Matrix in Spiral', 'Medium', ['Arrays', 'Simulation'], ['Paytm'], 'spiralOrder', [['matrix', 'int[][]']], 'int[]',
+    'Return all elements of the matrix in spiral order, starting top-left and going clockwise.',
+    [ex('matrix = [[1,2,3],[4,5,6],[7,8,9]]', '[1,2,3,6,9,8,7,4,5]')]),
+  G('calculator', 'Evaluate an Expression', 'Hard', ['Strings', 'Parsing'], ['Atlassian'], 'calculate', [['expr', 'string']], 'int',
+    'Evaluate a string with integers, + - * / and parentheses, following normal precedence. Do not use eval. Division truncates toward zero.',
+    [ex('expr = "2 * (3 + 4) - 5 / 2"', '12')]),
+
+  /* ── SQL ── */
+  Q('sql-duplicate-emails', 'Find Duplicate Emails', 'Easy', ['GROUP BY', 'HAVING'], ['TCS'],
+    'Return every email that appears more than once.', 'Person(id INT, email VARCHAR)', [ex('a@x.com, b@x.com, a@x.com', 'a@x.com')]),
+  Q('sql-never-ordered', 'Customers Who Never Ordered', 'Easy', ['Joins'], ['Flipkart'],
+    'List the names of customers who have never placed an order.', 'Customers(id INT, name VARCHAR) · Orders(id INT, customer_id INT)', [ex('Customers: Joe, Henry, Sam · Orders by Joe', 'Henry, Sam')]),
+  Q('sql-earn-more', 'Employees Earning More Than Managers', 'Easy', ['Self Join'], ['Amazon'],
+    'Return employees who earn more than their manager.', 'Employee(id INT, name VARCHAR, salary INT, manager_id INT)', [ex('Joe 70k (manager Sam 60k)', 'Joe')]),
+  Q('sql-orders-per-customer', 'Orders per Customer', 'Easy', ['GROUP BY', 'ORDER BY'], ['Swiggy'],
+    'Return each customer id with their number of orders, most orders first.', 'Orders(id INT, customer_id INT, amount INT)', [ex('Orders by 1, 1, 2', '1 → 2, 2 → 1')]),
+  Q('sql-second-salary', 'Second Highest Salary', 'Medium', ['Subqueries'], ['Amazon', 'Google'],
+    'Return the second highest distinct salary, or NULL if there is none.', 'Employee(id INT, name VARCHAR, salary INT)', [ex('100, 200, 300', '200')]),
+  Q('sql-running-total', 'Running Total of Sales', 'Medium', ['Window Functions'], ['Razorpay'],
+    'For each day, return the sales amount and the running total up to that day.', 'Sales(day DATE, amount INT)', [ex('10, 20, 5', '10, 30, 35')]),
+  Q('sql-top-three', 'Top Three Earners per Department', 'Hard', ['Window Functions', 'Joins'], ['Microsoft'],
+    'Return employees who earn one of the top three distinct salaries in their department.', 'Employee(id, name, salary, department_id) · Department(id, name)', [ex('IT: 90k, 85k, 85k, 70k, 69k', 'The 90k, 85k, 85k and 70k earners')])
+];
+
+export const FREE_TRACKS = [
+  { id: 'DSA', label: 'DSA', lede: 'DSA questions asked in real interviews.' },
+  { id: 'Programming', label: 'Programming', lede: 'Programming basics to build logic and fluency in any language.' },
+  { id: 'SQL', label: 'SQL', lede: 'SQL queries asked in data and backend interviews.' }
 ];
 
 export const FREE_LEVELS = ['Easy', 'Medium', 'Hard'];
 export const FREE_TOPICS = [...new Set(FREE_PROBLEMS.flatMap((p) => p.topics))].sort();
+export const topicsFor = (track) => [...new Set(FREE_PROBLEMS.filter((p) => p.track === track).flatMap((p) => p.topics))].sort();
 export const findFreeProblem = (id) => FREE_PROBLEMS.find((p) => p.id === id) || null;
 
 /* Solved state, separate from module progress */
